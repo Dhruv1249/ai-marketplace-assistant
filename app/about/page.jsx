@@ -29,19 +29,19 @@ export default function About() {
 
   const team = [
     {
-      name: 'Alex Thompson',
+      name: 'Dhruv',
       role: 'CEO & Founder',
-      description: 'Former e-commerce executive with 15+ years of experience in marketplace platforms.',
+      description: 'Something Something',
     },
     {
-      name: 'Sarah Kim',
+      name: 'Jainam',
       role: 'CTO',
-      description: 'AI researcher and engineer specializing in natural language processing and machine learning.',
+      description: 'Chutiya',
     },
     {
-      name: 'Marcus Johnson',
+      name: 'Yukta Shree',
       role: 'Head of Product',
-      description: 'Product strategist focused on creating intuitive user experiences for complex workflows.',
+      description: 'Something Something',
     },
   ];
 
