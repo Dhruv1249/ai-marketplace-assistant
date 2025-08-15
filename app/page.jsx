@@ -7,7 +7,7 @@ export default function Home() {
   const features = [
     {
       icon: Wand2,
-      title: 'AI-Powered Content Generation',
+      title: 'AI-Powered- Content Generation',
       description: 'Generate compelling product descriptions, titles, and features using advanced AI technology.',
     },
     {
