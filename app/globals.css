@@ -12,15 +12,55 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Fixed body styling to ensure consistent text visibility */
+body {
+  background: #ffffff;
+  color: #171717;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Ensure input and textarea text is always visible */
+input, textarea, select {
+  color: #374151 !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9CA3AF !important;
+}
+
+/* Ensure all text elements have proper contrast */
+.text-gray-900 {
+  color: #111827 !important;
+}
+
+.text-gray-800 {
+  color: #1F2937 !important;
+}
+
+.text-gray-700 {
+  color: #374151 !important;
+}
+
+.text-gray-600 {
+  color: #4B5563 !important;
+}
+
+.text-gray-500 {
+  color: #6B7280 !important;
+}
+
+/* Ensure button text is visible */
+button {
+  color: inherit;
+}
+
+/* Fix any potential text visibility issues in forms */
+form input, form textarea, form select {
+  color: #374151 !important;
+}
+
+/* Ensure labels are visible */
+label {
+  color: #374151 !important;
 }
