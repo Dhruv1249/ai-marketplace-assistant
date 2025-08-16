@@ -102,7 +102,8 @@ const CreateProductPage = () => {
                     <input
                       type="text"
                       value={generatedContent.title}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
                       onChange={(e) => setGeneratedContent(prev => ({ ...prev, title: e.target.value }))}
                     />
                   </div>
@@ -114,7 +115,8 @@ const CreateProductPage = () => {
                     <textarea
                       value={generatedContent.description}
                       rows={6}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
                       onChange={(e) => setGeneratedContent(prev => ({ ...prev, description: e.target.value }))}
                     />
                   </div>
@@ -129,7 +131,8 @@ const CreateProductPage = () => {
                           key={index}
                           type="text"
                           value={feature}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                          style={{ color: '#111827', backgroundColor: '#ffffff' }}
                           onChange={(e) => {
                             const newFeatures = [...generatedContent.features];
                             newFeatures[index] = e.target.value;

@@ -12,20 +12,26 @@ const generateContentSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('Received request body:', body);
     
     // Validate request body
     const validatedData = generateContentSchema.parse(body);
+    console.log('Validated data:', validatedData);
     
     // Create a readable stream
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          console.log('Starting content generation with data:', validatedData);
+          console.log('API Key available:', !!process.env.GEMINI_API_KEY);
+          
           let chunks: string[] = [];
           
           const generatedContent = await generateContentWithStreaming(
             validatedData,
             (chunk: string) => {
+              console.log('Received chunk:', chunk);
               // Send each chunk as it arrives
               chunks.push(chunk);
               controller.enqueue(
@@ -33,6 +39,8 @@ export async function POST(request: NextRequest) {
               );
             }
           );
+          
+          console.log('Generated content:', generatedContent);
           
           // Send the final result
           controller.enqueue(
@@ -68,10 +76,13 @@ export async function POST(request: NextRequest) {
     console.error('Error in generate-content-stream API:', error);
     
     if (error instanceof z.ZodError) {
+      const firstError = error.errors[0];
+      const errorMessage = firstError?.message || 'Validation error';
+      
       return new Response(
         JSON.stringify({
           success: false,
-          error: 'Validation error',
+          error: errorMessage,
           details: error.errors,
         }),
         { 
