@@ -5,10 +5,16 @@ import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator
 import { Button } from '@/components/ui';
 import { ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
+import TemplateSelector from '@/components/templates/TemplateSelector';
+import Modal from '@/components/ui/Modal';
+import FullTemplatePreview from '@/components/templates/FullPreview';
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [selectedLayout, setSelectedLayout] = useState('gallery-focused');
+  const [images, setImages] = useState([]); // array of preview URLs
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleContentGenerated = (content) => {
     setGeneratedContent(content);
@@ -158,15 +164,80 @@ const CreateProductPage = () => {
             {currentStep === 3 && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Choose Layout</h2>
-                <p className="text-gray-600">Layout selection coming soon...</p>
+                <TemplateSelector
+                  content={generatedContent}
+                  value={selectedLayout}
+                  onChange={setSelectedLayout}
+                />
+
+                {/* Image upload */}
+                <div className="mt-6">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Upload Images (3-5)</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      // Limit to 5 and at least 3 advised
+                      const slice = files.slice(0, 5);
+                      // Create object URLs for preview
+                      const urls = slice.map((file) => URL.createObjectURL(file));
+                      setImages(urls);
+                    }}
+                    className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  {images?.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {images.map((src, i) => (
+                        <div key={i} className="aspect-square rounded border overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={src} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {images?.length > 0 && images.length < 3 && (
+                    <p className="text-xs text-amber-600 mt-1">Consider uploading at least 3 images for a better preview.</p>
+                  )}
+                </div>
+
+                <div className="mt-6 bg-gray-50 border rounded p-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Selected Layout Config</p>
+                  <pre className="text-xs text-gray-700 overflow-auto">
+{JSON.stringify({
+  type: selectedLayout,
+  sections: [
+    { id: 'hero', type: 'hero', order: 1, visible: true, config: {} },
+    { id: 'gallery', type: 'gallery', order: 2, visible: selectedLayout !== 'single-column', config: {} },
+    { id: 'description', type: 'description', order: 3, visible: true, config: {} },
+    { id: 'features', type: 'features', order: 4, visible: true, config: {} },
+    { id: 'specs', type: 'specifications', order: 5, visible: selectedLayout !== 'feature-blocks', config: {} },
+    { id: 'cta', type: 'cta', order: 6, visible: true, config: {} },
+  ],
+  theme: { primaryColor: '#2563eb', secondaryColor: '#111827', fontFamily: 'Inter' }
+}, null, 2)}
+                  </pre>
+                </div>
+
                 <div className="flex gap-4 mt-6">
                   <Button variant="outline" onClick={() => setCurrentStep(2)}>
                     Back
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsPreviewOpen(true)}>
+                    <Eye className="mr-2" size={16} /> Preview Template
                   </Button>
                   <Button onClick={() => setCurrentStep(4)}>
                     Continue to Publish
                   </Button>
                 </div>
+
+                {/* Preview Modal */}
+                <Modal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} title="Template Preview" size="xl">
+                  <div className="max-h-[70vh] overflow-y-auto">
+                    <FullTemplatePreview layoutType={selectedLayout} content={generatedContent} images={images} />
+                  </div>
+                </Modal>
               </div>
             )}
 
