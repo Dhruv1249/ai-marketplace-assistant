@@ -14,6 +14,7 @@ function Hero({ title, description }) {
 function Gallery({ images = [] }) {
   const hasImages = images && images.length > 0;
   const main = hasImages ? images[0] : null;
+  const thumbs = hasImages ? images.slice(1) : [];
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
       <div className="lg:col-span-3">
@@ -26,8 +27,8 @@ function Gallery({ images = [] }) {
           )}
         </div>
       </div>
-      <div className="lg:col-span-1 grid grid-cols-3 lg:grid-cols-1 gap-2">
-        {images.slice(1, 5).map((src, i) => (
+      <div className="lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1">
+        {thumbs.map((src, i) => (
           <div key={i} className="aspect-square rounded bg-gray-200 overflow-hidden flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
@@ -35,7 +36,7 @@ function Gallery({ images = [] }) {
         ))}
         {!hasImages && (
           <>
-            {Array.from({ length: 3 }).map((_, i) => (
+            {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="aspect-square rounded bg-gray-100 flex items-center justify-center text-gray-300">IMG</div>
             ))}
           </>
@@ -54,8 +55,8 @@ function Features({ features = [] }) {
   return (
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
-      <ul className="list-disc pl-5 space-y-1 text-gray-700">
-        {items.slice(0, 6).map((f, i) => (
+      <ul className="list-disc pl-5 space-y-1.5 text-gray-700">
+        {items.map((f, i) => (
           <li key={i}>{f}</li>
         ))}
       </ul>
@@ -110,6 +111,7 @@ function GalleryFocused({ content, images }) {
 }
 
 function FeatureBlocks({ content, images }) {
+  const feats = content?.features?.length ? content.features : ['Feature A', 'Feature B', 'Feature C'];
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -124,9 +126,9 @@ function FeatureBlocks({ content, images }) {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {(content?.features?.slice(0, 3) || ['Feature A', 'Feature B', 'Feature C']).map((f, i) => (
-          <div key={i} className="border rounded p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {feats.map((f, i) => (
+          <div key={i} className="border rounded p-4 h-full">
             <h4 className="font-semibold text-gray-900 mb-2">{typeof f === 'string' ? f : `Feature ${i + 1}`}</h4>
             <p className="text-gray-700 text-sm">Highlight of this feature with benefits and value proposition.</p>
           </div>
@@ -157,6 +159,7 @@ function ComparisonTable({ content, images }) {
       <Hero title={content?.title} description={content?.description} />
       <Gallery images={images} />
       <Specs specifications={content?.specifications} />
+      <Features features={content?.features} />
       <CTA />
     </div>
   );
@@ -172,8 +175,10 @@ const RENDERERS = {
 export default function FullTemplatePreview({ layoutType = 'gallery-focused', content, images }) {
   const Renderer = RENDERERS[layoutType] || GalleryFocused;
   return (
-    <div className="bg-white">
-      <Renderer content={content} images={images} />
+    <div className="min-h-screen bg-white flex flex-col">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Renderer content={content} images={images} />
+      </div>
     </div>
   );
 }

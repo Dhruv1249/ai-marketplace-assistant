@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
 import { Button } from '@/components/ui';
-import { ArrowLeft, Eye } from 'lucide-react';
+import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
 // Removed modal-based preview in favor of new tab preview
@@ -161,19 +161,43 @@ const CreateProductPage = () => {
                     </label>
                     <div className="space-y-2">
                       {generatedContent.features.map((feature, index) => (
-                        <input
-                          key={index}
-                          type="text"
-                          value={feature}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                          style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                          onChange={(e) => {
-                            const newFeatures = [...generatedContent.features];
-                            newFeatures[index] = e.target.value;
-                            setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                          }}
-                        />
+                        <div key={index} className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={feature}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                            onChange={(e) => {
+                              const newFeatures = [...generatedContent.features];
+                              newFeatures[index] = e.target.value;
+                              setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="p-2 text-gray-500 hover:text-red-600"
+                            onClick={() => {
+                              const newFeatures = generatedContent.features.filter((_, i) => i !== index);
+                              setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                            }}
+                            aria-label="Remove feature"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
                       ))}
+                    </div>
+                    <div className="mt-2">
+                      <button
+                        type="button"
+                        className="inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                        onClick={() => {
+                          const newFeatures = [...(generatedContent.features || []), ''];
+                          setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                        }}
+                      >
+                        <Plus size={16} className="mr-1.5" /> Add feature
+                      </button>
                     </div>
                   </div>
 
