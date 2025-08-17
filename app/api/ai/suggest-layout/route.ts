@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+  import { NextRequest, NextResponse } from 'next/server';
 import { suggestLayoutOptions } from '@/lib/ai/gemini';
 import { z } from 'zod';
 

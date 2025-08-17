@@ -1,20 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
 import { Button } from '@/components/ui';
 import { ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
-import Modal from '@/components/ui/Modal';
-import FullTemplatePreview from '@/components/templates/FullPreview';
+// Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedLayout, setSelectedLayout] = useState('gallery-focused');
   const [images, setImages] = useState([]); // array of preview URLs
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const prevUrlsRef = useRef([]);
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        prevUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+      } catch {}
+    };
+  }, []);
 
   const handleContentGenerated = (content) => {
     setGeneratedContent(content);
@@ -32,6 +40,21 @@ const CreateProductPage = () => {
     { id: 4, name: 'Publish', description: 'Publish your product page to the marketplace' }
   ];
 
+  const openPreview = () => {
+    if (!generatedContent) return;
+    try {
+      const payload = {
+        layoutType: selectedLayout,
+        content: generatedContent,
+        images,
+      };
+      localStorage.setItem('previewData', JSON.stringify(payload));
+      window.open('/preview', '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      console.error('Failed to open preview:', e);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -44,7 +67,12 @@ const CreateProductPage = () => {
               </Link>
               <h1 className="text-xl font-semibold text-gray-900">Create Product Page</h1>
             </div>
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={openPreview}
+              disabled={!generatedContent}
+            >
               <Eye className="mr-2" size={16} />
               Preview
             </Button>
@@ -183,6 +211,11 @@ const CreateProductPage = () => {
                       const slice = files.slice(0, 5);
                       // Create object URLs for preview
                       const urls = slice.map((file) => URL.createObjectURL(file));
+                      // Revoke previously-created URLs to avoid leaks
+                      try {
+                        prevUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
+                      } catch {}
+                      prevUrlsRef.current = urls;
                       setImages(urls);
                     }}
                     className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
@@ -224,7 +257,7 @@ const CreateProductPage = () => {
                   <Button variant="outline" onClick={() => setCurrentStep(2)}>
                     Back
                   </Button>
-                  <Button variant="outline" onClick={() => setIsPreviewOpen(true)}>
+                  <Button variant="outline" onClick={openPreview}>
                     <Eye className="mr-2" size={16} /> Preview Template
                   </Button>
                   <Button onClick={() => setCurrentStep(4)}>
@@ -232,13 +265,7 @@ const CreateProductPage = () => {
                   </Button>
                 </div>
 
-                {/* Preview Modal */}
-                <Modal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} title="Template Preview" size="xl">
-                  <div className="max-h-[70vh] overflow-y-auto">
-                    <FullTemplatePreview layoutType={selectedLayout} content={generatedContent} images={images} />
-                  </div>
-                </Modal>
-              </div>
+                </div>
             )}
 
             {currentStep === 4 && (
@@ -297,6 +324,8 @@ const CreateProductPage = () => {
           </div>
         </div>
       </div>
+
+      {/* New tab preview uses /preview route and localStorage */}
     </div>
   );
 };
