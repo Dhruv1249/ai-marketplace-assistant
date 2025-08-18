@@ -30,6 +30,8 @@ export async function generateContentWithStreaming(
   request: ContentGenerationRequest,
   onChunk?: (chunk: string) => void
 ): Promise<GeneratedContent> {
+  const MAX_RETRIES = 5;
+
   async function callAI(): Promise<string> {
     const config = {};
     const model = 'gemini-1.5-flash';
@@ -44,13 +46,14 @@ Category: ${request.category || 'General'}
 Target Audience: ${request.targetAudience || 'General consumers'}
 Tone: ${request.tone || 'professional'}
 
-Respond with valid JSON:
+IMPORTANT: Respond ONLY with valid JSON in this exact format. Do not include any other text, explanations, or markdown formatting:
+
 {
   "title": "Product title (max 60 chars)",
   "description": "Detailed description (2-3 paragraphs)",
-  "features": ["feature1", "feature2", "feature3"],
-  "specifications": {"spec1": "value1", "spec2": "value2"},
-  "seoKeywords": ["keyword1", "keyword2", "keyword3"],
+  "features": ["feature1", "feature2", "feature3", "feature4", "feature5"],
+  "specifications": {"spec1": "value1", "spec2": "value2", "spec3": "value3"},
+  "seoKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
   "metaDescription": "SEO description (max 160 chars)"
 }`,
           },
@@ -70,51 +73,98 @@ Respond with valid JSON:
       fullResponse += chunkText;
       if (onChunk && chunkText) onChunk(chunkText);
     }
+    console.log('Raw AI response:', fullResponse);
     return fullResponse;
   }
 
-  try {
-    console.log('Starting AI generation with request:', request);
-    console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
+  console.log('Starting AI generation with request:', request);
+  console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
 
-    let fullResponse = await callAI();
-
-    // If we got an empty response from the experimental model, try again
-    if (!fullResponse || fullResponse.trim() === '') {
-      console.log('Empty response from AI, retrying...');
-      fullResponse = await callAI();
-    }
-
-    // Clean the response to ensure it's valid JSON
-    const cleanedText = fullResponse
-      .replace(/```json\n?/g, '')
-      .replace(/```\n?/g, '')
-      .trim();
-
-    console.log('Cleaned text:', cleanedText);
-
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const parsedResult = JSON.parse(cleanedText);
-      console.log('Successfully parsed JSON:', parsedResult);
-      return parsedResult;
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      console.error('Raw response:', fullResponse);
+      console.log(`Attempt ${attempt}/${MAX_RETRIES}`);
+      
+      const fullResponse = await callAI();
 
-      // Try one more time to get a valid response from the AI
-      console.log('Retrying AI call due to JSON parse error...');
-      const retryResponse = await callAI();
-      const retryCleaned = retryResponse
-        .replace(/```json\n?/g, '')
-        .replace(/```\n?/g, '')
+      // Check if we got an empty response
+      if (!fullResponse || fullResponse.trim() === '') {
+        console.log(`Attempt ${attempt}: Empty response from AI`);
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate content after 5 attempts. The AI returned empty responses. Please try again.');
+        }
+        continue; // Try again
+      }
+
+      // Clean the response to ensure it's valid JSON
+      let cleanedText = fullResponse
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .replace(/^[^{]*/, '') // Remove any text before the first {
+        .replace(/[^}]*$/, '') // Remove any text after the last }
         .trim();
-      const retryParsed = JSON.parse(retryCleaned);
-      return retryParsed;
+
+      // If still no valid JSON structure, try to extract it
+      if (!cleanedText.startsWith('{')) {
+        const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanedText = jsonMatch[0];
+        }
+      }
+
+      console.log(`Attempt ${attempt}: Cleaned text:`, cleanedText);
+
+      // If still no valid JSON, try again
+      if (!cleanedText || cleanedText.length < 10) {
+        console.log(`Attempt ${attempt}: No valid JSON found`);
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate content after 5 attempts. The AI did not return valid JSON. Please try again.');
+        }
+        continue; // Try again
+      }
+
+      try {
+        const parsedResult = JSON.parse(cleanedText);
+        console.log(`Attempt ${attempt}: Successfully parsed JSON:`, parsedResult);
+        
+        // Validate the parsed result has required fields
+        if (!parsedResult.title || !parsedResult.description || !parsedResult.features) {
+          console.log(`Attempt ${attempt}: Parsed JSON missing required fields`);
+          if (attempt === MAX_RETRIES) {
+            throw new Error('Failed to generate content after 5 attempts. The AI response was missing required fields. Please try again.');
+          }
+          continue; // Try again
+        }
+        
+        // Success! Return the parsed result
+        return parsedResult;
+        
+      } catch (parseError) {
+        console.error(`Attempt ${attempt}: JSON parse error:`, parseError);
+        console.error('Raw response:', fullResponse);
+        console.error('Cleaned text that failed to parse:', cleanedText);
+
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate content after 5 attempts. The AI response could not be parsed as valid JSON. Please try again.');
+        }
+        continue; // Try again
+      }
+    } catch (error) {
+      console.error(`Attempt ${attempt}: Error generating content:`, error);
+      
+      if (attempt === MAX_RETRIES) {
+        // If it's already our custom error message, re-throw it
+        if (error instanceof Error && error.message.includes('Failed to generate content after 5 attempts')) {
+          throw error;
+        }
+        // Otherwise, throw a generic error
+        throw new Error('Failed to generate content after 5 attempts due to technical issues. Please try again.');
+      }
+      continue; // Try again
     }
-  } catch (error) {
-    console.error('Error generating content:', error);
-    throw error; // Let the error propagate
   }
+
+  // This should never be reached, but just in case
+  throw new Error('Failed to generate content after 5 attempts. Please try again.');
 }
 
 export async function generateProductContent(
@@ -126,9 +176,11 @@ export async function generateProductContent(
 export async function generateFeatureExplanations(
   request: FeatureExplanationRequest
 ): Promise<Record<string, string>> {
+  const MAX_RETRIES = 5;
+
   async function callAI(): Promise<string> {
-  const config = {};
-  const model = 'gemini-1.5-flash'; // Use more stable model
+    const config = {};
+    const model = 'gemini-1.5-flash'; // Use more stable model
     const contents = [
       {
         role: 'user',
@@ -167,79 +219,113 @@ Do not include any other text, markdown formatting, or code blocks. Just the JSO
     return fullResponse;
   }
 
-  try {
-    console.log('Starting feature explanations generation with request:', request);
-    console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
+  console.log('Starting feature explanations generation with request:', request);
+  console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
 
-    let fullResponse = await callAI();
-    console.log('Raw AI response:', fullResponse);
-
-    // If we got an empty response, try again with fallback
-    if (!fullResponse || fullResponse.trim() === '') {
-      console.log('Empty response from AI, retrying...');
-      fullResponse = await callAI();
-    }
-
-    // Still empty? Return fallback explanations
-    if (!fullResponse || fullResponse.trim() === '') {
-      console.log('Still empty response, using fallback explanations');
-      const fallbackExplanations: Record<string, string> = {};
-      request.features.forEach(feature => {
-        fallbackExplanations[feature] = `This feature provides enhanced functionality and improved user experience. It offers reliable performance and adds significant value to the overall product quality.`;
-      });
-      return fallbackExplanations;
-    }
-
-    // Clean the response to ensure it's valid JSON
-    let cleanedText = fullResponse
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .replace(/^[^{]*/, '') // Remove any text before the first {
-      .replace(/[^}]*$/, '') // Remove any text after the last }
-      .trim();
-
-    // If still no valid JSON structure, try to extract it
-    if (!cleanedText.startsWith('{')) {
-      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleanedText = jsonMatch[0];
-      }
-    }
-
-    console.log('Cleaned feature explanations text:', cleanedText);
-
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const parsedResult = JSON.parse(cleanedText);
-      console.log('Successfully parsed feature explanations JSON:', parsedResult);
+      console.log(`Feature explanations attempt ${attempt}/${MAX_RETRIES}`);
       
-      // Validate that we have explanations for all features
-      const validatedResult: Record<string, string> = {};
-      request.features.forEach(feature => {
-        validatedResult[feature] = parsedResult[feature] || `This ${feature.toLowerCase()} enhances the product's functionality and provides excellent value for users.`;
-      });
-      
-      return validatedResult;
-    } catch (parseError) {
-      console.error('JSON parse error for feature explanations:', parseError);
-      console.error('Cleaned text that failed to parse:', cleanedText);
+      const fullResponse = await callAI();
+      console.log(`Attempt ${attempt}: Raw AI response:`, fullResponse);
 
-      // Return fallback explanations instead of throwing error
-      const fallbackExplanations: Record<string, string> = {};
-      request.features.forEach(feature => {
-        fallbackExplanations[feature] = `This feature enhances product performance and delivers exceptional value. It's designed to meet user needs and provide reliable, long-lasting benefits.`;
-      });
-      return fallbackExplanations;
+      // Check if we got an empty response
+      if (!fullResponse || fullResponse.trim() === '') {
+        console.log(`Attempt ${attempt}: Empty response from AI`);
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate feature explanations after 5 attempts. The AI returned empty responses. Please try again.');
+        }
+        continue; // Try again
+      }
+
+      // Clean the response to ensure it's valid JSON
+      let cleanedText = fullResponse
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .replace(/^[^{]*/, '') // Remove any text before the first {
+        .replace(/[^}]*$/, '') // Remove any text after the last }
+        .trim();
+
+      // If still no valid JSON structure, try to extract it
+      if (!cleanedText.startsWith('{')) {
+        const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          cleanedText = jsonMatch[0];
+        }
+      }
+
+      console.log(`Attempt ${attempt}: Cleaned feature explanations text:`, cleanedText);
+
+      // If still no valid JSON, try again
+      if (!cleanedText || cleanedText.length < 10) {
+        console.log(`Attempt ${attempt}: No valid JSON found`);
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate feature explanations after 5 attempts. The AI did not return valid JSON. Please try again.');
+        }
+        continue; // Try again
+      }
+
+      try {
+        const parsedResult = JSON.parse(cleanedText);
+        console.log(`Attempt ${attempt}: Successfully parsed feature explanations JSON:`, parsedResult);
+        
+        // Validate that we have explanations for all features
+        const validatedResult: Record<string, string> = {};
+        let missingFeatures = 0;
+        
+        request.features.forEach(feature => {
+          if (parsedResult[feature]) {
+            validatedResult[feature] = parsedResult[feature];
+          } else {
+            missingFeatures++;
+          }
+        });
+        
+        // If too many features are missing, try again
+        if (missingFeatures > request.features.length / 2) {
+          console.log(`Attempt ${attempt}: Too many missing feature explanations (${missingFeatures}/${request.features.length})`);
+          if (attempt === MAX_RETRIES) {
+            throw new Error('Failed to generate feature explanations after 5 attempts. The AI response was missing explanations for most features. Please try again.');
+          }
+          continue; // Try again
+        }
+        
+        // Fill in any missing features with a generic explanation
+        request.features.forEach(feature => {
+          if (!validatedResult[feature]) {
+            validatedResult[feature] = `This ${feature.toLowerCase()} enhances the product's functionality and provides excellent value for users.`;
+          }
+        });
+        
+        // Success! Return the validated result
+        return validatedResult;
+        
+      } catch (parseError) {
+        console.error(`Attempt ${attempt}: JSON parse error for feature explanations:`, parseError);
+        console.error('Cleaned text that failed to parse:', cleanedText);
+
+        if (attempt === MAX_RETRIES) {
+          throw new Error('Failed to generate feature explanations after 5 attempts. The AI response could not be parsed as valid JSON. Please try again.');
+        }
+        continue; // Try again
+      }
+    } catch (error) {
+      console.error(`Attempt ${attempt}: Error generating feature explanations:`, error);
+      
+      if (attempt === MAX_RETRIES) {
+        // If it's already our custom error message, re-throw it
+        if (error instanceof Error && error.message.includes('Failed to generate feature explanations after 5 attempts')) {
+          throw error;
+        }
+        // Otherwise, throw a generic error
+        throw new Error('Failed to generate feature explanations after 5 attempts due to technical issues. Please try again.');
+      }
+      continue; // Try again
     }
-  } catch (error) {
-    console.error('Error generating feature explanations:', error);
-    
-    // Return fallback explanations instead of throwing error
-    const fallbackExplanations: Record<string, string> = {};
-    request.features.forEach(feature => {
-      fallbackExplanations[feature] = `This feature provides enhanced functionality and improved user experience for optimal product performance.`;
-    });
-    return fallbackExplanations;
   }
+
+  // This should never be reached, but just in case
+  throw new Error('Failed to generate feature explanations after 5 attempts. Please try again.');
 }
 
 export async function suggestLayoutOptions(
