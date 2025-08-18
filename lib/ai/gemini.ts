@@ -24,13 +24,9 @@ export async function generateContentWithStreaming(
   request: ContentGenerationRequest,
   onChunk?: (chunk: string) => void
 ): Promise<GeneratedContent> {
-  try {
-    console.log('Starting AI generation with request:', request);
-    console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
-    
+  async function callAI(): Promise<string> {
     const config = {};
     const model = 'learnlm-2.0-flash-experimental';
-    
     const contents = [
       {
         role: 'user',
@@ -56,7 +52,6 @@ Respond with valid JSON:
       },
     ];
 
-    console.log('Making API call to Gemini...');
     const response = await ai.models.generateContentStream({
       model,
       config,
@@ -64,57 +59,24 @@ Respond with valid JSON:
     });
 
     let fullResponse = '';
-    let chunkCount = 0;
-    
     for await (const chunk of response) {
-      chunkCount++;
       const chunkText = chunk.text || '';
-      console.log(`Chunk ${chunkCount}:`, chunkText);
       fullResponse += chunkText;
-      
-      // Call the onChunk callback if provided
-      if (onChunk && chunkText) {
-        onChunk(chunkText);
-      }
+      if (onChunk && chunkText) onChunk(chunkText);
     }
+    return fullResponse;
+  }
 
-    console.log('Total chunks received:', chunkCount);
-    console.log('Full response length:', fullResponse.length);
+  try {
+    console.log('Starting AI generation with request:', request);
+    console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
 
-    // If we got an empty response from the experimental model, generate fallback content
+    let fullResponse = await callAI();
+
+    // If we got an empty response from the experimental model, try again
     if (!fullResponse || fullResponse.trim() === '') {
-      console.log('Empty response from AI, generating fallback content...');
-      
-      const fallbackContent = {
-        title: `Premium ${request.productDescription}`,
-        description: `This high-quality ${request.productDescription} is perfect for ${request.targetAudience || 'everyone'}. Crafted with attention to detail and built to last, it offers exceptional performance and value. Whether you're a beginner or experienced user, this ${request.productDescription} will meet your needs and exceed your expectations.`,
-        features: [
-          "High-quality construction",
-          "Durable materials",
-          "Excellent performance",
-          "Great value for money"
-        ],
-        specifications: {
-          "Quality": "Premium",
-          "Category": request.category || "General",
-          "Target": request.targetAudience || "General consumers"
-        },
-        seoKeywords: [
-          request.productDescription,
-          "premium",
-          "quality",
-          request.category || "product"
-        ],
-        metaDescription: `Premium ${request.productDescription} for ${request.targetAudience || 'everyone'}. High quality, durable, and great value.`
-      };
-      
-      // Simulate streaming for fallback content
-      if (onChunk) {
-        const fallbackText = JSON.stringify(fallbackContent, null, 2);
-        onChunk(fallbackText);
-      }
-      
-      return fallbackContent;
+      console.log('Empty response from AI, retrying...');
+      fullResponse = await callAI();
     }
 
     // Clean the response to ensure it's valid JSON
@@ -122,9 +84,9 @@ Respond with valid JSON:
       .replace(/```json\n?/g, '')
       .replace(/```\n?/g, '')
       .trim();
-    
+
     console.log('Cleaned text:', cleanedText);
-    
+
     try {
       const parsedResult = JSON.parse(cleanedText);
       console.log('Successfully parsed JSON:', parsedResult);
@@ -132,51 +94,20 @@ Respond with valid JSON:
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
       console.error('Raw response:', fullResponse);
-      
-      // Return fallback content if JSON parsing fails
-      return {
-        title: `Premium ${request.productDescription}`,
-        description: `This high-quality ${request.productDescription} is perfect for ${request.targetAudience || 'everyone'}. Crafted with attention to detail and built to last.`,
-        features: [
-          "High-quality construction",
-          "Durable materials", 
-          "Excellent performance"
-        ],
-        specifications: {
-          "Quality": "Premium",
-          "Category": request.category || "General"
-        },
-        seoKeywords: [
-          request.productDescription,
-          "premium",
-          "quality"
-        ],
-        metaDescription: `Premium ${request.productDescription} - high quality and great value.`
-      };
+
+      // Try one more time to get a valid response from the AI
+      console.log('Retrying AI call due to JSON parse error...');
+      const retryResponse = await callAI();
+      const retryCleaned = retryResponse
+        .replace(/```json\n?/g, '')
+        .replace(/```\n?/g, '')
+        .trim();
+      const retryParsed = JSON.parse(retryCleaned);
+      return retryParsed;
     }
   } catch (error) {
     console.error('Error generating content:', error);
-    
-    // Return fallback content instead of throwing error
-    return {
-      title: `Premium ${request.productDescription}`,
-      description: `This high-quality ${request.productDescription} is designed for ${request.targetAudience || 'everyone'} who values quality and performance.`,
-      features: [
-        "High-quality construction",
-        "Durable materials",
-        "Excellent performance"
-      ],
-      specifications: {
-        "Quality": "Premium",
-        "Category": request.category || "General"
-      },
-      seoKeywords: [
-        request.productDescription,
-        "premium",
-        "quality"
-      ],
-      metaDescription: `Premium ${request.productDescription} for ${request.targetAudience || 'everyone'}.`
-    };
+    throw error; // Let the error propagate
   }
 }
 
