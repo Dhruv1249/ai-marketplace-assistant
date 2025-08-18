@@ -55,31 +55,68 @@ export default function About() {
   const teamRef = useRef(null);
 
   useEffect(() => {
-    if (heroRef.current) {
-      gsap.from(heroRef.current.querySelectorAll('.about-hero-anim'), {
-        y: 48,
-        opacity: 0,
-        duration: 1.7,
-        ease: 'power3.out',
-        stagger: 0.23,
-      });
-    }
-    [storyRef, valuesRef, teamRef].forEach((ref) => {
-      if (ref.current) {
-        gsap.from(ref.current.querySelectorAll('.section-heading'), {
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top 90%',
-          },
-          y: 44,
+    let ctx = gsap.context(() => {
+      if (heroRef.current) {
+        gsap.from(heroRef.current.querySelectorAll('.about-hero-anim'), {
+          y: 48,
           opacity: 0,
-          duration: 1.3,
-          ease: 'power2.out',
-          stagger: 0.28,
+          duration: 1.7,
+          ease: 'power3.out',
+          stagger: 0.23,
+          clearProps: 'all',
         });
       }
+      [storyRef, valuesRef, teamRef].forEach((ref) => {
+        if (ref.current) {
+          gsap.from(ref.current.querySelectorAll('.section-heading'), {
+            scrollTrigger: {
+              trigger: ref.current,
+              start: 'top 90%',
+              scrub: false
+            },
+            y: 44,
+            opacity: 0,
+            duration: 1.3,
+            ease: 'power2.out',
+            stagger: 0.28,
+            clearProps: 'all',
+          });
+        }
+      });
+      if (valuesRef.current) {
+        gsap.from(valuesRef.current.querySelectorAll('.about-value-card'), {
+          scrollTrigger: {
+            trigger: valuesRef.current,
+            start: 'top 93%',
+            scrub: false
+          },
+          scale: 0.7,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'back.out(1.7)',
+          stagger: 0.17,
+          clearProps: 'all',
+        });
+      }
+      if (teamRef.current) {
+        gsap.from(teamRef.current.querySelectorAll('.about-team-avatar'), {
+          scrollTrigger: {
+            trigger: teamRef.current,
+            start: 'top 92%',
+            scrub: false
+          },
+          scale: 0.5,
+          opacity: 0,
+          duration: 1.19,
+          ease: 'elastic.out(1, .67)',
+          stagger: 0.21,
+          clearProps: 'all',
+        });
+      }
+      ScrollTrigger.refresh();
     });
-  }, []);
+    return () => { ctx.revert(); };
+  }, [heroRef, storyRef, valuesRef, teamRef]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -180,7 +217,7 @@ export default function About() {
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <div key={index} className="bg-white rounded-lg p-6 shadow-sm">
+                <div key={index} className="about-value-card bg-white rounded-lg p-6 shadow-sm">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="text-blue-600" size={24} />
                   </div>
@@ -211,7 +248,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {team.map((member, index) => (
               <div key={index} className="text-center">
-                <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <div className="about-team-avatar w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
                   <span className="text-2xl font-bold text-gray-600">
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </span>
