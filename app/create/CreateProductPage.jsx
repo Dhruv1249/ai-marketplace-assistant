@@ -13,6 +13,13 @@ const CreateProductPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedLayout, setSelectedLayout] = useState('gallery-focused');
   const [images, setImages] = useState([]); // array of preview URLs
+  const [featureExplanations, setFeatureExplanations] = useState({});
+  const [isGeneratingExplanations, setIsGeneratingExplanations] = useState(false);
+  const [featuresConfirmed, setFeaturesConfirmed] = useState(false);
+  const [showBackWarning, setShowBackWarning] = useState(false);
+  const [pendingStep, setPendingStep] = useState(null);
+  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [generationError, setGenerationError] = useState('');
   const prevUrlsRef = useRef([]);
 
   // Cleanup object URLs on unmount
@@ -40,12 +47,119 @@ const CreateProductPage = () => {
     { id: 4, name: 'Publish', description: 'Publish your product page to the marketplace' }
   ];
 
+  const generateFeatureExplanations = async () => {
+    if (!generatedContent?.features || generatedContent.features.length === 0) return;
+    
+    setIsGeneratingExplanations(true);
+    try {
+      const response = await fetch('/api/ai/generate-feature-explanations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          features: generatedContent.features,
+          productTitle: generatedContent.title,
+          productDescription: generatedContent.description
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setFeatureExplanations(result.data);
+      } else {
+        console.error('Failed to generate feature explanations:', result.error);
+      }
+    } catch (error) {
+      console.error('Error generating feature explanations:', error);
+    } finally {
+      setIsGeneratingExplanations(false);
+    }
+  };
+
+  const generateSingleFeatureExplanation = async (feature, index) => {
+    if (!feature.trim()) return;
+    
+    try {
+      const response = await fetch('/api/ai/generate-feature-explanations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          features: [feature],
+          productTitle: generatedContent.title,
+          productDescription: generatedContent.description
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success && result.data[feature]) {
+        setFeatureExplanations(prev => ({
+          ...prev,
+          [feature]: result.data[feature]
+        }));
+      }
+    } catch (error) {
+      console.error('Error generating single feature explanation:', error);
+    }
+  };
+
+  const handleStepChange = (targetStep) => {
+    // Prevent navigation if AI is generating
+    if (isGeneratingExplanations || isGeneratingContent) {
+      return;
+    }
+
+    // If going back and there are changes or AI is generating, show warning
+    if (targetStep < currentStep) {
+      setShowBackWarning(true);
+      setPendingStep(targetStep);
+    } else {
+      setCurrentStep(targetStep);
+    }
+  };
+
+  const confirmStepChange = () => {
+    // Reset all state when going back
+    if (pendingStep === 1) {
+      setGeneratedContent(null);
+      setFeatureExplanations({});
+      setFeaturesConfirmed(false);
+      setImages([]);
+      setSelectedLayout('gallery-focused');
+    } else if (pendingStep === 2) {
+      setFeatureExplanations({});
+      setFeaturesConfirmed(false);
+    }
+    
+    setCurrentStep(pendingStep);
+    setShowBackWarning(false);
+    setPendingStep(null);
+  };
+
+  const cancelStepChange = () => {
+    setShowBackWarning(false);
+    setPendingStep(null);
+  };
+
+  const handleConfirmFeaturesAndContinue = async () => {
+    if (!featuresConfirmed) {
+      setFeaturesConfirmed(true);
+      await generateFeatureExplanations();
+    }
+    setCurrentStep(3);
+  };
+
   const openPreview = () => {
     if (!generatedContent) return;
     try {
       const payload = {
         layoutType: selectedLayout,
-        content: generatedContent,
+        content: {
+          ...generatedContent,
+          featureExplanations: featureExplanations
+        },
         images,
       };
       localStorage.setItem('previewData', JSON.stringify(payload));
@@ -67,15 +181,17 @@ const CreateProductPage = () => {
               </Link>
               <h1 className="text-xl font-semibold text-gray-900">Create Product Page</h1>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={openPreview}
-              disabled={!generatedContent}
-            >
-              <Eye className="mr-2" size={16} />
-              Preview
-            </Button>
+            {currentStep > 1 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={openPreview}
+                disabled={!generatedContent}
+              >
+                <Eye className="mr-2" size={16} />
+                Preview
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -156,38 +272,106 @@ const CreateProductPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Key Features
-                    </label>
-                    <div className="space-y-2">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Key Features
+                      </label>
+                      {!featuresConfirmed && generatedContent.features.length > 0 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setFeaturesConfirmed(true);
+                            generateFeatureExplanations();
+                          }}
+                          disabled={isGeneratingExplanations}
+                        >
+                          {isGeneratingExplanations ? 'Generating...' : 'Confirm Features'}
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-3">
                       {generatedContent.features.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            value={feature}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                            onChange={(e) => {
-                              const newFeatures = [...generatedContent.features];
-                              newFeatures[index] = e.target.value;
-                              setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                            }}
-                          />
-                          <button
-                            type="button"
-                            className="p-2 text-gray-500 hover:text-red-600"
-                            onClick={() => {
-                              const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                              setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                            }}
-                            aria-label="Remove feature"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                        <div key={index} className="border border-gray-200 rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <input
+                              type="text"
+                              value={feature}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                              onChange={(e) => {
+                                const oldFeature = feature;
+                                const newFeature = e.target.value;
+                                const newFeatures = [...generatedContent.features];
+                                newFeatures[index] = newFeature;
+                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                                
+                                // Update explanation key if feature name changed
+                                if (featuresConfirmed && featureExplanations[oldFeature]) {
+                                  const newExplanations = { ...featureExplanations };
+                                  newExplanations[newFeature] = newExplanations[oldFeature];
+                                  delete newExplanations[oldFeature];
+                                  setFeatureExplanations(newExplanations);
+                                }
+                              }}
+                              onBlur={() => {
+                                // Generate explanation for user-added features
+                                if (featuresConfirmed && feature.trim() && !featureExplanations[feature]) {
+                                  generateSingleFeatureExplanation(feature, index);
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="p-2 text-gray-500 hover:text-red-600"
+                              onClick={() => {
+                                const featureToRemove = feature;
+                                const newFeatures = generatedContent.features.filter((_, i) => i !== index);
+                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                                
+                                // Remove explanation for deleted feature
+                                if (featureExplanations[featureToRemove]) {
+                                  const newExplanations = { ...featureExplanations };
+                                  delete newExplanations[featureToRemove];
+                                  setFeatureExplanations(newExplanations);
+                                }
+                              }}
+                              aria-label="Remove feature"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                          
+                          {featuresConfirmed && featureExplanations[feature] && (
+                            <div className="mt-2 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                              <textarea
+                                value={featureExplanations[feature]}
+                                onChange={(e) => {
+                                  setFeatureExplanations(prev => ({
+                                    ...prev,
+                                    [feature]: e.target.value
+                                  }));
+                                }}
+                                className="w-full text-sm text-blue-800 leading-relaxed bg-transparent border-none resize-none focus:outline-none"
+                                rows={Math.max(2, Math.ceil(featureExplanations[feature].length / 80))}
+                                placeholder="Edit feature explanation..."
+                              />
+                            </div>
+                          )}
+                          
+                          {featuresConfirmed && !featureExplanations[feature] && feature.trim() && (
+                            <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                              <p className="text-sm text-gray-500 italic">
+                                Explanation will be generated when you finish editing this feature...
+                              </p>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
-                    <div className="mt-2">
+                    
+                    <div className="mt-3 flex gap-2">
                       <button
                         type="button"
                         className="inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -198,15 +382,49 @@ const CreateProductPage = () => {
                       >
                         <Plus size={16} className="mr-1.5" /> Add feature
                       </button>
+                      
+                      {featuresConfirmed && (
+                        <button
+                          type="button"
+                          className="inline-flex items-center px-3 py-1.5 text-sm rounded border border-blue-300 text-blue-700 hover:bg-blue-50"
+                          onClick={() => {
+                            setFeaturesConfirmed(false);
+                            setFeatureExplanations({});
+                          }}
+                        >
+                          Reset Confirmations
+                        </button>
+                      )}
                     </div>
+                    
+                    {!featuresConfirmed && generatedContent.features.length > 0 && (
+                      <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                        <p className="text-sm text-amber-800">
+                          <strong>Tip:</strong> Click "Confirm Features" to generate detailed explanations for each feature. 
+                          Explanations will help customers better understand your product's benefits.
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-4">
-                    <Button variant="outline" onClick={() => setCurrentStep(1)}>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleStepChange(1)}
+                      disabled={isGeneratingExplanations}
+                    >
                       Back
                     </Button>
-                    <Button onClick={() => setCurrentStep(3)}>
-                      Continue to Layout
+                    <Button 
+                      onClick={handleConfirmFeaturesAndContinue}
+                      disabled={isGeneratingExplanations}
+                    >
+                      {isGeneratingExplanations 
+                        ? 'Generating Explanations...' 
+                        : featuresConfirmed 
+                          ? 'Continue to Layout' 
+                          : 'Generate Explanations & Continue'
+                      }
                     </Button>
                   </div>
                 </div>
@@ -278,7 +496,7 @@ const CreateProductPage = () => {
                 </div>
 
                 <div className="flex gap-4 mt-6">
-                  <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                  <Button variant="outline" onClick={() => handleStepChange(2)}>
                     Back
                   </Button>
                   <Button variant="outline" onClick={openPreview}>
@@ -297,7 +515,7 @@ const CreateProductPage = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Publish Product</h2>
                 <p className="text-gray-600">Publishing functionality coming soon...</p>
                 <div className="flex gap-4 mt-6">
-                  <Button variant="outline" onClick={() => setCurrentStep(3)}>
+                  <Button variant="outline" onClick={() => handleStepChange(3)}>
                     Back
                   </Button>
                   <Button>
@@ -317,6 +535,8 @@ const CreateProductPage = () => {
                 <li>• Include key features and benefits</li>
                 <li>• Mention your target audience</li>
                 <li>• Review and edit generated content before proceeding</li>
+                <li>• Click "Confirm Features" to generate detailed explanations</li>
+                <li>• Feature explanations help customers understand benefits</li>
               </ul>
             </div>
 
@@ -348,6 +568,48 @@ const CreateProductPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Warning Modal */}
+      {showBackWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Discard Changes?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Going back will discard all your changes and any AI generation in progress will be cancelled. 
+              Are you sure you want to continue?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={cancelStepChange}>
+                Cancel
+              </Button>
+              <Button 
+                variant="destructive" 
+                onClick={confirmStepChange}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Discard Changes
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {isGeneratingExplanations && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40">
+          <div className="bg-white rounded-lg p-6 max-w-sm mx-4 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Generating Feature Explanations
+            </h3>
+            <p className="text-gray-600 text-sm">
+              AI is creating detailed explanations for your features. This may take a moment...
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* New tab preview uses /preview route and localStorage */}
     </div>
