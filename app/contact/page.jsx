@@ -1,5 +1,6 @@
 'use client';
 import React, { useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
@@ -55,61 +56,73 @@ export default function Contact() {
   const methodsRef = useRef(null);
   const formRef = useRef(null);
   const faqRef = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Animate hero heading/paragraph
-    if (heroRef.current) {
-      gsap.from(heroRef.current.querySelectorAll('.contact-anim'), {
-        y: 50,
-        opacity: 0,
-        duration: 1.1,
-        ease: 'power3.out',
-        stagger: 0.16,
-      });
-    }
-    // Contact Methods cards
-    if (methodsRef.current) {
-      gsap.from(methodsRef.current.querySelectorAll('.contact-card'), {
-        scrollTrigger: {
-          trigger: methodsRef.current,
-          start: 'top 82%'
-        },
-        y: 70,
-        opacity: 0,
-        duration: 1.1,
-        ease: 'power3.out',
-        stagger: 0.22,
-      });
-    }
-    // Form and Company Info columns
-    if (formRef.current) {
-      gsap.from(formRef.current.querySelectorAll('.contact-form-anim'), {
-        scrollTrigger: {
-          trigger: formRef.current,
-          start: 'top 85%',
-        },
-        y: 54,
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.out',
-        stagger: 0.22,
-      });
-    }
-    // FAQ cards
-    if (faqRef.current) {
-      gsap.from(faqRef.current.querySelectorAll('.faq-card'), {
-        scrollTrigger: {
-          trigger: faqRef.current,
-          start: 'top 88%',
-        },
-        y: 36,
-        opacity: 0,
-        duration: 0.92,
-        ease: 'power3.out',
-        stagger: 0.11,
-      });
-    }
-  }, []);
+    let timeout = null;
+    // Clean previous triggers (before rendering new ones)
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    gsap.globalTimeline.clear();
+
+    timeout = setTimeout(() => {
+      if (heroRef.current) {
+        gsap.from(heroRef.current.querySelectorAll('.contact-anim'), {
+          y: 50,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          stagger: 0.16,
+        });
+      }
+      if (methodsRef.current) {
+        gsap.from(methodsRef.current.querySelectorAll('.contact-card'), {
+          scrollTrigger: {
+            trigger: methodsRef.current,
+            start: 'top 82%'
+          },
+          y: 70,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          stagger: 0.22,
+        });
+      }
+      if (formRef.current) {
+        gsap.from(formRef.current.querySelectorAll('.contact-form-anim'), {
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: 'top 85%',
+          },
+          y: 54,
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.out',
+          stagger: 0.22,
+        });
+      }
+      if (faqRef.current) {
+        gsap.from(faqRef.current.querySelectorAll('.faq-card'), {
+          scrollTrigger: {
+            trigger: faqRef.current,
+            start: 'top 88%',
+          },
+          y: 36,
+          opacity: 0,
+          duration: 0.92,
+          ease: 'power3.out',
+          stagger: 0.11,
+        });
+      }
+      ScrollTrigger.refresh();
+    }, 100); // 100ms delay to ensure DOM/hydration
+
+    // Cleanup
+    return () => {
+      clearTimeout(timeout);
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      gsap.globalTimeline.clear();
+    };
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-white">
