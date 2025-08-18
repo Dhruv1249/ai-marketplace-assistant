@@ -32,7 +32,7 @@ export async function generateContentWithStreaming(
 ): Promise<GeneratedContent> {
   async function callAI(): Promise<string> {
     const config = {};
-    const model = 'learnlm-2.0-flash-experimental';
+    const model = 'gemini-1.5-flash';
     const contents = [
       {
         role: 'user',
