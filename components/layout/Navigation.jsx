@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ShoppingBag, Plus, Info, Mail, User } from 'lucide-react';
+import { Home, ShoppingBag, Plus, Info, Mail, User, User2 } from 'lucide-react';
 
 const Navigation = () => {
   const pathname = usePathname();
@@ -12,6 +12,7 @@ const Navigation = () => {
     { href: '/create', label: 'Create Product', icon: Plus },
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Mail },
+    { href: '/login', label: 'Login', icon: User2 },
   ];
 
   const isActive = (href) => {

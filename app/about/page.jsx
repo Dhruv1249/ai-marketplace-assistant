@@ -1,4 +1,8 @@
-import React from 'react';
+'use client';
+import React, { useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { Wand2, Target, Users, Lightbulb, ArrowRight } from 'lucide-react';
@@ -45,38 +49,70 @@ export default function About() {
     },
   ];
 
+  const heroRef = useRef(null);
+  const storyRef = useRef(null);
+  const valuesRef = useRef(null);
+  const teamRef = useRef(null);
+
+  useEffect(() => {
+    if (heroRef.current) {
+      gsap.from(heroRef.current.querySelectorAll('.about-hero-anim'), {
+        y: 48,
+        opacity: 0,
+        duration: 1.7,
+        ease: 'power3.out',
+        stagger: 0.23,
+      });
+    }
+    [storyRef, valuesRef, teamRef].forEach((ref) => {
+      if (ref.current) {
+        gsap.from(ref.current.querySelectorAll('.section-heading'), {
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 90%',
+          },
+          y: 44,
+          opacity: 0,
+          duration: 1.3,
+          ease: 'power2.out',
+          stagger: 0.28,
+        });
+      }
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
+      <div ref={heroRef} className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="about-hero-anim text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               About Our Mission
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="about-hero-anim text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               We're revolutionizing e-commerce by making AI-powered product creation 
               accessible to sellers of all sizes. Our platform empowers entrepreneurs 
               to create professional product listings in minutes, not hours.
             </p>
-            <Link href="/create">
-              <Button size="lg">
-                <Wand2 className="mr-2" size={20} />
-                Try It Now
-              </Button>
-            </Link>
+            <div className="about-hero-anim flex justify-center">
+              <Link href="/create">
+                <Button size="lg">
+                  <Wand2 className="mr-2" size={20} />
+                  Try It Now
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Story Section */}
-      <div className="py-24">
+      <div ref={storyRef} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Our Story
-              </h2>
+              <h2 className="section-heading text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
                   Founded in 2024, AI Marketplace Assistant was born from a simple observation: 
@@ -130,12 +166,10 @@ export default function About() {
       </div>
 
       {/* Values Section */}
-      <div className="py-24 bg-gray-50">
+      <div ref={valuesRef} className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Our Values
-            </h2>
+            <h2 className="section-heading text-3xl font-bold text-gray-900 mb-4">Our Values</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               These core principles guide everything we do and shape how we build 
               products for our community.
@@ -164,12 +198,10 @@ export default function About() {
       </div>
 
       {/* Team Section */}
-      <div className="py-24">
+      <div ref={teamRef} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Meet Our Team
-            </h2>
+            <h2 className="section-heading text-3xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               We're a diverse team of engineers, designers, and e-commerce experts 
               passionate about empowering sellers.

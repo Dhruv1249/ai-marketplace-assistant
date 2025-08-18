@@ -6,6 +6,7 @@ import { Button } from '@/components/ui';
 import { Wand2, ShoppingBag, Zap, Users, TrendingUp, Star } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,6 +74,52 @@ const AnimatedCartButton = () => {
   );
 };
 
+const TypingText = ({
+  children,
+  as: Component = 'span',
+  className = '',
+  delay = 0,
+  duration = 2,
+  align = 'left',
+  loop = false,
+}) => {
+  const [textContent, setTextContent] = useState('');
+
+  useEffect(() => {
+    const extractText = (node) => {
+      if (typeof node === 'string' || typeof node === 'number') return node.toString();
+      if (Array.isArray(node)) return node.map(extractText).join('');
+      if (React.isValidElement(node) && typeof node.props.children !== 'undefined') {
+        return extractText(node.props.children);
+      }
+      return '';
+    };
+    setTextContent(extractText(children));
+  }, [children]);
+
+  const chars = textContent.split('').map((c) => (c === ' ' ? '\u00A0' : c));
+  const perCharDelay = duration / (chars.length || 1);
+  const alignClasses = align === 'center' ? 'justify-center text-center' : align === 'right' ? 'justify-end text-right' : 'justify-start text-left';
+
+  return (
+    <Component className={`inline-flex ${alignClasses} ${className}`}>
+      <motion.span className="inline-block" initial="hidden" animate="visible" aria-label={textContent} role="text">
+        {chars.map((char, i) => (
+          <motion.span
+            key={`${i}-${char}`}
+            className="inline-block"
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: delay + i * perCharDelay, duration: 0.3, ease: 'easeInOut' }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </motion.span>
+    </Component>
+  );
+};
+
 export default function Home() {
   const rootRef = useRef(null);
   const heroRef = useRef(null);
@@ -115,7 +162,7 @@ export default function Home() {
     const listeners = [];
     const ctx = gsap.context(() => {
       if (heroRef.current) {
-        gsap.from(heroRef.current.querySelectorAll('.hero-anim'), {
+        gsap.from(heroRef.current.querySelectorAll('.hero-anim:not(.hero-title)'), {
           y: 30,
           opacity: 0,
           duration: 0.8,
@@ -278,11 +325,10 @@ export default function Home() {
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
-            <h1 className="hero-anim text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              AI-Powered
-              <span className="text-blue-600"> Marketplace</span>
-              <br />
-              Assistant
+            <h1 className="hero-anim hero-title text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <TypingText as="span" className="block" align="center" delay={0} duration={1.2}>AI-Powered</TypingText>
+              <TypingText as="span" className="block text-blue-600 mt-2" align="center" delay={0.15} duration={1.2}>Marketplace</TypingText>
+              <TypingText as="span" className="block mt-2" align="center" delay={0.3} duration={1.2}>Assistant</TypingText>
             </h1>
             <p className="hero-anim text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Create stunning product pages in minutes with our AI assistant. 
