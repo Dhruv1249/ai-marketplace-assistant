@@ -1,4 +1,8 @@
-import React from 'react';
+'use client';
+import React, { useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
@@ -47,16 +51,76 @@ export default function Contact() {
     },
   ];
 
+  const heroRef = useRef(null);
+  const methodsRef = useRef(null);
+  const formRef = useRef(null);
+  const faqRef = useRef(null);
+
+  useEffect(() => {
+    // Animate hero heading/paragraph
+    if (heroRef.current) {
+      gsap.from(heroRef.current.querySelectorAll('.contact-anim'), {
+        y: 50,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'power3.out',
+        stagger: 0.16,
+      });
+    }
+    // Contact Methods cards
+    if (methodsRef.current) {
+      gsap.from(methodsRef.current.querySelectorAll('.contact-card'), {
+        scrollTrigger: {
+          trigger: methodsRef.current,
+          start: 'top 82%'
+        },
+        y: 70,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'power3.out',
+        stagger: 0.22,
+      });
+    }
+    // Form and Company Info columns
+    if (formRef.current) {
+      gsap.from(formRef.current.querySelectorAll('.contact-form-anim'), {
+        scrollTrigger: {
+          trigger: formRef.current,
+          start: 'top 85%',
+        },
+        y: 54,
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: 0.22,
+      });
+    }
+    // FAQ cards
+    if (faqRef.current) {
+      gsap.from(faqRef.current.querySelectorAll('.faq-card'), {
+        scrollTrigger: {
+          trigger: faqRef.current,
+          start: 'top 88%',
+        },
+        y: 36,
+        opacity: 0,
+        duration: 0.92,
+        ease: 'power3.out',
+        stagger: 0.11,
+      });
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
+      <div ref={heroRef} className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="contact-anim text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Get in Touch
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="contact-anim text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Have questions about our AI marketplace assistant? We're here to help! 
               Reach out to our team for support, feedback, or partnership opportunities.
             </p>
@@ -65,13 +129,13 @@ export default function Contact() {
       </div>
 
       {/* Contact Methods */}
-      <div className="py-24">
+      <div ref={methodsRef} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="contact-anim text-3xl font-bold text-gray-900 mb-4">
               How can we help you?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="contact-anim text-xl text-gray-600 max-w-2xl mx-auto">
               Choose the best way to reach us based on your needs.
             </p>
           </div>
@@ -80,7 +144,7 @@ export default function Contact() {
             {contactMethods.map((method, index) => {
               const Icon = method.icon;
               return (
-                <div key={index} className="bg-white border rounded-lg p-6 hover:shadow-md transition-shadow">
+                <div key={index} className="contact-card bg-white border rounded-lg p-6 hover:shadow-md transition-shadow">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                     <Icon className="text-blue-600" size={24} />
                   </div>
@@ -104,11 +168,11 @@ export default function Contact() {
       </div>
 
       {/* Contact Form */}
-      <div className="py-24 bg-gray-50">
+      <div ref={formRef} className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Form */}
-            <div className="bg-white rounded-lg p-8 shadow-sm">
+            <div className="contact-form-anim bg-white rounded-lg p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 Send us a message
               </h2>
@@ -162,7 +226,7 @@ export default function Contact() {
             </div>
 
             {/* Company Info */}
-            <div className="space-y-8">
+            <div className="contact-form-anim space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
                   Company Information
@@ -216,20 +280,20 @@ export default function Contact() {
       </div>
 
       {/* FAQ Section */}
-      <div className="py-24">
+      <div ref={faqRef} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="contact-anim text-3xl font-bold text-gray-900 mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="contact-anim text-xl text-gray-600 max-w-2xl mx-auto">
               Find quick answers to common questions about our platform.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-6">
+              <div key={index} className="faq-card bg-gray-50 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
                   {faq.question}
                 </h3>

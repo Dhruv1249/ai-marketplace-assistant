@@ -327,8 +327,8 @@ export default function Home() {
           <div className="text-center">
             <h1 className="hero-anim hero-title text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               <TypingText as="span" className="block" align="center" delay={0} duration={1.2}>AI-Powered</TypingText>
-              <TypingText as="span" className="block text-blue-600 mt-2" align="center" delay={0.15} duration={1.2}>Marketplace</TypingText>
-              <TypingText as="span" className="block mt-2" align="center" delay={0.3} duration={1.2}>Assistant</TypingText>
+              <TypingText as="span" className="block text-blue-600" align="center" delay={0.15} duration={1.2}>Marketplace</TypingText>
+              <TypingText as="span" className="block" align="center" delay={0.3} duration={1.2}>Assistant</TypingText>
             </h1>
             <p className="hero-anim text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Create stunning product pages in minutes with our AI assistant. 
