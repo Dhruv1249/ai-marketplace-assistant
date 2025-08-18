@@ -46,7 +46,7 @@ function Gallery({ images = [] }) {
   );
 }
 
-function Features({ features = [] }) {
+function Features({ features = [], featureExplanations = {} }) {
   const items = features && features.length ? features : [
     'Key feature one',
     'Key feature two',
@@ -55,11 +55,18 @@ function Features({ features = [] }) {
   return (
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
-      <ul className="list-disc pl-5 space-y-1.5 text-gray-700">
+      <div className="space-y-4">
         {items.map((f, i) => (
-          <li key={i}>{f}</li>
+          <div key={i} className="border-l-4 border-blue-400 pl-4">
+            <h4 className="font-medium text-gray-900 mb-1">{f}</h4>
+            {featureExplanations[f] && (
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {featureExplanations[f]}
+              </p>
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
@@ -102,7 +109,7 @@ function GalleryFocused({ content, images }) {
       </div>
       <div>
         <Hero title={content?.title} description={content?.description} />
-        <Features features={content?.features} />
+        <Features features={content?.features} featureExplanations={content?.featureExplanations} />
         <Specs specifications={content?.specifications} />
         <CTA />
       </div>
@@ -112,6 +119,7 @@ function GalleryFocused({ content, images }) {
 
 function FeatureBlocks({ content, images }) {
   const feats = content?.features?.length ? content.features : ['Feature A', 'Feature B', 'Feature C'];
+  const explanations = content?.featureExplanations || {};
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -130,7 +138,9 @@ function FeatureBlocks({ content, images }) {
         {feats.map((f, i) => (
           <div key={i} className="border rounded p-4 h-full">
             <h4 className="font-semibold text-gray-900 mb-2">{typeof f === 'string' ? f : `Feature ${i + 1}`}</h4>
-            <p className="text-gray-700 text-sm">Highlight of this feature with benefits and value proposition.</p>
+            <p className="text-gray-700 text-sm">
+              {explanations[f] || 'Highlight of this feature with benefits and value proposition.'}
+            </p>
           </div>
         ))}
       </div>
@@ -146,7 +156,7 @@ function SingleColumn({ content, images }) {
         {images?.[0] ? <img src={images[0]} alt="Main" className="w-full h-full object-cover" /> : <span className="text-gray-400">Main Image</span>}
       </div>
       <Hero title={content?.title} description={content?.description} />
-      <Features features={content?.features} />
+      <Features features={content?.features} featureExplanations={content?.featureExplanations} />
       <Specs specifications={content?.specifications} />
       <CTA />
     </div>
@@ -159,7 +169,7 @@ function ComparisonTable({ content, images }) {
       <Hero title={content?.title} description={content?.description} />
       <Gallery images={images} />
       <Specs specifications={content?.specifications} />
-      <Features features={content?.features} />
+      <Features features={content?.features} featureExplanations={content?.featureExplanations} />
       <CTA />
     </div>
   );

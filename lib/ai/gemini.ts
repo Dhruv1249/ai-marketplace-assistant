@@ -20,6 +20,12 @@ export interface GeneratedContent {
   metaDescription: string;
 }
 
+export interface FeatureExplanationRequest {
+  features: string[];
+  productTitle: string;
+  productDescription: string;
+}
+
 export async function generateContentWithStreaming(
   request: ContentGenerationRequest,
   onChunk?: (chunk: string) => void
@@ -115,6 +121,125 @@ export async function generateProductContent(
   request: ContentGenerationRequest
 ): Promise<GeneratedContent> {
   return generateContentWithStreaming(request);
+}
+
+export async function generateFeatureExplanations(
+  request: FeatureExplanationRequest
+): Promise<Record<string, string>> {
+  async function callAI(): Promise<string> {
+  const config = {};
+  const model = 'gemini-1.5-flash'; // Use more stable model
+    const contents = [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: `Generate detailed explanations for the following product features. Each explanation should be 1-5 lines and help customers understand the benefit and value of the feature.
+
+Product: ${request.productTitle}
+Product Description: ${request.productDescription}
+
+Features to explain:
+${request.features.map((feature, index) => `${index + 1}. ${feature}`).join('\n')}
+
+IMPORTANT: Respond ONLY with valid JSON in this exact format:
+{
+${request.features.map(feature => `  "${feature}": "Brief 1-5 line explanation of benefits and value"`).join(',\n')}
+}
+
+Do not include any other text, markdown formatting, or code blocks. Just the JSON object.`,
+          },
+        ],
+      },
+    ];
+
+    const response = await ai.models.generateContentStream({
+      model,
+      config,
+      contents,
+    });
+
+    let fullResponse = '';
+    for await (const chunk of response) {
+      const chunkText = chunk.text || '';
+      fullResponse += chunkText;
+    }
+    return fullResponse;
+  }
+
+  try {
+    console.log('Starting feature explanations generation with request:', request);
+    console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
+
+    let fullResponse = await callAI();
+    console.log('Raw AI response:', fullResponse);
+
+    // If we got an empty response, try again with fallback
+    if (!fullResponse || fullResponse.trim() === '') {
+      console.log('Empty response from AI, retrying...');
+      fullResponse = await callAI();
+    }
+
+    // Still empty? Return fallback explanations
+    if (!fullResponse || fullResponse.trim() === '') {
+      console.log('Still empty response, using fallback explanations');
+      const fallbackExplanations: Record<string, string> = {};
+      request.features.forEach(feature => {
+        fallbackExplanations[feature] = `This feature provides enhanced functionality and improved user experience. It offers reliable performance and adds significant value to the overall product quality.`;
+      });
+      return fallbackExplanations;
+    }
+
+    // Clean the response to ensure it's valid JSON
+    let cleanedText = fullResponse
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .replace(/^[^{]*/, '') // Remove any text before the first {
+      .replace(/[^}]*$/, '') // Remove any text after the last }
+      .trim();
+
+    // If still no valid JSON structure, try to extract it
+    if (!cleanedText.startsWith('{')) {
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+    }
+
+    console.log('Cleaned feature explanations text:', cleanedText);
+
+    try {
+      const parsedResult = JSON.parse(cleanedText);
+      console.log('Successfully parsed feature explanations JSON:', parsedResult);
+      
+      // Validate that we have explanations for all features
+      const validatedResult: Record<string, string> = {};
+      request.features.forEach(feature => {
+        validatedResult[feature] = parsedResult[feature] || `This ${feature.toLowerCase()} enhances the product's functionality and provides excellent value for users.`;
+      });
+      
+      return validatedResult;
+    } catch (parseError) {
+      console.error('JSON parse error for feature explanations:', parseError);
+      console.error('Cleaned text that failed to parse:', cleanedText);
+
+      // Return fallback explanations instead of throwing error
+      const fallbackExplanations: Record<string, string> = {};
+      request.features.forEach(feature => {
+        fallbackExplanations[feature] = `This feature enhances product performance and delivers exceptional value. It's designed to meet user needs and provide reliable, long-lasting benefits.`;
+      });
+      return fallbackExplanations;
+    }
+  } catch (error) {
+    console.error('Error generating feature explanations:', error);
+    
+    // Return fallback explanations instead of throwing error
+    const fallbackExplanations: Record<string, string> = {};
+    request.features.forEach(feature => {
+      fallbackExplanations[feature] = `This feature provides enhanced functionality and improved user experience for optimal product performance.`;
+    });
+    return fallbackExplanations;
+  }
 }
 
 export async function suggestLayoutOptions(
