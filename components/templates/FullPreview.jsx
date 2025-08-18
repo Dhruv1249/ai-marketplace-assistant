@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 
 function Hero({ title, description }) {
   return (
@@ -12,35 +12,91 @@ function Hero({ title, description }) {
 }
 
 function Gallery({ images = [] }) {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const hasImages = images && images.length > 0;
-  const main = hasImages ? images[0] : null;
-  const thumbs = hasImages ? images.slice(1) : [];
+  
+  if (!hasImages) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+        <div className="lg:col-span-3">
+          <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center">
+            <span className="text-gray-400">Main Image</span>
+          </div>
+        </div>
+        <div className="lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-square rounded bg-gray-100 flex items-center justify-center text-gray-300">IMG</div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const selectedImage = images[selectedImageIndex];
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
       <div className="lg:col-span-3">
-        <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center">
-          {main ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={main} alt="Main" className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-gray-400">Main Image</span>
+        <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center relative group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={selectedImage} 
+            alt={`Product image ${selectedImageIndex + 1}`} 
+            className="w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105" 
+          />
+          
+          {/* Navigation arrows for main image */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={() => setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : images.length - 1)}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                aria-label="Previous image"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setSelectedImageIndex(selectedImageIndex < images.length - 1 ? selectedImageIndex + 1 : 0)}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                aria-label="Next image"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+          
+          {/* Image counter */}
+          {images.length > 1 && (
+            <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+              {selectedImageIndex + 1} / {images.length}
+            </div>
           )}
         </div>
       </div>
+      
       <div className="lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1">
-        {thumbs.map((src, i) => (
-          <div key={i} className="aspect-square rounded bg-gray-200 overflow-hidden flex items-center justify-center">
+        {images.map((src, i) => (
+          <div 
+            key={i} 
+            className={`aspect-square rounded overflow-hidden flex items-center justify-center cursor-pointer transition-all duration-200 ${
+              selectedImageIndex === i 
+                ? 'ring-2 ring-blue-500 ring-offset-2' 
+                : 'hover:ring-2 hover:ring-gray-300 hover:ring-offset-1'
+            }`}
+            onClick={() => setSelectedImageIndex(i)}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
+            <img 
+              src={src} 
+              alt={`Thumbnail ${i + 1}`} 
+              className="w-full h-full object-cover" 
+            />
           </div>
         ))}
-        {!hasImages && (
-          <>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="aspect-square rounded bg-gray-100 flex items-center justify-center text-gray-300">IMG</div>
-            ))}
-          </>
-        )}
       </div>
     </div>
   );
@@ -118,8 +174,11 @@ function GalleryFocused({ content, images }) {
 }
 
 function FeatureBlocks({ content, images }) {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const feats = content?.features?.length ? content.features : ['Feature A', 'Feature B', 'Feature C'];
   const explanations = content?.featureExplanations || {};
+  const hasImages = images && images.length > 0;
+  
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -128,10 +187,75 @@ function FeatureBlocks({ content, images }) {
           <CTA />
         </div>
         <div>
-          <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            {images?.[0] ? <img src={images[0]} alt="Hero" className="w-full h-full object-cover" /> : <span className="text-gray-400">Hero Image</span>}
+          <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center relative group">
+            {hasImages ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={images[selectedImageIndex]} 
+                  alt={`Product image ${selectedImageIndex + 1}`} 
+                  className="w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105" 
+                />
+                
+                {/* Navigation arrows */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : images.length - 1)}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                      aria-label="Previous image"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setSelectedImageIndex(selectedImageIndex < images.length - 1 ? selectedImageIndex + 1 : 0)}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                      aria-label="Next image"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                
+                {/* Image counter */}
+                {images.length > 1 && (
+                  <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                    {selectedImageIndex + 1} / {images.length}
+                  </div>
+                )}
+              </>
+            ) : (
+              <span className="text-gray-400">Hero Image</span>
+            )}
           </div>
+          
+          {/* Thumbnail navigation for FeatureBlocks */}
+          {hasImages && images.length > 1 && (
+            <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
+              {images.map((src, i) => (
+                <div 
+                  key={i} 
+                  className={`flex-shrink-0 w-16 h-16 rounded overflow-hidden cursor-pointer transition-all duration-200 ${
+                    selectedImageIndex === i 
+                      ? 'ring-2 ring-blue-500 ring-offset-2' 
+                      : 'hover:ring-2 hover:ring-gray-300 hover:ring-offset-1'
+                  }`}
+                  onClick={() => setSelectedImageIndex(i)}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={src} 
+                    alt={`Thumbnail ${i + 1}`} 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -149,12 +273,81 @@ function FeatureBlocks({ content, images }) {
 }
 
 function SingleColumn({ content, images }) {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const hasImages = images && images.length > 0;
+  
   return (
     <div>
-      <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center mb-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        {images?.[0] ? <img src={images[0]} alt="Main" className="w-full h-full object-cover" /> : <span className="text-gray-400">Main Image</span>}
+      <div className="aspect-video rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center mb-6 relative group">
+        {hasImages ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={images[selectedImageIndex]} 
+              alt={`Product image ${selectedImageIndex + 1}`} 
+              className="w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105" 
+            />
+            
+            {/* Navigation arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() => setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : images.length - 1)}
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                  aria-label="Previous image"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex(selectedImageIndex < images.length - 1 ? selectedImageIndex + 1 : 0)}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-opacity-70"
+                  aria-label="Next image"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            )}
+            
+            {/* Image counter */}
+            {images.length > 1 && (
+              <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                {selectedImageIndex + 1} / {images.length}
+              </div>
+            )}
+          </>
+        ) : (
+          <span className="text-gray-400">Main Image</span>
+        )}
       </div>
+      
+      {/* Thumbnail navigation for SingleColumn */}
+      {hasImages && images.length > 1 && (
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 justify-center">
+          {images.map((src, i) => (
+            <div 
+              key={i} 
+              className={`flex-shrink-0 w-20 h-20 rounded overflow-hidden cursor-pointer transition-all duration-200 ${
+                selectedImageIndex === i 
+                  ? 'ring-2 ring-blue-500 ring-offset-2' 
+                  : 'hover:ring-2 hover:ring-gray-300 hover:ring-offset-1'
+              }`}
+              onClick={() => setSelectedImageIndex(i)}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={src} 
+                alt={`Thumbnail ${i + 1}`} 
+                className="w-full h-full object-cover" 
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      
       <Hero title={content?.title} description={content?.description} />
       <Features features={content?.features} featureExplanations={content?.featureExplanations} />
       <Specs specifications={content?.specifications} />
