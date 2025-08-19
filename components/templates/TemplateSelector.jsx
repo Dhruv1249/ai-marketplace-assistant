@@ -5,9 +5,9 @@ import { Button } from '@/components/ui';
 import { Check, LayoutGrid, Sparkles } from 'lucide-react';
 import TEMPLATE_COMPONENTS, {
   GalleryFocusedPreview,
-  FeatureBlocksPreview,
-  SingleColumnPreview,
-  ComparisonTablePreview,
+  MinimalPreview,
+  ModernPreview,
+  ClassicPreview,
 } from './Previews';
 
 const TEMPLATES = [
@@ -18,22 +18,22 @@ const TEMPLATES = [
     badges: ['Visual', 'E-commerce'],
   },
   {
-    id: 'feature-blocks',
-    name: 'Feature Blocks',
-    description: 'Hero area with 3 highlight feature cards',
-    badges: ['Highlights', 'Marketing'],
+    id: 'minimal',
+    name: 'Minimal',
+    description: 'Clean, centered single-column layout',
+    badges: ['Simple', 'Elegant'],
   },
   {
-    id: 'single-column',
-    name: 'Single Column',
-    description: 'Simple, readable single-column layout',
-    badges: ['Simple', 'Blog-like'],
+    id: 'modern',
+    name: 'Modern',
+    description: 'Card-based design with gradients and shadows',
+    badges: ['Contemporary', 'Interactive'],
   },
   {
-    id: 'comparison-table',
-    name: 'Comparison Table',
-    description: 'Specification-focused comparison table',
-    badges: ['Specs', 'Technical'],
+    id: 'classic',
+    name: 'Classic',
+    description: 'Traditional design with serif fonts and borders',
+    badges: ['Formal', 'Heritage'],
   },
 ];
 
