@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -42,15 +43,30 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const activeClass = isActive(item.href)
+                ? "text-blue-600 bg-blue-50"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
+
+              if (item.href === "/login") {
+                // Plain <a> for login
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
+                  >
+                    <Icon size={16} />
+                    <span>{item.label}</span>
+                  </a>
+                );
+              }
+
+              // Default: Next.js Link
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
                 >
                   <Icon size={16} />
                   <span>{item.label}</span>

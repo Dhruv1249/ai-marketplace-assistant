@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { motion, useAnimation } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -27,11 +27,21 @@ const DURATION = 0.25;
 const calculateDelay = (i) => (i === 0 ? 0.1 : i * DURATION + 0.1);
 const Cable = ({ width = 28, height = 28, strokeWidth = 2, stroke = "#fff", ...props }) => {
   const controls = useAnimation();
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (isHovered) {
+      controls.start('animate');
+    } else {
+      controls.start('normal');
+    }
+  }, [isHovered, controls]);
+
   return (
     <div
       style={{ cursor: 'pointer', userSelect: 'none', padding: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      onMouseEnter={() => controls.start('animate')}
-      onMouseLeave={() => controls.start('normal')}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...props}>
         <motion.path d="M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1" animate={controls} transition={{ duration: DURATION, delay: calculateDelay(4), opacity: { delay: calculateDelay(4) } }} variants={{ normal: { pathLength: 1, pathOffset: 0, opacity: 1, transition: { delay: 0 } }, animate: { pathOffset: [1, 0], pathLength: [0, 1], opacity: [0, 1] } }} />
@@ -55,61 +65,93 @@ const circleVariant = {
 };
 const User = ({ width = 28, height = 28, strokeWidth = 2, stroke = "#60a5fa", ...props }) => {
   const controls = useAnimation();
-  const pathname = usePathname();
+  const [isHovered, setIsHovered] = useState(false);
+
   useEffect(() => {
-    controls.start("animate").then(() => controls.start("normal"));
-  }, [pathname]);
+    if (isHovered) {
+      controls.start('animate');
+    } else {
+      controls.start('normal');
+    }
+  }, [isHovered, controls]);
+  
   return (
     <div
-      style={{ cursor: "pointer", userSelect: "none", padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }}
-      onMouseEnter={() => controls.start("animate")}
-      onMouseLeave={() => controls.start("normal")}
+      style={{ cursor: 'pointer', userSelect: 'none', padding: '1px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <motion.circle cx="12" cy="8" r="5" animate={controls} variants={circleVariant} />
-        <motion.path d="M20 21a8 8 0 0 0-16 0" variants={pathVariant} transition={{ delay: 0.2, duration: 0.4 }} animate={controls} />
+        <motion.path
+          d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+          initial="normal"
+          animate={controls}
+          variants={pathVariant}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        />
+        <motion.circle
+          cx="12"
+          cy="7"
+          r="4"
+          initial="normal"
+          animate={controls}
+          variants={circleVariant}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        />
       </svg>
     </div>
   );
 };
 
-// Animated Check Icon defined here
-const checkVariants = {
-  normal: {
-    pathLength: 1,
-    opacity: 1,
-    rotateY: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeInOut",
-    },
-  },
-  animate: {
-    pathLength: [1, 0.8, 1],
-    opacity: [1, 0.8, 1],
-    rotateY: [0, 180, 360],
-    transition: {
-      duration: 0.8,
-      ease: "easeInOut",
-    },
-  },
-};
+// Animated Check Icon - consistent with User icon
 const Check = ({ width = 28, height = 28, strokeWidth = 2, stroke = "#60d394", ...props }) => {
   const controls = useAnimation();
-  const pathname = usePathname();
+  const [isHovered, setIsHovered] = useState(false);
+
   useEffect(() => {
-    controls.start("animate").then(() => controls.start("normal"));
-  }, [pathname]);
-  const handleHoverStart = () => controls.start("animate");
-  const handleHoverEnd = () => controls.start("normal");
+    if (isHovered) {
+      controls.start("animate");
+    } else {
+      controls.start("normal");
+    }
+  }, [isHovered, controls]);
+
   return (
     <div
-      style={{ cursor: "pointer", userSelect: "none", padding: "2px", display: "flex", alignItems: "center", justifyContent: "center" }}
-      onMouseEnter={handleHoverStart}
-      onMouseLeave={handleHoverEnd}
+      style={{ cursor: "pointer", userSelect: "none", padding: "1px", display: "flex", alignItems: "center", justifyContent: "center" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <motion.path d="M20 6 9 17l-5-5" variants={checkVariants} initial="normal" animate={controls} style={{ transformOrigin: "center" }} />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+      >
+        {/* Circle like User icon */}
+        <motion.circle
+          cx="12"
+          cy="12"
+          r="9"
+          initial="normal"
+          animate={controls}
+          variants={circleVariant}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        />
+        {/* Check mark */}
+        <motion.path
+          d="M9 12l2 2 4-4"
+          initial="normal"
+          animate={controls}
+          variants={pathVariant}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        />
       </svg>
     </div>
   );
@@ -117,7 +159,8 @@ const Check = ({ width = 28, height = 28, strokeWidth = 2, stroke = "#60d394", .
 
 const IconedLoginForm = () => {
   const pathname = usePathname();
-  const bgBlobsRef = useRef([]);
+  
+  // Refs for animations
   const cardRef = useRef(null);
   const titleRef = useRef(null);
   const userFieldRef = useRef(null);
@@ -125,45 +168,14 @@ const IconedLoginForm = () => {
   const loginBtnRef = useRef(null);
   const socialBtnsRef = useRef([]);
   const footerLinksRef = useRef([]);
+  const bgBlobsRef = useRef([]);
 
+  // Background blob animations
   useEffect(() => {
-    // Animate blobs
     livelyBlobs.forEach((blob, i) => {
-      if (bgBlobsRef.current[i]) {
-        gsap.to(bgBlobsRef.current[i], blob.gsap);
-      }
-    });
-
-    // Entrance animation
-    gsap.set([
-      cardRef.current,
-      titleRef.current,
-      userFieldRef.current,
-      passFieldRef.current,
-      loginBtnRef.current,
-      ...socialBtnsRef.current,
-      ...footerLinksRef.current,
-    ], { opacity: 0, y: 30 });
-    gsap.to(cardRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-      ease: 'power2.out',
-      onComplete: () => {
-        gsap.to([
-          titleRef.current,
-          userFieldRef.current,
-          passFieldRef.current,
-          loginBtnRef.current,
-          ...socialBtnsRef.current,
-          ...footerLinksRef.current,
-        ], {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.11,
-          ease: 'power2.out',
-        });
+      const element = bgBlobsRef.current[i];
+      if (element) {
+        gsap.to(element, blob.gsap);
       }
     });
   }, []);
@@ -257,7 +269,7 @@ const IconedLoginForm = () => {
         <form autoComplete="off">
           <div ref={userFieldRef}>
             <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-              <User key={pathname} width={22} height={22} stroke="#60a5fa" strokeWidth={2} />
+              <User width={22} height={22} stroke="#60a5fa" strokeWidth={2} />
               <label className="text-gray-700 text-sm" htmlFor="username">Username</label>
             </div>
             <input
@@ -270,7 +282,7 @@ const IconedLoginForm = () => {
           </div>
           <div ref={passFieldRef}>
             <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-              <Check key={pathname} width={22} height={22} stroke="#60d394" strokeWidth={2} />
+              <Check width={22} height={22} stroke="#60d394" strokeWidth={2} />
               <label className="text-gray-700" htmlFor="password">Password</label>
             </div>
             <input
@@ -341,4 +353,4 @@ const IconedLoginForm = () => {
 
 export default function Page() {
   return <IconedLoginForm />;
-}
+};
