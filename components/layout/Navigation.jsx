@@ -2,9 +2,26 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, ShoppingBag, Plus, Info, Mail, User, User2 } from 'lucide-react';
-
+import { LogOut } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { auth } from '../../app/login/firebase'; // Adjust the path as needed, often '../firebase' or './firebase'
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 const Navigation = () => {
   const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+useEffect(() => {
+  const unsub = onAuthStateChanged(auth, user => setIsLoggedIn(!!user));
+  return () => unsub();
+}, []);
+
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+  } catch (e) {
+    console.error('Logout failed:', e);
+  }
+};
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
@@ -47,19 +64,29 @@ const Navigation = () => {
                 ? "text-blue-600 bg-blue-50"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
 
-              if (item.href === "/login") {
-                // Plain <a> for login
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
-                  >
-                    <Icon size={16} />
-                    <span>{item.label}</span>
-                  </a>
-                );
-              }
+             if (item.href === "/login") {
+  return (
+    <React.Fragment key="auth-buttons">
+      <a
+        href={item.href}
+        className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
+      >
+        <Icon size={16} />
+        <span>{item.label}</span>
+      </a>
+      {isLoggedIn && (
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+        >
+          <LogOut size={16} />
+          <span>Logout</span>
+        </button>
+      )}
+    </React.Fragment>
+  );
+}
 
               // Default: Next.js Link
               return (

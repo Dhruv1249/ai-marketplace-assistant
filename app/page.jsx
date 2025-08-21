@@ -7,7 +7,8 @@ import { Wand2, ShoppingBag, Zap, Users, TrendingUp, Star } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
-
+import { auth } from './login/firebase'; // path may vary, adjust if needed
+import { onAuthStateChanged } from 'firebase/auth';
 gsap.registerPlugin(ScrollTrigger);
 
 const AnimatedCartButton = () => {
@@ -127,7 +128,18 @@ export default function Home() {
   const featuresRef = useRef(null);
   const ctaRef = useRef(null);
   const testimonialsRef = useRef(null);
+const [welcomeName, setWelcomeName] = useState("");
 
+useEffect(() => {
+  const unsub = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setWelcomeName(user.displayName || user.email || "User");
+    } else {
+      setWelcomeName("");
+    }
+  });
+  return () => unsub();
+}, []);
   const features = [
     {
       icon: Wand2,
@@ -316,7 +328,62 @@ export default function Home() {
   }, []);
 
   return (
-    <div ref={rootRef} className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div ref={rootRef} className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-300">
+      
+      {/* Bold Geometric Background Accents */}
+<div className="pointer-events-none absolute z-0 w-full h-full">
+  {/* Large Circle, top left */}
+  <div
+    style={{
+      position: "absolute",
+      top: "-100px",
+      left: "-120px",
+      width: "340px",
+      height: "340px",
+      background: "radial-gradient(circle at 60% 40%, #a78bfa 70%, #8366eb 100%)",
+      borderRadius: "50%",
+      filter: "blur(16px)",
+      opacity: 0.25,
+    }}
+  />
+
+  {/* Vertical Rectangle, right side */}
+  <div
+    style={{
+      position: "absolute",
+      top: "15vh",
+      right: "-60px",
+      width: "120px",
+      height: "320px",
+      background: "linear-gradient(120deg, #ddd6fe 60%, #c4b5fd 100%)",
+      borderRadius: "40px",
+      filter: "blur(18px)",
+      opacity: 0.17,
+    }}
+  />
+
+  {/* Small Circle, bottom left for balance */}
+  <div
+    style={{
+      position: "absolute",
+      bottom: "-60px",
+      left: "40px",
+      width: "110px",
+      height: "110px",
+      background: "radial-gradient(circle at 40% 65%, #d1d5fa 75%, #a5b4fc 100%)",
+      borderRadius: "50%",
+      filter: "blur(10px)",
+      opacity: 0.19,
+    }}
+  />
+  
+  
+</div>
+      {welcomeName && (
+  <div className="pt-10 text-3xl font-semibold text-blue-800 mb-4 text-center">
+    Welcome, {welcomeName}!
+  </div>
+)}
       {/* Hero Section */}
       <div ref={heroRef} className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
@@ -335,6 +402,7 @@ export default function Home() {
               Generate content, optimize for SEO, and publish to your marketplace 
               with just a few clicks.
             </p>
+            
             <div className="hero-anim flex flex-col sm:flex-row gap-4 justify-center">
               <AnimatedCartButton />
               <Link href="/marketplace">
@@ -349,7 +417,7 @@ export default function Home() {
       </div>
 
       {/* Stats Section */}
-      <div ref={statsRef} className="bg-white py-16">
+      <div ref={statsRef} className="from-blue-100 to-purple-400 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -399,7 +467,7 @@ export default function Home() {
       </div>
 
       {/* CTA Section */}
-      <div ref={ctaRef} className="bg-blue-600 py-16">
+      <div ref={ctaRef} className="from-blue-100 to-purple-400 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="cta-anim text-3xl font-bold text-white mb-4">
             Ready to transform your product listings?
