@@ -95,6 +95,55 @@ export default function SellerInfoPage() {
     }));
   };
 
+  const generateFieldContent = async (fieldType, currentValue) => {
+    setIsGenerating(true);
+    try {
+      let prompt = '';
+      const context = `Name: ${sellerData.name}, Title: ${sellerData.title}, Business: ${sellerData.businessInfo.businessName}`;
+      
+      switch (fieldType) {
+        case 'title':
+          prompt = `Improve this professional title to be more compelling and specific: "${currentValue}". Consider the context: ${context}. Return only the improved title.`;
+          break;
+        case 'bio':
+          prompt = `Write a compelling professional bio based on this input: "${currentValue}". Context: ${context}. Make it 2-3 sentences, professional, and engaging. Return only the bio.`;
+          break;
+        case 'story':
+          prompt = `Create an engaging personal story based on this input: "${currentValue}". Context: ${context}. Make it 4-6 sentences about their journey, what drives them, and what makes them unique. Return only the story.`;
+          break;
+        case 'experience':
+          prompt = `Write a professional experience summary based on this input: "${currentValue}". Context: ${context}. Include education, career progression, and expertise. 3-4 sentences. Return only the experience summary.`;
+          break;
+        default:
+          prompt = `Improve and make this more professional: "${currentValue}". Context: ${context}`;
+      }
+
+      const response = await fetch('/api/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          context
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate content');
+      }
+
+      const data = await response.json();
+      handleInputChange(fieldType, data.content);
+      
+    } catch (error) {
+      console.error('Error generating content:', error);
+      alert('Failed to generate content. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const handlePhotoUpload = (event) => {
     const files = Array.from(event.target.files);
     files.forEach(file => {
@@ -186,13 +235,23 @@ export default function SellerInfoPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Professional Title *
                 </label>
-                <input
-                  type="text"
-                  value={sellerData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="e.g., Senior Product Designer, CEO, Consultant"
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={sellerData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., Senior Product Designer, CEO, Consultant"
+                  />
+                  <Button
+                    onClick={() => generateFieldContent('title', sellerData.title)}
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700"
+                    disabled={isGenerating || !sellerData.title.trim()}
+                  >
+                    <Sparkles size={14} />
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -200,39 +259,69 @@ export default function SellerInfoPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Professional Bio *
               </label>
-              <textarea
-                value={sellerData.bio}
-                onChange={(e) => handleInputChange('bio', e.target.value)}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="A brief professional summary about yourself..."
-              />
+              <div className="flex items-start gap-2">
+                <textarea
+                  value={sellerData.bio}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
+                  rows={4}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="A brief professional summary about yourself..."
+                />
+                <Button
+                  onClick={() => generateFieldContent('bio', sellerData.bio)}
+                  size="sm"
+                  className="bg-purple-600 hover:bg-purple-700 mt-2"
+                  disabled={isGenerating || !sellerData.bio.trim()}
+                >
+                  <Sparkles size={14} />
+                </Button>
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Your Story
               </label>
-              <textarea
-                value={sellerData.story}
-                onChange={(e) => handleInputChange('story', e.target.value)}
-                rows={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Share your journey, what drives you, and what makes you unique..."
-              />
+              <div className="flex items-start gap-2">
+                <textarea
+                  value={sellerData.story}
+                  onChange={(e) => handleInputChange('story', e.target.value)}
+                  rows={6}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Share your journey, what drives you, and what makes you unique..."
+                />
+                <Button
+                  onClick={() => generateFieldContent('story', sellerData.story)}
+                  size="sm"
+                  className="bg-purple-600 hover:bg-purple-700 mt-2"
+                  disabled={isGenerating || !sellerData.story.trim()}
+                >
+                  <Sparkles size={14} />
+                </Button>
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Experience & Background
               </label>
-              <textarea
-                value={sellerData.experience}
-                onChange={(e) => handleInputChange('experience', e.target.value)}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Describe your professional experience, education, and background..."
-              />
+              <div className="flex items-start gap-2">
+                <textarea
+                  value={sellerData.experience}
+                  onChange={(e) => handleInputChange('experience', e.target.value)}
+                  rows={4}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Describe your professional experience, education, and background..."
+                />
+                <Button
+                  onClick={() => generateFieldContent('experience', sellerData.experience)}
+                  size="sm"
+                  className="bg-purple-600 hover:bg-purple-700 mt-2"
+                  disabled={isGenerating || !sellerData.experience.trim()}
+                >
+                  <Sparkles size={14} />
+                </Button>
+              </div>
             </div>
 
             <div className="flex justify-center pt-4 border-t">
@@ -387,10 +476,10 @@ export default function SellerInfoPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-4">
-                Business Photos (Optional)
+                Work Environment Photos (Optional)
               </label>
               <p className="text-sm text-gray-600 mb-4">
-                Add photos related to your business, workspace, or products. You can upload your own photos or generate them with AI based on your information.
+                Add photos that represent your work environment or profession. For example: office space, workshop, farm fields, studio, etc.
               </p>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -398,7 +487,7 @@ export default function SellerInfoPage() {
                   <div key={photo.id} className="relative group">
                     <img
                       src={photo.url}
-                      alt="Business"
+                      alt="Work Environment"
                       className="w-full h-32 object-cover rounded-lg border"
                     />
                     <button

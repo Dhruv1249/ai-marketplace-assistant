@@ -13,21 +13,39 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
   const generatePhotos = async () => {
     setIsGenerating(true);
     try {
-      // Generate AI prompts based on seller data
+      // Generate contextual work environment prompts based on seller data
+      const profession = sellerData?.title || 'professional';
+      const businessType = sellerData?.businessInfo?.businessName || '';
+      const bio = sellerData?.bio || '';
+      
       const response = await fetch('/api/generate-content', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prompt: `Generate ${photoCount} different photo prompts for a business/professional based on this information: 
-          Name: ${sellerData?.name || 'Professional'}
-          Title: ${sellerData?.title || 'Business Professional'}
-          Business: ${sellerData?.businessInfo?.businessName || 'Professional Services'}
-          Bio: ${sellerData?.bio || 'Professional service provider'}
+          prompt: `Generate ${photoCount} different work environment photo prompts based on this professional information:
           
-          Create ${photoCount} distinct, professional photo prompts that would represent this person's business or work environment. Each prompt should be different (office, workspace, meeting, presentation, etc.) and suitable for business use. Return only the prompts, one per line.`,
-          context: `Business photos for ${sellerData?.name || 'professional'}`
+          Title: ${profession}
+          Business: ${businessType}
+          Bio: ${bio}
+          
+          Create ${photoCount} distinct photo prompts showing work environments, workspaces, or settings related to this profession. DO NOT include people in the photos. Focus on:
+          
+          Examples based on profession:
+          - Farmer: farm fields, crops, agricultural equipment, barn, greenhouse
+          - Designer: modern office, creative workspace, design studio, computer setup
+          - Chef: professional kitchen, restaurant, cooking equipment, ingredients
+          - Teacher: classroom, library, educational materials, school environment
+          - Developer: home office, computer setup, tech workspace, coding environment
+          - Consultant: professional office, meeting room, business environment
+          - Artist: art studio, creative space, art supplies, gallery
+          - Mechanic: garage, workshop, tools, automotive equipment
+          - Doctor: medical office, clinic, medical equipment (no patients)
+          - Photographer: photography studio, camera equipment, lighting setup
+          
+          Make each prompt specific to the work environment and tools/spaces this professional would use. Return only the prompts, one per line.`,
+          context: `Work environment photos for ${profession}`
         })
       });
 
@@ -53,7 +71,7 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
           url: imageUrl,
           type: 'ai-generated',
           prompt: prompts[i],
-          style: `Business Photo ${i + 1}`
+          style: `Work Environment ${i + 1}`
         });
       }
 
@@ -88,7 +106,7 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">Add Business Photos</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Add Work Environment Photos</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -118,7 +136,7 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
                 <Upload size={48} className="mx-auto text-gray-400 mb-4" />
                 <h3 className="font-medium text-gray-900 mb-2">Upload Photos</h3>
-                <p className="text-sm text-gray-600 mb-4">Upload your own business photos</p>
+                <p className="text-sm text-gray-600 mb-4">Upload your own work environment photos</p>
                 <Button
                   onClick={onClose}
                   variant="outline"
@@ -131,8 +149,8 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
               {/* Generate Photos Option */}
               <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-6 text-center">
                 <Image size={48} className="mx-auto text-blue-600 mb-4" />
-                <h3 className="font-medium text-gray-900 mb-2">Generate Photos</h3>
-                <p className="text-sm text-gray-600 mb-4">Generate business photos based on your info</p>
+                <h3 className="font-medium text-gray-900 mb-2">Generate Work Environment Photos</h3>
+                <p className="text-sm text-gray-600 mb-4">Generate photos of workspaces and environments related to your profession</p>
                 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -173,7 +191,7 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
           ) : (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Generated Photos</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Generated Work Environment Photos</h3>
                 <div className="flex gap-2">
                   <Button
                     onClick={handleSelectAllPhotos}
@@ -221,12 +239,11 @@ export default function PhotoOptionsModal({ isOpen, onClose, onPhotoGenerated, s
 
               <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600">
-                  <strong>Generated based on:</strong> {sellerData?.name && `${sellerData.name}, `}
-                  {sellerData?.title && `${sellerData.title}, `}
-                  {sellerData?.businessInfo?.businessName && `${sellerData.businessInfo.businessName}`}
+                  <strong>Generated for:</strong> {sellerData?.title && `${sellerData.title}`}
+                  {sellerData?.businessInfo?.businessName && ` at ${sellerData.businessInfo.businessName}`}
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
-                  These photos are AI-generated representations for your business profile. You can select individual photos or add all of them.
+                  These photos show work environments and spaces related to your profession. No people are included - just the workspaces, tools, and environments you work in.
                 </p>
               </div>
             </div>
