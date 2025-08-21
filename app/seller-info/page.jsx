@@ -235,7 +235,7 @@ export default function SellerInfoPage() {
               />
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-4 border-t">
               <Button
                 onClick={() => setShowAIGenerator(true)}
                 className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
@@ -387,15 +387,18 @@ export default function SellerInfoPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-4">
-                Profile Photos
+                Business Photos (Optional)
               </label>
+              <p className="text-sm text-gray-600 mb-4">
+                Add photos related to your business, workspace, or products. You can upload your own photos or generate them with AI based on your information.
+              </p>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 {sellerData.photos.map((photo) => (
                   <div key={photo.id} className="relative group">
                     <img
                       src={photo.url}
-                      alt="Profile"
+                      alt="Business"
                       className="w-full h-32 object-cover rounded-lg border"
                     />
                     <button
@@ -405,7 +408,7 @@ export default function SellerInfoPage() {
                       ×
                     </button>
                     <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      {photo.type === 'ai-generated' ? 'AI' : 'Upload'}
+                      {photo.type === 'ai-generated' ? 'Generated' : 'Uploaded'}
                     </div>
                   </div>
                 ))}
@@ -680,6 +683,7 @@ export default function SellerInfoPage() {
         isOpen={showPhotoModal}
         onClose={() => setShowPhotoModal(false)}
         onPhotoGenerated={handleAIPhotoGenerated}
+        sellerData={sellerData}
       />
 
       <AIContentGenerator
