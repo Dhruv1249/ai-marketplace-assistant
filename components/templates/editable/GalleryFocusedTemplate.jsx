@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import EditableElement from "../shared/EditableElement";
-import TextEditor from "../shared/TextEditor";
+import React, { useState, useEffect } from "react";
+import EnhancedEditableElement from "../shared/EnhancedEditableElement";
+import EnhancedTextEditor from "../shared/EnhancedTextEditor";
 
 /* =====
    Hero
@@ -13,47 +13,60 @@ function Hero({
   isEditing,
   onEdit,
   onMove,
+  onDelete,
   selectedElement,
   setSelectedElement,
   elementStyles,
   elementTexts,
+  elementProps,
+  deletedElements,
 }) {
+  if (deletedElements?.includes("hero-section")) return null;
+
   return (
     <div className="border-b pb-4 mb-4">
-      <EditableElement
-        elementId="hero-title"
-        type="text"
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onMove={onMove}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        currentText={elementTexts?.["hero-title"] || title || "Product Title"}
-        currentStyle={elementStyles?.["hero-title"] || {}}
-        className="mb-2"
-      >
-        <h2 className="text-2xl font-semibold">{title || "Product Title"}</h2>
-      </EditableElement>
+      {!deletedElements?.includes("hero-title") && (
+        <EnhancedEditableElement
+          elementId="hero-title"
+          type="text"
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={elementTexts?.["hero-title"] || title || "Product Title"}
+          currentStyle={elementStyles?.["hero-title"] || {}}
+          currentProps={elementProps?.["hero-title"] || {}}
+          className="mb-2"
+        >
+          <h2 className="text-2xl font-semibold">{title || "Product Title"}</h2>
+        </EnhancedEditableElement>
+      )}
 
-      <EditableElement
-        elementId="hero-description"
-        type="text"
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onMove={onMove}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        currentText={
-          elementTexts?.["hero-description"] ||
-          description ||
-          "Product description will appear here."
-        }
-        currentStyle={elementStyles?.["hero-description"] || {}}
-      >
-        <p className="whitespace-pre-line">
-          {description || "Product description will appear here."}
-        </p>
-      </EditableElement>
+      {!deletedElements?.includes("hero-description") && (
+        <EnhancedEditableElement
+          elementId="hero-description"
+          type="text"
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={
+            elementTexts?.["hero-description"] ||
+            description ||
+            "Product description will appear here."
+          }
+          currentStyle={elementStyles?.["hero-description"] || {}}
+          currentProps={elementProps?.["hero-description"] || {}}
+        >
+          <p className="whitespace-pre-line">
+            {description || "Product description will appear here."}
+          </p>
+        </EnhancedEditableElement>
+      )}
     </div>
   );
 }
@@ -61,16 +74,28 @@ function Hero({
 /* ========
    Gallery
    ======== */
-function Gallery({ images = [], isEditing, onMove, selectedElement, setSelectedElement }) {
+function Gallery({ 
+  images = [], 
+  isEditing, 
+  onMove, 
+  onDelete,
+  selectedElement, 
+  setSelectedElement,
+  deletedElements 
+}) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const hasImages = images && images.length > 0;
 
+  if (deletedElements?.includes("gallery")) return null;
+
   if (!hasImages) {
     return (
-      <EditableElement
+      <EnhancedEditableElement
         elementId="gallery"
+        type="image"
         isEditing={isEditing}
         onMove={onMove}
+        onDelete={onDelete}
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
         className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6"
@@ -87,17 +112,19 @@ function Gallery({ images = [], isEditing, onMove, selectedElement, setSelectedE
             </div>
           ))}
         </div>
-      </EditableElement>
+      </EnhancedEditableElement>
     );
   }
 
   const selectedImage = images[selectedImageIndex];
 
   return (
-    <EditableElement
+    <EnhancedEditableElement
       elementId="gallery"
+      type="image"
       isEditing={isEditing}
       onMove={onMove}
+      onDelete={onDelete}
       selectedElement={selectedElement}
       setSelectedElement={setSelectedElement}
       className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6"
@@ -164,7 +191,7 @@ function Gallery({ images = [], isEditing, onMove, selectedElement, setSelectedE
           </div>
         ))}
       </div>
-    </EditableElement>
+    </EnhancedEditableElement>
   );
 }
 
@@ -177,77 +204,93 @@ function Features({
   isEditing,
   onEdit,
   onMove,
+  onDelete,
   selectedElement,
   setSelectedElement,
   elementStyles,
   elementTexts,
+  elementProps,
+  deletedElements,
 }) {
   const items =
     features && features.length ? features : ["Key feature one", "Key feature two", "Key feature three"];
 
+  if (deletedElements?.includes("features-section")) return null;
+
   return (
-    <EditableElement
+    <EnhancedEditableElement
       elementId="features-section"
       isEditing={isEditing}
       onMove={onMove}
+      onDelete={onDelete}
       selectedElement={selectedElement}
       setSelectedElement={setSelectedElement}
       className="mb-6"
     >
-      <EditableElement
-        elementId="features-title"
-        type="text"
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onMove={onMove}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        currentText={elementTexts?.["features-title"] || "Key Features"}
-        currentStyle={elementStyles?.["features-title"] || {}}
-        className="mb-3"
-      >
-        <h3 className="text-lg font-semibold">Key Features</h3>
-      </EditableElement>
+      {!deletedElements?.includes("features-title") && (
+        <EnhancedEditableElement
+          elementId="features-title"
+          type="text"
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={elementTexts?.["features-title"] || "Key Features"}
+          currentStyle={elementStyles?.["features-title"] || {}}
+          currentProps={elementProps?.["features-title"] || {}}
+          className="mb-3"
+        >
+          <h3 className="text-lg font-semibold">Key Features</h3>
+        </EnhancedEditableElement>
+      )}
 
       <div className="space-y-4">
         {items.map((f, i) => (
           <div key={i} className="border-l-4 border-blue-400 pl-4">
-            <EditableElement
-              elementId={`feature-${i}-title`}
-              type="text"
-              isEditing={isEditing}
-              onEdit={onEdit}
-              onMove={onMove}
-              selectedElement={selectedElement}
-              setSelectedElement={setSelectedElement}
-              currentText={elementTexts?.[`feature-${i}-title`] || f}
-              currentStyle={elementStyles?.[`feature-${i}-title`] || {}}
-              className="mb-1"
-            >
-              <h4 className="font-medium">{f}</h4>
-            </EditableElement>
+            {!deletedElements?.includes(`feature-${i}-title`) && (
+              <EnhancedEditableElement
+                elementId={`feature-${i}-title`}
+                type="text"
+                isEditing={isEditing}
+                onEdit={onEdit}
+                onMove={onMove}
+                onDelete={onDelete}
+                selectedElement={selectedElement}
+                setSelectedElement={setSelectedElement}
+                currentText={elementTexts?.[`feature-${i}-title`] || f}
+                currentStyle={elementStyles?.[`feature-${i}-title`] || {}}
+                currentProps={elementProps?.[`feature-${i}-title`] || {}}
+                className="mb-1"
+              >
+                <h4 className="font-medium">{f}</h4>
+              </EnhancedEditableElement>
+            )}
 
-            {featureExplanations[f] && (
-              <EditableElement
+            {featureExplanations[f] && !deletedElements?.includes(`feature-${i}-explanation`) && (
+              <EnhancedEditableElement
                 elementId={`feature-${i}-explanation`}
                 type="text"
                 isEditing={isEditing}
                 onEdit={onEdit}
                 onMove={onMove}
+                onDelete={onDelete}
                 selectedElement={selectedElement}
                 setSelectedElement={setSelectedElement}
                 currentText={
                   elementTexts?.[`feature-${i}-explanation`] || featureExplanations[f]
                 }
                 currentStyle={elementStyles?.[`feature-${i}-explanation`] || {}}
+                currentProps={elementProps?.[`feature-${i}-explanation`] || {}}
               >
                 <p className="text-sm leading-relaxed">{featureExplanations[f]}</p>
-              </EditableElement>
+              </EnhancedEditableElement>
             )}
           </div>
         ))}
       </div>
-    </EditableElement>
+    </EnhancedEditableElement>
   );
 }
 
@@ -259,77 +302,95 @@ function Specs({
   isEditing,
   onEdit,
   onMove,
+  onDelete,
   selectedElement,
   setSelectedElement,
   elementStyles,
   elementTexts,
+  elementProps,
+  deletedElements,
 }) {
   const entries = Object.entries(specifications);
   const rows = entries.length ? entries : [["Specification", "Value"]];
 
+  if (deletedElements?.includes("specs-section")) return null;
+
   return (
-    <EditableElement
+    <EnhancedEditableElement
       elementId="specs-section"
       isEditing={isEditing}
       onMove={onMove}
+      onDelete={onDelete}
       selectedElement={selectedElement}
       setSelectedElement={setSelectedElement}
       className="mb-6"
     >
-      <EditableElement
-        elementId="specs-title"
-        type="text"
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onMove={onMove}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        currentText={elementTexts?.["specs-title"] || "Specifications"}
-        currentStyle={elementStyles?.["specs-title"] || {}}
-        className="mb-3"
-      >
-        <h3 className="text-lg font-semibold">Specifications</h3>
-      </EditableElement>
+      {!deletedElements?.includes("specs-title") && (
+        <EnhancedEditableElement
+          elementId="specs-title"
+          type="text"
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={elementTexts?.["specs-title"] || "Specifications"}
+          currentStyle={elementStyles?.["specs-title"] || {}}
+          currentProps={elementProps?.["specs-title"] || {}}
+          className="mb-3"
+        >
+          <h3 className="text-lg font-semibold">Specifications</h3>
+        </EnhancedEditableElement>
+      )}
 
       <div className="overflow-x-auto">
         <table className="min-w-full border divide-y divide-gray-200">
           <tbody className="divide-y divide-gray-200">
             {rows.slice(0, 8).map(([k, v], i) => (
               <tr key={i}>
-                <EditableElement
-                  elementId={`spec-${i}-key`}
-                  type="text"
-                  isEditing={isEditing}
-                  onEdit={onEdit}
-                  onMove={onMove}
-                  selectedElement={selectedElement}
-                  setSelectedElement={setSelectedElement}
-                  currentText={elementTexts?.[`spec-${i}-key`] || k}
-                  currentStyle={elementStyles?.[`spec-${i}-key`] || {}}
-                  className="px-4 py-2 bg-gray-50 font-medium w-1/3"
-                >
-                  <td className="px-4 py-2 bg-gray-50 font-medium w-1/3">{k}</td>
-                </EditableElement>
-                <EditableElement
-                  elementId={`spec-${i}-value`}
-                  type="text"
-                  isEditing={isEditing}
-                  onEdit={onEdit}
-                  onMove={onMove}
-                  selectedElement={selectedElement}
-                  setSelectedElement={setSelectedElement}
-                  currentText={elementTexts?.[`spec-${i}-value`] || v}
-                  currentStyle={elementStyles?.[`spec-${i}-value`] || {}}
-                  className="px-4 py-2"
-                >
-                  <td className="px-4 py-2">{v}</td>
-                </EditableElement>
+                {!deletedElements?.includes(`spec-${i}-key`) && (
+                  <EnhancedEditableElement
+                    elementId={`spec-${i}-key`}
+                    type="text"
+                    isEditing={isEditing}
+                    onEdit={onEdit}
+                    onMove={onMove}
+                    onDelete={onDelete}
+                    selectedElement={selectedElement}
+                    setSelectedElement={setSelectedElement}
+                    currentText={elementTexts?.[`spec-${i}-key`] || k}
+                    currentStyle={elementStyles?.[`spec-${i}-key`] || {}}
+                    currentProps={elementProps?.[`spec-${i}-key`] || {}}
+                    className="px-4 py-2 bg-gray-50 font-medium w-1/3"
+                  >
+                    <td className="px-4 py-2 bg-gray-50 font-medium w-1/3">{k}</td>
+                  </EnhancedEditableElement>
+                )}
+                {!deletedElements?.includes(`spec-${i}-value`) && (
+                  <EnhancedEditableElement
+                    elementId={`spec-${i}-value`}
+                    type="text"
+                    isEditing={isEditing}
+                    onEdit={onEdit}
+                    onMove={onMove}
+                    onDelete={onDelete}
+                    selectedElement={selectedElement}
+                    setSelectedElement={setSelectedElement}
+                    currentText={elementTexts?.[`spec-${i}-value`] || v}
+                    currentStyle={elementStyles?.[`spec-${i}-value`] || {}}
+                    currentProps={elementProps?.[`spec-${i}-value`] || {}}
+                    className="px-4 py-2"
+                  >
+                    <td className="px-4 py-2">{v}</td>
+                  </EnhancedEditableElement>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </EditableElement>
+    </EnhancedEditableElement>
   );
 }
 
@@ -340,36 +401,113 @@ function CTA({
   isEditing,
   onEdit,
   onMove,
+  onDelete,
   selectedElement,
   setSelectedElement,
   elementStyles,
   elementTexts,
+  elementProps,
+  deletedElements,
 }) {
+  if (deletedElements?.includes("cta-section")) return null;
+
   return (
-    <EditableElement
+    <EnhancedEditableElement
       elementId="cta-section"
       isEditing={isEditing}
       onMove={onMove}
+      onDelete={onDelete}
       selectedElement={selectedElement}
       setSelectedElement={setSelectedElement}
       className="mt-6"
     >
-      <EditableElement
-        elementId="cta-button"
-        type="text"
-        isEditing={isEditing}
-        onEdit={onEdit}
-        onMove={onMove}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        currentText={elementTexts?.["cta-button"] || "Add to Cart"}
-        currentStyle={elementStyles?.["cta-button"] || {}}
-      >
-        <button className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">
-          Add to Cart
-        </button>
-      </EditableElement>
-    </EditableElement>
+      {!deletedElements?.includes("cta-button") && (
+        <EnhancedEditableElement
+          elementId="cta-button"
+          type="button"
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={elementTexts?.["cta-button"] || "Add to Cart"}
+          currentStyle={elementStyles?.["cta-button"] || {}}
+          currentProps={elementProps?.["cta-button"] || {}}
+        >
+          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Add to Cart
+          </button>
+        </EnhancedEditableElement>
+      )}
+    </EnhancedEditableElement>
+  );
+}
+
+/* ==========================
+   Custom Elements Renderer
+   ========================== */
+function CustomElements({
+  customElements = [],
+  isEditing,
+  onEdit,
+  onMove,
+  onDelete,
+  selectedElement,
+  setSelectedElement,
+  elementStyles,
+  elementTexts,
+  elementProps,
+}) {
+  return (
+    <>
+      {customElements.map((element) => (
+        <EnhancedEditableElement
+          key={element.id}
+          elementId={element.id}
+          type={element.type}
+          isEditing={isEditing}
+          onEdit={onEdit}
+          onMove={onMove}
+          onDelete={onDelete}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          currentText={elementTexts?.[element.id] || element.content}
+          currentStyle={{...element.style, ...elementStyles?.[element.id]}}
+          currentProps={{...element.props, ...elementProps?.[element.id]}}
+          style={{
+            position: 'absolute',
+            left: element.position?.x || 0,
+            top: element.position?.y || 0,
+            zIndex: 10,
+          }}
+        >
+          {element.type === "text" && (
+            <div>{element.content}</div>
+          )}
+          {element.type === "button" && (
+            <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              {element.content}
+            </button>
+          )}
+          {element.type === "link" && (
+            <a href={element.props?.href || "#"} className="text-blue-600 underline">
+              {element.content}
+            </a>
+          )}
+          {element.type === "image" && (
+            <img 
+              src={element.props?.src || "https://via.placeholder.com/200x150"} 
+              alt={element.content}
+              className="max-w-full h-auto"
+            />
+          )}
+          {element.type === "shape" && (
+            <div className="bg-gray-200 rounded"></div>
+          )}
+        </EnhancedEditableElement>
+      ))}
+    </>
   );
 }
 
@@ -381,12 +519,20 @@ export default function GalleryFocusedTemplate({
   images,
   isEditing = false,
   onContentChange,
+  onElementDelete,
+  templateEdits,
 }) {
   const [editingElement, setEditingElement] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   const [textEditorOpen, setTextEditorOpen] = useState(false);
-  const [elementStyles, setElementStyles] = useState({});
-  const [elementTexts, setElementTexts] = useState({});
+  const [editingElementType, setEditingElementType] = useState("text");
+
+  // Use template edits if available
+  const elementStyles = templateEdits?.elementStyles || {};
+  const elementTexts = templateEdits?.elementTexts || {};
+  const elementProps = templateEdits?.elementProps || {};
+  const customElements = templateEdits?.customElements || [];
+  const deletedElements = templateEdits?.deletedElements || [];
 
   const handleContainerClick = (e) => {
     if (isEditing && e.target === e.currentTarget) {
@@ -396,37 +542,48 @@ export default function GalleryFocusedTemplate({
 
   const handleEdit = (elementId) => {
     setEditingElement(elementId);
+    
+    // Determine element type
+    const customElement = customElements.find(el => el.id === elementId);
+    if (customElement) {
+      setEditingElementType(customElement.type);
+    } else if (elementId.includes("button")) {
+      setEditingElementType("button");
+    } else if (elementId.includes("link")) {
+      setEditingElementType("link");
+    } else if (elementId.includes("image") || elementId === "gallery") {
+      setEditingElementType("image");
+    } else {
+      setEditingElementType("text");
+    }
+    
     setTextEditorOpen(true);
   };
 
   const handleMove = (elementId, position) => {
-    // If you want to persist positions externally, you can do it here.
-    // console.log("Move:", elementId, position);
+    onContentChange?.(elementId, { position });
   };
 
   const handleResize = (elementId, size) => {
-    // If you want to persist sizes externally, you can do it here.
-    // console.log("Resize:", elementId, size);
+    onContentChange?.(elementId, { size });
   };
 
-  const handleTextSave = (newText, newStyle) => {
-    setElementStyles((prev) => ({
-      ...prev,
-      [editingElement]: newStyle,
-    }));
-
-    setElementTexts((prev) => ({
-      ...prev,
-      [editingElement]: newText,
-    }));
-
-    onContentChange?.(editingElement, newText, newStyle);
+  const handleTextSave = (newText, newStyle, newProps) => {
+    onContentChange?.(editingElement, {
+      text: newText,
+      style: newStyle,
+      props: newProps,
+    });
 
     setEditingElement(null);
   };
 
   const getCurrentText = (elementId) => {
     if (elementTexts[elementId]) return elementTexts[elementId];
+
+    // Check custom elements
+    const customElement = customElements.find(el => el.id === elementId);
+    if (customElement) return customElement.content;
 
     switch (elementId) {
       case "hero-title":
@@ -470,10 +627,24 @@ export default function GalleryFocusedTemplate({
     }
   };
 
-  const getCurrentStyle = (elementId) => elementStyles[elementId] || {};
+  const getCurrentStyle = (elementId) => {
+    const customElement = customElements.find(el => el.id === elementId);
+    if (customElement) {
+      return { ...customElement.style, ...elementStyles[elementId] };
+    }
+    return elementStyles[elementId] || {};
+  };
+
+  const getCurrentProps = (elementId) => {
+    const customElement = customElements.find(el => el.id === elementId);
+    if (customElement) {
+      return { ...customElement.props, ...elementProps[elementId] };
+    }
+    return elementProps[elementId] || {};
+  };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col" onClick={handleContainerClick}>
+    <div className="min-h-screen bg-white flex flex-col relative" onClick={handleContainerClick}>
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
@@ -481,8 +652,10 @@ export default function GalleryFocusedTemplate({
               images={images}
               isEditing={isEditing}
               onMove={handleMove}
+              onDelete={onElementDelete}
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
+              deletedElements={deletedElements}
             />
           </div>
           <div>
@@ -492,10 +665,13 @@ export default function GalleryFocusedTemplate({
               isEditing={isEditing}
               onEdit={handleEdit}
               onMove={handleMove}
+              onDelete={onElementDelete}
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
               elementStyles={elementStyles}
               elementTexts={elementTexts}
+              elementProps={elementProps}
+              deletedElements={deletedElements}
             />
             <Features
               features={content?.features}
@@ -503,40 +679,65 @@ export default function GalleryFocusedTemplate({
               isEditing={isEditing}
               onEdit={handleEdit}
               onMove={handleMove}
+              onDelete={onElementDelete}
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
               elementStyles={elementStyles}
               elementTexts={elementTexts}
+              elementProps={elementProps}
+              deletedElements={deletedElements}
             />
             <Specs
               specifications={content?.specifications}
               isEditing={isEditing}
               onEdit={handleEdit}
               onMove={handleMove}
+              onDelete={onElementDelete}
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
               elementStyles={elementStyles}
               elementTexts={elementTexts}
+              elementProps={elementProps}
+              deletedElements={deletedElements}
             />
             <CTA
               isEditing={isEditing}
               onEdit={handleEdit}
               onMove={handleMove}
+              onDelete={onElementDelete}
               selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
               elementStyles={elementStyles}
               elementTexts={elementTexts}
+              elementProps={elementProps}
+              deletedElements={deletedElements}
             />
           </div>
         </div>
       </div>
 
-      <TextEditor
+      {/* Custom Elements */}
+      <CustomElements
+        customElements={customElements}
+        isEditing={isEditing}
+        onEdit={handleEdit}
+        onMove={handleMove}
+        onDelete={onElementDelete}
+        selectedElement={selectedElement}
+        setSelectedElement={setSelectedElement}
+        elementStyles={elementStyles}
+        elementTexts={elementTexts}
+        elementProps={elementProps}
+      />
+
+      <EnhancedTextEditor
         isOpen={textEditorOpen}
         onClose={() => setTextEditorOpen(false)}
         onSave={handleTextSave}
         initialText={getCurrentText(editingElement)}
         initialStyle={getCurrentStyle(editingElement)}
+        initialProps={getCurrentProps(editingElement)}
+        elementType={editingElementType}
       />
     </div>
   );
