@@ -6,6 +6,8 @@ import { Button } from '@/components/ui';
 import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
+import DeleteButton from '@/components/animated icon/DeleteButton';
+
 // Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {
@@ -322,25 +324,19 @@ const CreateProductPage = () => {
                                 }
                               }}
                             />
-                            <button
-                              type="button"
-                              className="p-2 text-gray-500 hover:text-red-600"
-                              onClick={() => {
+                              <DeleteButton
+                                onClick={() => {
                                 const featureToRemove = feature;
                                 const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                                
-                                // Remove explanation for deleted feature
-                                if (featureExplanations[featureToRemove]) {
-                                  const newExplanations = { ...featureExplanations };
-                                  delete newExplanations[featureToRemove];
-                                  setFeatureExplanations(newExplanations);
-                                }
-                              }}
-                              aria-label="Remove feature"
-                            >
-                              <Trash2 size={18} />
-                            </button>
+                                  setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                                  
+                                  if (featureExplanations[featureToRemove]) {
+                                    const newExplanations = { ...featureExplanations };
+                                    delete newExplanations[featureToRemove];
+                                    setFeatureExplanations(newExplanations);
+                                  }
+                                }}
+                            />
                           </div>
                           
                           {featuresConfirmed && featureExplanations[feature] && (
