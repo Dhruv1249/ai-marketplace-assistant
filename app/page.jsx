@@ -3,12 +3,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
-import { Wand2, ShoppingBag, Zap, Users, TrendingUp, Star } from 'lucide-react';
+import { Wand2, Zap, Users, TrendingUp, Star } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
 import { auth } from './login/firebase'; // path may vary, adjust if needed
 import { onAuthStateChanged } from 'firebase/auth';
+import { Box } from "../components/Box"; // adjust path if needed
+import { Rocket } from "../components/Rocket"; // adjust path if needed
+import { SmartphoneNfc } from "../components/SmartphoneNfc"; // adjust path if needed
+import { ChartNoAxes } from "../components/ChartNoAxes"; // adjust path if needed
+import { Users as UsersComponent } from "../components/Users"; // adjust path if needed
+
 gsap.registerPlugin(ScrollTrigger);
 
 const AnimatedCartButton = () => {
@@ -30,47 +36,32 @@ const AnimatedCartButton = () => {
     <>
       <button
         onClick={cartClick}
-        className={'cart-button relative px-4 py-2 w-60 h-14 border-0 rounded-md outline-none cursor-pointer text-white transition ease-in-out duration-300 overflow-hidden font-bold active:scale-90 ' + (clicked ? 'clicked' : '')}
+        className="relative flex items-center px-6 py-3 w-60 h-14 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group outline-none border-0 cursor-pointer active:scale-90"
+        style={{ fontSize: '1.125rem', fontWeight: 'bold' }}
       >
         <span
-          className="absolute z-30 left-1/2 top-1/2 text-lg text-white transform -translate-x-1/2 -translate-y-1/2 add-to-cart opacity-100"
+          className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4"
+        >
+          <span
+            className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
+          ></span>
+        </span>
+        <span
+          className="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-4 group-hover:-mb-4"
+        >
+          <span
+            className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
+          ></span>
+        </span>
+        <span
+          className="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full bg-indigo-600 rounded-md group-hover:translate-x-0"
+        ></span>
+        <span
+          className="relative w-full text-center text-white transition-colors duration-200 ease-in-out group-hover:text-white"
         >
           Start Creating
         </span>
-        <span
-          className="flex gap-1 absolute z-30 left-1/2 top-1/2 text-lg text-white transform -translate-x-1/2 -translate-y-1/2 added opacity-0"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-            stroke="currentColor" className="size-6 fa-solid fa-circle-check">
-            <path strokeLinecap="round" strokeLinejoin="round"
-              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-          Starting...
-        </span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-          className="size-8 fa-solid cart-shopping-svg absolute z-20 top-1/2 left-[-10%] text-2xl transform -translate-x-1/2 -translate-y-1/2">
-          <path strokeLinecap="round" strokeLinejoin="round"
-            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" style={{ fill: 'rgb(255, 167, 4)' }} viewBox="0 0 448 512"
-          className="size-5 fas cart-box-svg absolute z-30 top-[-20%] left-[52%] text-xl transform -translate-x-1/2 -translate-y-1/2 ">
-          <path
-            d="M50.7 58.5L0 160l208 0 0-128L93.7 32C75.5 32 58.9 42.3 50.7 58.5zM240 160l208 0L397.3 58.5C389.1 42.3 372.5 32 354.3 32L240 32l0 128zm208 32L0 192 0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-224z" />
-        </svg>
       </button>
-      <style jsx>{`
-        .cart-button { background-color: #2563eb; }
-        .cart-button:hover { background-color: #1d4ed8; }
-        .cart-button .add-to-cart { transition: opacity 300ms ease; }
-        .cart-button .added { transition: opacity 300ms ease; }
-        .cart-button.clicked .add-to-cart { opacity: 0; }
-        .cart-button.clicked .added { opacity: 1; }
-        .cart-shopping-svg, .cart-box-svg { pointer-events: none; }
-        .cart-shopping-svg { transition: transform 0.8s ease, left 0.8s ease; }
-        .cart-box-svg { transition: transform 0.8s ease, top 0.8s ease, left 0.8s ease, opacity 0.3s ease; }
-        .cart-button.clicked .cart-shopping-svg { left: 110%; transform: translate(-50%, -50%) rotate(10deg); }
-        .cart-button.clicked .cart-box-svg { top: 50%; left: 70%; transform: translate(-50%, -50%) rotate(10deg); }
-      `}</style>
     </>
   );
 };
@@ -142,22 +133,22 @@ useEffect(() => {
 }, []);
   const features = [
     {
-      icon: Wand2,
+      icon: Rocket, // use Rocket icon here
       title: 'AI-Powered Content Generation',
       description: 'Generate compelling product descriptions, titles, and features using advanced AI technology.',
     },
     {
-      icon: Zap,
+      icon: SmartphoneNfc, // use SmartphoneNfc here
       title: 'Real-time Streaming',
       description: 'Watch your content being generated in real-time with our streaming AI interface.',
     },
     {
-      icon: ShoppingBag,
+      icon: ChartNoAxes, // use ChartNoAxes here
       title: 'Marketplace Integration',
       description: 'Seamlessly publish your products to our integrated marketplace platform.',
     },
     {
-      icon: Users,
+      icon: UsersComponent, // use Users icon here
       title: 'Seller Dashboard',
       description: 'Manage all your products, analytics, and settings from one central dashboard.',
     },
@@ -392,7 +383,10 @@ useEffect(() => {
               <AnimatedCartButton />
               <Link href="/marketplace">
                 <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  <ShoppingBag className="mr-2" size={20} />
+                  {/* Replace ShoppingBag with Box */}
+                  <span className="mr-2 flex items-center">
+                    <Box width={24} height={24} stroke="#6366f1" />
+                  </span>
                   Browse Marketplace
                 </Button>
               </Link>
