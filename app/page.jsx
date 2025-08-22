@@ -347,21 +347,6 @@ useEffect(() => {
     }}
   />
 
-  {/* Vertical Rectangle, right side */}
-  <div
-    style={{
-      position: "absolute",
-      top: "15vh",
-      right: "-60px",
-      width: "120px",
-      height: "320px",
-      background: "linear-gradient(120deg, #ddd6fe 60%, #c4b5fd 100%)",
-      borderRadius: "40px",
-      filter: "blur(18px)",
-      opacity: 0.17,
-    }}
-  />
-
   {/* Small Circle, bottom left for balance */}
   <div
     style={{
