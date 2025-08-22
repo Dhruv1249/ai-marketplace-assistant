@@ -9,11 +9,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
 import { auth } from './login/firebase'; // path may vary, adjust if needed
 import { onAuthStateChanged } from 'firebase/auth';
-import { Box } from "../components/Box"; // adjust path if needed
-import { Rocket } from "../components/Rocket"; // adjust path if needed
-import { SmartphoneNfc } from "../components/SmartphoneNfc"; // adjust path if needed
-import { ChartNoAxes } from "../components/ChartNoAxes"; // adjust path if needed
-import { Users as UsersComponent } from "../components/Users"; // adjust path if needed
+import { Box } from "../components/animated icon/Box"; // adjust path if needed
+import { Rocket } from "../components/animated icon/Rocket"; // adjust path if needed
+import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; // adjust path if needed
+import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; // adjust path if needed
+import { Users as UsersComponent } from "../components/animated icon/Users"; // adjust path if needed
 
 gsap.registerPlugin(ScrollTrigger);
 
