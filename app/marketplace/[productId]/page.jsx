@@ -16,6 +16,9 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import HeartButton from '@/components/animated icon/HeartButton';
+import AddToCartButton from '@/components/animated icon/AddToCartButton';
+
 
 export default function ProductPage() {
   const params = useParams();
@@ -241,12 +244,11 @@ export default function ProductPage() {
                 </div>
 
                 <div className="flex space-x-4">
-                  <Button size="lg" className="flex-1" disabled={!product.inStock}>
-                    <ShoppingCart className="mr-2" size={20} />
-                    Add to Cart
-                  </Button>
+                  <div className="flex-1">
+                    <AddToCartButton />
+                  </div>
                   <Button variant="outline" size="lg">
-                    <Heart size={20} />
+                    <HeartButton />
                   </Button>
                   <Button variant="outline" size="lg">
                     <Share2 size={20} />
