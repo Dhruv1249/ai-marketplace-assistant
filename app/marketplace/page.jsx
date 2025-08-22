@@ -1,16 +1,160 @@
+"use client";
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Search, Filter, Star, ShoppingCart, Plus, Eye } from 'lucide-react';
+import { Search, Filter, Star, Eye, Plus } from 'lucide-react';
+import styled from 'styled-components';
+
+// ✅ Custom Buy Button with Tooltip
+const BuyButton = ({ price }) => {
+  return (
+    <StyledWrapper>
+      <div data-tooltip={`Price: $${price}`} className="button">
+        <div className="button-wrapper">
+          <div className="text">Buy Now</div>
+          <span className="icon">
+            <svg
+              viewBox="0 0 16 16"
+              className="bi bi-cart2"
+              fill="currentColor"
+              height={16}
+              width={16}
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </StyledWrapper>
+  );
+};
+
+const StyledWrapper = styled.div`
+  .button {
+    --width: 100px;
+    --height: 35px;
+    --tooltip-height: 35px;
+    --tooltip-width: 90px;
+    --gap-between-tooltip-to-button: 18px;
+    --button-color: #222;
+    --tooltip-color: #fff;
+    width: var(--width);
+    height: var(--height);
+    background: var(--button-color);
+    position: relative;
+    text-align: center;
+    border-radius: 0.45em;
+    font-family: "Arial";
+    transition: background 0.3s;
+  }
+
+  .button::before {
+    position: absolute;
+    content: attr(data-tooltip);
+    width: var(--tooltip-width);
+    height: var(--tooltip-height);
+    background-color: #555;
+    font-size: 0.9rem;
+    color: #fff;
+    border-radius: .25em;
+    line-height: var(--tooltip-height);
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) + 10px);
+    left: calc(50% - var(--tooltip-width) / 2);
+  }
+
+  .button::after {
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: #555;
+    left: calc(50% - 10px);
+    bottom: calc(100% + var(--gap-between-tooltip-to-button) - 10px);
+  }
+
+  .button::after,
+  .button::before {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s;
+  }
+
+  .text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button-wrapper,
+  .text,
+  .icon {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    color: #fff;
+  }
+
+  .text {
+    top: 0;
+  }
+
+  .text,
+  .icon {
+    transition: top 0.5s;
+  }
+
+  .icon {
+    color: #fff;
+    top: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .button:hover {
+    background: #222;
+  }
+
+  .button:hover .text {
+    top: -100%;
+  }
+
+  .button:hover .icon {
+    top: 0;
+  }
+
+  .button:hover:before,
+  .button:hover:after {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .button:hover:after {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
+  }
+
+  .button:hover:before {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
+  }
+`;
 
 export default function Marketplace() {
-  // Sample product data - in a real app, this would come from an API
+  // ✅ Products list (unchanged)
   const products = [
     {
       id: '1',
       title: 'Premium Wireless Headphones',
       description: 'High-quality wireless headphones with noise cancellation and 30-hour battery life.',
-      price: 199.99,
+      price: 99.99,
       currency: 'USD',
       image: '/api/placeholder/300/200',
       rating: 4.8,
@@ -36,7 +180,7 @@ export default function Marketplace() {
       id: '3',
       title: 'Smart Home Security Camera',
       description: 'AI-powered security camera with motion detection and cloud storage.',
-      price: 149.99,
+      price: 49.99,
       currency: 'USD',
       image: '/api/placeholder/300/200',
       rating: 4.7,
@@ -75,7 +219,7 @@ export default function Marketplace() {
       id: '6',
       title: 'Handcrafted Wooden Watch',
       description: 'Unique timepiece crafted from sustainable bamboo with leather strap.',
-      price: 159.99,
+      price: 59.99,
       currency: 'USD',
       image: '/api/placeholder/300/200',
       rating: 4.4,
@@ -161,10 +305,8 @@ export default function Marketplace() {
                 View
               </Button>
             </Link>
-            <Button size="sm">
-              <ShoppingCart size={14} className="mr-1" />
-              Buy
-            </Button>
+            {/* ✅ Custom Buy Button Replaced Here */}
+            <BuyButton price={product.price} />
           </div>
         </div>
       </div>
