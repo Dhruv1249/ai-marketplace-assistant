@@ -2,7 +2,53 @@
   "metadata": {
     "template": "minimal",
     "name": "Minimal",
-    "description": "Clean, centered single-column layout"
+    "description": "Clean, centered single-column layout",
+    "version": "1.0",
+    "editable": true,
+    "category": "minimal",
+    "tags": ["clean", "simple", "centered"],
+    "sections": ["hero", "gallery", "features", "specifications", "cta"],
+    "responsive": true,
+    "customizable": {
+      "colors": true,
+      "fonts": true,
+      "spacing": true,
+      "layout": true
+    }
+  },
+  "editingConfig": {
+    "allowedOperations": ["reorder", "style", "content", "add", "remove"],
+    "constraints": {
+      "minSections": 2,
+      "maxSections": 6,
+      "requiredSections": ["hero", "cta"]
+    },
+    "sectionTypes": {
+      "hero": { "maxCount": 1, "required": true },
+      "gallery": { "maxCount": 1, "required": false },
+      "features": { "maxCount": 1, "required": false },
+      "specifications": { "maxCount": 1, "required": false },
+      "cta": { "maxCount": 1, "required": true }
+    }
+  },
+  "styleVariables": {
+    "primaryColor": "#111827",
+    "secondaryColor": "#6b7280",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#374151",
+    "fontFamily": "Inter, sans-serif",
+    "headingFont": "Inter, sans-serif",
+    "fontSize": "16px",
+    "lineHeight": "1.6",
+    "borderRadius": "12px",
+    "spacing": "2rem",
+    "containerMaxWidth": "1024px",
+    "shadows": {
+      "small": "0 1px 3px rgba(0,0,0,0.05)",
+      "medium": "0 4px 6px rgba(0,0,0,0.05)",
+      "large": "0 10px 25px rgba(0,0,0,0.1)"
+    }
   },
   "component": {
     "id": "root",
@@ -21,6 +67,20 @@
           {
             "id": "hero-section",
             "type": "div",
+            "sectionType": "hero",
+            "editable": {
+              "moveable": false,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Hero Section",
+              "description": "Centered title and description",
+              "icon": "type",
+              "category": "content"
+            },
             "props": {
               "className": "text-center mb-12"
             },
@@ -28,16 +88,42 @@
               {
                 "id": "hero-title",
                 "type": "h1",
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true,
+                  "textAlign": true,
+                  "fontSize": true,
+                  "fontWeight": true,
+                  "color": true
+                },
+                "editingMeta": {
+                  "name": "Product Title",
+                  "description": "Main product heading",
+                  "contentType": "text"
+                },
                 "props": {
-                  "className": "text-4xl font-light tracking-wide mb-4 text-gray-900"
+                  "className": "text-4xl font-light tracking-wide mb-4"
                 },
                 "children": ["{{content.title}}"]
               },
               {
                 "id": "hero-description",
                 "type": "p",
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true,
+                  "textAlign": true,
+                  "fontSize": true,
+                  "color": true,
+                  "lineHeight": true
+                },
+                "editingMeta": {
+                  "name": "Product Description",
+                  "description": "Product description text",
+                  "contentType": "textarea"
+                },
                 "props": {
-                  "className": "text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed whitespace-pre-line"
+                  "className": "text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
                 },
                 "children": ["{{content.description}}"]
               }
@@ -46,34 +132,108 @@
           {
             "id": "gallery-section",
             "type": "div",
+            "sectionType": "gallery",
+            "editable": {
+              "moveable": true,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true
+            },
+            "editingMeta": {
+              "name": "Gallery Section",
+              "description": "Product image gallery",
+              "icon": "image",
+              "category": "media"
+            },
             "props": {
-              "className": "mb-16 flex justify-center"
+              "className": "mb-16"
             },
             "children": [
               {
-                "id": "gallery-image",
-                "type": "img",
+                "id": "gallery-container",
+                "type": "div",
                 "props": {
-                  "src": "{{images[0]}}",
-                  "alt": "Product Image",
-                  "className": "max-w-full h-auto object-cover rounded-lg shadow-sm",
-                  "style": { "maxHeight": "500px" }
+                  "className": "space-y-4"
                 },
-                "children": []
+                "children": [
+                  {
+                    "id": "main-image-container",
+                    "type": "div",
+                    "props": {
+                      "className": "aspect-[4/3] bg-gray-100 rounded-sm overflow-hidden relative group"
+                    },
+                    "children": [
+                      {
+                        "id": "main-image",
+                        "type": "img",
+                        "props": {
+                          "src": "{{images[0]}}",
+                          "alt": "Product image",
+                          "className": "w-full h-full object-cover"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "thumbnails-container",
+                    "type": "div",
+                    "props": {
+                      "className": "flex justify-center space-x-2"
+                    },
+                    "children": "gallery.component"
+                  }
+                ]
               }
             ]
           },
           {
             "id": "features-section",
             "type": "div",
-            "props": {
-              "className": "grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+            "sectionType": "features",
+            "editable": {
+              "moveable": true,
+              "removeable": true,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
             },
-            "children": "{{content.features.map}}"
+            "editingMeta": {
+              "name": "Features Section",
+              "description": "Product features grid",
+              "icon": "star",
+              "category": "content"
+            },
+            "props": {
+              "className": "mb-16"
+            },
+            "children": [
+              {
+                "id": "features-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-3 gap-8"
+                },
+                "children": "{{content.features.map}}"
+              }
+            ]
           },
           {
             "id": "specs-section",
             "type": "div",
+            "sectionType": "specifications",
+            "editable": {
+              "moveable": true,
+              "removeable": true,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Specifications Section",
+              "description": "Product details list",
+              "icon": "list",
+              "category": "content"
+            },
             "props": {
               "className": "mb-16"
             },
@@ -81,24 +241,51 @@
               {
                 "id": "specs-title",
                 "type": "h2",
-                "props": {
-                  "className": "text-2xl font-light text-gray-900 mb-6 text-center"
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true
                 },
-                "children": ["Specifications"]
+                "props": {
+                  "className": "text-2xl font-light mb-6 text-center"
+                },
+                "children": ["Details"]
               },
               {
-                "id": "specs-list",
+                "id": "specs-container",
                 "type": "div",
                 "props": {
-                  "className": "max-w-2xl mx-auto space-y-3"
+                  "className": "max-w-md mx-auto"
                 },
-                "children": "{{content.specifications.entries}}"
+                "children": [
+                  {
+                    "id": "specs-list",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-3"
+                    },
+                    "children": "{{content.specifications.entries}}"
+                  }
+                ]
               }
             ]
           },
           {
             "id": "cta-section",
             "type": "div",
+            "sectionType": "cta",
+            "editable": {
+              "moveable": true,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Call to Action",
+              "description": "Purchase button",
+              "icon": "shopping-cart",
+              "category": "action"
+            },
             "props": {
               "className": "text-center"
             },
@@ -106,8 +293,12 @@
               {
                 "id": "cta-button",
                 "type": "button",
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true
+                },
                 "props": {
-                  "className": "bg-gray-900 text-white px-8 py-3 rounded font-medium hover:bg-gray-800 transition-colors duration-200"
+                  "className": "px-8 py-3 bg-black text-white font-medium tracking-wide hover:bg-gray-800 transition-colors duration-200"
                 },
                 "children": ["Add to Cart"]
               }

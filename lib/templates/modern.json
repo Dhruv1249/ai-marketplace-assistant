@@ -2,66 +2,174 @@
   "metadata": {
     "template": "modern",
     "name": "Modern",
-    "description": "Card-based design with gradients and shadows"
+    "description": "Card-based design with gradients and shadows",
+    "version": "1.0",
+    "editable": true,
+    "category": "modern",
+    "tags": ["contemporary", "cards", "gradients", "interactive"],
+    "sections": ["hero", "gallery", "features", "specifications", "cta"],
+    "responsive": true,
+    "customizable": {
+      "colors": true,
+      "fonts": true,
+      "spacing": true,
+      "layout": true,
+      "gradients": true,
+      "shadows": true
+    }
+  },
+  "editingConfig": {
+    "allowedOperations": ["reorder", "style", "content", "add", "remove"],
+    "constraints": {
+      "minSections": 3,
+      "maxSections": 8,
+      "requiredSections": ["hero", "cta"]
+    },
+    "sectionTypes": {
+      "hero": { "maxCount": 1, "required": true },
+      "gallery": { "maxCount": 1, "required": false },
+      "features": { "maxCount": 1, "required": false },
+      "specifications": { "maxCount": 1, "required": false },
+      "testimonials": { "maxCount": 1, "required": false },
+      "cta": { "maxCount": 2, "required": true }
+    }
+  },
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#f8fafc",
+    "textColor": "#1e293b",
+    "accentColor": "#06b6d4",
+    "fontFamily": "Inter, sans-serif",
+    "headingFont": "Inter, sans-serif",
+    "fontSize": "16px",
+    "lineHeight": "1.6",
+    "borderRadius": "16px",
+    "spacing": "1.5rem",
+    "containerMaxWidth": "1400px",
+    "gradients": {
+      "primary": "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+      "secondary": "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+      "background": "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)"
+    },
+    "shadows": {
+      "small": "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
+      "medium": "0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)",
+      "large": "0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04)",
+      "xl": "0 25px 50px rgba(0,0,0,0.25)"
+    }
   },
   "component": {
     "id": "root",
     "type": "div",
     "props": {
-      "className": "min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col relative"
+      "className": "min-h-screen bg-gray-50 flex flex-col"
     },
     "children": [
       {
         "id": "container",
         "type": "div",
         "props": {
-          "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          "className": "flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
         },
         "children": [
           {
-            "id": "main-card",
+            "id": "hero-section",
             "type": "div",
+            "sectionType": "hero",
+            "editable": {
+              "moveable": false,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Hero Section",
+              "description": "Main product title and description with gradient background",
+              "icon": "type",
+              "category": "content"
+            },
             "props": {
-              "className": "bg-white rounded-2xl shadow-xl overflow-hidden"
+              "className": "bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 mb-8"
             },
             "children": [
               {
-                "id": "hero-section",
-                "type": "div",
-                "props": {
-                  "className": "bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8"
+                "id": "hero-title",
+                "type": "h1",
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true,
+                  "textAlign": true,
+                  "fontSize": true,
+                  "fontWeight": true,
+                  "color": true
                 },
-                "children": [
-                  {
-                    "id": "hero-title",
-                    "type": "h1",
-                    "props": {
-                      "className": "text-4xl font-bold mb-4"
-                    },
-                    "children": ["{{content.title}}"]
-                  },
-                  {
-                    "id": "hero-description",
-                    "type": "p",
-                    "props": {
-                      "className": "text-xl opacity-90 leading-relaxed whitespace-pre-line"
-                    },
-                    "children": ["{{content.description}}"]
-                  }
-                ]
+                "editingMeta": {
+                  "name": "Product Title",
+                  "description": "Main product heading",
+                  "contentType": "text"
+                },
+                "props": {
+                  "className": "text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4"
+                },
+                "children": ["{{content.title}}"]
               },
               {
-                "id": "content-grid",
+                "id": "hero-description",
+                "type": "p",
+                "editable": {
+                  "contentEditable": true,
+                  "styleEditable": true,
+                  "textAlign": true,
+                  "fontSize": true,
+                  "color": true,
+                  "lineHeight": true
+                },
+                "editingMeta": {
+                  "name": "Product Description",
+                  "description": "Detailed product description",
+                  "contentType": "textarea"
+                },
+                "props": {
+                  "className": "text-lg text-gray-700 leading-relaxed max-w-3xl"
+                },
+                "children": ["{{content.description}}"]
+              }
+            ]
+          },
+          {
+            "id": "gallery-section",
+            "type": "div",
+            "sectionType": "gallery",
+            "editable": {
+              "moveable": true,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true
+            },
+            "editingMeta": {
+              "name": "Gallery Section",
+              "description": "Product image gallery with modern styling",
+              "icon": "image",
+              "category": "media"
+            },
+            "props": {
+              "className": "mb-8"
+            },
+            "children": [
+              {
+                "id": "gallery-container",
                 "type": "div",
                 "props": {
-                  "className": "grid grid-cols-1 lg:grid-cols-2 gap-8 p-8"
+                  "className": "bg-white rounded-2xl shadow-lg overflow-hidden"
                 },
                 "children": [
                   {
-                    "id": "gallery-section",
+                    "id": "main-image-container",
                     "type": "div",
                     "props": {
-                      "className": "space-y-4"
+                      "className": "aspect-video relative group"
                     },
                     "children": [
                       {
@@ -69,89 +177,164 @@
                         "type": "img",
                         "props": {
                           "src": "{{images[0]}}",
-                          "alt": "Main Product Image",
-                          "className": "w-full h-auto object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300",
-                          "style": { "aspectRatio": "16/10" }
-                        },
-                        "children": []
+                          "alt": "Product image",
+                          "className": "w-full h-full object-cover"
+                        }
                       }
                     ]
                   },
                   {
-                    "id": "details-section",
+                    "id": "thumbnails-container",
                     "type": "div",
                     "props": {
-                      "className": "space-y-6"
+                      "className": "p-4 bg-gray-50"
+                    },
+                    "children": "gallery.component"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "features-section",
+            "type": "div",
+            "sectionType": "features",
+            "editable": {
+              "moveable": true,
+              "removeable": true,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Features Section",
+              "description": "Product features with modern card design",
+              "icon": "star",
+              "category": "content"
+            },
+            "props": {
+              "className": "mb-8"
+            },
+            "children": [
+              {
+                "id": "features-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-3 gap-6"
+                },
+                "children": "{{content.features.map}}"
+              }
+            ]
+          },
+          {
+            "id": "specs-section",
+            "type": "div",
+            "sectionType": "specifications",
+            "editable": {
+              "moveable": true,
+              "removeable": true,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Specifications Section",
+              "description": "Technical specifications with modern styling",
+              "icon": "list",
+              "category": "content"
+            },
+            "props": {
+              "className": "mb-8"
+            },
+            "children": [
+              {
+                "id": "specs-container",
+                "type": "div",
+                "props": {
+                  "className": "bg-white rounded-2xl shadow-lg overflow-hidden"
+                },
+                "children": [
+                  {
+                    "id": "specs-header",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4"
                     },
                     "children": [
                       {
-                        "id": "features-section",
-                        "type": "div",
-                        "props": {
-                          "className": "bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6"
+                        "id": "specs-title",
+                        "type": "h2",
+                        "editable": {
+                          "contentEditable": true,
+                          "styleEditable": true
                         },
-                        "children": [
-                          {
-                            "id": "features-title",
-                            "type": "h2",
-                            "props": {
-                              "className": "text-2xl font-bold text-gray-900 mb-4"
-                            },
-                            "children": ["Key Features"]
-                          },
-                          {
-                            "id": "features-list",
-                            "type": "div",
-                            "props": {
-                              "className": "space-y-4"
-                            },
-                            "children": "{{content.features.map}}"
-                          }
-                        ]
-                      },
+                        "props": {
+                          "className": "text-2xl font-bold text-gray-900"
+                        },
+                        "children": ["Technical Specifications"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "specs-content",
+                    "type": "div",
+                    "props": {
+                      "className": "p-6"
+                    },
+                    "children": [
                       {
-                        "id": "specs-section",
+                        "id": "specs-grid",
                         "type": "div",
                         "props": {
-                          "className": "bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6"
+                          "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
                         },
-                        "children": [
-                          {
-                            "id": "specs-title",
-                            "type": "h2",
-                            "props": {
-                              "className": "text-2xl font-bold text-gray-900 mb-4"
-                            },
-                            "children": ["Specifications"]
-                          },
-                          {
-                            "id": "specs-list",
-                            "type": "div",
-                            "props": {
-                              "className": "space-y-3"
-                            },
-                            "children": "{{content.specifications.entries}}"
-                          }
-                        ]
+                        "children": "{{content.specifications.entries}}"
                       }
                     ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "id": "cta-section",
+            "type": "div",
+            "sectionType": "cta",
+            "editable": {
+              "moveable": true,
+              "removeable": false,
+              "duplicatable": false,
+              "styleEditable": true,
+              "contentEditable": true
+            },
+            "editingMeta": {
+              "name": "Call to Action",
+              "description": "Purchase button with gradient styling",
+              "icon": "shopping-cart",
+              "category": "action"
+            },
+            "props": {
+              "className": "text-center"
+            },
+            "children": [
               {
-                "id": "cta-section",
+                "id": "cta-container",
                 "type": "div",
                 "props": {
-                  "className": "bg-gray-50 p-8 text-center"
+                  "className": "bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 shadow-lg"
                 },
                 "children": [
                   {
                     "id": "cta-button",
                     "type": "button",
-                    "props": {
-                      "className": "bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    "editable": {
+                      "contentEditable": true,
+                      "styleEditable": true
                     },
-                    "children": ["Add to Cart"]
+                    "props": {
+                      "className": "bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-50 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    },
+                    "children": ["Get Started Today"]
                   }
                 ]
               }

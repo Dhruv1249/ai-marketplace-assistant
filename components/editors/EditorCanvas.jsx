@@ -1,4 +1,4 @@
-import JSONModelRenderer from "./JSONModelRenderer";
+import EnhancedJSONModelRenderer from "./EnhancedJSONModelRenderer";
 
 
 const EditorCanvas = ({ initialModel }) => {
@@ -7,7 +7,7 @@ const EditorCanvas = ({ initialModel }) => {
         }, [pageModel]);
   return (
     <div className="border p-4 bg-gray-50 rounded-lg">
-      <JSONModelRenderer model={initialModel} />
+      <EnhancedJSONModelRenderer model={initialModel} />
     </div>
 
   );

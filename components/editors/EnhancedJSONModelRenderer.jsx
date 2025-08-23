@@ -3,8 +3,8 @@
 import React from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
 
-const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
-  console.log('JSONModelRenderer inputs:', { model, content, images, isEditing });
+const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
+  console.log('EnhancedJSONModelRenderer inputs:', { model, content, images, isEditing });
 
   if (!model) {
     console.error('Invalid model: model is undefined or null', model);
@@ -60,24 +60,24 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
     // Define different styles for different templates
     const templateStyles = {
       'gallery-focused': {
-        container: 'mb-4',
-        title: 'text-lg font-semibold text-gray-900',
-        explanation: 'text-gray-600'
+        container: 'border-l-4 border-blue-400 pl-4 mb-4',
+        title: 'font-medium mb-1',
+        explanation: 'text-sm leading-relaxed'
       },
       'classic': {
-        container: 'border-l-4 border-blue-600 pl-4',
-        title: 'text-lg font-semibold text-gray-900',
-        explanation: 'text-gray-600 mt-1'
+        container: 'border-l-4 border-gray-800 pl-6',
+        title: 'text-xl font-serif font-semibold text-gray-900 mb-3',
+        explanation: 'text-gray-700 leading-relaxed font-serif'
       },
       'minimal': {
         container: 'text-center',
-        title: 'text-xl font-medium text-gray-900 mb-3',
-        explanation: 'text-gray-600 leading-relaxed'
+        title: 'text-lg font-medium mb-2',
+        explanation: 'text-sm text-gray-600 leading-relaxed'
       },
       'modern': {
-        container: 'bg-white rounded-lg p-4 shadow-sm',
-        title: 'text-lg font-semibold text-gray-900 mb-2',
-        explanation: 'text-gray-600'
+        container: 'bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-200',
+        title: 'text-xl font-semibold text-gray-900 mb-3',
+        explanation: 'text-gray-600 leading-relaxed'
       }
     };
 
@@ -88,44 +88,138 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
       type: 'div',
       props: { className: styles.container },
       children: [
+        // Add icon for modern template
+        ...(template === 'modern' ? [{
+          id: `feature-${index}-icon`,
+          type: 'div',
+          props: { className: 'text-blue-600 mb-4' },
+          children: [{
+            id: `feature-${index}-icon-svg`,
+            type: 'svg',
+            props: {
+              className: 'w-8 h-8',
+              fill: 'none',
+              stroke: 'currentColor',
+              viewBox: '0 0 24 24'
+            },
+            children: [{
+              id: `feature-${index}-icon-path`,
+              type: 'path',
+              props: {
+                strokeLinecap: 'round',
+                strokeLinejoin: 'round',
+                strokeWidth: 2,
+                d: index === 0 ? 'M13 10V3L4 14h7v7l9-11h-7z' : 
+                   index === 1 ? 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' :
+                   'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+              }
+            }]
+          }]
+        }] : []),
         {
           id: `feature-${index}-title`,
-          type: 'h3',
+          type: template === 'gallery-focused' ? 'h4' : 'h3',
           props: { className: styles.title },
           children: [feature]
         },
-        {
+        ...(featureExplanations?.[feature] ? [{
           id: `feature-${index}-explanation`,
           type: 'p',
           props: { className: styles.explanation },
-          children: [featureExplanations?.[feature] || '']
-        }
+          children: [featureExplanations[feature]]
+        }] : [])
       ]
     }));
   };
 
-  const generateSpecComponents = (specifications) => {
+  const generateSpecComponents = (specifications, template = 'gallery-focused') => {
     if (!specifications || typeof specifications !== 'object') return [];
     
-    return Object.entries(specifications).map(([key, value], index) => ({
-      id: `spec-${index}`,
-      type: 'div',
-      props: { className: 'flex justify-between py-2' },
-      children: [
-        {
-          id: `spec-${index}-key`,
-          type: 'span',
-          props: { className: 'font-medium text-gray-700' },
-          children: [key]
-        },
-        {
-          id: `spec-${index}-value`,
-          type: 'span',
-          props: { className: 'text-gray-600' },
-          children: [value]
-        }
-      ]
-    }));
+    const entries = Object.entries(specifications);
+    
+    if (template === 'classic') {
+      return entries.map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'tr',
+        props: { className: 'border-b border-gray-300 last:border-b-0' },
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'td',
+            props: { className: 'py-3 pr-8 w-1/3 font-serif font-semibold text-gray-800' },
+            children: [key]
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'td',
+            props: { className: 'py-3 font-serif text-gray-700' },
+            children: [value]
+          }
+        ]
+      }));
+    } else if (template === 'gallery-focused') {
+      return entries.map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'tr',
+        props: {},
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'td',
+            props: { className: 'px-4 py-2 bg-gray-50 font-medium w-1/3' },
+            children: [key]
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'td',
+            props: { className: 'px-4 py-2' },
+            children: [value]
+          }
+        ]
+      }));
+    } else if (template === 'minimal') {
+      return entries.slice(0, 6).map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'div',
+        props: { className: 'flex justify-between py-2 border-b border-gray-100 last:border-b-0' },
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'span',
+            props: { className: 'text-gray-600' },
+            children: [key]
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'span',
+            props: { className: 'font-medium' },
+            children: [value]
+          }
+        ]
+      }));
+    } else if (template === 'modern') {
+      return entries.slice(0, 8).map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'div',
+        props: { className: 'flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg' },
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'span',
+            props: { className: 'font-medium text-gray-700' },
+            children: [key]
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'span',
+            props: { className: 'text-gray-900 font-semibold' },
+            children: [value]
+          }
+        ]
+      }));
+    }
+    
+    return [];
   };
 
   const processNode = (node, context) => {
@@ -165,7 +259,8 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
             processedNode.children = generateFeatureComponents(context.content?.features, context.content?.featureExplanations, templateType);
           } else if (processedNode.children.includes('content.specifications') && processedNode.children.includes('entries')) {
             // Generate specification components
-            processedNode.children = generateSpecComponents(context.content?.specifications);
+            const templateType = model?.metadata?.template || 'gallery-focused';
+            processedNode.children = generateSpecComponents(context.content?.specifications, templateType);
           } else {
             // Regular template string processing
             processedNode.children = processTemplateString(processedNode.children, context);
@@ -217,19 +312,43 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
       const elementMap = {
         'div': 'div',
         'section': 'section',
+        'article': 'article',
+        'header': 'header',
+        'footer': 'footer',
+        'main': 'main',
+        'aside': 'aside',
+        'nav': 'nav',
         'h1': 'h1',
         'h2': 'h2',
         'h3': 'h3',
+        'h4': 'h4',
+        'h5': 'h5',
+        'h6': 'h6',
         'p': 'p',
+        'span': 'span',
+        'a': 'a',
         'img': 'img',
         'button': 'button',
-        'span': 'span'
+        'input': 'input',
+        'textarea': 'textarea',
+        'select': 'select',
+        'ul': 'ul',
+        'ol': 'ol',
+        'li': 'li',
+        'table': 'table',
+        'thead': 'thead',
+        'tbody': 'tbody',
+        'tr': 'tr',
+        'th': 'th',
+        'td': 'td',
+        'svg': 'svg',
+        'path': 'path'
       };
       
       const Component = elementMap[type] || 'div';
 
       // Check if this is a void element that cannot have children
-      const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link'];
+      const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr', 'path'];
       const isVoidElement = voidElements.includes(type);
 
       // Process children only for non-void elements
@@ -242,31 +361,13 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
         }
       }
 
-      // Add editing handlers if in edit mode
-      const editProps = isEditing
-        ? {
-            draggable: true,
-            onDragStart: (e) => {
-              e.dataTransfer.setData('text/plain', JSON.stringify(comp));
-            },
-            onDoubleClick: () => {
-              if (!isVoidElement && typeof children === 'string') {
-                const newText = prompt('Edit text:', children);
-                if (newText && onUpdate) {
-                  console.log('Would update text to:', newText);
-                }
-              }
-            },
-          }
-        : {};
-
       // Render void elements without children
       if (isVoidElement) {
-        return <Component key={key} {...props} {...editProps} />;
+        return <Component key={key} {...props} />;
       }
 
       return (
-        <Component key={key} {...props} {...editProps}>
+        <Component key={key} {...props}>
           {renderedChildren}
         </Component>
       );
@@ -284,4 +385,4 @@ const JSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
   return <div>{renderComponent(processedComponent)}</div>;
 };
 
-export default JSONModelRenderer;
+export default EnhancedJSONModelRenderer;

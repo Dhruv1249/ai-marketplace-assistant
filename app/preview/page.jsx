@@ -1,19 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit3, Eye } from 'lucide-react';
-import JSONModelRenderer from '@/components/editors/JSONModelRenderer';
-import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
-import AIAssistant from '@/components/editors/AIAssistant';
+import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette } from 'lucide-react';
+import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
+import EnhancedSourceCodeEditor from '@/components/editors/EnhancedSourceCodeEditor';
+import EnhancedAIAssistant from '@/components/editors/EnhancedAIAssistant';
 
 export default function PreviewPage() {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sourceCodeEditorOpen, setSourceCodeEditorOpen] = useState(false);
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
-  const [customHTML, setCustomHTML] = useState('');
-  const [useCustomHTML, setUseCustomHTML] = useState(false);
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const [styleVariables, setStyleVariables] = useState({});
 
   useEffect(() => {
   try {
@@ -36,38 +36,46 @@ export default function PreviewPage() {
   }
 }, []);
 
-  const handleContentChange = (elementId, newText, newStyle) => {
-    console.log('Content changed:', elementId, newText, newStyle);
-    // Update JSON model (to be implemented in Step 2)
-  };
-
-  const handleSourceCodeSave = (newHTML) => {
-    setCustomHTML(newHTML);
-    setUseCustomHTML(true);
-    setSourceCodeEditorOpen(false);
-    console.log('HTML code updated:', newHTML);
-  };
-
-  const handleSourceCodeReset = () => {
-    setCustomHTML('');
-    setUseCustomHTML(false);
-    console.log('Template reset to default');
-  };
-
-  const handleAIApplyChanges = (changes) => {
-    if (customHTML) {
-      const updatedHTML = customHTML.replace(
-        '</main>',
-        `${changes}\n    </main>`
-      );
-      setCustomHTML(updatedHTML);
-    } else {
-      setCustomHTML(changes);
+  // Handle template updates from enhanced editors
+  const handleTemplateUpdate = useCallback((updatedTemplate) => {
+    console.log('Template updated:', updatedTemplate);
+    setData(prevData => ({
+      ...prevData,
+      model: updatedTemplate
+    }));
+    
+    // Update style variables if they changed
+    if (updatedTemplate.styleVariables) {
+      setStyleVariables(updatedTemplate.styleVariables);
     }
-    setUseCustomHTML(true);
+  }, []);
+
+  // Handle component selection in edit mode
+  const handleComponentSelect = useCallback((component) => {
+    console.log('Component selected:', component);
+    setSelectedComponentId(component?.id || null);
+  }, []);
+
+  // Handle source code editor actions
+  const handleSourceCodeSave = useCallback((newHTML) => {
+    console.log('Source code saved');
+    setSourceCodeEditorOpen(false);
+  }, []);
+
+  const handleSourceCodeReset = useCallback(() => {
+    console.log('Template reset to default');
+    if (data?.model) {
+      // Reset any custom style variables
+      setStyleVariables({});
+    }
+  }, [data]);
+
+  // Handle AI assistant template updates
+  const handleAITemplateUpdate = useCallback((updatedTemplate) => {
+    console.log('AI template update:', updatedTemplate);
+    handleTemplateUpdate(updatedTemplate);
     setAiAssistantOpen(false);
-    console.log('AI changes applied:', changes);
-  };
+  }, [handleTemplateUpdate]);
 
   const getTemplateName = () => {
     if (!data?.model?.metadata?.template) return 'Template';
@@ -144,30 +152,54 @@ export default function PreviewPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            {useCustomHTML ? (
-              <div className="w-full">
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Custom HTML Preview:</strong> Showing your edited HTML code
-                  </p>
+          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            {/* Template Info Bar */}
+            {data.model?.metadata && (
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Settings size={16} className="text-gray-600" />
+                    <span className="text-sm font-medium text-gray-900">
+                      {data.model.metadata.name || 'Template'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Palette size={14} className="text-gray-500" />
+                    <span className="text-xs text-gray-600">
+                      {data.model.metadata.sections?.length || 0} sections
+                    </span>
+                  </div>
+                  {data.model.metadata.tags && (
+                    <div className="flex gap-1">
+                      {data.model.metadata.tags.slice(0, 3).map((tag, i) => (
+                        <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <iframe
-                  srcDoc={customHTML}
-                  className="w-full h-[80vh] border rounded-lg"
-                  title="Custom HTML Preview"
-                  sandbox="allow-scripts"
+                <div className="text-xs text-gray-500">
+                  v{data.model.metadata.version || '1.0'}
+                </div>
+              </div>
+            )}
+            
+            {/* Main Renderer */}
+            <div className="p-6">
+              <div className="w-full overflow-x-auto">
+                <EnhancedJSONModelRenderer
+                  model={data.model}
+                  content={data.content}
+                  images={data.images}
+                  isEditing={isEditing}
+                  onUpdate={handleTemplateUpdate}
+                  onComponentSelect={handleComponentSelect}
+                  selectedComponentId={selectedComponentId}
+                  styleVariables={styleVariables}
                 />
               </div>
-            ) : (
-              <JSONModelRenderer
-                model={data.model}
-                content={data.content}
-                images={data.images}
-                isEditing={isEditing}
-                onUpdate={(newModel) => setData({ ...data, model: newModel })}
-              />
-            )}
+            </div>
           </div>
         )}
       </div>
@@ -184,20 +216,21 @@ export default function PreviewPage() {
         </div>
       )}
 
-      <SourceCodeEditor
+      <EnhancedSourceCodeEditor
         isOpen={sourceCodeEditorOpen}
         onClose={() => setSourceCodeEditorOpen(false)}
         onSave={handleSourceCodeSave}
         onReset={handleSourceCodeReset}
         templateData={data}
         templateName={getTemplateName()}
+        onTemplateUpdate={handleTemplateUpdate}
       />
 
-      <AIAssistant
+      <EnhancedAIAssistant
         isOpen={aiAssistantOpen}
         onClose={() => setAiAssistantOpen(false)}
-        onApplyChanges={handleAIApplyChanges}
-        currentTemplate={customHTML || 'No custom template yet'}
+        onTemplateUpdate={handleAITemplateUpdate}
+        templateData={data}
         templateName={getTemplateName()}
       />
     </div>
