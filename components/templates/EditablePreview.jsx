@@ -5,8 +5,6 @@ import GalleryFocusedTemplate from "./editable/GalleryFocusedTemplate";
 import MinimalTemplate from "./editable/MinimalTemplate";
 import ModernTemplate from "./editable/ModernTemplate";
 import ClassicTemplate from "./editable/ClassicTemplate";
-import ElementToolbar from "./shared/ElementToolbar";
-import { TemplateStorage } from "../../lib/templateStorage";
 
 /* ==========================
    Main editable template preview component
@@ -18,41 +16,63 @@ export default function EditableTemplatePreview({
   isEditing = false,
   onContentChange,
 }) {
-  const [templateEdits, setTemplateEdits] = useState(null);
-  const templateId = `product_${layoutType}`;
-
-  useEffect(() => {
-    if (isEditing) {
-      const edits = TemplateStorage.getTemplateEdits('product', templateId);
-      setTemplateEdits(edits);
-    }
-  }, [isEditing, templateId]);
-
-  const handleAddElement = (element) => {
-    const elementId = TemplateStorage.addCustomElement('product', templateId, element);
-    const updatedEdits = TemplateStorage.getTemplateEdits('product', templateId);
-    setTemplateEdits(updatedEdits);
-    onContentChange?.('element_added', elementId, element);
-  };
-
-  const handleSaveTemplate = () => {
-    if (templateEdits) {
-      TemplateStorage.saveTemplateEdits('product', templateId, templateEdits);
-      alert('Template saved successfully!');
-    }
-  };
+  const [templateEdits, setTemplateEdits] = useState({
+    elementStyles: {},
+    elementTexts: {},
+    elementProps: {},
+    deletedElements: [],
+    version: 0
+  });
 
   const handleElementUpdate = (elementId, updates) => {
-    TemplateStorage.updateElement('product', templateId, elementId, updates);
-    const updatedEdits = TemplateStorage.getTemplateEdits('product', templateId);
-    setTemplateEdits(updatedEdits);
+    setTemplateEdits(prev => {
+      const newEdits = { ...prev };
+      
+      // Update styles
+      if (updates.style) {
+        newEdits.elementStyles = {
+          ...newEdits.elementStyles,
+          [elementId]: { ...newEdits.elementStyles[elementId], ...updates.style }
+        };
+      }
+
+      // Update text content
+      if (updates.text !== undefined) {
+        newEdits.elementTexts = {
+          ...newEdits.elementTexts,
+          [elementId]: updates.text
+        };
+      }
+
+      // Update props
+      if (updates.props) {
+        newEdits.elementProps = {
+          ...newEdits.elementProps,
+          [elementId]: { ...newEdits.elementProps[elementId], ...updates.props }
+        };
+      }
+
+      return newEdits;
+    });
+    
     onContentChange?.(elementId, updates.text, updates.style, updates.props);
   };
 
   const handleElementDelete = (elementId) => {
-    TemplateStorage.deleteElement('product', templateId, elementId);
-    const updatedEdits = TemplateStorage.getTemplateEdits('product', templateId);
-    setTemplateEdits(updatedEdits);
+    setTemplateEdits(prev => ({
+      ...prev,
+      deletedElements: [...prev.deletedElements, elementId],
+      elementStyles: Object.fromEntries(
+        Object.entries(prev.elementStyles).filter(([key]) => key !== elementId)
+      ),
+      elementTexts: Object.fromEntries(
+        Object.entries(prev.elementTexts).filter(([key]) => key !== elementId)
+      ),
+      elementProps: Object.fromEntries(
+        Object.entries(prev.elementProps).filter(([key]) => key !== elementId)
+      )
+    }));
+    
     onContentChange?.('element_deleted', elementId);
   };
 
@@ -67,14 +87,6 @@ export default function EditableTemplatePreview({
 
   return (
     <>
-      {isEditing && (
-        <ElementToolbar
-          isEditing={isEditing}
-          onAddElement={handleAddElement}
-          onSave={handleSaveTemplate}
-        />
-      )}
-      
       {(() => {
         switch (layoutType) {
           case "gallery-focused":

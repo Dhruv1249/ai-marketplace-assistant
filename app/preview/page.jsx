@@ -5,17 +5,40 @@ import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye } from 'lucide-react';
 import FullTemplatePreview from '@/components/templates/FullPreview';
 import EditableTemplatePreview from '@/components/templates/EditablePreview';
+import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
+import AIAssistant from '@/components/editors/AIAssistant';
 
 export default function PreviewPage() {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [sourceCodeEditorOpen, setSourceCodeEditorOpen] = useState(false);
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
+  const [customHTML, setCustomHTML] = useState('');
+  const [useCustomHTML, setUseCustomHTML] = useState(false);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem('previewData');
+      // Try to get data from temporary localStorage first
+      let raw = localStorage.getItem('tempPreviewData');
+      console.log('Raw localStorage data:', raw);
+      
       if (raw) {
         const parsed = JSON.parse(raw);
+        console.log('Parsed preview data:', parsed);
         setData(parsed);
+        // Clean up the temporary data after reading
+        localStorage.removeItem('tempPreviewData');
+      } else {
+        // Fallback to sessionStorage for same-tab previews
+        raw = sessionStorage.getItem('previewData');
+        console.log('Fallback to sessionStorage:', raw);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          console.log('Parsed sessionStorage data:', parsed);
+          setData(parsed);
+        } else {
+          console.log('No preview data found in localStorage or sessionStorage');
+        }
       }
     } catch (e) {
       console.error('Failed to read preview data:', e);
@@ -25,7 +48,45 @@ export default function PreviewPage() {
   const handleContentChange = (elementId, newText, newStyle) => {
     // Update the content based on element changes
     console.log('Content changed:', elementId, newText, newStyle);
-    // You can implement saving logic here
+    // No saving logic - changes are temporary only
+  };
+
+  const handleSourceCodeSave = (newHTML) => {
+    setCustomHTML(newHTML);
+    setUseCustomHTML(true);
+    setSourceCodeEditorOpen(false);
+    console.log('HTML code updated:', newHTML);
+  };
+
+  const handleSourceCodeReset = () => {
+    setCustomHTML('');
+    setUseCustomHTML(false);
+    console.log('Template reset to default');
+  };
+
+  const handleAIApplyChanges = (changes) => {
+    // AI changes are HTML fragments, so we need to integrate them
+    if (customHTML) {
+      // Insert AI changes into existing HTML
+      const updatedHTML = customHTML.replace(
+        '</main>',
+        `${changes}\n    </main>`
+      );
+      setCustomHTML(updatedHTML);
+    } else {
+      // Create new HTML with AI changes
+      setCustomHTML(changes);
+    }
+    setUseCustomHTML(true);
+    setAiAssistantOpen(false);
+    console.log('AI changes applied:', changes);
+  };
+
+  const getTemplateName = () => {
+    if (!data?.layoutType) return 'Template';
+    return data.layoutType.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join('') + 'Template.jsx';
   };
 
   return (
@@ -61,6 +122,26 @@ export default function PreviewPage() {
                 </>
               )}
             </button>
+
+            <button
+              onClick={() => setSourceCodeEditorOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+              Source Code
+            </button>
+
+            <button
+              onClick={() => setAiAssistantOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              AI Assistant
+            </button>
             
             <div className="text-xs text-gray-500">
               Keep the creation tab open to view uploaded images in this preview.
@@ -78,7 +159,22 @@ export default function PreviewPage() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            {isEditing ? (
+            {useCustomHTML ? (
+              // Show custom HTML in iframe
+              <div className="w-full">
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Custom HTML Preview:</strong> Showing your edited HTML code
+                  </p>
+                </div>
+                <iframe
+                  srcDoc={customHTML}
+                  className="w-full h-[80vh] border rounded-lg"
+                  title="Custom HTML Preview"
+                  sandbox="allow-scripts"
+                />
+              </div>
+            ) : isEditing ? (
               <EditableTemplatePreview 
                 layoutType={data.layoutType} 
                 content={data.content} 
@@ -109,6 +205,25 @@ export default function PreviewPage() {
           </ul>
         </div>
       )}
+
+      {/* Source Code Editor */}
+      <SourceCodeEditor
+        isOpen={sourceCodeEditorOpen}
+        onClose={() => setSourceCodeEditorOpen(false)}
+        onSave={handleSourceCodeSave}
+        onReset={handleSourceCodeReset}
+        templateData={data}
+        templateName={getTemplateName()}
+      />
+
+      {/* AI Assistant */}
+      <AIAssistant
+        isOpen={aiAssistantOpen}
+        onClose={() => setAiAssistantOpen(false)}
+        onApplyChanges={handleAIApplyChanges}
+        currentTemplate={customHTML || 'No custom template yet'}
+        templateName={getTemplateName()}
+      />
     </div>
   );
 }
