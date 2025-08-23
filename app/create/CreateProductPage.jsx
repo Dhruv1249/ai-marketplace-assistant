@@ -164,7 +164,10 @@ const CreateProductPage = () => {
         },
         images,
       };
-      localStorage.setItem('previewData', JSON.stringify(payload));
+      console.log('Storing preview data:', payload);
+      // Use localStorage for cross-tab sharing, but with temporary key
+      localStorage.setItem('tempPreviewData', JSON.stringify(payload));
+      console.log('Data stored in localStorage');
       window.open('/preview', '_blank', 'noopener,noreferrer');
     } catch (e) {
       console.error('Failed to open preview:', e);
