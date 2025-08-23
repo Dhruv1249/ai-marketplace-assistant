@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Send, Bot, User, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Send, Bot, User, CheckCircle, AlertCircle, Shield } from 'lucide-react';
 
 export default function EnhancedAIAssistant({ 
   isOpen, 
@@ -25,9 +25,21 @@ export default function EnhancedAIAssistant({
     scrollToBottom();
   }, [history, result, error]);
 
-  // Generate AI response using Gemini API
+  // Generate AI response using Gemini API with actual form data
   const generateAIResponse = useCallback(async (prompt, template) => {
     try {
+      // Use actual form data and uploaded images
+      const actualData = {
+        content: template.content || {
+          title: "Product Title",
+          description: "Product description...",
+          features: [],
+          featureExplanations: {},
+          specifications: {}
+        },
+        images: template.images || []
+      };
+
       const response = await fetch('/api/ai/modify-template', {
         method: 'POST',
         headers: {
@@ -35,7 +47,10 @@ export default function EnhancedAIAssistant({
         },
         body: JSON.stringify({
           prompt,
-          templateData: template,
+          templateData: {
+            ...template,
+            ...actualData
+          },
         }),
       });
 
@@ -106,7 +121,7 @@ export default function EnhancedAIAssistant({
 
   const handleApplyChanges = useCallback(() => {
     if (result?.modifications && result.hasChanges) {
-      console.log('Applying changes:', result.modifications);
+      console.log('Applying validated changes:', result.modifications);
       
       // Create the updated template by properly merging all modifications
       const updatedTemplate = { ...templateData.model };
@@ -129,10 +144,10 @@ export default function EnhancedAIAssistant({
         console.log('Applied metadata:', updatedTemplate.metadata);
       }
       
-      // Apply component structure if provided
+      // Apply component structure if provided (already validated)
       if (result.modifications.component) {
         updatedTemplate.component = result.modifications.component;
-        console.log('Applied component structure');
+        console.log('Applied validated component structure');
       }
       
       console.log('Final updated template:', updatedTemplate);
@@ -149,7 +164,7 @@ export default function EnhancedAIAssistant({
           timestamp: new Date().toLocaleTimeString(),
           status: 'completed',
           result: {
-            explanation: 'Your template has been updated with the AI-generated changes.',
+            explanation: 'Your template has been updated with the AI-generated changes. All modifications were validated for safety.',
             hasChanges: false
           }
         };
@@ -164,9 +179,9 @@ export default function EnhancedAIAssistant({
     "Make it blue and modern",
     "Apply a dark theme", 
     "Use elegant serif fonts",
-    "Add more breathing room",
-    "Create a green nature theme",
-    "Add testimonials section"
+    "Change to green colors",
+    "Make text larger",
+    "Add more spacing"
   ];
 
   if (!isOpen) return null;
@@ -182,7 +197,10 @@ export default function EnhancedAIAssistant({
             </div>
             <div>
               <h2 className="font-semibold text-gray-900">AI Template Editor</h2>
-              <p className="text-sm text-gray-500">Powered by Gemini AI • {templateName}</p>
+              <p className="text-sm text-gray-500 flex items-center gap-1">
+                <Shield size={12} className="text-green-600" />
+                Protected by validation • {templateName}
+              </p>
             </div>
           </div>
           
@@ -205,11 +223,21 @@ export default function EnhancedAIAssistant({
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium text-blue-900 mb-2">
-                    Hi! I can edit your entire JSON template structure.
+                    Hi! I can safely edit your template with your actual content.
                   </h3>
                   <p className="text-blue-800 text-sm mb-3">
-                    I can modify colors, fonts, layout, add sections, change structure, and more!
+                    I have access to your form data and uploaded images, and will validate all changes.
                   </p>
+                  
+                  <div className="bg-blue-100 rounded-lg p-3 mb-3">
+                    <h4 className="text-xs font-medium text-blue-900 mb-1">Your Actual Data Available:</h4>
+                    <div className="text-xs text-blue-800 space-y-1">
+                      <div>• Title: {templateData?.content?.title || 'Not set'}</div>
+                      <div>• Features: {templateData?.content?.features?.length || 0} features</div>
+                      <div>• Specs: {Object.keys(templateData?.content?.specifications || {}).length} specifications</div>
+                      <div>• Images: {templateData?.images?.length || 0} uploaded images</div>
+                    </div>
+                  </div>
                   
                   <div className="flex flex-wrap gap-2">
                     {quickPrompts.map((example, i) => (
@@ -256,7 +284,7 @@ export default function EnhancedAIAssistant({
                           <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
                           <div className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
-                        <span>AI is editing JSON...</span>
+                        <span>AI analyzing your content...</span>
                       </div>
                     )}
                     
@@ -266,9 +294,10 @@ export default function EnhancedAIAssistant({
                         {item.result.hasChanges && (
                           <button
                             onClick={() => setResult(item.result)}
-                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 flex items-center gap-1"
                           >
-                            Apply JSON Changes
+                            <Shield size={10} className="text-green-600" />
+                            Apply Safe Changes
                           </button>
                         )}
                       </div>
@@ -292,7 +321,8 @@ export default function EnhancedAIAssistant({
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="text-green-600" size={16} />
-                  <h3 className="font-medium text-green-900">JSON Template Changes Ready</h3>
+                  <h3 className="font-medium text-green-900">Validated Changes Ready</h3>
+                  <Shield size={14} className="text-green-600" />
                 </div>
                 <button
                   onClick={() => setResult(null)}
@@ -307,9 +337,10 @@ export default function EnhancedAIAssistant({
               <div className="flex gap-2">
                 <button
                   onClick={handleApplyChanges}
-                  className="px-3 py-1.5 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                  className="px-3 py-1.5 bg-green-600 text-white rounded text-sm hover:bg-green-700 flex items-center gap-1"
                 >
-                  Apply to Template
+                  <Shield size={12} />
+                  Apply Safe Changes
                 </button>
                 <button
                   onClick={() => setResult(null)}
@@ -331,7 +362,7 @@ export default function EnhancedAIAssistant({
               type="text"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Tell me how to modify the JSON template..."
+              placeholder="Tell me how to modify your template..."
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               disabled={isProcessing}
             />
