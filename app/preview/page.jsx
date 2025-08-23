@@ -5,10 +5,16 @@ import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye } from 'lucide-react';
 import FullTemplatePreview from '@/components/templates/FullPreview';
 import EditableTemplatePreview from '@/components/templates/EditablePreview';
+import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
+import AIAssistant from '@/components/editors/AIAssistant';
 
 export default function PreviewPage() {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [sourceCodeEditorOpen, setSourceCodeEditorOpen] = useState(false);
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
+  const [customHTML, setCustomHTML] = useState('');
+  const [useCustomHTML, setUseCustomHTML] = useState(false);
 
   useEffect(() => {
     try {
@@ -43,6 +49,44 @@ export default function PreviewPage() {
     // Update the content based on element changes
     console.log('Content changed:', elementId, newText, newStyle);
     // No saving logic - changes are temporary only
+  };
+
+  const handleSourceCodeSave = (newHTML) => {
+    setCustomHTML(newHTML);
+    setUseCustomHTML(true);
+    setSourceCodeEditorOpen(false);
+    console.log('HTML code updated:', newHTML);
+  };
+
+  const handleSourceCodeReset = () => {
+    setCustomHTML('');
+    setUseCustomHTML(false);
+    console.log('Template reset to default');
+  };
+
+  const handleAIApplyChanges = (changes) => {
+    // AI changes are HTML fragments, so we need to integrate them
+    if (customHTML) {
+      // Insert AI changes into existing HTML
+      const updatedHTML = customHTML.replace(
+        '</main>',
+        `${changes}\n    </main>`
+      );
+      setCustomHTML(updatedHTML);
+    } else {
+      // Create new HTML with AI changes
+      setCustomHTML(changes);
+    }
+    setUseCustomHTML(true);
+    setAiAssistantOpen(false);
+    console.log('AI changes applied:', changes);
+  };
+
+  const getTemplateName = () => {
+    if (!data?.layoutType) return 'Template';
+    return data.layoutType.split('-').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join('') + 'Template.jsx';
   };
 
   return (
@@ -80,7 +124,7 @@ export default function PreviewPage() {
             </button>
 
             <button
-              onClick={() => {/* TODO: Open Source Code Editor */}}
+              onClick={() => setSourceCodeEditorOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +134,7 @@ export default function PreviewPage() {
             </button>
 
             <button
-              onClick={() => {/* TODO: Open AI Assistant */}}
+              onClick={() => setAiAssistantOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +159,22 @@ export default function PreviewPage() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            {isEditing ? (
+            {useCustomHTML ? (
+              // Show custom HTML in iframe
+              <div className="w-full">
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Custom HTML Preview:</strong> Showing your edited HTML code
+                  </p>
+                </div>
+                <iframe
+                  srcDoc={customHTML}
+                  className="w-full h-[80vh] border rounded-lg"
+                  title="Custom HTML Preview"
+                  sandbox="allow-scripts"
+                />
+              </div>
+            ) : isEditing ? (
               <EditableTemplatePreview 
                 layoutType={data.layoutType} 
                 content={data.content} 
@@ -146,6 +205,25 @@ export default function PreviewPage() {
           </ul>
         </div>
       )}
+
+      {/* Source Code Editor */}
+      <SourceCodeEditor
+        isOpen={sourceCodeEditorOpen}
+        onClose={() => setSourceCodeEditorOpen(false)}
+        onSave={handleSourceCodeSave}
+        onReset={handleSourceCodeReset}
+        templateData={data}
+        templateName={getTemplateName()}
+      />
+
+      {/* AI Assistant */}
+      <AIAssistant
+        isOpen={aiAssistantOpen}
+        onClose={() => setAiAssistantOpen(false)}
+        onApplyChanges={handleAIApplyChanges}
+        currentTemplate={customHTML || 'No custom template yet'}
+        templateName={getTemplateName()}
+      />
     </div>
   );
 }
