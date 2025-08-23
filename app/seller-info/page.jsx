@@ -7,6 +7,8 @@ import { Button } from '@/components/ui';
 import SellerInfoTemplateSelector from '@/components/seller-info/SellerInfoTemplateSelector';
 import PhotoOptionsModal from '@/components/seller-info/PhotoOptionsModal';
 import AIContentGenerator from '@/components/seller-info/AIContentGenerator';
+import DeleteIcon from '@/components/animated icon/DeleteIcon';
+import SaveButton from '@/components/animated icon/SaveButton';
 
 export default function SellerInfoPage() {
   const [step, setStep] = useState(1);
@@ -694,14 +696,14 @@ export default function SellerInfoPage() {
               Preview
             </Button>
             
-            <Button
+            <SaveButton
               onClick={handleSave}
               className="flex items-center gap-2"
               disabled={!sellerData.name || !sellerData.title}
             >
               <Save size={16} />
               Save
-            </Button>
+            </SaveButton>
           </div>
         </div>
       </div>

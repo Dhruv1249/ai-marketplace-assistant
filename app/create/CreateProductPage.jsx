@@ -8,6 +8,9 @@ import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
 import DeleteButton from '@/components/animated icon/DeleteButton';
 
+
+
+
 // Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {

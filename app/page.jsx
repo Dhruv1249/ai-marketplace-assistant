@@ -14,6 +14,8 @@ import { Rocket } from "../components/animated icon/Rocket"; // adjust path if n
 import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; // adjust path if needed
 import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; // adjust path if needed
 import { Users as UsersComponent } from "../components/animated icon/Users"; // adjust path if needed
+import ReadMoreButton from "../components/animated icon/ReadMoreButton";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -463,9 +465,7 @@ useEffect(() => {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
-                Learn More
-              </Button>
+              <ReadMoreButton />
             </Link>
           </div>
         </div>
