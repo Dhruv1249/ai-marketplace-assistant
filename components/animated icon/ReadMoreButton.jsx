@@ -81,8 +81,8 @@ const ReadMoreButton = () => {
 
 const StyledWrapper = styled.div`
   .readmore-btn {
-    height: 56px; 
-    min-width: 240px; 
+    height: 48px; 
+    min-width: 210px; 
     display: flex;
     align-items: center;
     justify-content: center;

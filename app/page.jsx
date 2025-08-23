@@ -15,6 +15,7 @@ import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; // ad
 import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; // adjust path if needed
 import { Users as UsersComponent } from "../components/animated icon/Users"; // adjust path if needed
 import ReadMoreButton from "../components/animated icon/ReadMoreButton";
+import Explore from '@/components/animated icon/Explore';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -450,19 +451,18 @@ useEffect(() => {
       {/* CTA Section */}
       <div ref={ctaRef} className="from-blue-100 to-purple-400 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="cta-anim text-3xl font-bold text-white mb-4">
+          <h2 className="cta-anim text-3xl font-bold text-gray-900 mb-4">
             Ready to transform your product listings?
           </h2>
-          <p className="cta-anim text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="cta-anim text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Join thousands of sellers who are already using AI to create 
             better product pages and increase their sales.
           </p>
           <div className="cta-anim flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/create">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                <Wand2 className="mr-2" size={20} />
-                Get Started Free
-              </Button>
+              <Explore>
+                
+              </Explore>
             </Link>
             <Link href="/about">
               <ReadMoreButton />
