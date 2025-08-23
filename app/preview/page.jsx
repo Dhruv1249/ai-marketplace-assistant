@@ -1,10 +1,10 @@
+// app/preview/page.jsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye } from 'lucide-react';
 import FullTemplatePreview from '@/components/templates/FullPreview';
-import EditableTemplatePreview from '@/components/templates/EditablePreview';
 import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
 import AIAssistant from '@/components/editors/AIAssistant';
 
@@ -174,19 +174,14 @@ export default function PreviewPage() {
                   sandbox="allow-scripts"
                 />
               </div>
-            ) : isEditing ? (
-              <EditableTemplatePreview 
-                layoutType={data.layoutType} 
-                content={data.content} 
-                images={data.images}
-                isEditing={true}
-                onContentChange={handleContentChange}
-              />
             ) : (
+              // Use FullTemplatePreview for both preview and "edit mode" (keeps UI consistent and avoids missing import)
               <FullTemplatePreview 
                 layoutType={data.layoutType} 
                 content={data.content} 
-                images={data.images} 
+                images={data.images}
+                isEditing={isEditing}
+                onContentChange={handleContentChange}
               />
             )}
           </div>

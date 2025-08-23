@@ -1,14 +1,16 @@
-'use client';
+// app/create/CreateProductPage.jsx
+"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
 import { Button } from '@/components/ui';
-import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Eye, Plus } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
 import DeleteButton from '@/components/animated icon/DeleteButton';
 
-// Removed modal-based preview in favor of new tab preview
+// NOTE: We intentionally do NOT render previews inline here.
+// This page only collects content and opens the preview in a new tab.
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
@@ -153,6 +155,7 @@ const CreateProductPage = () => {
     setCurrentStep(3);
   };
 
+  // Saves the data needed for preview into localStorage and opens /preview in a new tab
   const openPreview = () => {
     if (!generatedContent) return;
     try {
@@ -164,10 +167,8 @@ const CreateProductPage = () => {
         },
         images,
       };
-      console.log('Storing preview data:', payload);
-      // Use localStorage for cross-tab sharing, but with temporary key
+      // temporarily store payload for preview tab
       localStorage.setItem('tempPreviewData', JSON.stringify(payload));
-      console.log('Data stored in localStorage');
       window.open('/preview', '_blank', 'noopener,noreferrer');
     } catch (e) {
       console.error('Failed to open preview:', e);
@@ -433,13 +434,15 @@ const CreateProductPage = () => {
             {currentStep === 3 && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Choose Layout</h2>
+
+                {/* Keep Template Selector */}
                 <TemplateSelector
                   content={generatedContent}
                   value={selectedLayout}
                   onChange={setSelectedLayout}
                 />
 
-                {/* Image upload */}
+                {/* Keep Image Upload */}
                 <div className="mt-6">
                   <p className="text-sm font-medium text-gray-700 mb-2">Upload Images (3-5)</p>
                   <input
@@ -476,37 +479,19 @@ const CreateProductPage = () => {
                   )}
                 </div>
 
-                <div className="mt-6 bg-gray-50 border rounded p-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Selected Layout Config</p>
-                  <pre className="text-xs text-gray-700 overflow-auto">
-{JSON.stringify({
-  type: selectedLayout,
-  sections: [
-    { id: 'hero', type: 'hero', order: 1, visible: true, config: {} },
-    { id: 'gallery', type: 'gallery', order: 2, visible: selectedLayout !== 'single-column', config: {} },
-    { id: 'description', type: 'description', order: 3, visible: true, config: {} },
-    { id: 'features', type: 'features', order: 4, visible: true, config: {} },
-    { id: 'specs', type: 'specifications', order: 5, visible: selectedLayout !== 'feature-blocks', config: {} },
-    { id: 'cta', type: 'cta', order: 6, visible: true, config: {} },
-  ],
-  theme: { primaryColor: '#2563eb', secondaryColor: '#111827', fontFamily: 'Inter' }
-}, null, 2)}
-                  </pre>
-                </div>
-
+                {/* Keep Buttons */}
                 <div className="flex gap-4 mt-6">
                   <Button variant="outline" onClick={() => handleStepChange(2)}>
                     Back
                   </Button>
-                  <Button variant="outline" onClick={openPreview}>
+                  <Button onClick={openPreview}>
                     <Eye className="mr-2" size={16} /> Preview Template
                   </Button>
                   <Button onClick={() => setCurrentStep(4)}>
                     Continue to Publish
                   </Button>
                 </div>
-
-                </div>
+              </div>
             )}
 
             {currentStep === 4 && (
@@ -609,8 +594,6 @@ const CreateProductPage = () => {
           </div>
         </div>
       )}
-
-      {/* New tab preview uses /preview route and localStorage */}
     </div>
   );
 };
