@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "template": "gallery-focused",
+    "name": "Gallery Focused",
+    "description": "Large image gallery with details sidebar"
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white flex flex-col relative"
+    },
+    "children": [
+      {
+        "id": "container",
+        "type": "div",
+        "props": {
+          "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        },
+        "children": [
+          {
+            "id": "main-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 lg:grid-cols-2 gap-8"
+            },
+            "children": [
+              {
+                "id": "gallery-section",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6"
+                },
+                "children": [
+                  {
+                    "id": "main-image",
+                    "type": "img",
+                    "props": {
+                      "src": "{{images[0]}}",
+                      "alt": "Main Product Image",
+                      "className": "w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105",
+                      "style": { "aspectRatio": "16/9" }
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "details-section",
+                "type": "div",
+                "props": {
+                  "className": ""
+                },
+                "children": [
+                  {
+                    "id": "hero-section",
+                    "type": "div",
+                    "props": {
+                      "className": "border-b pb-4 mb-4"
+                    },
+                    "children": [
+                      {
+                        "id": "hero-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-2xl font-semibold mb-2"
+                        },
+                        "children": ["{{content.title}}"]
+                      },
+                      {
+                        "id": "hero-description",
+                        "type": "p",
+                        "props": {
+                          "className": "whitespace-pre-line"
+                        },
+                        "children": ["{{content.description}}"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "features-section",
+                    "type": "div",
+                    "props": {
+                      "className": "mb-6"
+                    },
+                    "children": "{{content.features.map}}"
+                  },
+                  {
+                    "id": "specs-section",
+                    "type": "div",
+                    "props": {
+                      "className": "mb-6"
+                    },
+                    "children": [
+                      {
+                        "id": "specs-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-xl font-semibold text-gray-900 mb-4"
+                        },
+                        "children": ["Specifications"]
+                      },
+                      {
+                        "id": "specs-list",
+                        "type": "div",
+                        "props": {
+                          "className": "grid grid-cols-1 gap-4"
+                        },
+                        "children": "{{content.specifications.entries}}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "cta-section",
+                    "type": "div",
+                    "props": {
+                      "className": ""
+                    },
+                    "children": [
+                      {
+                        "id": "cta-button",
+                        "type": "button",
+                        "props": {
+                          "className": "bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
+                        },
+                        "children": ["Add to Cart"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "template": "modern",
+    "name": "Modern",
+    "description": "Card-based design with gradients and shadows"
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col relative"
+    },
+    "children": [
+      {
+        "id": "container",
+        "type": "div",
+        "props": {
+          "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        },
+        "children": [
+          {
+            "id": "main-card",
+            "type": "div",
+            "props": {
+              "className": "bg-white rounded-2xl shadow-xl overflow-hidden"
+            },
+            "children": [
+              {
+                "id": "hero-section",
+                "type": "div",
+                "props": {
+                  "className": "bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8"
+                },
+                "children": [
+                  {
+                    "id": "hero-title",
+                    "type": "h1",
+                    "props": {
+                      "className": "text-4xl font-bold mb-4"
+                    },
+                    "children": ["{{content.title}}"]
+                  },
+                  {
+                    "id": "hero-description",
+                    "type": "p",
+                    "props": {
+                      "className": "text-xl opacity-90 leading-relaxed whitespace-pre-line"
+                    },
+                    "children": ["{{content.description}}"]
+                  }
+                ]
+              },
+              {
+                "id": "content-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 lg:grid-cols-2 gap-8 p-8"
+                },
+                "children": [
+                  {
+                    "id": "gallery-section",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-4"
+                    },
+                    "children": [
+                      {
+                        "id": "main-image",
+                        "type": "img",
+                        "props": {
+                          "src": "{{images[0]}}",
+                          "alt": "Main Product Image",
+                          "className": "w-full h-auto object-cover rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300",
+                          "style": { "aspectRatio": "16/10" }
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": "details-section",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": [
+                      {
+                        "id": "features-section",
+                        "type": "div",
+                        "props": {
+                          "className": "bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6"
+                        },
+                        "children": [
+                          {
+                            "id": "features-title",
+                            "type": "h2",
+                            "props": {
+                              "className": "text-2xl font-bold text-gray-900 mb-4"
+                            },
+                            "children": ["Key Features"]
+                          },
+                          {
+                            "id": "features-list",
+                            "type": "div",
+                            "props": {
+                              "className": "space-y-4"
+                            },
+                            "children": "{{content.features.map}}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "specs-section",
+                        "type": "div",
+                        "props": {
+                          "className": "bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6"
+                        },
+                        "children": [
+                          {
+                            "id": "specs-title",
+                            "type": "h2",
+                            "props": {
+                              "className": "text-2xl font-bold text-gray-900 mb-4"
+                            },
+                            "children": ["Specifications"]
+                          },
+                          {
+                            "id": "specs-list",
+                            "type": "div",
+                            "props": {
+                              "className": "space-y-3"
+                            },
+                            "children": "{{content.specifications.entries}}"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "cta-section",
+                "type": "div",
+                "props": {
+                  "className": "bg-gray-50 p-8 text-center"
+                },
+                "children": [
+                  {
+                    "id": "cta-button",
+                    "type": "button",
+                    "props": {
+                      "className": "bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    },
+                    "children": ["Add to Cart"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

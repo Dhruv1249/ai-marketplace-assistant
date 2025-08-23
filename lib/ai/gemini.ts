@@ -30,11 +30,11 @@ export async function generateContentWithStreaming(
   request: ContentGenerationRequest,
   onChunk?: (chunk: string) => void
 ): Promise<GeneratedContent> {
-  const MAX_RETRIES = 5;
+  const MAX_RETRIES = 1;
 
   async function callAI(): Promise<string> {
     const config = {};
-    const model = 'gemini-1.5-flash';
+    const model = 'gemini-2.5-flash-lite';
     const contents = [
       {
         role: 'user',
@@ -180,7 +180,7 @@ export async function generateFeatureExplanations(
 
   async function callAI(): Promise<string> {
     const config = {};
-    const model = 'gemini-1.5-flash';
+    const model = 'gemini-2.5-flash-lite';
     const contents = [
       {
         role: 'user',

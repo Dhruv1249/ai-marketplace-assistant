@@ -1,10 +1,9 @@
-// app/preview/page.jsx
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye } from 'lucide-react';
-import FullTemplatePreview from '@/components/templates/FullPreview';
+import JSONModelRenderer from '@/components/editors/JSONModelRenderer';
 import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
 import AIAssistant from '@/components/editors/AIAssistant';
 
@@ -17,38 +16,29 @@ export default function PreviewPage() {
   const [useCustomHTML, setUseCustomHTML] = useState(false);
 
   useEffect(() => {
-    try {
-      // Try to get data from temporary localStorage first
-      let raw = localStorage.getItem('tempPreviewData');
-      console.log('Raw localStorage data:', raw);
-      
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        console.log('Parsed preview data:', parsed);
+  try {
+    const raw = localStorage.getItem('previewData');
+    console.log('Raw previewData from localStorage:', raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      console.log('Parsed previewData:', parsed);
+      if (parsed?.model && parsed.model.metadata && parsed.model.component && parsed.content) {
         setData(parsed);
-        // Clean up the temporary data after reading
-        localStorage.removeItem('tempPreviewData');
+        localStorage.removeItem('previewData'); // Clear to prevent stale data
       } else {
-        // Fallback to sessionStorage for same-tab previews
-        raw = sessionStorage.getItem('previewData');
-        console.log('Fallback to sessionStorage:', raw);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          console.log('Parsed sessionStorage data:', parsed);
-          setData(parsed);
-        } else {
-          console.log('No preview data found in localStorage or sessionStorage');
-        }
+        console.error('Invalid previewData structure:', parsed);
       }
-    } catch (e) {
-      console.error('Failed to read preview data:', e);
+    } else {
+      console.error('No previewData found in localStorage');
     }
-  }, []);
+  } catch (e) {
+    console.error('Failed to read or parse previewData:', e);
+  }
+}, []);
 
   const handleContentChange = (elementId, newText, newStyle) => {
-    // Update the content based on element changes
     console.log('Content changed:', elementId, newText, newStyle);
-    // No saving logic - changes are temporary only
+    // Update JSON model (to be implemented in Step 2)
   };
 
   const handleSourceCodeSave = (newHTML) => {
@@ -65,16 +55,13 @@ export default function PreviewPage() {
   };
 
   const handleAIApplyChanges = (changes) => {
-    // AI changes are HTML fragments, so we need to integrate them
     if (customHTML) {
-      // Insert AI changes into existing HTML
       const updatedHTML = customHTML.replace(
         '</main>',
         `${changes}\n    </main>`
       );
       setCustomHTML(updatedHTML);
     } else {
-      // Create new HTML with AI changes
       setCustomHTML(changes);
     }
     setUseCustomHTML(true);
@@ -83,15 +70,14 @@ export default function PreviewPage() {
   };
 
   const getTemplateName = () => {
-    if (!data?.layoutType) return 'Template';
-    return data.layoutType.split('-').map(word => 
+    if (!data?.model?.metadata?.template) return 'Template';
+    return data.model.metadata.template.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join('') + 'Template.jsx';
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -160,7 +146,6 @@ export default function PreviewPage() {
         ) : (
           <div className="bg-white rounded-lg shadow-sm border p-6">
             {useCustomHTML ? (
-              // Show custom HTML in iframe
               <div className="w-full">
                 <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800">
@@ -175,20 +160,18 @@ export default function PreviewPage() {
                 />
               </div>
             ) : (
-              // Use FullTemplatePreview for both preview and "edit mode" (keeps UI consistent and avoids missing import)
-              <FullTemplatePreview 
-                layoutType={data.layoutType} 
-                content={data.content} 
+              <JSONModelRenderer
+                model={data.model}
+                content={data.content}
                 images={data.images}
                 isEditing={isEditing}
-                onContentChange={handleContentChange}
+                onUpdate={(newModel) => setData({ ...data, model: newModel })}
               />
             )}
           </div>
         )}
       </div>
 
-      {/* Edit Mode Instructions */}
       {isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
           <h3 className="font-semibold mb-2">Edit Mode Active</h3>
@@ -201,7 +184,6 @@ export default function PreviewPage() {
         </div>
       )}
 
-      {/* Source Code Editor */}
       <SourceCodeEditor
         isOpen={sourceCodeEditorOpen}
         onClose={() => setSourceCodeEditorOpen(false)}
@@ -211,7 +193,6 @@ export default function PreviewPage() {
         templateName={getTemplateName()}
       />
 
-      {/* AI Assistant */}
       <AIAssistant
         isOpen={aiAssistantOpen}
         onClose={() => setAiAssistantOpen(false)}

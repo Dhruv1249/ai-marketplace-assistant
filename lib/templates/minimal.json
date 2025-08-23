@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "template": "minimal",
+    "name": "Minimal",
+    "description": "Clean, centered single-column layout"
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white flex flex-col"
+    },
+    "children": [
+      {
+        "id": "container",
+        "type": "div",
+        "props": {
+          "className": "flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+        },
+        "children": [
+          {
+            "id": "hero-section",
+            "type": "div",
+            "props": {
+              "className": "text-center mb-12"
+            },
+            "children": [
+              {
+                "id": "hero-title",
+                "type": "h1",
+                "props": {
+                  "className": "text-4xl font-light tracking-wide mb-4 text-gray-900"
+                },
+                "children": ["{{content.title}}"]
+              },
+              {
+                "id": "hero-description",
+                "type": "p",
+                "props": {
+                  "className": "text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed whitespace-pre-line"
+                },
+                "children": ["{{content.description}}"]
+              }
+            ]
+          },
+          {
+            "id": "gallery-section",
+            "type": "div",
+            "props": {
+              "className": "mb-16 flex justify-center"
+            },
+            "children": [
+              {
+                "id": "gallery-image",
+                "type": "img",
+                "props": {
+                  "src": "{{images[0]}}",
+                  "alt": "Product Image",
+                  "className": "max-w-full h-auto object-cover rounded-lg shadow-sm",
+                  "style": { "maxHeight": "500px" }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "features-section",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+            },
+            "children": "{{content.features.map}}"
+          },
+          {
+            "id": "specs-section",
+            "type": "div",
+            "props": {
+              "className": "mb-16"
+            },
+            "children": [
+              {
+                "id": "specs-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-2xl font-light text-gray-900 mb-6 text-center"
+                },
+                "children": ["Specifications"]
+              },
+              {
+                "id": "specs-list",
+                "type": "div",
+                "props": {
+                  "className": "max-w-2xl mx-auto space-y-3"
+                },
+                "children": "{{content.specifications.entries}}"
+              }
+            ]
+          },
+          {
+            "id": "cta-section",
+            "type": "div",
+            "props": {
+              "className": "text-center"
+            },
+            "children": [
+              {
+                "id": "cta-button",
+                "type": "button",
+                "props": {
+                  "className": "bg-gray-900 text-white px-8 py-3 rounded font-medium hover:bg-gray-800 transition-colors duration-200"
+                },
+                "children": ["Add to Cart"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

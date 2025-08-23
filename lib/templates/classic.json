@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "template": "classic",
+    "name": "Classic",
+    "description": "Traditional design with serif fonts and borders"
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-gray-50 flex flex-col relative font-serif"
+    },
+    "children": [
+      {
+        "id": "container",
+        "type": "div",
+        "props": {
+          "className": "flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        },
+        "children": [
+          {
+            "id": "main-content",
+            "type": "div",
+            "props": {
+              "className": "bg-white border-2 border-gray-300 rounded-lg shadow-lg p-8"
+            },
+            "children": [
+              {
+                "id": "header-section",
+                "type": "div",
+                "props": {
+                  "className": "text-center border-b-2 border-gray-200 pb-6 mb-8"
+                },
+                "children": [
+                  {
+                    "id": "hero-title",
+                    "type": "h1",
+                    "props": {
+                      "className": "text-4xl font-bold text-gray-900 mb-4"
+                    },
+                    "children": ["{{content.title}}"]
+                  },
+                  {
+                    "id": "hero-description",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-700 leading-relaxed whitespace-pre-line"
+                    },
+                    "children": ["{{content.description}}"]
+                  }
+                ]
+              },
+              {
+                "id": "main-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 lg:grid-cols-2 gap-8"
+                },
+                "children": [
+                  {
+                    "id": "gallery-section",
+                    "type": "div",
+                    "props": {
+                      "className": "border border-gray-300 rounded-lg p-4"
+                    },
+                    "children": [
+                      {
+                        "id": "main-image",
+                        "type": "img",
+                        "props": {
+                          "src": "{{images[0]}}",
+                          "alt": "Main Product Image",
+                          "className": "w-full h-auto object-cover border border-gray-200 rounded",
+                          "style": { "aspectRatio": "4/3" }
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "id": "details-section",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": [
+                      {
+                        "id": "features-section",
+                        "type": "div",
+                        "props": {
+                          "className": "border border-gray-300 rounded-lg p-4"
+                        },
+                        "children": [
+                          {
+                            "id": "features-title",
+                            "type": "h2",
+                            "props": {
+                              "className": "text-2xl font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2"
+                            },
+                            "children": ["Key Features"]
+                          },
+                          {
+                            "id": "features-list",
+                            "type": "div",
+                            "props": {
+                              "className": "space-y-4"
+                            },
+                            "children": "{{content.features.map}}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "specs-section",
+                        "type": "div",
+                        "props": {
+                          "className": "border border-gray-300 rounded-lg p-4"
+                        },
+                        "children": [
+                          {
+                            "id": "specs-title",
+                            "type": "h2",
+                            "props": {
+                              "className": "text-2xl font-bold text-gray-900 mb-4 border-b border-gray-200 pb-2"
+                            },
+                            "children": ["Specifications"]
+                          },
+                          {
+                            "id": "specs-list",
+                            "type": "div",
+                            "props": {
+                              "className": "space-y-2"
+                            },
+                            "children": "{{content.specifications.entries}}"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "cta-section",
+                "type": "div",
+                "props": {
+                  "className": "text-center mt-8 pt-6 border-t-2 border-gray-200"
+                },
+                "children": [
+                  {
+                    "id": "cta-button",
+                    "type": "button",
+                    "props": {
+                      "className": "bg-blue-800 text-white px-8 py-4 rounded border-2 border-blue-900 font-semibold text-lg hover:bg-blue-900 transition-colors duration-200 shadow-lg"
+                    },
+                    "children": ["Add to Cart"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

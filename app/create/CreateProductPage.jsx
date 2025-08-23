@@ -1,21 +1,18 @@
-// app/create/CreateProductPage.jsx
-"use client";
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
 import { Button } from '@/components/ui';
-import { ArrowLeft, Eye, Plus } from 'lucide-react';
+import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
-import DeleteButton from '@/components/animated icon/DeleteButton';
-
-// NOTE: We intentionally do NOT render previews inline here.
-// This page only collects content and opens the preview in a new tab.
+import galleryFocused from '@/lib/templates/gallery-focused.json';
+// Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedLayout, setSelectedLayout] = useState('gallery-focused');
+  const [pageModel, setPageModel] = useState(galleryFocused);
   const [images, setImages] = useState([]); // array of preview URLs
   const [featureExplanations, setFeatureExplanations] = useState({});
   const [isGeneratingExplanations, setIsGeneratingExplanations] = useState(false);
@@ -131,7 +128,7 @@ const CreateProductPage = () => {
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
       setImages([]);
-      setSelectedLayout('gallery-focused');
+      setPageModel(galleryFocused);
     } else if (pendingStep === 2) {
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
@@ -155,25 +152,32 @@ const CreateProductPage = () => {
     setCurrentStep(3);
   };
 
-  // Saves the data needed for preview into localStorage and opens /preview in a new tab
   const openPreview = () => {
-    if (!generatedContent) return;
-    try {
-      const payload = {
-        layoutType: selectedLayout,
-        content: {
-          ...generatedContent,
-          featureExplanations: featureExplanations
-        },
-        images,
-      };
-      // temporarily store payload for preview tab
-      localStorage.setItem('tempPreviewData', JSON.stringify(payload));
-      window.open('/preview', '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      console.error('Failed to open preview:', e);
-    }
-  };
+  if (!generatedContent) {
+    console.error('Cannot open preview: missing generatedContent');
+    return;
+  }
+  if (!pageModel || !pageModel.metadata || !pageModel.component) {
+    console.error('Cannot open preview: invalid pageModel', pageModel);
+    setPageModel(galleryFocused); // Fallback to default
+    return;
+  }
+  try {
+    const payload = {
+      model: pageModel,
+      content: {
+        ...generatedContent,
+        featureExplanations: featureExplanations || {}
+      },
+      images: images || []
+    };
+    console.log('Saving previewData:', JSON.stringify(payload, null, 2));
+    localStorage.setItem('previewData', JSON.stringify(payload));
+    window.open('/preview', '_blank', 'noopener,noreferrer');
+  } catch (e) {
+    console.error('Failed to save previewData:', e);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -328,19 +332,25 @@ const CreateProductPage = () => {
                                 }
                               }}
                             />
-                              <DeleteButton
-                                onClick={() => {
+                            <button
+                              type="button"
+                              className="p-2 text-gray-500 hover:text-red-600"
+                              onClick={() => {
                                 const featureToRemove = feature;
                                 const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                                  setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                                  
-                                  if (featureExplanations[featureToRemove]) {
-                                    const newExplanations = { ...featureExplanations };
-                                    delete newExplanations[featureToRemove];
-                                    setFeatureExplanations(newExplanations);
-                                  }
-                                }}
-                            />
+                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                                
+                                // Remove explanation for deleted feature
+                                if (featureExplanations[featureToRemove]) {
+                                  const newExplanations = { ...featureExplanations };
+                                  delete newExplanations[featureToRemove];
+                                  setFeatureExplanations(newExplanations);
+                                }
+                              }}
+                              aria-label="Remove feature"
+                            >
+                              <Trash2 size={18} />
+                            </button>
                           </div>
                           
                           {featuresConfirmed && featureExplanations[feature] && (
@@ -434,15 +444,13 @@ const CreateProductPage = () => {
             {currentStep === 3 && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Choose Layout</h2>
-
-                {/* Keep Template Selector */}
                 <TemplateSelector
                   content={generatedContent}
-                  value={selectedLayout}
-                  onChange={setSelectedLayout}
+                  value={pageModel?.metadata?.template || 'gallery-focused'}
+                  onChange={setPageModel}
                 />
 
-                {/* Keep Image Upload */}
+                {/* Image upload */}
                 <div className="mt-6">
                   <p className="text-sm font-medium text-gray-700 mb-2">Upload Images (3-5)</p>
                   <input
@@ -479,19 +487,37 @@ const CreateProductPage = () => {
                   )}
                 </div>
 
-                {/* Keep Buttons */}
+                {/* <div className="mt-6 bg-gray-50 border rounded p-4">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Selected Layout Config</p>
+                  <pre className="text-xs text-gray-700 overflow-auto">
+{JSON.stringify({
+  type: selectedLayout,
+  sections: [
+    { id: 'hero', type: 'hero', order: 1, visible: true, config: {} },
+    { id: 'gallery', type: 'gallery', order: 2, visible: selectedLayout !== 'single-column', config: {} },
+    { id: 'description', type: 'description', order: 3, visible: true, config: {} },
+    { id: 'features', type: 'features', order: 4, visible: true, config: {} },
+    { id: 'specs', type: 'specifications', order: 5, visible: selectedLayout !== 'feature-blocks', config: {} },
+    { id: 'cta', type: 'cta', order: 6, visible: true, config: {} },
+  ],
+  theme: { primaryColor: '#2563eb', secondaryColor: '#111827', fontFamily: 'Inter' }
+}, null, 2)}
+                  </pre>
+                </div> */}
+
                 <div className="flex gap-4 mt-6">
                   <Button variant="outline" onClick={() => handleStepChange(2)}>
                     Back
                   </Button>
-                  <Button onClick={openPreview}>
+                  <Button variant="outline" onClick={openPreview}>
                     <Eye className="mr-2" size={16} /> Preview Template
                   </Button>
                   <Button onClick={() => setCurrentStep(4)}>
                     Continue to Publish
                   </Button>
                 </div>
-              </div>
+
+                </div>
             )}
 
             {currentStep === 4 && (
@@ -594,6 +620,8 @@ const CreateProductPage = () => {
           </div>
         </div>
       )}
+
+      {/* New tab preview uses /preview route and localStorage */}
     </div>
   );
 };
