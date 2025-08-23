@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
+import TryOutPlatform from '@/components/animated icon/TryOutPlatform';
 
 export default function Contact() {
   const contactMethods = [
@@ -322,9 +323,9 @@ export default function Contact() {
               Can't find what you're looking for?
             </p>
             <Link href="/create">
-              <Button variant="outline">
-                Try Our Platform
-              </Button>
+              <TryOutPlatform>
+                
+              </TryOutPlatform>
             </Link>
           </div>
         </div>
