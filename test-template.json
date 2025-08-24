@@ -1,0 +1,697 @@
+{
+  "metadata": {
+    "template": "ai-feature-test-showcase",
+    "name": "AI Template Features Test",
+    "description": "Comprehensive test of all implemented features including AI template support"
+  },
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#0f172a",
+    "textColor": "#e2e8f0",
+    "accentColor": "#06b6d4",
+    "fontFamily": "Inter, sans-serif",
+    "borderRadius": "12px",
+    "shadows": {
+      "small": "0 2px 4px rgba(0,0,0,0.1)",
+      "medium": "0 4px 12px rgba(0,0,0,0.15)",
+      "large": "0 8px 24px rgba(0,0,0,0.2)"
+    }
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-slate-900 text-slate-200 p-6"
+    },
+    "children": [
+      {
+        "id": "header",
+        "type": "div",
+        "props": {
+          "className": "text-center mb-12"
+        },
+        "children": [
+          {
+            "id": "main-title",
+            "type": "h1",
+            "editable": {
+              "contentEditable": true
+            },
+            "props": {
+              "className": "text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 hover:scale-105 transition-transform duration-300"
+            },
+            "children": ["🚀 AI Template Features Test Dashboard"]
+          },
+          {
+            "id": "subtitle",
+            "type": "p",
+            "props": {
+              "className": "text-xl text-slate-400 hover:text-slate-300 transition-colors duration-300"
+            },
+            "children": ["Testing: AI Templates • Style Variables • Complex Expressions • Enhanced Animations • Error Handling"]
+          }
+        ]
+      },
+      {
+        "id": "ai-features-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-orange-500 hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "ai-features-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-orange-400 mb-6 hover:text-orange-300 transition-colors duration-300"
+            },
+            "children": ["🤖 AI Template Features Test"]
+          },
+          {
+            "id": "ai-features-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-2 gap-6"
+            },
+            "children": [
+              {
+                "id": "style-variables-test",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition-all duration-300"
+                },
+                "children": [
+                  {
+                    "id": "style-vars-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-orange-300 mb-3"
+                    },
+                    "children": ["CSS Variables Test:"]
+                  },
+                  {
+                    "id": "style-vars-demo",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2 text-sm"
+                    },
+                    "children": [
+                      {
+                        "id": "primary-color-demo",
+                        "type": "div",
+                        "props": {
+                          "className": "p-2 rounded text-white bg-blue-500"
+                        },
+                        "children": ["Primary Color Test"]
+                      },
+                      {
+                        "id": "secondary-color-demo",
+                        "type": "div",
+                        "props": {
+                          "className": "p-2 rounded text-white bg-purple-500"
+                        },
+                        "children": ["Secondary Color Test"]
+                      },
+                      {
+                        "id": "shadow-demo",
+                        "type": "div",
+                        "props": {
+                          "className": "p-2 rounded bg-white text-slate-800 shadow-lg"
+                        },
+                        "children": ["Shadow Test"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "complex-expressions-test",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 transition-all duration-300"
+                },
+                "children": [
+                  {
+                    "id": "complex-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-orange-300 mb-3"
+                    },
+                    "children": ["Complex Expression Handling:"]
+                  },
+                  {
+                    "id": "complex-demo",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2 text-sm text-slate-300"
+                    },
+                    "children": [
+                      {
+                        "id": "safe-fallback",
+                        "type": "p",
+                        "children": ["Safe fallback: {{nonExistentData || 'Fallback works!'}}"
+                      },
+                      {
+                        "id": "nested-conditional",
+                        "type": "p",
+                        "children": ["Nested: {{state.toggle-button_active ? 'Active!' : 'Inactive'}}"
+                      },
+                      {
+                        "id": "ai-expression-test",
+                        "type": "div",
+                        "props": {
+                          "className": "p-2 bg-slate-600 rounded text-xs"
+                        },
+                        "children": ["AI Expression Test: Complex expressions safely handled"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "enhanced-animations-test",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-teal-500 hover:shadow-lg hover:shadow-teal-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "enhanced-animations-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-teal-400 mb-6 hover:text-teal-300 transition-colors duration-300"
+            },
+            "children": ["✨ Enhanced Animation System"]
+          },
+          {
+            "id": "new-animations-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-4 gap-4"
+            },
+            "children": [
+              {
+                "id": "fade-up-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-20 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-fadeInUp cursor-pointer transition-all duration-300"
+                },
+                "children": ["Fade Up"]
+              },
+              {
+                "id": "fade-left-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-fadeInLeft cursor-pointer transition-all duration-300"
+                },
+                "children": ["Fade Left"]
+              },
+              {
+                "id": "fade-right-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-fadeInRight cursor-pointer transition-all duration-300"
+                },
+                "children": ["Fade Right"]
+              },
+              {
+                "id": "slide-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-20 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-slideIn cursor-pointer transition-all duration-300"
+                },
+                "children": ["Slide In"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "state-demo-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "state-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-blue-400 mb-6 hover:text-blue-300 transition-colors duration-300"
+            },
+            "children": ["🎯 State Management & Conditionals"]
+          },
+          {
+            "id": "toggle-button",
+            "type": "button",
+            "props": {
+              "className": "px-4 py-2 bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white rounded-lg transition-all duration-200 mb-4 transform",
+              "onClick": "handleToggle"
+            },
+            "children": ["Toggle State"]
+          },
+          {
+            "id": "state-display",
+            "type": "div",
+            "if": "state.toggle-button_active",
+            "props": {
+              "className": "p-4 bg-green-900/30 border border-green-500/50 rounded-lg animate-pulse"
+            },
+            "children": [
+              {
+                "id": "state-message",
+                "type": "p",
+                "props": {
+                  "className": "text-green-400 font-semibold"
+                },
+                "children": ["✅ State is ACTIVE! Conditional rendering works!"]
+              }
+            ]
+          },
+          {
+            "id": "state-counter",
+            "type": "div",
+            "props": {
+              "className": "mt-4 text-slate-300 hover:text-slate-200 transition-colors duration-300"
+            },
+            "children": ["Current state: {{state.toggle-button_active ? '🟢 ON' : '🔴 OFF'}}"]
+          }
+        ]
+      },
+      {
+        "id": "form-demo-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "form-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-cyan-400 mb-6 hover:text-cyan-300 transition-colors duration-300"
+            },
+            "children": ["📝 Advanced Form Handling"]
+          },
+          {
+            "id": "test-form",
+            "type": "form",
+            "props": {
+              "className": "space-y-4"
+            },
+            "children": [
+              {
+                "id": "form-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
+                },
+                "children": [
+                  {
+                    "id": "name-field",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2"
+                    },
+                    "children": [
+                      {
+                        "id": "name-label",
+                        "type": "label",
+                        "props": {
+                          "className": "block text-sm font-medium text-slate-300"
+                        },
+                        "children": ["Full Name *"]
+                      },
+                      {
+                        "id": "name-input",
+                        "type": "input",
+                        "props": {
+                          "type": "text",
+                          "name": "name",
+                          "placeholder": "Enter your full name",
+                          "className": "w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 text-white placeholder-slate-400 transition-all duration-300"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "email-field",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2"
+                    },
+                    "children": [
+                      {
+                        "id": "email-label",
+                        "type": "label",
+                        "props": {
+                          "className": "block text-sm font-medium text-slate-300"
+                        },
+                        "children": ["Email Address *"]
+                      },
+                      {
+                        "id": "email-input",
+                        "type": "input",
+                        "props": {
+                          "type": "email",
+                          "name": "email",
+                          "placeholder": "your.email@example.com",
+                          "className": "w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 text-white placeholder-slate-400 transition-all duration-300"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "form-actions",
+                "type": "div",
+                "props": {
+                  "className": "flex items-center justify-between pt-4"
+                },
+                "children": [
+                  {
+                    "id": "form-data-display",
+                    "type": "div",
+                    "props": {
+                      "className": "text-sm text-slate-400"
+                    },
+                    "children": ["Live: {{formData.name || 'No name'}} | {{formData.email || 'No email'}}"]
+                  },
+                  {
+                    "id": "submit-button",
+                    "type": "button",
+                    "props": {
+                      "type": "submit",
+                      "className": "px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 hover:scale-105 text-white font-semibold rounded-lg transition-all duration-200 transform"
+                    },
+                    "children": ["Submit Form"]
+                  }
+                ]
+              },
+              {
+                "id": "form-success",
+                "type": "div",
+                "if": "state.test-form_submitted",
+                "props": {
+                  "className": "mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg animate-bounce"
+                },
+                "children": [
+                  {
+                    "id": "success-message",
+                    "type": "p",
+                    "props": {
+                      "className": "text-green-400 font-semibold"
+                    },
+                    "children": ["✅ Form submitted successfully!"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "error-handling-test",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "error-handling-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-red-400 mb-6 hover:text-red-300 transition-colors duration-300"
+            },
+            "children": ["🛡️ Error Handling & Safety Tests"]
+          },
+          {
+            "id": "error-tests-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-2 gap-6"
+            },
+            "children": [
+              {
+                "id": "safe-expressions",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg"
+                },
+                "children": [
+                  {
+                    "id": "safe-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-red-300 mb-3"
+                    },
+                    "children": ["Safe Expression Handling:"]
+                  },
+                  {
+                    "id": "safe-tests",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2 text-sm text-slate-300"
+                    },
+                    "children": [
+                      {
+                        "id": "undefined-access",
+                        "type": "p",
+                        "children": ["Undefined: {{undefined.property || 'Safely handled'}}"
+                      },
+                      {
+                        "id": "null-access",
+                        "type": "p",
+                        "children": ["Null: {{null.property || 'Safely handled'}}"
+                      },
+                      {
+                        "id": "deep-access",
+                        "type": "p",
+                        "children": ["Deep: {{content.deep.nested.property || 'Safely handled'}}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "complex-ai-expressions",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg"
+                },
+                "children": [
+                  {
+                    "id": "complex-ai-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-red-300 mb-3"
+                    },
+                    "children": ["Complex AI Expression Safety:"]
+                  },
+                  {
+                    "id": "ai-safety-note",
+                    "type": "p",
+                    "props": {
+                      "className": "text-xs text-slate-400 mb-2"
+                    },
+                    "children": ["These complex expressions are safely ignored:"]
+                  },
+                  {
+                    "id": "complex-map-expression",
+                    "type": "div",
+                    "props": {
+                      "className": "p-2 bg-slate-600 rounded text-xs font-mono"
+                    },
+                    "children": ["Complex map expressions handled safely"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "template-expressions-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "expressions-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-pink-400 mb-6 hover:text-pink-300 transition-colors duration-300"
+            },
+            "children": ["🧠 Template Expression Tests"]
+          },
+          {
+            "id": "expressions-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
+            },
+            "children": [
+              {
+                "id": "conditional-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "conditional-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2"
+                    },
+                    "children": ["Conditional Expression:"]
+                  },
+                  {
+                    "id": "conditional-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300"
+                    },
+                    "children": ["{{state.toggle-button_active ? '🟢 Button is ON' : '🔴 Button is OFF'}}"]
+                  }
+                ]
+              },
+              {
+                "id": "fallback-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "fallback-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2"
+                    },
+                    "children": ["Fallback Expression:"]
+                  },
+                  {
+                    "id": "fallback-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300"
+                    },
+                    "children": ["{{formData.name || 'Please enter your name above'}}"]
+                  }
+                ]
+              },
+              {
+                "id": "content-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "content-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2"
+                    },
+                    "children": ["Content Access:"]
+                  },
+                  {
+                    "id": "content-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300"
+                    },
+                    "children": ["Title: {{content.title}}"]
+                  }
+                ]
+              },
+              {
+                "id": "image-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "image-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2"
+                    },
+                    "children": ["Image Access:"]
+                  },
+                  {
+                    "id": "image-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300"
+                    },
+                    "children": ["First image: {{images[0] || 'No images provided'}}"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "basic-animations-test",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "basic-animations-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-yellow-400 mb-6 hover:text-yellow-300 transition-colors duration-300"
+            },
+            "children": ["⚡ Basic Animation Tests"]
+          },
+          {
+            "id": "basic-animations-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-3 gap-4"
+            },
+            "children": [
+              {
+                "id": "pulse-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-pulse cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Pulse"]
+              },
+              {
+                "id": "bounce-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-bounce cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Bounce"]
+              },
+              {
+                "id": "spin-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-spin cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Spin"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

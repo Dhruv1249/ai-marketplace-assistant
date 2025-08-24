@@ -8,15 +8,12 @@ import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
 import DeleteButton from '@/components/animated icon/DeleteButton';
 
-
-
-
 // Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedLayout, setSelectedLayout] = useState('gallery-focused');
+  const [pageModel, setPageModel] = useState(galleryFocused);
   const [images, setImages] = useState([]); // array of preview URLs
   const [featureExplanations, setFeatureExplanations] = useState({});
   const [isGeneratingExplanations, setIsGeneratingExplanations] = useState(false);
@@ -132,7 +129,7 @@ const CreateProductPage = () => {
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
       setImages([]);
-      setSelectedLayout('gallery-focused');
+      setPageModel(galleryFocused);
     } else if (pendingStep === 2) {
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
@@ -157,25 +154,31 @@ const CreateProductPage = () => {
   };
 
   const openPreview = () => {
-    if (!generatedContent) return;
-    try {
-      const payload = {
-        layoutType: selectedLayout,
-        content: {
-          ...generatedContent,
-          featureExplanations: featureExplanations
-        },
-        images,
-      };
-      console.log('Storing preview data:', payload);
-      // Use localStorage for cross-tab sharing, but with temporary key
-      localStorage.setItem('tempPreviewData', JSON.stringify(payload));
-      console.log('Data stored in localStorage');
-      window.open('/preview', '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      console.error('Failed to open preview:', e);
-    }
-  };
+  if (!generatedContent) {
+    console.error('Cannot open preview: missing generatedContent');
+    return;
+  }
+  if (!pageModel || !pageModel.metadata || !pageModel.component) {
+    console.error('Cannot open preview: invalid pageModel', pageModel);
+    setPageModel(galleryFocused); // Fallback to default
+    return;
+  }
+  try {
+    const payload = {
+      model: pageModel,
+      content: {
+        ...generatedContent,
+        featureExplanations: featureExplanations || {}
+      },
+      images: images || []
+    };
+    console.log('Saving previewData:', JSON.stringify(payload, null, 2));
+    localStorage.setItem('previewData', JSON.stringify(payload));
+    window.open('/preview', '_blank', 'noopener,noreferrer');
+  } catch (e) {
+    console.error('Failed to save previewData:', e);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -330,19 +333,25 @@ const CreateProductPage = () => {
                                 }
                               }}
                             />
-                              <DeleteButton
-                                onClick={() => {
+                            <button
+                              type="button"
+                              className="p-2 text-gray-500 hover:text-red-600"
+                              onClick={() => {
                                 const featureToRemove = feature;
                                 const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                                  setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                                  
-                                  if (featureExplanations[featureToRemove]) {
-                                    const newExplanations = { ...featureExplanations };
-                                    delete newExplanations[featureToRemove];
-                                    setFeatureExplanations(newExplanations);
-                                  }
-                                }}
-                            />
+                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                                
+                                // Remove explanation for deleted feature
+                                if (featureExplanations[featureToRemove]) {
+                                  const newExplanations = { ...featureExplanations };
+                                  delete newExplanations[featureToRemove];
+                                  setFeatureExplanations(newExplanations);
+                                }
+                              }}
+                              aria-label="Remove feature"
+                            >
+                              <Trash2 size={18} />
+                            </button>
                           </div>
                           
                           {featuresConfirmed && featureExplanations[feature] && (
@@ -438,8 +447,8 @@ const CreateProductPage = () => {
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Choose Layout</h2>
                 <TemplateSelector
                   content={generatedContent}
-                  value={selectedLayout}
-                  onChange={setSelectedLayout}
+                  value={pageModel?.metadata?.template || 'gallery-focused'}
+                  onChange={setPageModel}
                 />
 
                 {/* Image upload */}
@@ -479,7 +488,7 @@ const CreateProductPage = () => {
                   )}
                 </div>
 
-                <div className="mt-6 bg-gray-50 border rounded p-4">
+                {/* <div className="mt-6 bg-gray-50 border rounded p-4">
                   <p className="text-sm font-medium text-gray-700 mb-2">Selected Layout Config</p>
                   <pre className="text-xs text-gray-700 overflow-auto">
 {JSON.stringify({
@@ -495,7 +504,7 @@ const CreateProductPage = () => {
   theme: { primaryColor: '#2563eb', secondaryColor: '#111827', fontFamily: 'Inter' }
 }, null, 2)}
                   </pre>
-                </div>
+                </div> */}
 
                 <div className="flex gap-4 mt-6">
                   <Button variant="outline" onClick={() => handleStepChange(2)}>

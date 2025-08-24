@@ -1,97 +1,92 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit3, Eye } from 'lucide-react';
-import FullTemplatePreview from '@/components/templates/FullPreview';
-import EditableTemplatePreview from '@/components/templates/EditablePreview';
-import SourceCodeEditor from '@/components/editors/SourceCodeEditor';
-import AIAssistant from '@/components/editors/AIAssistant';
+import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette } from 'lucide-react';
+import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
+import EnhancedSourceCodeEditor from '@/components/editors/EnhancedSourceCodeEditor';
+import EnhancedAIAssistant from '@/components/editors/EnhancedAIAssistant';
 
 export default function PreviewPage() {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sourceCodeEditorOpen, setSourceCodeEditorOpen] = useState(false);
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
-  const [customHTML, setCustomHTML] = useState('');
-  const [useCustomHTML, setUseCustomHTML] = useState(false);
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const [styleVariables, setStyleVariables] = useState({});
 
   useEffect(() => {
     try {
-      // Try to get data from temporary localStorage first
-      let raw = localStorage.getItem('tempPreviewData');
-      console.log('Raw localStorage data:', raw);
-      
+      const raw = localStorage.getItem('previewData');
+      console.log('Raw previewData from localStorage:', raw);
       if (raw) {
         const parsed = JSON.parse(raw);
-        console.log('Parsed preview data:', parsed);
-        setData(parsed);
-        // Clean up the temporary data after reading
-        localStorage.removeItem('tempPreviewData');
-      } else {
-        // Fallback to sessionStorage for same-tab previews
-        raw = sessionStorage.getItem('previewData');
-        console.log('Fallback to sessionStorage:', raw);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          console.log('Parsed sessionStorage data:', parsed);
+        console.log('Parsed previewData:', parsed);
+        if (parsed?.model && parsed.model.metadata && parsed.model.component && parsed.content) {
           setData(parsed);
+          // Keep localStorage data for refreshes - don't remove it
         } else {
-          console.log('No preview data found in localStorage or sessionStorage');
+          console.error('Invalid previewData structure:', parsed);
         }
+      } else {
+        console.error('No previewData found in localStorage');
       }
     } catch (e) {
-      console.error('Failed to read preview data:', e);
+      console.error('Failed to read or parse previewData:', e);
     }
   }, []);
 
-  const handleContentChange = (elementId, newText, newStyle) => {
-    // Update the content based on element changes
-    console.log('Content changed:', elementId, newText, newStyle);
-    // No saving logic - changes are temporary only
-  };
-
-  const handleSourceCodeSave = (newHTML) => {
-    setCustomHTML(newHTML);
-    setUseCustomHTML(true);
-    setSourceCodeEditorOpen(false);
-    console.log('HTML code updated:', newHTML);
-  };
-
-  const handleSourceCodeReset = () => {
-    setCustomHTML('');
-    setUseCustomHTML(false);
-    console.log('Template reset to default');
-  };
-
-  const handleAIApplyChanges = (changes) => {
-    // AI changes are HTML fragments, so we need to integrate them
-    if (customHTML) {
-      // Insert AI changes into existing HTML
-      const updatedHTML = customHTML.replace(
-        '</main>',
-        `${changes}\n    </main>`
-      );
-      setCustomHTML(updatedHTML);
-    } else {
-      // Create new HTML with AI changes
-      setCustomHTML(changes);
+  // Handle template updates from enhanced editors
+  const handleTemplateUpdate = useCallback((updatedTemplate) => {
+    console.log('Template updated:', updatedTemplate);
+    setData(prevData => ({
+      ...prevData,
+      model: updatedTemplate
+    }));
+    
+    // Update style variables if they changed
+    if (updatedTemplate.styleVariables) {
+      setStyleVariables(updatedTemplate.styleVariables);
     }
-    setUseCustomHTML(true);
+  }, []);
+
+  // Handle component selection in edit mode
+  const handleComponentSelect = useCallback((component) => {
+    console.log('Component selected:', component);
+    setSelectedComponentId(component?.id || null);
+  }, []);
+
+  // Handle source code editor actions
+  const handleSourceCodeSave = useCallback((newHTML) => {
+    console.log('Source code saved');
+    setSourceCodeEditorOpen(false);
+  }, []);
+
+  const handleSourceCodeReset = useCallback(() => {
+    console.log('Template reset to default');
+    if (data?.model) {
+      // Reset any custom style variables
+      setStyleVariables({});
+    }
+  }, [data]);
+
+  // Handle AI assistant template updates
+  const handleAITemplateUpdate = useCallback((updatedTemplate) => {
+    console.log('AI template update:', updatedTemplate);
+    handleTemplateUpdate(updatedTemplate);
     setAiAssistantOpen(false);
-    console.log('AI changes applied:', changes);
-  };
+  }, [handleTemplateUpdate]);
 
   const getTemplateName = () => {
-    if (!data?.layoutType) return 'Template';
-    return data.layoutType.split('-').map(word => 
+    if (!data?.model?.metadata?.template) return 'Template';
+    return data.model.metadata.template.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join('') + 'Template.jsx';
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <div className="min-h-screen bg-white">
+      {/* Top Navigation Bar */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -127,9 +122,7 @@ export default function PreviewPage() {
               onClick={() => setSourceCodeEditorOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
+              <Code size={16} />
               Source Code
             </button>
 
@@ -137,9 +130,7 @@ export default function PreviewPage() {
               onClick={() => setAiAssistantOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
+              <Bot size={16} />
               AI Assistant
             </button>
             
@@ -150,50 +141,66 @@ export default function PreviewPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {!data ? (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <p className="text-gray-700">
-              No preview data found. Go back to the Create page, generate content, choose a layout, and click Preview.
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            {useCustomHTML ? (
-              // Show custom HTML in iframe
-              <div className="w-full">
-                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Custom HTML Preview:</strong> Showing your edited HTML code
-                  </p>
-                </div>
-                <iframe
-                  srcDoc={customHTML}
-                  className="w-full h-[80vh] border rounded-lg"
-                  title="Custom HTML Preview"
-                  sandbox="allow-scripts"
-                />
+      {/* Template Info Bar */}
+      {data?.model?.metadata && (
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Settings size={16} className="text-gray-600" />
+              <span className="text-sm font-medium text-gray-900">
+                {data.model.metadata.name || 'Template'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Palette size={14} className="text-gray-500" />
+              <span className="text-xs text-gray-600">
+                {data.model.metadata.sections?.length || 0} sections
+              </span>
+            </div>
+            {data.model.metadata.tags && (
+              <div className="flex gap-1">
+                {data.model.metadata.tags.slice(0, 3).map((tag, i) => (
+                  <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
+                    {tag}
+                  </span>
+                ))}
               </div>
-            ) : isEditing ? (
-              <EditableTemplatePreview 
-                layoutType={data.layoutType} 
-                content={data.content} 
-                images={data.images}
-                isEditing={true}
-                onContentChange={handleContentChange}
-              />
-            ) : (
-              <FullTemplatePreview 
-                layoutType={data.layoutType} 
-                content={data.content} 
-                images={data.images} 
-              />
             )}
           </div>
+          <div className="text-xs text-gray-500">
+            v{data.model.metadata.version || '1.0'}
+          </div>
+        </div>
+      )}
+
+      {/* Full Screen Preview - No Container, No Box */}
+      <div className="w-full">
+        {!data ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <p className="text-gray-700 text-lg mb-4">
+                No preview data found.
+              </p>
+              <p className="text-gray-500">
+                Go back to the Create page, generate content, choose a layout, and click Preview.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <EnhancedJSONModelRenderer
+            model={data.model}
+            content={data.content}
+            images={data.images}
+            isEditing={isEditing}
+            onUpdate={handleTemplateUpdate}
+            onComponentSelect={handleComponentSelect}
+            selectedComponentId={selectedComponentId}
+            styleVariables={styleVariables}
+          />
         )}
       </div>
 
-      {/* Edit Mode Instructions */}
+      {/* Edit Mode Helper */}
       {isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
           <h3 className="font-semibold mb-2">Edit Mode Active</h3>
@@ -206,22 +213,22 @@ export default function PreviewPage() {
         </div>
       )}
 
-      {/* Source Code Editor */}
-      <SourceCodeEditor
+      {/* Enhanced Editors */}
+      <EnhancedSourceCodeEditor
         isOpen={sourceCodeEditorOpen}
         onClose={() => setSourceCodeEditorOpen(false)}
         onSave={handleSourceCodeSave}
         onReset={handleSourceCodeReset}
         templateData={data}
         templateName={getTemplateName()}
+        onTemplateUpdate={handleTemplateUpdate}
       />
 
-      {/* AI Assistant */}
-      <AIAssistant
+      <EnhancedAIAssistant
         isOpen={aiAssistantOpen}
         onClose={() => setAiAssistantOpen(false)}
-        onApplyChanges={handleAIApplyChanges}
-        currentTemplate={customHTML || 'No custom template yet'}
+        onTemplateUpdate={handleAITemplateUpdate}
+        templateData={data}
         templateName={getTemplateName()}
       />
     </div>

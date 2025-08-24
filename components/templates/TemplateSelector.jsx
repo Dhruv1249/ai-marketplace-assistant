@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui';
 import { Check, LayoutGrid, Sparkles } from 'lucide-react';
-import TEMPLATE_COMPONENTS, {
-  GalleryFocusedPreview,
-  MinimalPreview,
-  ModernPreview,
-  ClassicPreview,
-} from './Previews';
+import { GalleryFocusedPreview, MinimalPreview, ModernPreview, ClassicPreview } from './Previews';
+
+// Import JSON templates
+import galleryFocused from '@/lib/templates/gallery-focused.json';
+import minimal from '@/lib/templates/minimal.json';
+import classic from '@/lib/templates/classic.json';
+import modern from '@/lib/templates/modern.json';
 
 const TEMPLATES = [
   {
@@ -16,25 +17,29 @@ const TEMPLATES = [
     name: 'Gallery Focused',
     description: 'Large image gallery with details sidebar',
     badges: ['Visual', 'E-commerce'],
+    model: (() => { console.log('gallery-focused model:', galleryFocused); return galleryFocused; })()
   },
   {
     id: 'minimal',
     name: 'Minimal',
     description: 'Clean, centered single-column layout',
     badges: ['Simple', 'Elegant'],
+    model: (() => { console.log('minimal model:', minimal); return minimal; })()
   },
   {
     id: 'modern',
     name: 'Modern',
     description: 'Card-based design with gradients and shadows',
     badges: ['Contemporary', 'Interactive'],
+    model: (() => { console.log('modern model:', modern); return modern; })()
   },
   {
     id: 'classic',
     name: 'Classic',
     description: 'Traditional design with serif fonts and borders',
     badges: ['Formal', 'Heritage'],
-  },
+    model: (() => { console.log('classic model:', classic); return classic; })()
+  }
 ];
 
 const Badge = ({ children }) => (
@@ -63,17 +68,25 @@ const Card = ({ selected, onClick, children }) => (
 export default function TemplateSelector({ content, value, onChange }) {
   const [selected, setSelected] = useState(value || 'gallery-focused');
 
-  useEffect(() => {
-    setSelected(value || 'gallery-focused');
-  }, [value]);
-
   const handleSelect = (id) => {
-    setSelected(id);
-    onChange?.(id);
-  };
+  setSelected(id);
+  const template = TEMPLATES.find(t => t.id === id);
+  if (template?.model && template.model.metadata && template.model.component) {
+    console.log('Selected template:', id, template.model);
+    onChange?.(template.model);
+  } else {
+    console.error('Invalid template model for:', id, template?.model);
+    onChange?.(galleryFocused); // Fallback to default
+  }
+};
 
   const Preview = ({ id }) => {
-    const Comp = TEMPLATE_COMPONENTS[id] || GalleryFocusedPreview;
+    const Comp = {
+      'gallery-focused': GalleryFocusedPreview,
+      'minimal': MinimalPreview,
+      'modern': ModernPreview,
+      'classic': ClassicPreview
+    }[id] || GalleryFocusedPreview;
     return <Comp content={content} />;
   };
 
@@ -81,7 +94,10 @@ export default function TemplateSelector({ content, value, onChange }) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {TEMPLATES.map((t) => (
-          <Card key={t.id} selected={selected === t.id} onClick={() => handleSelect(t.id)}>
+          <Card key={t.id} selected={selected === t.id} onClick={() => {
+            console.log('Card clicked:', t.id);
+            handleSelect(t.id);
+          }}>
             <div className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div>
