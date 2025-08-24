@@ -1,19 +1,118 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo, useReducer } from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
 
-const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate, onComponentSelect, selectedComponentId }) => {
-  console.log('EnhancedJSONModelRenderer inputs:', { model, content, images, isEditing });
+// Enhanced error boundary component
+const ErrorBoundary = ({ children, fallback, onError }) => {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
 
-  // State Management
+  useEffect(() => {
+    const handleError = (error, errorInfo) => {
+      setHasError(true);
+      setError(error);
+      onError?.(error, errorInfo);
+    };
+
+    // Reset error state when children change
+    setHasError(false);
+    setError(null);
+  }, [children, onError]);
+
+  if (hasError) {
+    return fallback || (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <h3 className="text-red-800 font-semibold mb-2">Rendering Error</h3>
+        <p className="text-red-600 text-sm">{error?.message || 'An error occurred while rendering this component'}</p>
+        <button 
+          onClick={() => setHasError(false)}
+          className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return children;
+};
+
+// State reducer for better state management
+const stateReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_COMPONENT_STATE':
+      return {
+        ...state,
+        componentState: {
+          ...state.componentState,
+          [action.key]: action.value
+        }
+      };
+    case 'SET_FORM_DATA':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          [action.field]: action.value
+        },
+        errors: {
+          ...state.errors,
+          [action.field]: null // Clear error when field is updated
+        }
+      };
+    case 'SET_ERRORS':
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          ...action.errors
+        }
+      };
+    case 'CLEAR_ERRORS':
+      return {
+        ...state,
+        errors: {}
+      };
+    case 'RESET_STATE':
+      return {
+        componentState: {},
+        formData: {},
+        errors: {}
+      };
+    default:
+      return state;
+  }
+};
+
+const EnhancedJSONModelRenderer = ({ 
+  model, 
+  content, 
+  images, 
+  isEditing, 
+  onUpdate, 
+  onComponentSelect, 
+  selectedComponentId,
+  debug = false 
+}) => {
+  if (debug) {
+    console.log('EnhancedJSONModelRenderer inputs:', { model, content, images, isEditing });
+  }
+
+  // Enhanced state management with reducer
+  const [state, dispatch] = useReducer(stateReducer, {
+    componentState: {},
+    formData: {},
+    errors: {}
+  });
+
+  // UI state
   const [editingText, setEditingText] = useState(null);
   const [editValue, setEditValue] = useState('');
-  const [componentState, setComponentState] = useState({});
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
+  const [renderError, setRenderError] = useState(null);
   
   const editInputRef = useRef(null);
+  const renderCountRef = useRef(0);
 
   if (!model) {
     console.error('Invalid model: model is undefined or null', model);
@@ -94,55 +193,109 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     }
   }, []);
 
-  // State Management Functions
+  // Enhanced State Management Functions
   const updateComponentState = useCallback((key, value) => {
-    setComponentState(prev => ({ ...prev, [key]: value }));
+    dispatch({ type: 'SET_COMPONENT_STATE', key, value });
   }, []);
 
   const updateFormData = useCallback((field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
-  }, [errors]);
+    dispatch({ type: 'SET_FORM_DATA', field, value });
+  }, []);
 
-  // Event Handlers
+  const setFormErrors = useCallback((errors) => {
+    dispatch({ type: 'SET_ERRORS', errors });
+  }, []);
+
+  // Enhanced Event Handlers with better error handling
   const eventHandlers = useMemo(() => ({
     handleClick: (e, componentId) => {
-      console.log('Click handled for:', componentId);
-      updateComponentState(`${componentId}_clicked`, true);
+      try {
+        if (debug) console.log('Click handled for:', componentId);
+        updateComponentState(`${componentId}_clicked`, true);
+      } catch (error) {
+        console.error('Error in handleClick:', error);
+        setRenderError(error);
+      }
     },
     
     handleToggle: (componentId) => {
-      const currentState = componentState[`${componentId}_active`] || false;
-      updateComponentState(`${componentId}_active`, !currentState);
+      try {
+        const currentState = state.componentState[`${componentId}_active`] || false;
+        updateComponentState(`${componentId}_active`, !currentState);
+      } catch (error) {
+        console.error('Error in handleToggle:', error);
+        setRenderError(error);
+      }
     },
     
     handleFormSubmit: (e, formId) => {
       e.preventDefault();
-      console.log('Form submitted:', formId, formData);
-      const newErrors = {};
-      if (!formData.email) newErrors.email = 'Email is required';
-      if (!formData.name) newErrors.name = 'Name is required';
-      
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
+      try {
+        if (debug) console.log('Form submitted:', formId, state.formData);
+        
+        // Enhanced form validation
+        const newErrors = {};
+        const { formData } = state;
+        
+        // Basic validation rules
+        if (!formData.email) {
+          newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+          newErrors.email = 'Email is invalid';
+        }
+        
+        if (!formData.name) {
+          newErrors.name = 'Name is required';
+        } else if (formData.name.length < 2) {
+          newErrors.name = 'Name must be at least 2 characters';
+        }
+        
+        if (Object.keys(newErrors).length > 0) {
+          setFormErrors(newErrors);
+          return;
+        }
+        
+        // Clear errors and mark as submitted
+        dispatch({ type: 'CLEAR_ERRORS' });
+        updateComponentState(`${formId}_submitted`, true);
+        
+        // Optional callback for form submission
+        if (typeof window !== 'undefined' && window.onFormSubmit) {
+          window.onFormSubmit(formData);
+        }
+      } catch (error) {
+        console.error('Error in handleFormSubmit:', error);
+        setRenderError(error);
       }
-      
-      updateComponentState(`${formId}_submitted`, true);
     },
     
     handleInputChange: (e, field) => {
-      updateFormData(field, e.target.value);
+      try {
+        const value = e.target.value;
+        updateFormData(field, value);
+        
+        // Real-time validation for better UX
+        if (field === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+          setFormErrors({ [field]: 'Please enter a valid email address' });
+        } else if (field === 'name' && value && value.length < 2) {
+          setFormErrors({ [field]: 'Name must be at least 2 characters' });
+        }
+      } catch (error) {
+        console.error('Error in handleInputChange:', error);
+        setRenderError(error);
+      }
     }
-  }), [componentState, formData, updateComponentState, updateFormData]);
+  }), [state.componentState, state.formData, updateComponentState, updateFormData, setFormErrors, debug]);
 
-  // Template Expression Evaluator
+  // Enhanced Template Expression Evaluator with better error handling
   const evaluateExpression = useCallback((expression, context, depth = 0) => {
-    if (depth > 10) return expression;
+    if (depth > 10) {
+      console.warn('Expression evaluation depth exceeded:', expression);
+      return expression;
+    }
     
     try {
+      // Handle content access
       if (expression.startsWith('content.')) {
         const path = expression.replace('content.', '').split('.');
         let obj = context.content;
@@ -152,6 +305,7 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         return obj || '';
       }
       
+      // Handle image access
       if (expression.startsWith('images[')) {
         const indexMatch = expression.match(/images\[(\d+)\]/);
         if (indexMatch) {
@@ -160,16 +314,19 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         }
       }
       
+      // Handle state access - use new state structure
       if (expression.startsWith('state.')) {
         const key = expression.replace('state.', '');
-        return componentState[key];
+        return state.componentState[key];
       }
       
+      // Handle form data access - use new state structure
       if (expression.startsWith('formData.')) {
         const key = expression.replace('formData.', '');
-        return formData[key] || '';
+        return state.formData[key] || '';
       }
       
+      // Handle ternary expressions
       if (expression.includes('?') && expression.includes(':')) {
         const conditionMatch = expression.match(/(.+?)\s*\?\s*(.+?)\s*:\s*(.+)/);
         if (conditionMatch) {
@@ -179,31 +336,40 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         }
       }
       
+      // Handle fallback expressions
       if (expression.includes('||')) {
         const [primary, fallback] = expression.split('||').map(s => s.trim());
         const primaryValue = evaluateExpression(primary, context, depth + 1);
         return primaryValue || evaluateExpression(fallback, context, depth + 1);
       }
       
+      // Handle string literals
       if (expression.startsWith('"') && expression.endsWith('"')) {
         return expression.slice(1, -1);
       }
       if (expression.startsWith("'") && expression.endsWith("'")) {
         return expression.slice(1, -1);
       }
-      if (!isNaN(expression)) {
+      
+      // Handle numbers
+      if (!isNaN(expression) && expression.trim() !== '') {
         return Number(expression);
       }
+      
+      // Handle booleans and null
       if (expression === 'true') return true;
       if (expression === 'false') return false;
       if (expression === 'null') return null;
+      if (expression === 'undefined') return undefined;
       
       return expression;
     } catch (error) {
-      console.warn('Expression evaluation error:', error.message, expression);
+      if (debug) {
+        console.warn('Expression evaluation error:', error.message, expression);
+      }
       return '';
     }
-  }, [componentState, formData]);
+  }, [state.componentState, state.formData, debug]);
 
   // Template String Processing
   const processTemplateString = useCallback((str, context, depth = 0) => {
@@ -565,10 +731,10 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
       // Input handling
       if (type === 'input' || type === 'textarea') {
         const fieldName = enhancedProps.name || id;
-        enhancedProps.value = formData[fieldName] || '';
+        enhancedProps.value = state.formData[fieldName] || '';
         enhancedProps.onChange = (e) => eventHandlers.handleInputChange(e, fieldName);
         
-        if (errors[fieldName]) {
+        if (state.errors[fieldName]) {
           enhancedProps.className = `${enhancedProps.className || ''} border-red-500`.trim();
         }
       }
@@ -655,10 +821,10 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
       }
 
       // Add error display for form fields
-      if ((type === 'input' || type === 'textarea') && errors[enhancedProps.name || id]) {
+      if ((type === 'input' || type === 'textarea') && state.errors[enhancedProps.name || id]) {
         const errorElement = (
           <div key={`${key}-error`} className="text-red-500 text-sm mt-1">
-            {errors[enhancedProps.name || id]}
+            {state.errors[enhancedProps.name || id]}
           </div>
         );
         
@@ -693,24 +859,70 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     }
 
     return null;
-  }, [model, images, isEditing, onComponentSelect, selectedComponentId, editingText, editValue, componentState, formData, errors, eventHandlers, handleTextEdit, handleTextSave, handleTextCancel]);
+  }, [model, images, isEditing, onComponentSelect, selectedComponentId, editingText, editValue, state.componentState, state.formData, state.errors, eventHandlers, handleTextEdit, handleTextSave, handleTextCancel]);
 
-  // Process the entire component tree
+  // Process the entire component tree with updated context
   const enhancedContext = useMemo(() => ({
     content,
     images,
-    state: componentState,
-    formData,
-    errors
-  }), [content, images, componentState, formData, errors]);
+    state: state.componentState,
+    formData: state.formData,
+    errors: state.errors
+  }), [content, images, state.componentState, state.formData, state.errors]);
 
   const processedComponent = useMemo(() => {
-    return processNode(model.component, enhancedContext);
-  }, [model.component, enhancedContext, processNode]);
+    try {
+      renderCountRef.current += 1;
+      if (debug) {
+        console.log(`Render #${renderCountRef.current} - Processing component tree`);
+      }
+      return processNode(model.component, enhancedContext);
+    } catch (error) {
+      console.error('Error processing component tree:', error);
+      setRenderError(error);
+      return null;
+    }
+  }, [model.component, enhancedContext, processNode, debug]);
   
-  console.log('Processed component:', processedComponent);
+  if (debug) {
+    console.log('Processed component:', processedComponent);
+  }
 
-  return <div>{renderComponent(processedComponent)}</div>;
+  // Show render error if one occurred
+  if (renderError) {
+    return (
+      <ErrorBoundary
+        onError={(error) => console.error('Render error:', error)}
+        fallback={
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <h3 className="text-red-800 font-semibold mb-2">JSON Renderer Error</h3>
+            <p className="text-red-600 text-sm mb-2">{renderError.message}</p>
+            <button 
+              onClick={() => setRenderError(null)}
+              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+            >
+              Clear Error
+            </button>
+          </div>
+        }
+      >
+        <div>Error occurred during rendering</div>
+      </ErrorBoundary>
+    );
+  }
+
+  return (
+    <ErrorBoundary
+      onError={(error) => {
+        console.error('Component render error:', error);
+        setRenderError(error);
+      }}
+    >
+      <div className="json-model-renderer">
+        {renderComponent(processedComponent)}
+      </div>
+    </ErrorBoundary>
+  );
 };
 
 export default EnhancedJSONModelRenderer;
