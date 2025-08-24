@@ -1,10 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
 
-const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate }) => {
+const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate, onComponentSelect, selectedComponentId }) => {
   console.log('EnhancedJSONModelRenderer inputs:', { model, content, images, isEditing });
+
+  const [editingText, setEditingText] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const editInputRef = useRef(null);
 
   if (!model) {
     console.error('Invalid model: model is undefined or null', model);
@@ -14,6 +18,70 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     console.error('Invalid model: missing component', model);
     return <div>Invalid template model: Component is missing</div>;
   }
+
+  // Handle text editing
+  const handleTextEdit = (componentId, currentText) => {
+    if (!isEditing) return;
+    
+    setEditingText(componentId);
+    setEditValue(currentText);
+  };
+
+  const handleTextSave = (componentId) => {
+    if (onUpdate) {
+      // Update the component text
+      const updatedModel = updateComponentText(model, componentId, editValue);
+      onUpdate(updatedModel);
+    }
+    setEditingText(null);
+    setEditValue('');
+  };
+
+  const handleTextCancel = () => {
+    setEditingText(null);
+    setEditValue('');
+  };
+
+  // Update component text in the model
+  const updateComponentText = (model, targetId, newText) => {
+    const updateNode = (node) => {
+      if (!node) return node;
+      
+      if (Array.isArray(node)) {
+        return node.map(updateNode);
+      }
+      
+      if (typeof node === 'object' && node !== null) {
+        if (node.id === targetId && node.children && Array.isArray(node.children)) {
+          return {
+            ...node,
+            children: [newText]
+          };
+        }
+        
+        const updated = { ...node };
+        if (updated.children) {
+          updated.children = updateNode(updated.children);
+        }
+        return updated;
+      }
+      
+      return node;
+    };
+
+    return {
+      ...model,
+      component: updateNode(model.component)
+    };
+  };
+
+  // Focus edit input when editing starts
+  useEffect(() => {
+    if (editingText && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingText]);
 
   const processTemplateString = (str, context) => {
     if (typeof str !== 'string' || !str.includes('{{')) {
@@ -57,169 +125,60 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
   const generateFeatureComponents = (features, featureExplanations, template = 'gallery-focused') => {
     if (!features || !Array.isArray(features)) return [];
     
-    // Define different styles for different templates
-    const templateStyles = {
-      'gallery-focused': {
-        container: 'border-l-4 border-blue-400 pl-4 mb-4',
-        title: 'font-medium mb-1',
-        explanation: 'text-sm leading-relaxed'
-      },
-      'classic': {
-        container: 'border-l-4 border-gray-800 pl-6',
-        title: 'text-xl font-serif font-semibold text-gray-900 mb-3',
-        explanation: 'text-gray-700 leading-relaxed font-serif'
-      },
-      'minimal': {
-        container: 'text-center',
-        title: 'text-lg font-medium mb-2',
-        explanation: 'text-sm text-gray-600 leading-relaxed'
-      },
-      'modern': {
-        container: 'bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-200',
-        title: 'text-xl font-semibold text-gray-900 mb-3',
-        explanation: 'text-gray-600 leading-relaxed'
-      }
-    };
-
-    const styles = templateStyles[template] || templateStyles['gallery-focused'];
+    // Enhanced feature styling with more options
+    const containerClass = 'border-l-4 border-blue-400 pl-4 mb-4 hover:border-blue-500 transition-colors';
+    const titleClass = 'font-medium mb-1 text-gray-900';
+    const explanationClass = 'text-sm leading-relaxed text-gray-600';
     
     return features.map((feature, index) => ({
       id: `feature-${index}`,
       type: 'div',
-      props: { className: styles.container },
+      props: { className: containerClass },
       children: [
-        // Add icon for modern template
-        ...(template === 'modern' ? [{
-          id: `feature-${index}-icon`,
-          type: 'div',
-          props: { className: 'text-blue-600 mb-4' },
-          children: [{
-            id: `feature-${index}-icon-svg`,
-            type: 'svg',
-            props: {
-              className: 'w-8 h-8',
-              fill: 'none',
-              stroke: 'currentColor',
-              viewBox: '0 0 24 24'
-            },
-            children: [{
-              id: `feature-${index}-icon-path`,
-              type: 'path',
-              props: {
-                strokeLinecap: 'round',
-                strokeLinejoin: 'round',
-                strokeWidth: 2,
-                d: index === 0 ? 'M13 10V3L4 14h7v7l9-11h-7z' : 
-                   index === 1 ? 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' :
-                   'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
-              }
-            }]
-          }]
-        }] : []),
         {
           id: `feature-${index}-title`,
-          type: template === 'gallery-focused' ? 'h4' : 'h3',
-          props: { className: styles.title },
-          children: [feature]
+          type: 'h4',
+          props: { className: titleClass },
+          children: [feature],
+          editable: { contentEditable: true }
         },
         ...(featureExplanations?.[feature] ? [{
           id: `feature-${index}-explanation`,
           type: 'p',
-          props: { className: styles.explanation },
-          children: [featureExplanations[feature]]
+          props: { className: explanationClass },
+          children: [featureExplanations[feature]],
+          editable: { contentEditable: true }
         }] : [])
       ]
     }));
   };
 
-  const generateSpecComponents = (specifications, template = 'gallery-focused') => {
+  const generateSpecComponents = (specifications) => {
     if (!specifications || typeof specifications !== 'object') return [];
     
     const entries = Object.entries(specifications);
     
-    if (template === 'classic') {
-      return entries.map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'tr',
-        props: { className: 'border-b border-gray-300 last:border-b-0' },
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'td',
-            props: { className: 'py-3 pr-8 w-1/3 font-serif font-semibold text-gray-800' },
-            children: [key]
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'td',
-            props: { className: 'py-3 font-serif text-gray-700' },
-            children: [value]
-          }
-        ]
-      }));
-    } else if (template === 'gallery-focused') {
-      return entries.map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'tr',
-        props: {},
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'td',
-            props: { className: 'px-4 py-2 bg-gray-50 font-medium w-1/3' },
-            children: [key]
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'td',
-            props: { className: 'px-4 py-2' },
-            children: [value]
-          }
-        ]
-      }));
-    } else if (template === 'minimal') {
-      return entries.slice(0, 6).map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'div',
-        props: { className: 'flex justify-between py-2 border-b border-gray-100 last:border-b-0' },
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'span',
-            props: { className: 'text-gray-600' },
-            children: [key]
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'span',
-            props: { className: 'font-medium' },
-            children: [value]
-          }
-        ]
-      }));
-    } else if (template === 'modern') {
-      return entries.slice(0, 8).map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'div',
-        props: { className: 'flex justify-between items-center py-3 px-4 bg-gray-50 rounded-lg' },
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'span',
-            props: { className: 'font-medium text-gray-700' },
-            children: [key]
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'span',
-            props: { className: 'text-gray-900 font-semibold' },
-            children: [value]
-          }
-        ]
-      }));
-    }
-    
-    return [];
+    return entries.map(([key, value], index) => ({
+      id: `spec-${index}`,
+      type: 'tr',
+      props: { className: 'hover:bg-gray-50 transition-colors' },
+      children: [
+        {
+          id: `spec-${index}-key`,
+          type: 'td',
+          props: { className: 'px-4 py-2 bg-gray-50 font-medium w-1/3' },
+          children: [key],
+          editable: { contentEditable: true }
+        },
+        {
+          id: `spec-${index}-value`,
+          type: 'td',
+          props: { className: 'px-4 py-2' },
+          children: [value],
+          editable: { contentEditable: true }
+        }
+      ]
+    }));
   };
 
   const processNode = (node, context) => {
@@ -254,13 +213,9 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         if (typeof processedNode.children === 'string') {
           // Check for special dynamic content patterns
           if (processedNode.children.includes('content.features') && processedNode.children.includes('map')) {
-            // Generate feature components with template-specific styling
-            const templateType = model?.metadata?.template || 'gallery-focused';
-            processedNode.children = generateFeatureComponents(context.content?.features, context.content?.featureExplanations, templateType);
+            processedNode.children = generateFeatureComponents(context.content?.features, context.content?.featureExplanations);
           } else if (processedNode.children.includes('content.specifications') && processedNode.children.includes('entries')) {
-            // Generate specification components
-            const templateType = model?.metadata?.template || 'gallery-focused';
-            processedNode.children = generateSpecComponents(context.content?.specifications, templateType);
+            processedNode.children = generateSpecComponents(context.content?.specifications);
           } else {
             // Regular template string processing
             processedNode.children = processTemplateString(processedNode.children, context);
@@ -293,9 +248,9 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
 
     // Handle component objects
     if (typeof comp === 'object' && comp.type) {
-      const { type, props = {}, children, id } = comp;
+      const { type, props = {}, children, id, editable } = comp;
       
-      // Check if this is a gallery section and replace with ImageGallery
+      // Handle gallery sections
       if (id && (id.includes('gallery') || id.includes('image')) && type === 'div') {
         const templateType = model?.metadata?.template || 'gallery-focused';
         return (
@@ -306,6 +261,42 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
             className={props?.className || ''}
           />
         );
+      }
+      
+      // Enhanced props with better support for AI-generated features
+      const enhancedProps = { ...props };
+      
+      // Add editing capabilities
+      if (isEditing && editable?.contentEditable) {
+        enhancedProps.onClick = (e) => {
+          e.stopPropagation();
+          if (onComponentSelect) {
+            onComponentSelect(comp);
+          }
+        };
+        
+        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all`.trim();
+        
+        if (selectedComponentId === id) {
+          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2';
+        }
+      }
+      
+      // Support for CSS animations and effects
+      if (enhancedProps.style) {
+        // Allow most CSS properties but sanitize dangerous ones
+        const { 
+          position, 
+          zIndex, 
+          ...safeStyle 
+        } = enhancedProps.style;
+        
+        // Keep safe styles and some positioning
+        enhancedProps.style = {
+          ...safeStyle,
+          ...(position === 'relative' || position === 'absolute' ? { position } : {}),
+          ...(zIndex && zIndex < 1000 ? { zIndex } : {})
+        };
       }
       
       // Map component types to HTML elements
@@ -351,23 +342,79 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
       const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr', 'path'];
       const isVoidElement = voidElements.includes(type);
 
+      // Handle text editing for editable components
+      if (isEditing && editable?.contentEditable && editingText === id) {
+        const currentText = Array.isArray(children) ? children[0] : children;
+        
+        return (
+          <div key={key} className="relative">
+            <input
+              ref={editInputRef}
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleTextSave(id);
+                } else if (e.key === 'Escape') {
+                  handleTextCancel();
+                }
+              }}
+              onBlur={() => handleTextSave(id)}
+              className="w-full px-2 py-1 border-2 border-blue-500 rounded focus:outline-none"
+            />
+          </div>
+        );
+      }
+
       // Process children only for non-void elements
       let renderedChildren = null;
       if (!isVoidElement && children) {
         if (Array.isArray(children)) {
-          renderedChildren = children.map((child, index) => renderComponent(child, `${key}-child-${index}`));
+          renderedChildren = children.map((child, index) => {
+            // Handle text editing
+            if (typeof child === 'string' && isEditing && editable?.contentEditable) {
+              return (
+                <span
+                  key={`${key}-child-${index}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleTextEdit(id, child);
+                  }}
+                  className="cursor-text hover:bg-blue-50 px-1 rounded"
+                >
+                  {child}
+                </span>
+              );
+            }
+            return renderComponent(child, `${key}-child-${index}`);
+          });
         } else {
-          renderedChildren = renderComponent(children, `${key}-child`);
+          if (typeof children === 'string' && isEditing && editable?.contentEditable) {
+            renderedChildren = (
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTextEdit(id, children);
+                }}
+                className="cursor-text hover:bg-blue-50 px-1 rounded"
+              >
+                {children}
+              </span>
+            );
+          } else {
+            renderedChildren = renderComponent(children, `${key}-child`);
+          }
         }
       }
 
       // Render void elements without children
       if (isVoidElement) {
-        return <Component key={key} {...props} />;
+        return <Component key={key} {...enhancedProps} />;
       }
 
       return (
-        <Component key={key} {...props}>
+        <Component key={key} {...enhancedProps}>
           {renderedChildren}
         </Component>
       );

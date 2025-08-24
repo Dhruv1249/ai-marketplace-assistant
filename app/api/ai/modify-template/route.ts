@@ -70,7 +70,7 @@ async function generateTemplateModifications(prompt: string, templateData: any) 
       role: 'user',
       parts: [
         {
-          text: `You are a template modification AI. Modify the template based on the user's request.
+          text: `You are a creative template modification AI. Transform templates based on user requests with full creative freedom.
 
 User Request: "${prompt}"
 
@@ -83,54 +83,66 @@ ${JSON.stringify(actualContent, null, 2)}
 User's Images:
 ${JSON.stringify(actualImages, null, 2)}
 
-CRITICAL RULES:
-1. For component className props: Use ONLY standard Tailwind CSS classes (bg-blue-500, text-white, etc.)
-2. For styleVariables: Use hex color values (#3b82f6, #ffffff, etc.) - NOT Tailwind classes
-3. DO NOT mix these up!
+CREATIVE FREEDOM RULES:
+1. Use standard Tailwind CSS classes for styling (bg-blue-500, text-white, etc.)
+2. You can add animations, effects, gradients, shadows
+3. You can restructure layouts, add sections, modify components
+4. You can add background effects, overlays, decorative elements
+5. Be creative with themes: sci-fi, modern, elegant, playful, etc.
+6. Use styleVariables for hex color values: {"primaryColor": "#8b5cf6"}
+7. Use className props for Tailwind classes: "bg-purple-500 text-white"
 
-Standard Tailwind classes for component className:
-- Blue: bg-blue-500, bg-blue-600, text-blue-500, text-blue-600, border-blue-500
-- Purple: bg-purple-500, bg-purple-600, text-purple-400, text-purple-500, border-purple-500
-- Dark: bg-gray-900, bg-black, text-white, text-gray-100, text-gray-200
-- Light: bg-white, bg-gray-50, text-gray-900, text-black
+Available Tailwind features you can use:
+- Gradients: bg-gradient-to-r from-blue-500 to-purple-600
+- Animations: animate-pulse, animate-bounce, animate-spin
+- Shadows: shadow-lg, shadow-xl, shadow-2xl, shadow-blue-500/50
+- Transforms: hover:scale-105, transform, transition-all
+- Backdrop effects: backdrop-blur-sm, backdrop-filter
+- Borders: border-2, border-purple-500, rounded-xl
+- Spacing: p-8, m-6, space-y-4, gap-8
+- Typography: text-4xl, font-bold, font-serif, tracking-wide
 
-Hex values for styleVariables:
-- Blue: "#3b82f6" (blue-500), "#2563eb" (blue-600), "#60a5fa" (blue-400)
-- Purple: "#8b5cf6" (purple-500), "#7c3aed" (purple-600), "#a78bfa" (purple-400)
-- Dark: "#111827" (gray-900), "#000000" (black), "#ffffff" (white)
+Creative themes you can implement:
+- Sci-fi: Dark backgrounds, neon colors, glowing effects
+- Modern: Clean lines, subtle shadows, minimalist
+- Elegant: Serif fonts, gold accents, sophisticated spacing
+- Playful: Bright colors, rounded corners, fun animations
+- Corporate: Professional blues, clean typography
+- Nature: Green themes, organic shapes, earth tones
 
 You can modify:
-1. styleVariables - Use HEX VALUES only: {"primaryColor": "#3b82f6", "backgroundColor": "#111827"}
-2. component structure - Use TAILWIND CLASSES in className props: "bg-blue-500 text-white"
-3. metadata - template info
+1. styleVariables - Use hex values: {"primaryColor": "#8b5cf6", "backgroundColor": "#111827"}
+2. component structure - Add/remove/modify any components
+3. metadata - Update template info
+4. Add creative elements like backgrounds, overlays, animations
 
-Respond with valid JSON:
+Respond with creative JSON:
 
 {
   "hasChanges": true/false,
-  "explanation": "What you changed",
+  "explanation": "Detailed explanation of your creative changes",
   "styleVariables": {
-    "primaryColor": "#8b5cf6",     // HEX VALUE for purple-500
-    "backgroundColor": "#111827",   // HEX VALUE for gray-900
-    "textColor": "#ffffff"         // HEX VALUE for white
+    "primaryColor": "#8b5cf6",     // Hex values for colors
+    "backgroundColor": "#111827",   // Theme colors
+    "fontFamily": "'Inter', sans-serif"  // Typography
+  },
+  "metadata": {
+    "name": "Creative Theme Name",
+    "description": "Theme description"
   },
   "component": {
-    // Component with Tailwind CLASSES in className props
-    "props": {
-      "className": "bg-gray-900 text-white border-purple-500"  // TAILWIND CLASSES
-    }
+    // Full creative freedom - add animations, effects, restructure
+    // Use Tailwind classes in className props
   }
 }
 
-WRONG Examples (DON'T do this):
-- styleVariables: {"primaryColor": "text-purple-400"} ❌ (Tailwind class in styleVariables)
-- styleVariables: {"backgroundColor": "bg-black"} ❌ (Tailwind class in styleVariables)
+Examples of creative modifications:
+- "sci-fi theme" → Dark backgrounds, neon glows, futuristic fonts, animations
+- "elegant design" → Serif fonts, gold accents, subtle shadows, refined spacing
+- "playful style" → Bright colors, rounded corners, bounce animations
+- "modern minimal" → Clean lines, subtle effects, lots of whitespace
 
-CORRECT Examples:
-- styleVariables: {"primaryColor": "#a78bfa"} ✅ (hex value)
-- component className: "text-purple-400 bg-black" ✅ (Tailwind classes)
-
-Remember: styleVariables = HEX VALUES, className = TAILWIND CLASSES!`,
+Be CREATIVE and INNOVATIVE! Transform the template to match the user's vision.`,
         },
       ],
     },
@@ -175,66 +187,76 @@ Remember: styleVariables = HEX VALUES, className = TAILWIND CLASSES!`,
   } catch (error) {
     console.error('Error generating template modifications:', error);
     
-    // Fallback to rule-based modifications with proper format
-    return generateFallbackModifications(prompt, currentTemplate);
+    // Fallback to creative modifications
+    return generateCreativeModifications(prompt, currentTemplate);
   }
 }
 
-function generateFallbackModifications(prompt: string, currentTemplate: any) {
+function generateCreativeModifications(prompt: string, currentTemplate: any) {
   const lower = prompt.toLowerCase();
   let modifications: any = { hasChanges: false, explanation: '' };
 
-  // Color modifications with proper hex values for styleVariables
-  if (lower.includes('blue')) {
+  if (lower.includes('sci-fi') || lower.includes('futuristic') || lower.includes('space')) {
     modifications = {
       hasChanges: true,
-      explanation: "Updated the color scheme to use blue tones.",
+      explanation: "Applied a futuristic sci-fi theme with dark backgrounds, neon accents, and glowing effects.",
       styleVariables: {
-        primaryColor: '#3b82f6',    // blue-500
-        secondaryColor: '#2563eb',  // blue-600
-        accentColor: '#60a5fa'      // blue-400
+        primaryColor: '#60a5fa',      // blue-400
+        secondaryColor: '#8b5cf6',    // purple-500
+        backgroundColor: '#0f172a',   // slate-900
+        textColor: '#e2e8f0',         // slate-200
+        accentColor: '#06b6d4'        // cyan-500
+      },
+      metadata: {
+        name: "Sci-Fi Futuristic Theme",
+        description: "Dark space theme with neon accents and futuristic styling"
       }
     };
-  } else if (lower.includes('purple')) {
+  } else if (lower.includes('elegant') || lower.includes('luxury') || lower.includes('premium')) {
     modifications = {
       hasChanges: true,
-      explanation: "Changed to a purple color theme.",
+      explanation: "Applied an elegant luxury theme with gold accents and sophisticated typography.",
       styleVariables: {
-        primaryColor: '#8b5cf6',    // purple-500
-        secondaryColor: '#7c3aed',  // purple-600
-        accentColor: '#a78bfa'      // purple-400
+        primaryColor: '#d97706',      // amber-600
+        secondaryColor: '#92400e',    // amber-700
+        backgroundColor: '#fefbf3',   // warm white
+        textColor: '#1c1917',         // stone-900
+        accentColor: '#f59e0b'        // amber-500
+      },
+      metadata: {
+        name: "Elegant Luxury Theme",
+        description: "Sophisticated design with gold accents and premium feel"
       }
     };
-  } else if (lower.includes('dark')) {
+  } else if (lower.includes('modern') || lower.includes('minimal') || lower.includes('clean')) {
     modifications = {
       hasChanges: true,
-      explanation: "Applied a dark theme.",
+      explanation: "Applied a modern minimal theme with clean lines and subtle effects.",
       styleVariables: {
-        backgroundColor: '#111827',  // gray-900
-        textColor: '#ffffff',       // white
-        primaryColor: '#8b5cf6'     // purple-500
-      }
-    };
-  } else if (lower.includes('light')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Applied a light theme.",
-      styleVariables: {
-        backgroundColor: '#ffffff',  // white
-        textColor: '#111827'        // gray-900
+        primaryColor: '#3b82f6',      // blue-500
+        secondaryColor: '#1e40af',    // blue-800
+        backgroundColor: '#ffffff',   // white
+        textColor: '#111827',         // gray-900
+        accentColor: '#6b7280'        // gray-500
+      },
+      metadata: {
+        name: "Modern Minimal Theme",
+        description: "Clean and minimal design with subtle blue accents"
       }
     };
   } else {
     modifications = {
       hasChanges: false,
-      explanation: `I can help you modify your template. Try asking me to:
+      explanation: `I can create amazing themes for you! Try asking for:
 
-• Change colors: "make it blue", "purple theme", "dark theme"
-• Adjust fonts: "serif fonts", "modern typography"  
-• Modify spacing: "more spacing", "compact layout"
-• Change text size: "larger text", "smaller text"
+• "sci-fi theme" - Futuristic dark theme with neon effects
+• "elegant design" - Luxury theme with gold accents
+• "modern minimal" - Clean and sophisticated
+• "playful style" - Bright and fun with animations
+• "dark theme" - Professional dark mode
+• "nature theme" - Green and organic styling
 
-What would you like to change?`
+What creative theme would you like?`
     };
   }
 
