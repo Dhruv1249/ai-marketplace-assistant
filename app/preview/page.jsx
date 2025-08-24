@@ -85,7 +85,8 @@ export default function PreviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
+      {/* Top Navigation Bar */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -121,9 +122,7 @@ export default function PreviewPage() {
               onClick={() => setSourceCodeEditorOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
+              <Code size={16} />
               Source Code
             </button>
 
@@ -131,9 +130,7 @@ export default function PreviewPage() {
               onClick={() => setAiAssistantOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
+              <Bot size={16} />
               AI Assistant
             </button>
             
@@ -144,66 +141,66 @@ export default function PreviewPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {!data ? (
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <p className="text-gray-700">
-              No preview data found. Go back to the Create page, generate content, choose a layout, and click Preview.
-            </p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            {/* Template Info Bar */}
-            {data.model?.metadata && (
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Settings size={16} className="text-gray-600" />
-                    <span className="text-sm font-medium text-gray-900">
-                      {data.model.metadata.name || 'Template'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Palette size={14} className="text-gray-500" />
-                    <span className="text-xs text-gray-600">
-                      {data.model.metadata.sections?.length || 0} sections
-                    </span>
-                  </div>
-                  {data.model.metadata.tags && (
-                    <div className="flex gap-1">
-                      {data.model.metadata.tags.slice(0, 3).map((tag, i) => (
-                        <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="text-xs text-gray-500">
-                  v{data.model.metadata.version || '1.0'}
-                </div>
+      {/* Template Info Bar */}
+      {data?.model?.metadata && (
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Settings size={16} className="text-gray-600" />
+              <span className="text-sm font-medium text-gray-900">
+                {data.model.metadata.name || 'Template'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Palette size={14} className="text-gray-500" />
+              <span className="text-xs text-gray-600">
+                {data.model.metadata.sections?.length || 0} sections
+              </span>
+            </div>
+            {data.model.metadata.tags && (
+              <div className="flex gap-1">
+                {data.model.metadata.tags.slice(0, 3).map((tag, i) => (
+                  <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
+                    {tag}
+                  </span>
+                ))}
               </div>
             )}
-            
-            {/* Main Renderer */}
-            <div className="p-6">
-              <div className="w-full overflow-x-auto">
-                <EnhancedJSONModelRenderer
-                  model={data.model}
-                  content={data.content}
-                  images={data.images}
-                  isEditing={isEditing}
-                  onUpdate={handleTemplateUpdate}
-                  onComponentSelect={handleComponentSelect}
-                  selectedComponentId={selectedComponentId}
-                  styleVariables={styleVariables}
-                />
-              </div>
+          </div>
+          <div className="text-xs text-gray-500">
+            v{data.model.metadata.version || '1.0'}
+          </div>
+        </div>
+      )}
+
+      {/* Full Screen Preview - No Container, No Box */}
+      <div className="w-full">
+        {!data ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center">
+              <p className="text-gray-700 text-lg mb-4">
+                No preview data found.
+              </p>
+              <p className="text-gray-500">
+                Go back to the Create page, generate content, choose a layout, and click Preview.
+              </p>
             </div>
           </div>
+        ) : (
+          <EnhancedJSONModelRenderer
+            model={data.model}
+            content={data.content}
+            images={data.images}
+            isEditing={isEditing}
+            onUpdate={handleTemplateUpdate}
+            onComponentSelect={handleComponentSelect}
+            selectedComponentId={selectedComponentId}
+            styleVariables={styleVariables}
+          />
         )}
       </div>
 
+      {/* Edit Mode Helper */}
       {isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
           <h3 className="font-semibold mb-2">Edit Mode Active</h3>
@@ -216,6 +213,7 @@ export default function PreviewPage() {
         </div>
       )}
 
+      {/* Enhanced Editors */}
       <EnhancedSourceCodeEditor
         isOpen={sourceCodeEditorOpen}
         onClose={() => setSourceCodeEditorOpen(false)}

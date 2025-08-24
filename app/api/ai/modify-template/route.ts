@@ -83,9 +83,25 @@ ${JSON.stringify(actualContent, null, 2)}
 User's Images:
 ${JSON.stringify(actualImages, null, 2)}
 
+CRITICAL RULES:
+1. For component className props: Use ONLY standard Tailwind CSS classes (bg-blue-500, text-white, etc.)
+2. For styleVariables: Use hex color values (#3b82f6, #ffffff, etc.) - NOT Tailwind classes
+3. DO NOT mix these up!
+
+Standard Tailwind classes for component className:
+- Blue: bg-blue-500, bg-blue-600, text-blue-500, text-blue-600, border-blue-500
+- Purple: bg-purple-500, bg-purple-600, text-purple-400, text-purple-500, border-purple-500
+- Dark: bg-gray-900, bg-black, text-white, text-gray-100, text-gray-200
+- Light: bg-white, bg-gray-50, text-gray-900, text-black
+
+Hex values for styleVariables:
+- Blue: "#3b82f6" (blue-500), "#2563eb" (blue-600), "#60a5fa" (blue-400)
+- Purple: "#8b5cf6" (purple-500), "#7c3aed" (purple-600), "#a78bfa" (purple-400)
+- Dark: "#111827" (gray-900), "#000000" (black), "#ffffff" (white)
+
 You can modify:
-1. styleVariables - colors, fonts, spacing, themes
-2. component structure - add/remove sections, change layouts
+1. styleVariables - Use HEX VALUES only: {"primaryColor": "#3b82f6", "backgroundColor": "#111827"}
+2. component structure - Use TAILWIND CLASSES in className props: "bg-blue-500 text-white"
 3. metadata - template info
 
 Respond with valid JSON:
@@ -94,22 +110,27 @@ Respond with valid JSON:
   "hasChanges": true/false,
   "explanation": "What you changed",
   "styleVariables": {
-    // Updated style variables if needed
-  },
-  "metadata": {
-    // Updated metadata if needed  
+    "primaryColor": "#8b5cf6",     // HEX VALUE for purple-500
+    "backgroundColor": "#111827",   // HEX VALUE for gray-900
+    "textColor": "#ffffff"         // HEX VALUE for white
   },
   "component": {
-    // Updated component structure if needed
+    // Component with Tailwind CLASSES in className props
+    "props": {
+      "className": "bg-gray-900 text-white border-purple-500"  // TAILWIND CLASSES
+    }
   }
 }
 
-Examples:
-- "make it blue" → update styleVariables.primaryColor
-- "dark theme" → update backgroundColor, textColor
-- "serif fonts" → update fontFamily
-- "add testimonials" → add testimonials section to component
-- "larger text" → update fontSize in styleVariables`,
+WRONG Examples (DON'T do this):
+- styleVariables: {"primaryColor": "text-purple-400"} ❌ (Tailwind class in styleVariables)
+- styleVariables: {"backgroundColor": "bg-black"} ❌ (Tailwind class in styleVariables)
+
+CORRECT Examples:
+- styleVariables: {"primaryColor": "#a78bfa"} ✅ (hex value)
+- component className: "text-purple-400 bg-black" ✅ (Tailwind classes)
+
+Remember: styleVariables = HEX VALUES, className = TAILWIND CLASSES!`,
         },
       ],
     },
@@ -154,7 +175,7 @@ Examples:
   } catch (error) {
     console.error('Error generating template modifications:', error);
     
-    // Fallback to rule-based modifications
+    // Fallback to rule-based modifications with proper format
     return generateFallbackModifications(prompt, currentTemplate);
   }
 }
@@ -163,35 +184,15 @@ function generateFallbackModifications(prompt: string, currentTemplate: any) {
   const lower = prompt.toLowerCase();
   let modifications: any = { hasChanges: false, explanation: '' };
 
-  // Color modifications
+  // Color modifications with proper hex values for styleVariables
   if (lower.includes('blue')) {
     modifications = {
       hasChanges: true,
       explanation: "Updated the color scheme to use blue tones.",
       styleVariables: {
-        primaryColor: '#3b82f6',
-        secondaryColor: '#1e40af',
-        accentColor: '#60a5fa'
-      }
-    };
-  } else if (lower.includes('green')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Changed the color palette to green.",
-      styleVariables: {
-        primaryColor: '#10b981',
-        secondaryColor: '#059669',
-        accentColor: '#34d399'
-      }
-    };
-  } else if (lower.includes('red')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Applied a red color scheme.",
-      styleVariables: {
-        primaryColor: '#ef4444',
-        secondaryColor: '#dc2626',
-        accentColor: '#f87171'
+        primaryColor: '#3b82f6',    // blue-500
+        secondaryColor: '#2563eb',  // blue-600
+        accentColor: '#60a5fa'      // blue-400
       }
     };
   } else if (lower.includes('purple')) {
@@ -199,19 +200,19 @@ function generateFallbackModifications(prompt: string, currentTemplate: any) {
       hasChanges: true,
       explanation: "Changed to a purple color theme.",
       styleVariables: {
-        primaryColor: '#8b5cf6',
-        secondaryColor: '#7c3aed',
-        accentColor: '#a78bfa'
+        primaryColor: '#8b5cf6',    // purple-500
+        secondaryColor: '#7c3aed',  // purple-600
+        accentColor: '#a78bfa'      // purple-400
       }
     };
   } else if (lower.includes('dark')) {
     modifications = {
       hasChanges: true,
-      explanation: "Applied a dark theme with light text.",
+      explanation: "Applied a dark theme.",
       styleVariables: {
-        backgroundColor: '#1f2937',
-        textColor: '#f9fafb',
-        primaryColor: '#3b82f6'
+        backgroundColor: '#111827',  // gray-900
+        textColor: '#ffffff',       // white
+        primaryColor: '#8b5cf6'     // purple-500
       }
     };
   } else if (lower.includes('light')) {
@@ -219,62 +220,8 @@ function generateFallbackModifications(prompt: string, currentTemplate: any) {
       hasChanges: true,
       explanation: "Applied a light theme.",
       styleVariables: {
-        backgroundColor: '#ffffff',
-        textColor: '#111827'
-      }
-    };
-  } else if (lower.includes('serif')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Changed typography to serif fonts for a classic look.",
-      styleVariables: {
-        fontFamily: 'Georgia, serif',
-        headingFont: 'Georgia, serif'
-      }
-    };
-  } else if (lower.includes('modern') || lower.includes('sans')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Updated to modern sans-serif fonts.",
-      styleVariables: {
-        fontFamily: 'Inter, sans-serif',
-        headingFont: 'Inter, sans-serif'
-      }
-    };
-  } else if (lower.includes('spacing')) {
-    if (lower.includes('more') || lower.includes('increase')) {
-      modifications = {
-        hasChanges: true,
-        explanation: "Increased spacing for a more open design.",
-        styleVariables: {
-          spacing: '2rem'
-        }
-      };
-    } else if (lower.includes('less') || lower.includes('compact')) {
-      modifications = {
-        hasChanges: true,
-        explanation: "Reduced spacing for a more compact layout.",
-        styleVariables: {
-          spacing: '1rem'
-        }
-      };
-    }
-  } else if (lower.includes('larger') || lower.includes('bigger')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Increased text size for better readability.",
-      styleVariables: {
-        fontSize: '1.1rem',
-        headingSize: '2.5rem'
-      }
-    };
-  } else if (lower.includes('smaller')) {
-    modifications = {
-      hasChanges: true,
-      explanation: "Reduced text size for a more compact look.",
-      styleVariables: {
-        fontSize: '0.9rem',
-        headingSize: '1.8rem'
+        backgroundColor: '#ffffff',  // white
+        textColor: '#111827'        // gray-900
       }
     };
   } else {
@@ -282,7 +229,7 @@ function generateFallbackModifications(prompt: string, currentTemplate: any) {
       hasChanges: false,
       explanation: `I can help you modify your template. Try asking me to:
 
-• Change colors: "make it blue", "dark theme", "green colors"
+• Change colors: "make it blue", "purple theme", "dark theme"
 • Adjust fonts: "serif fonts", "modern typography"  
 • Modify spacing: "more spacing", "compact layout"
 • Change text size: "larger text", "smaller text"
