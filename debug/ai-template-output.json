@@ -1,213 +1,255 @@
 {
-  "timestamp": "2025-08-24T09:40:12.295Z",
-  "prompt": "i mean not heading all the content",
-  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"The user requested that not all content be in a heading. I have transformed the template to remove the prominent heading from the 'hero-section' and instead made the 'hero-title' a more subdued, but still visually appealing, element. The 'features-title' and 'specs-title' have also been slightly de-emphasized to create a less header-heavy experience. The overall tone remains futuristic and engaging.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#06b6d4\",\n    \"secondaryColor\": \"#3b82f6\",\n    \"backgroundColor\": \"#0f172a\",\n    \"textColor\": \"#e2e8f0\",\n    \"accentColor\": \"#64ffda\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"headingFont\": \"'Orbitron', sans-serif\",\n    \"fontSize\": \"17px\",\n    \"lineHeight\": \"1.8\",\n    \"borderRadius\": \"8px\",\n    \"spacing\": \"2rem\",\n    \"containerMaxWidth\": \"1300px\",\n    \"borders\": {\n      \"thin\": \"1px solid #4b5563\",\n      \"medium\": \"2px solid #6b7280\",\n      \"thick\": \"3px solid #9ca3af\"\n    },\n    \"shadows\": {\n      \"small\": \"0 2px 5px rgba(100, 255, 218, 0.2), 0 1px 3px rgba(100, 255, 218, 0.3)\",\n      \"medium\": \"0 5px 15px rgba(100, 255, 218, 0.3), 0 4px 8px rgba(100, 255, 218, 0.4)\",\n      \"large\": \"0 15px 30px rgba(100, 255, 218, 0.4), 0 10px 15px rgba(100, 255, 218, 0.5)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"cosmic-explorer-variant\",\n    \"name\": \"Cosmic Explorer - Refined\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-gray-200 font-sans flex flex-col animate-fadeIn\"\n    },\n    \"children\": [\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"hero\",\n            \"editable\": {\n              \"moveable\": false,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Galactic Introduction\",\n              \"description\": \"Striking header with title and description in a futuristic style.\",\n              \"icon\": \"type\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"text-center py-12 border-b-2 border-indigo-600/30 mb-16\"\n            },\n            \"children\": [\n              {\n                \"id\": \"hero-title\",\n                \"type\": \"h2\",\n                \"editable\": {\n                  \"contentEditable\": true,\n                  \"styleEditable\": true,\n                  \"textAlign\": true,\n                  \"fontSize\": true,\n                  \"fontWeight\": true,\n                  \"color\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Cosmic Title\",\n                  \"description\": \"Main heading with a futuristic, bold display.\",\n                  \"contentType\": \"text\"\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-500 tracking-wide mb-6 font-orbitron\"\n                },\n                \"children\": [\n                  \"{{content.title}}\"\n                ]\n              },\n              {\n                \"id\": \"hero-description\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true,\n                  \"styleEditable\": true,\n                  \"textAlign\": true,\n                  \"fontSize\": true,\n                  \"color\": true,\n                  \"lineHeight\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Cosmic Description\",\n                  \"description\": \"Detailed description with a sophisticated, sci-fi feel.\",\n                  \"contentType\": \"textarea\"\n                },\n                \"props\": {\n                  \"className\": \"text-xl text-gray-300 leading-relaxed max-w-5xl mx-auto font-light\"\n                },\n                \"children\": [\n                  \"{{content.description}}\"\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"gallery-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"gallery\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Nebula Showcase\",\n              \"description\": \"Interactive image gallery with hover effects.\",\n              \"icon\": \"image\",\n              \"category\": \"media\"\n            },\n            \"props\": {\n              \"className\": \"mb-20 grid grid-cols-1 md:grid-cols-2 gap-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"main-image-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"aspect-[3/2] relative group overflow-hidden rounded-xl shadow-2xl border-2 border-cyan-500/40\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image\",\n                    \"type\": \"img\",\n                    \"props\": {\n                      \"src\": \"{{images[0]}}\",\n                      \"alt\": \"Product image\",\n                      \"className\": \"w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105\"\n                    }\n                  },\n                  {\n                    \"id\": \"image-overlay\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-white text-2xl font-bold font-orbitron\"\n                    },\n                    \"children\": [\n                      \"View Details\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"thumbnail-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-2 gap-6\"\n                },\n                \"children\": \"{{images.slice(1).map}}\"\n              }\n            ]\n          },\n          {\n            \"id\": \"features-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"features\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": true,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Advanced Systems\",\n              \"description\": \"Highlights key features with interactive explanations.\",\n              \"icon\": \"star\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"mb-20\"\n            },\n            \"children\": [\n              {\n                \"id\": \"features-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-indigo-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"features-header\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"border-b-2 border-indigo-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 font-orbitron\"\n                        },\n                        \"children\": [\n                          \"System Capabilities\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"p-8\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-10\"\n                        },\n                        \"children\": \"{{content.features.map}}\"\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"specs-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"specifications\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": true,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Technical Data\",\n              \"description\": \"Displays product specifications in an interactive table.\",\n              \"icon\": \"list\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"mb-20\"\n            },\n            \"children\": [\n              {\n                \"id\": \"specs-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-purple-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specs-header\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"border-b-2 border-purple-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 font-orbitron\"\n                        },\n                        \"children\": [\n                          \"Interstellar Specifications\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"p-8\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-table\",\n                        \"type\": \"table\",\n                        \"props\": {\n                          \"className\": \"w-full text-left text-gray-300\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-tbody\",\n                            \"type\": \"tbody\",\n                            \"props\": {},\n                            \"children\": \"{{content.specifications.entries}}\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"cta-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"cta\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Engage Drive\",\n              \"description\": \"Call to action with a pulsating button.\",\n              \"icon\": \"shopping-cart\",\n              \"category\": \"action\"\n            },\n            \"props\": {\n              \"className\": \"text-center py-16\"\n            },\n            \"children\": [\n              {\n                \"id\": \"cta-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-transparent bg-gradient-to-br from-green-500/20 to-cyan-500/20 p-12 rounded-xl shadow-2xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"cta-button\",\n                    \"type\": \"button\",\n                    \"editable\": {\n                      \"contentEditable\": true,\n                      \"styleEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-white px-16 py-6 rounded-full bg-gradient-to-r from-green-400 to-cyan-500 hover:from-green-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-400 uppercase tracking-wider animate-pulse\"\n                    },\n                    \"children\": [\n                      \"Initiate Acquisition\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
-  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"The user requested that not all content be in a heading. I have transformed the template to remove the prominent heading from the 'hero-section' and instead made the 'hero-title' a more subdued, but still visually appealing, element. The 'features-title' and 'specs-title' have also been slightly de-emphasized to create a less header-heavy experience. The overall tone remains futuristic and engaging.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#06b6d4\",\n    \"secondaryColor\": \"#3b82f6\",\n    \"backgroundColor\": \"#0f172a\",\n    \"textColor\": \"#e2e8f0\",\n    \"accentColor\": \"#64ffda\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"headingFont\": \"'Orbitron', sans-serif\",\n    \"fontSize\": \"17px\",\n    \"lineHeight\": \"1.8\",\n    \"borderRadius\": \"8px\",\n    \"spacing\": \"2rem\",\n    \"containerMaxWidth\": \"1300px\",\n    \"borders\": {\n      \"thin\": \"1px solid #4b5563\",\n      \"medium\": \"2px solid #6b7280\",\n      \"thick\": \"3px solid #9ca3af\"\n    },\n    \"shadows\": {\n      \"small\": \"0 2px 5px rgba(100, 255, 218, 0.2), 0 1px 3px rgba(100, 255, 218, 0.3)\",\n      \"medium\": \"0 5px 15px rgba(100, 255, 218, 0.3), 0 4px 8px rgba(100, 255, 218, 0.4)\",\n      \"large\": \"0 15px 30px rgba(100, 255, 218, 0.4), 0 10px 15px rgba(100, 255, 218, 0.5)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"cosmic-explorer-variant\",\n    \"name\": \"Cosmic Explorer - Refined\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-gray-200 font-sans flex flex-col animate-fadeIn\"\n    },\n    \"children\": [\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"hero\",\n            \"editable\": {\n              \"moveable\": false,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Galactic Introduction\",\n              \"description\": \"Striking header with title and description in a futuristic style.\",\n              \"icon\": \"type\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"text-center py-12 border-b-2 border-indigo-600/30 mb-16\"\n            },\n            \"children\": [\n              {\n                \"id\": \"hero-title\",\n                \"type\": \"h2\",\n                \"editable\": {\n                  \"contentEditable\": true,\n                  \"styleEditable\": true,\n                  \"textAlign\": true,\n                  \"fontSize\": true,\n                  \"fontWeight\": true,\n                  \"color\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Cosmic Title\",\n                  \"description\": \"Main heading with a futuristic, bold display.\",\n                  \"contentType\": \"text\"\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-500 tracking-wide mb-6 font-orbitron\"\n                },\n                \"children\": [\n                  \"{{content.title}}\"\n                ]\n              },\n              {\n                \"id\": \"hero-description\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true,\n                  \"styleEditable\": true,\n                  \"textAlign\": true,\n                  \"fontSize\": true,\n                  \"color\": true,\n                  \"lineHeight\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Cosmic Description\",\n                  \"description\": \"Detailed description with a sophisticated, sci-fi feel.\",\n                  \"contentType\": \"textarea\"\n                },\n                \"props\": {\n                  \"className\": \"text-xl text-gray-300 leading-relaxed max-w-5xl mx-auto font-light\"\n                },\n                \"children\": [\n                  \"{{content.description}}\"\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"gallery-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"gallery\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Nebula Showcase\",\n              \"description\": \"Interactive image gallery with hover effects.\",\n              \"icon\": \"image\",\n              \"category\": \"media\"\n            },\n            \"props\": {\n              \"className\": \"mb-20 grid grid-cols-1 md:grid-cols-2 gap-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"main-image-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"aspect-[3/2] relative group overflow-hidden rounded-xl shadow-2xl border-2 border-cyan-500/40\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image\",\n                    \"type\": \"img\",\n                    \"props\": {\n                      \"src\": \"{{images[0]}}\",\n                      \"alt\": \"Product image\",\n                      \"className\": \"w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105\"\n                    }\n                  },\n                  {\n                    \"id\": \"image-overlay\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-white text-2xl font-bold font-orbitron\"\n                    },\n                    \"children\": [\n                      \"View Details\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"thumbnail-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-2 gap-6\"\n                },\n                \"children\": \"{{images.slice(1).map}}\"\n              }\n            ]\n          },\n          {\n            \"id\": \"features-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"features\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": true,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Advanced Systems\",\n              \"description\": \"Highlights key features with interactive explanations.\",\n              \"icon\": \"star\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"mb-20\"\n            },\n            \"children\": [\n              {\n                \"id\": \"features-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-indigo-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"features-header\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"border-b-2 border-indigo-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 font-orbitron\"\n                        },\n                        \"children\": [\n                          \"System Capabilities\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"p-8\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-10\"\n                        },\n                        \"children\": \"{{content.features.map}}\"\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"specs-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"specifications\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": true,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Technical Data\",\n              \"description\": \"Displays product specifications in an interactive table.\",\n              \"icon\": \"list\",\n              \"category\": \"content\"\n            },\n            \"props\": {\n              \"className\": \"mb-20\"\n            },\n            \"children\": [\n              {\n                \"id\": \"specs-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-purple-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specs-header\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"border-b-2 border-purple-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 font-orbitron\"\n                        },\n                        \"children\": [\n                          \"Interstellar Specifications\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"p-8\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-table\",\n                        \"type\": \"table\",\n                        \"props\": {\n                          \"className\": \"w-full text-left text-gray-300\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-tbody\",\n                            \"type\": \"tbody\",\n                            \"props\": {},\n                            \"children\": \"{{content.specifications.entries}}\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"cta-section\",\n            \"type\": \"div\",\n            \"sectionType\": \"cta\",\n            \"editable\": {\n              \"moveable\": true,\n              \"removeable\": false,\n              \"duplicatable\": false,\n              \"styleEditable\": true,\n              \"contentEditable\": true\n            },\n            \"editingMeta\": {\n              \"name\": \"Engage Drive\",\n              \"description\": \"Call to action with a pulsating button.\",\n              \"icon\": \"shopping-cart\",\n              \"category\": \"action\"\n            },\n            \"props\": {\n              \"className\": \"text-center py-16\"\n            },\n            \"children\": [\n              {\n                \"id\": \"cta-container\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"border-2 border-transparent bg-gradient-to-br from-green-500/20 to-cyan-500/20 p-12 rounded-xl shadow-2xl\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"cta-button\",\n                    \"type\": \"button\",\n                    \"editable\": {\n                      \"contentEditable\": true,\n                      \"styleEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-white px-16 py-6 rounded-full bg-gradient-to-r from-green-400 to-cyan-500 hover:from-green-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-400 uppercase tracking-wider animate-pulse\"\n                    },\n                    \"children\": [\n                      \"Initiate Acquisition\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+  "timestamp": "2025-08-24T10:09:51.754Z",
+  "prompt": "make it star wars theme with all fonts beautiful",
+  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a Star Wars theme with beautiful, thematic fonts.  Key changes include adopting a dark, space-inspired color palette, selecting fonts reminiscent of the Star Wars universe, and applying subtle animations and styling to evoke a futuristic, adventurous feel. The primary and secondary colors are now deep blues and blacks, with a vibrant accent color. Fonts like 'Orbitron' and 'Rajdhani' are chosen for their sci-fi aesthetic. Shadow effects are enhanced for depth, and subtle animations like 'animate-pulse' on key elements add a dynamic, technological feel.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#007bff\",\n    \"secondaryColor\": \"#0056b3\",\n    \"backgroundColor\": \"#0f0f0f\",\n    \"textColor\": \"#e0e0e0\",\n    \"accentColor\": \"#64ffda\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"headingFont\": \"'Rajdhani', sans-serif\",\n    \"fontSize\": \"16px\",\n    \"lineHeight\": \"1.7\",\n    \"borderRadius\": \"12px\",\n    \"spacing\": \"1.2rem\",\n    \"containerMaxWidth\": \"1440px\",\n    \"shadows\": {\n      \"small\": \"0 2px 5px rgba(100, 255, 218, 0.3)\",\n      \"medium\": \"0 6px 15px rgba(100, 255, 218, 0.4)\",\n      \"large\": \"0 15px 35px rgba(100, 255, 218, 0.5)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"gallery-focused\",\n    \"name\": \"Galactic Gallery\",\n    \"description\": \"A Star Wars-themed gallery template with futuristic fonts and a dark, immersive aesthetic.\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex flex-col relative text-gray-200 font-orbitron\"\n    },\n    \"children\": [\n      {\n        \"id\": \"header-spacer\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"h-20 flex items-center justify-center text-center text-4xl font-rajdhani font-bold text-accentColor shadow-lg animate-pulse\"\n        },\n        \"children\": [\n          \"Galactic Artifact Showcase\"\n        ]\n      },\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"main-grid\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"gallery-section\",\n                \"type\": \"div\",\n                \"sectionType\": \"gallery\",\n                \"editable\": {\n                  \"moveable\": true,\n                  \"removeable\": false,\n                  \"duplicatable\": false,\n                  \"styleEditable\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Gallery Section\",\n                  \"description\": \"Product image gallery with thumbnails\",\n                  \"icon\": \"image\",\n                  \"category\": \"media\"\n                },\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 border border-secondaryColor/30 p-4 rounded-xl shadow-medium\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-3\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"main-image-wrapper\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"aspect-video rounded-xl bg-gray-800 overflow-hidden flex items-center justify-center relative group shadow-large\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"main-image\",\n                            \"type\": \"img\",\n                            \"props\": {\n                              \"src\": \"{{images[0]}}\",\n                              \"alt\": \"Artifact Image\",\n                              \"className\": \"w-full h-full object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105 transform-gpu\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"thumbnails-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-2\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"thumbnail-1\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[0]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-2\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[1]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-3\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[2]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-4\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[3]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"details-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-900/70 p-6 rounded-xl shadow-lg\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"hero-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"hero\",\n                    \"editable\": {\n                      \"moveable\": false,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Hero Section\",\n                      \"description\": \"Main product title and description\",\n                      \"icon\": \"type\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"border-b border-gray-700 pb-4 mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"hero-title\",\n                        \"type\": \"h2\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"fontWeight\": true,\n                          \"color\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Title\",\n                          \"description\": \"Main product heading\",\n                          \"contentType\": \"text\"\n                        },\n                        \"props\": {\n                          \"className\": \"text-3xl font-bold mb-3 text-primaryColor animate-fadeInLeft\"\n                        },\n                        \"children\": [\n                          \"{{content.title}}\"\n                        ]\n                      },\n                      {\n                        \"id\": \"hero-description\",\n                        \"type\": \"p\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"color\": true,\n                          \"lineHeight\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Description\",\n                          \"description\": \"Detailed product description\",\n                          \"contentType\": \"textarea\"\n                        },\n                        \"props\": {\n                          \"className\": \"whitespace-pre-line text-lg leading-relaxed\"\n                        },\n                        \"children\": [\n                          \"{{content.description}}\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"features\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Features Section\",\n                      \"description\": \"Product features list\",\n                      \"icon\": \"star\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6 border-b border-gray-700 pb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-4 text-accentColor animate-fadeInRight\"\n                        },\n                        \"children\": [\n                          \"Galactic Capabilities\"\n                        ]\n                      },\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-4\"\n                        },\n                        \"children\": \"{{content.features.map((feature, index) => ({ id: `feature-${index}`, type: 'div', props: { className: 'flex items-center space-x-3' }, children: [{ id: `feature-icon-${index}`, type: 'svg', props: { className: 'h-6 w-6 text-primaryColor animate-spin', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, children: [<path d='M12 2v6M12 18v6M4.93 4.93l4.24 4.24M14.07 14.07l4.24 4.24M20 12h4M4 12H0M19.07 4.93l-4.24 4.24M14.07 19.07l-4.24-4.24' />] }, { id: `feature-text-${index}`, type: 'p', editable: { contentEditable: true }, props: { className: 'text-lg' }, children: [feature] }] }))}}\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"specifications\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Specifications Section\",\n                      \"description\": \"Product specifications table\",\n                      \"icon\": \"list\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6 border-b border-gray-700 pb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-4 text-accentColor animate-fadeInLeft\"\n                        },\n                        \"children\": [\n                          \"Technical Data\"\n                        ]\n                      },\n                      {\n                        \"id\": \"specs-table-container\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"overflow-x-auto\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-table\",\n                            \"type\": \"table\",\n                            \"props\": {\n                              \"className\": \"min-w-full divide-y divide-gray-700 shadow-inner\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"specs-tbody\",\n                                \"type\": \"tbody\",\n                                \"props\": {\n                                  \"className\": \"divide-y divide-gray-700\"\n                                },\n                                \"children\": \"{{Object.entries(content.specifications).map(([key, value]) => ({ id: `spec-${key.replace(' ', '-')}`, type: 'tr', props: { className: 'hover:bg-gray-800/50 transition-colors duration-200' }, children: [{ id: `spec-key-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-nowrap text-sm font-semibold text-primaryColor' }, children: [key] }, { id: `spec-value-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-pre-wrap text-sm' }, editable: { contentEditable: true }, children: [value] }] }))}}\"\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"cta\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Call to Action\",\n                      \"description\": \"Purchase button\",\n                      \"icon\": \"shopping-cart\",\n                      \"category\": \"action\"\n                    },\n                    \"props\": {\n                      \"className\": \"mt-8 text-center\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"cta-button\",\n                        \"type\": \"button\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"px-8 py-3 bg-gradient-to-r from-primaryColor to-accentColor text-black font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 animate-glow\"\n                        },\n                        \"children\": [\n                          \"Acquire Artifact\"\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
+  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a Star Wars theme with beautiful, thematic fonts.  Key changes include adopting a dark, space-inspired color palette, selecting fonts reminiscent of the Star Wars universe, and applying subtle animations and styling to evoke a futuristic, adventurous feel. The primary and secondary colors are now deep blues and blacks, with a vibrant accent color. Fonts like 'Orbitron' and 'Rajdhani' are chosen for their sci-fi aesthetic. Shadow effects are enhanced for depth, and subtle animations like 'animate-pulse' on key elements add a dynamic, technological feel.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#007bff\",\n    \"secondaryColor\": \"#0056b3\",\n    \"backgroundColor\": \"#0f0f0f\",\n    \"textColor\": \"#e0e0e0\",\n    \"accentColor\": \"#64ffda\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"headingFont\": \"'Rajdhani', sans-serif\",\n    \"fontSize\": \"16px\",\n    \"lineHeight\": \"1.7\",\n    \"borderRadius\": \"12px\",\n    \"spacing\": \"1.2rem\",\n    \"containerMaxWidth\": \"1440px\",\n    \"shadows\": {\n      \"small\": \"0 2px 5px rgba(100, 255, 218, 0.3)\",\n      \"medium\": \"0 6px 15px rgba(100, 255, 218, 0.4)\",\n      \"large\": \"0 15px 35px rgba(100, 255, 218, 0.5)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"gallery-focused\",\n    \"name\": \"Galactic Gallery\",\n    \"description\": \"A Star Wars-themed gallery template with futuristic fonts and a dark, immersive aesthetic.\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex flex-col relative text-gray-200 font-orbitron\"\n    },\n    \"children\": [\n      {\n        \"id\": \"header-spacer\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"h-20 flex items-center justify-center text-center text-4xl font-rajdhani font-bold text-accentColor shadow-lg animate-pulse\"\n        },\n        \"children\": [\n          \"Galactic Artifact Showcase\"\n        ]\n      },\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"main-grid\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"gallery-section\",\n                \"type\": \"div\",\n                \"sectionType\": \"gallery\",\n                \"editable\": {\n                  \"moveable\": true,\n                  \"removeable\": false,\n                  \"duplicatable\": false,\n                  \"styleEditable\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Gallery Section\",\n                  \"description\": \"Product image gallery with thumbnails\",\n                  \"icon\": \"image\",\n                  \"category\": \"media\"\n                },\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 border border-secondaryColor/30 p-4 rounded-xl shadow-medium\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-3\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"main-image-wrapper\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"aspect-video rounded-xl bg-gray-800 overflow-hidden flex items-center justify-center relative group shadow-large\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"main-image\",\n                            \"type\": \"img\",\n                            \"props\": {\n                              \"src\": \"{{images[0]}}\",\n                              \"alt\": \"Artifact Image\",\n                              \"className\": \"w-full h-full object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105 transform-gpu\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"thumbnails-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-2\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"thumbnail-1\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[0]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-2\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[1]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-3\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[2]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      },\n                      {\n                        \"id\": \"thumbnail-4\",\n                        \"type\": \"img\",\n                        \"props\": {\n                          \"src\": \"{{images[3]}}\",\n                          \"alt\": \"Artifact Thumbnail\",\n                          \"className\": \"w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200\"\n                        }\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"details-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-900/70 p-6 rounded-xl shadow-lg\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"hero-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"hero\",\n                    \"editable\": {\n                      \"moveable\": false,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Hero Section\",\n                      \"description\": \"Main product title and description\",\n                      \"icon\": \"type\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"border-b border-gray-700 pb-4 mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"hero-title\",\n                        \"type\": \"h2\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"fontWeight\": true,\n                          \"color\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Title\",\n                          \"description\": \"Main product heading\",\n                          \"contentType\": \"text\"\n                        },\n                        \"props\": {\n                          \"className\": \"text-3xl font-bold mb-3 text-primaryColor animate-fadeInLeft\"\n                        },\n                        \"children\": [\n                          \"{{content.title}}\"\n                        ]\n                      },\n                      {\n                        \"id\": \"hero-description\",\n                        \"type\": \"p\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"color\": true,\n                          \"lineHeight\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Description\",\n                          \"description\": \"Detailed product description\",\n                          \"contentType\": \"textarea\"\n                        },\n                        \"props\": {\n                          \"className\": \"whitespace-pre-line text-lg leading-relaxed\"\n                        },\n                        \"children\": [\n                          \"{{content.description}}\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"features\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Features Section\",\n                      \"description\": \"Product features list\",\n                      \"icon\": \"star\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6 border-b border-gray-700 pb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-4 text-accentColor animate-fadeInRight\"\n                        },\n                        \"children\": [\n                          \"Galactic Capabilities\"\n                        ]\n                      },\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-4\"\n                        },\n                        \"children\": \"{{content.features.map((feature, index) => ({ id: `feature-${index}`, type: 'div', props: { className: 'flex items-center space-x-3' }, children: [{ id: `feature-icon-${index}`, type: 'svg', props: { className: 'h-6 w-6 text-primaryColor animate-spin', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, children: [<path d='M12 2v6M12 18v6M4.93 4.93l4.24 4.24M14.07 14.07l4.24 4.24M20 12h4M4 12H0M19.07 4.93l-4.24 4.24M14.07 19.07l-4.24-4.24' />] }, { id: `feature-text-${index}`, type: 'p', editable: { contentEditable: true }, props: { className: 'text-lg' }, children: [feature] }] }))}}\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"specifications\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Specifications Section\",\n                      \"description\": \"Product specifications table\",\n                      \"icon\": \"list\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6 border-b border-gray-700 pb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-4 text-accentColor animate-fadeInLeft\"\n                        },\n                        \"children\": [\n                          \"Technical Data\"\n                        ]\n                      },\n                      {\n                        \"id\": \"specs-table-container\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"overflow-x-auto\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-table\",\n                            \"type\": \"table\",\n                            \"props\": {\n                              \"className\": \"min-w-full divide-y divide-gray-700 shadow-inner\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"specs-tbody\",\n                                \"type\": \"tbody\",\n                                \"props\": {\n                                  \"className\": \"divide-y divide-gray-700\"\n                                },\n                                \"children\": \"{{Object.entries(content.specifications).map(([key, value]) => ({ id: `spec-${key.replace(' ', '-')}`, type: 'tr', props: { className: 'hover:bg-gray-800/50 transition-colors duration-200' }, children: [{ id: `spec-key-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-nowrap text-sm font-semibold text-primaryColor' }, children: [key] }, { id: `spec-value-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-pre-wrap text-sm' }, editable: { contentEditable: true }, children: [value] }] }))}}\"\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"cta\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Call to Action\",\n                      \"description\": \"Purchase button\",\n                      \"icon\": \"shopping-cart\",\n                      \"category\": \"action\"\n                    },\n                    \"props\": {\n                      \"className\": \"mt-8 text-center\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"cta-button\",\n                        \"type\": \"button\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"px-8 py-3 bg-gradient-to-r from-primaryColor to-accentColor text-black font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 animate-glow\"\n                        },\n                        \"children\": [\n                          \"Acquire Artifact\"\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
   "parsedResult": {
     "hasChanges": true,
-    "explanation": "The user requested that not all content be in a heading. I have transformed the template to remove the prominent heading from the 'hero-section' and instead made the 'hero-title' a more subdued, but still visually appealing, element. The 'features-title' and 'specs-title' have also been slightly de-emphasized to create a less header-heavy experience. The overall tone remains futuristic and engaging.",
+    "explanation": "Transformed the template to a Star Wars theme with beautiful, thematic fonts.  Key changes include adopting a dark, space-inspired color palette, selecting fonts reminiscent of the Star Wars universe, and applying subtle animations and styling to evoke a futuristic, adventurous feel. The primary and secondary colors are now deep blues and blacks, with a vibrant accent color. Fonts like 'Orbitron' and 'Rajdhani' are chosen for their sci-fi aesthetic. Shadow effects are enhanced for depth, and subtle animations like 'animate-pulse' on key elements add a dynamic, technological feel.",
     "styleVariables": {
-      "primaryColor": "#06b6d4",
-      "secondaryColor": "#3b82f6",
-      "backgroundColor": "#0f172a",
-      "textColor": "#e2e8f0",
+      "primaryColor": "#007bff",
+      "secondaryColor": "#0056b3",
+      "backgroundColor": "#0f0f0f",
+      "textColor": "#e0e0e0",
       "accentColor": "#64ffda",
       "fontFamily": "'Orbitron', sans-serif",
-      "headingFont": "'Orbitron', sans-serif",
-      "fontSize": "17px",
-      "lineHeight": "1.8",
-      "borderRadius": "8px",
-      "spacing": "2rem",
-      "containerMaxWidth": "1300px",
-      "borders": {
-        "thin": "1px solid #4b5563",
-        "medium": "2px solid #6b7280",
-        "thick": "3px solid #9ca3af"
-      },
+      "headingFont": "'Rajdhani', sans-serif",
+      "fontSize": "16px",
+      "lineHeight": "1.7",
+      "borderRadius": "12px",
+      "spacing": "1.2rem",
+      "containerMaxWidth": "1440px",
       "shadows": {
-        "small": "0 2px 5px rgba(100, 255, 218, 0.2), 0 1px 3px rgba(100, 255, 218, 0.3)",
-        "medium": "0 5px 15px rgba(100, 255, 218, 0.3), 0 4px 8px rgba(100, 255, 218, 0.4)",
-        "large": "0 15px 30px rgba(100, 255, 218, 0.4), 0 10px 15px rgba(100, 255, 218, 0.5)"
+        "small": "0 2px 5px rgba(100, 255, 218, 0.3)",
+        "medium": "0 6px 15px rgba(100, 255, 218, 0.4)",
+        "large": "0 15px 35px rgba(100, 255, 218, 0.5)"
       }
     },
     "metadata": {
-      "template": "cosmic-explorer-variant",
-      "name": "Cosmic Explorer - Refined"
+      "template": "gallery-focused",
+      "name": "Galactic Gallery",
+      "description": "A Star Wars-themed gallery template with futuristic fonts and a dark, immersive aesthetic."
     },
     "component": {
       "id": "root",
       "type": "div",
       "props": {
-        "className": "min-h-screen bg-gradient-to-br from-gray-900 to-gray-950 text-gray-200 font-sans flex flex-col animate-fadeIn"
+        "className": "min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex flex-col relative text-gray-200 font-orbitron"
       },
       "children": [
+        {
+          "id": "header-spacer",
+          "type": "div",
+          "props": {
+            "className": "h-20 flex items-center justify-center text-center text-4xl font-rajdhani font-bold text-accentColor shadow-lg animate-pulse"
+          },
+          "children": [
+            "Galactic Artifact Showcase"
+          ]
+        },
         {
           "id": "container",
           "type": "div",
           "props": {
-            "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+            "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
           },
           "children": [
             {
-              "id": "hero-section",
+              "id": "main-grid",
               "type": "div",
-              "sectionType": "hero",
-              "editable": {
-                "moveable": false,
-                "removeable": false,
-                "duplicatable": false,
-                "styleEditable": true,
-                "contentEditable": true
-              },
-              "editingMeta": {
-                "name": "Galactic Introduction",
-                "description": "Striking header with title and description in a futuristic style.",
-                "icon": "type",
-                "category": "content"
-              },
               "props": {
-                "className": "text-center py-12 border-b-2 border-indigo-600/30 mb-16"
+                "className": "grid grid-cols-1 lg:grid-cols-2 gap-12"
               },
               "children": [
                 {
-                  "id": "hero-title",
-                  "type": "h2",
-                  "editable": {
-                    "contentEditable": true,
-                    "styleEditable": true,
-                    "textAlign": true,
-                    "fontSize": true,
-                    "fontWeight": true,
-                    "color": true
-                  },
-                  "editingMeta": {
-                    "name": "Cosmic Title",
-                    "description": "Main heading with a futuristic, bold display.",
-                    "contentType": "text"
-                  },
-                  "props": {
-                    "className": "text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-500 tracking-wide mb-6 font-orbitron"
-                  },
-                  "children": [
-                    "{{content.title}}"
-                  ]
-                },
-                {
-                  "id": "hero-description",
-                  "type": "p",
-                  "editable": {
-                    "contentEditable": true,
-                    "styleEditable": true,
-                    "textAlign": true,
-                    "fontSize": true,
-                    "color": true,
-                    "lineHeight": true
-                  },
-                  "editingMeta": {
-                    "name": "Cosmic Description",
-                    "description": "Detailed description with a sophisticated, sci-fi feel.",
-                    "contentType": "textarea"
-                  },
-                  "props": {
-                    "className": "text-xl text-gray-300 leading-relaxed max-w-5xl mx-auto font-light"
-                  },
-                  "children": [
-                    "{{content.description}}"
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "gallery-section",
-              "type": "div",
-              "sectionType": "gallery",
-              "editable": {
-                "moveable": true,
-                "removeable": false,
-                "duplicatable": false,
-                "styleEditable": true
-              },
-              "editingMeta": {
-                "name": "Nebula Showcase",
-                "description": "Interactive image gallery with hover effects.",
-                "icon": "image",
-                "category": "media"
-              },
-              "props": {
-                "className": "mb-20 grid grid-cols-1 md:grid-cols-2 gap-12"
-              },
-              "children": [
-                {
-                  "id": "main-image-container",
+                  "id": "gallery-section",
                   "type": "div",
+                  "sectionType": "gallery",
+                  "editable": {
+                    "moveable": true,
+                    "removeable": false,
+                    "duplicatable": false,
+                    "styleEditable": true
+                  },
+                  "editingMeta": {
+                    "name": "Gallery Section",
+                    "description": "Product image gallery with thumbnails",
+                    "icon": "image",
+                    "category": "media"
+                  },
                   "props": {
-                    "className": "aspect-[3/2] relative group overflow-hidden rounded-xl shadow-2xl border-2 border-cyan-500/40"
+                    "className": "grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6 border border-secondaryColor/30 p-4 rounded-xl shadow-medium"
                   },
                   "children": [
                     {
-                      "id": "main-image",
-                      "type": "img",
-                      "props": {
-                        "src": "{{images[0]}}",
-                        "alt": "Product image",
-                        "className": "w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
-                      }
-                    },
-                    {
-                      "id": "image-overlay",
+                      "id": "main-image-container",
                       "type": "div",
                       "props": {
-                        "className": "absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center text-white text-2xl font-bold font-orbitron"
+                        "className": "lg:col-span-3"
                       },
                       "children": [
-                        "View Details"
+                        {
+                          "id": "main-image-wrapper",
+                          "type": "div",
+                          "props": {
+                            "className": "aspect-video rounded-xl bg-gray-800 overflow-hidden flex items-center justify-center relative group shadow-large"
+                          },
+                          "children": [
+                            {
+                              "id": "main-image",
+                              "type": "img",
+                              "props": {
+                                "src": "{{images[0]}}",
+                                "alt": "Artifact Image",
+                                "className": "w-full h-full object-cover cursor-zoom-in transition-transform duration-300 hover:scale-105 transform-gpu"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "thumbnails-container",
+                      "type": "div",
+                      "props": {
+                        "className": "lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-2"
+                      },
+                      "children": [
+                        {
+                          "id": "thumbnail-1",
+                          "type": "img",
+                          "props": {
+                            "src": "{{images[0]}}",
+                            "alt": "Artifact Thumbnail",
+                            "className": "w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200"
+                          }
+                        },
+                        {
+                          "id": "thumbnail-2",
+                          "type": "img",
+                          "props": {
+                            "src": "{{images[1]}}",
+                            "alt": "Artifact Thumbnail",
+                            "className": "w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200"
+                          }
+                        },
+                        {
+                          "id": "thumbnail-3",
+                          "type": "img",
+                          "props": {
+                            "src": "{{images[2]}}",
+                            "alt": "Artifact Thumbnail",
+                            "className": "w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200"
+                          }
+                        },
+                        {
+                          "id": "thumbnail-4",
+                          "type": "img",
+                          "props": {
+                            "src": "{{images[3]}}",
+                            "alt": "Artifact Thumbnail",
+                            "className": "w-full h-auto object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-accentColor transition-colors duration-200"
+                          }
+                        }
                       ]
                     }
                   ]
                 },
                 {
-                  "id": "thumbnail-gallery",
+                  "id": "details-section",
                   "type": "div",
                   "props": {
-                    "className": "grid grid-cols-2 gap-6"
-                  },
-                  "children": "{{images.slice(1).map}}"
-                }
-              ]
-            },
-            {
-              "id": "features-section",
-              "type": "div",
-              "sectionType": "features",
-              "editable": {
-                "moveable": true,
-                "removeable": true,
-                "duplicatable": false,
-                "styleEditable": true,
-                "contentEditable": true
-              },
-              "editingMeta": {
-                "name": "Advanced Systems",
-                "description": "Highlights key features with interactive explanations.",
-                "icon": "star",
-                "category": "content"
-              },
-              "props": {
-                "className": "mb-20"
-              },
-              "children": [
-                {
-                  "id": "features-container",
-                  "type": "div",
-                  "props": {
-                    "className": "border-2 border-indigo-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl"
+                    "className": "bg-gray-900/70 p-6 rounded-xl shadow-lg"
                   },
                   "children": [
                     {
-                      "id": "features-header",
+                      "id": "hero-section",
                       "type": "div",
+                      "sectionType": "hero",
+                      "editable": {
+                        "moveable": false,
+                        "removeable": false,
+                        "duplicatable": false,
+                        "styleEditable": true,
+                        "contentEditable": true
+                      },
+                      "editingMeta": {
+                        "name": "Hero Section",
+                        "description": "Main product title and description",
+                        "icon": "type",
+                        "category": "content"
+                      },
                       "props": {
-                        "className": "border-b-2 border-indigo-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl"
+                        "className": "border-b border-gray-700 pb-4 mb-6"
+                      },
+                      "children": [
+                        {
+                          "id": "hero-title",
+                          "type": "h2",
+                          "editable": {
+                            "contentEditable": true,
+                            "styleEditable": true,
+                            "textAlign": true,
+                            "fontSize": true,
+                            "fontWeight": true,
+                            "color": true
+                          },
+                          "editingMeta": {
+                            "name": "Product Title",
+                            "description": "Main product heading",
+                            "contentType": "text"
+                          },
+                          "props": {
+                            "className": "text-3xl font-bold mb-3 text-primaryColor animate-fadeInLeft"
+                          },
+                          "children": [
+                            "{{content.title}}"
+                          ]
+                        },
+                        {
+                          "id": "hero-description",
+                          "type": "p",
+                          "editable": {
+                            "contentEditable": true,
+                            "styleEditable": true,
+                            "textAlign": true,
+                            "fontSize": true,
+                            "color": true,
+                            "lineHeight": true
+                          },
+                          "editingMeta": {
+                            "name": "Product Description",
+                            "description": "Detailed product description",
+                            "contentType": "textarea"
+                          },
+                          "props": {
+                            "className": "whitespace-pre-line text-lg leading-relaxed"
+                          },
+                          "children": [
+                            "{{content.description}}"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "features-section",
+                      "type": "div",
+                      "sectionType": "features",
+                      "editable": {
+                        "moveable": true,
+                        "removeable": true,
+                        "duplicatable": false,
+                        "styleEditable": true,
+                        "contentEditable": true
+                      },
+                      "editingMeta": {
+                        "name": "Features Section",
+                        "description": "Product features list",
+                        "icon": "star",
+                        "category": "content"
+                      },
+                      "props": {
+                        "className": "mb-6 border-b border-gray-700 pb-4"
                       },
                       "children": [
                         {
@@ -218,68 +260,41 @@
                             "styleEditable": true
                           },
                           "props": {
-                            "className": "text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 font-orbitron"
+                            "className": "text-xl font-semibold mb-4 text-accentColor animate-fadeInRight"
                           },
                           "children": [
-                            "System Capabilities"
+                            "Galactic Capabilities"
                           ]
-                        }
-                      ]
-                    },
-                    {
-                      "id": "features-content",
-                      "type": "div",
-                      "props": {
-                        "className": "p-8"
-                      },
-                      "children": [
+                        },
                         {
                           "id": "features-list",
                           "type": "div",
                           "props": {
-                            "className": "space-y-10"
+                            "className": "space-y-4"
                           },
-                          "children": "{{content.features.map}}"
+                          "children": "{{content.features.map((feature, index) => ({ id: `feature-${index}`, type: 'div', props: { className: 'flex items-center space-x-3' }, children: [{ id: `feature-icon-${index}`, type: 'svg', props: { className: 'h-6 w-6 text-primaryColor animate-spin', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, children: [<path d='M12 2v6M12 18v6M4.93 4.93l4.24 4.24M14.07 14.07l4.24 4.24M20 12h4M4 12H0M19.07 4.93l-4.24 4.24M14.07 19.07l-4.24-4.24' />] }, { id: `feature-text-${index}`, type: 'p', editable: { contentEditable: true }, props: { className: 'text-lg' }, children: [feature] }] }))}}"
                         }
                       ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "specs-section",
-              "type": "div",
-              "sectionType": "specifications",
-              "editable": {
-                "moveable": true,
-                "removeable": true,
-                "duplicatable": false,
-                "styleEditable": true,
-                "contentEditable": true
-              },
-              "editingMeta": {
-                "name": "Technical Data",
-                "description": "Displays product specifications in an interactive table.",
-                "icon": "list",
-                "category": "content"
-              },
-              "props": {
-                "className": "mb-20"
-              },
-              "children": [
-                {
-                  "id": "specs-container",
-                  "type": "div",
-                  "props": {
-                    "className": "border-2 border-purple-600/50 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-xl"
-                  },
-                  "children": [
+                    },
                     {
-                      "id": "specs-header",
+                      "id": "specs-section",
                       "type": "div",
+                      "sectionType": "specifications",
+                      "editable": {
+                        "moveable": true,
+                        "removeable": true,
+                        "duplicatable": false,
+                        "styleEditable": true,
+                        "contentEditable": true
+                      },
+                      "editingMeta": {
+                        "name": "Specifications Section",
+                        "description": "Product specifications table",
+                        "icon": "list",
+                        "category": "content"
+                      },
                       "props": {
-                        "className": "border-b-2 border-purple-600/50 bg-gray-800/90 px-8 py-6 rounded-t-xl"
+                        "className": "mb-6 border-b border-gray-700 pb-4"
                       },
                       "children": [
                         {
@@ -290,82 +305,75 @@
                             "styleEditable": true
                           },
                           "props": {
-                            "className": "text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500 font-orbitron"
+                            "className": "text-xl font-semibold mb-4 text-accentColor animate-fadeInLeft"
                           },
                           "children": [
-                            "Interstellar Specifications"
+                            "Technical Data"
+                          ]
+                        },
+                        {
+                          "id": "specs-table-container",
+                          "type": "div",
+                          "props": {
+                            "className": "overflow-x-auto"
+                          },
+                          "children": [
+                            {
+                              "id": "specs-table",
+                              "type": "table",
+                              "props": {
+                                "className": "min-w-full divide-y divide-gray-700 shadow-inner"
+                              },
+                              "children": [
+                                {
+                                  "id": "specs-tbody",
+                                  "type": "tbody",
+                                  "props": {
+                                    "className": "divide-y divide-gray-700"
+                                  },
+                                  "children": "{{Object.entries(content.specifications).map(([key, value]) => ({ id: `spec-${key.replace(' ', '-')}`, type: 'tr', props: { className: 'hover:bg-gray-800/50 transition-colors duration-200' }, children: [{ id: `spec-key-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-nowrap text-sm font-semibold text-primaryColor' }, children: [key] }, { id: `spec-value-${key.replace(' ', '-')}`, type: 'td', props: { className: 'px-6 py-4 whitespace-pre-wrap text-sm' }, editable: { contentEditable: true }, children: [value] }] }))}}"
+                                }
+                              ]
+                            }
                           ]
                         }
                       ]
                     },
                     {
-                      "id": "specs-content",
+                      "id": "cta-section",
                       "type": "div",
+                      "sectionType": "cta",
+                      "editable": {
+                        "moveable": true,
+                        "removeable": false,
+                        "duplicatable": false,
+                        "styleEditable": true,
+                        "contentEditable": true
+                      },
+                      "editingMeta": {
+                        "name": "Call to Action",
+                        "description": "Purchase button",
+                        "icon": "shopping-cart",
+                        "category": "action"
+                      },
                       "props": {
-                        "className": "p-8"
+                        "className": "mt-8 text-center"
                       },
                       "children": [
                         {
-                          "id": "specs-table",
-                          "type": "table",
+                          "id": "cta-button",
+                          "type": "button",
+                          "editable": {
+                            "contentEditable": true,
+                            "styleEditable": true
+                          },
                           "props": {
-                            "className": "w-full text-left text-gray-300"
+                            "className": "px-8 py-3 bg-gradient-to-r from-primaryColor to-accentColor text-black font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 animate-glow"
                           },
                           "children": [
-                            {
-                              "id": "specs-tbody",
-                              "type": "tbody",
-                              "props": {},
-                              "children": "{{content.specifications.entries}}"
-                            }
+                            "Acquire Artifact"
                           ]
                         }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "cta-section",
-              "type": "div",
-              "sectionType": "cta",
-              "editable": {
-                "moveable": true,
-                "removeable": false,
-                "duplicatable": false,
-                "styleEditable": true,
-                "contentEditable": true
-              },
-              "editingMeta": {
-                "name": "Engage Drive",
-                "description": "Call to action with a pulsating button.",
-                "icon": "shopping-cart",
-                "category": "action"
-              },
-              "props": {
-                "className": "text-center py-16"
-              },
-              "children": [
-                {
-                  "id": "cta-container",
-                  "type": "div",
-                  "props": {
-                    "className": "border-2 border-transparent bg-gradient-to-br from-green-500/20 to-cyan-500/20 p-12 rounded-xl shadow-2xl"
-                  },
-                  "children": [
-                    {
-                      "id": "cta-button",
-                      "type": "button",
-                      "editable": {
-                        "contentEditable": true,
-                        "styleEditable": true
-                      },
-                      "props": {
-                        "className": "text-2xl font-bold text-white px-16 py-6 rounded-full bg-gradient-to-r from-green-400 to-cyan-500 hover:from-green-500 hover:to-cyan-600 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-400 uppercase tracking-wider animate-pulse"
-                      },
-                      "children": [
-                        "Initiate Acquisition"
                       ]
                     }
                   ]

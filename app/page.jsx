@@ -459,7 +459,7 @@ useEffect(() => {
             better product pages and increase their sales.
           </p>
           <div className="cta-anim flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/create">
+            <Link href="/marketplace">
               <Explore>
                 
               </Explore>
