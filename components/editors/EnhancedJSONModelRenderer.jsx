@@ -1,13 +1,18 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
 
 const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate, onComponentSelect, selectedComponentId }) => {
   console.log('EnhancedJSONModelRenderer inputs:', { model, content, images, isEditing });
 
+  // State Management
   const [editingText, setEditingText] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [componentState, setComponentState] = useState({});
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
+  
   const editInputRef = useRef(null);
 
   if (!model) {
@@ -19,17 +24,304 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     return <div>Invalid template model: Component is missing</div>;
   }
 
-  // Handle text editing
+  // State Management Functions
+  const updateComponentState = useCallback((key, value) => {
+    setComponentState(prev => ({ ...prev, [key]: value }));
+  }, []);
+
+  const updateFormData = useCallback((field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: null }));
+    }
+  }, [errors]);
+
+  // Event Handlers
+  const eventHandlers = useMemo(() => ({
+    handleClick: (e, componentId) => {
+      console.log('Click handled for:', componentId);
+      updateComponentState(`${componentId}_clicked`, true);
+    },
+    
+    handleToggle: (componentId) => {
+      const currentState = componentState[`${componentId}_active`] || false;
+      updateComponentState(`${componentId}_active`, !currentState);
+    },
+    
+    handleFormSubmit: (e, formId) => {
+      e.preventDefault();
+      console.log('Form submitted:', formId, formData);
+      const newErrors = {};
+      if (!formData.email) newErrors.email = 'Email is required';
+      if (!formData.name) newErrors.name = 'Name is required';
+      
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+      
+      updateComponentState(`${formId}_submitted`, true);
+    },
+    
+    handleInputChange: (e, field) => {
+      updateFormData(field, e.target.value);
+    }
+  }), [componentState, formData, updateComponentState, updateFormData]);
+
+  // Template Expression Evaluator
+  const evaluateExpression = useCallback((expression, context, depth = 0) => {
+    if (depth > 10) return expression;
+    
+    try {
+      if (expression.startsWith('content.')) {
+        const path = expression.replace('content.', '').split('.');
+        let obj = context.content;
+        for (const key of path) {
+          obj = obj?.[key];
+        }
+        return obj || '';
+      }
+      
+      if (expression.startsWith('images[')) {
+        const indexMatch = expression.match(/images\[(\d+)\]/);
+        if (indexMatch) {
+          const index = parseInt(indexMatch[1]);
+          return context.images?.[index] || '';
+        }
+      }
+      
+      if (expression.startsWith('state.')) {
+        const key = expression.replace('state.', '');
+        return componentState[key];
+      }
+      
+      if (expression.startsWith('formData.')) {
+        const key = expression.replace('formData.', '');
+        return formData[key] || '';
+      }
+      
+      if (expression.includes('?') && expression.includes(':')) {
+        const conditionMatch = expression.match(/(.+?)\s*\?\s*(.+?)\s*:\s*(.+)/);
+        if (conditionMatch) {
+          const [, condition, trueValue, falseValue] = conditionMatch;
+          const conditionResult = evaluateExpression(condition.trim(), context, depth + 1);
+          return conditionResult ? evaluateExpression(trueValue.trim(), context, depth + 1) : evaluateExpression(falseValue.trim(), context, depth + 1);
+        }
+      }
+      
+      if (expression.includes('||')) {
+        const [primary, fallback] = expression.split('||').map(s => s.trim());
+        const primaryValue = evaluateExpression(primary, context, depth + 1);
+        return primaryValue || evaluateExpression(fallback, context, depth + 1);
+      }
+      
+      if (expression.startsWith('"') && expression.endsWith('"')) {
+        return expression.slice(1, -1);
+      }
+      if (expression.startsWith("'") && expression.endsWith("'")) {
+        return expression.slice(1, -1);
+      }
+      if (!isNaN(expression)) {
+        return Number(expression);
+      }
+      if (expression === 'true') return true;
+      if (expression === 'false') return false;
+      if (expression === 'null') return null;
+      
+      return expression;
+    } catch (error) {
+      console.warn('Expression evaluation error:', error.message, expression);
+      return '';
+    }
+  }, [componentState, formData]);
+
+  // Template String Processing
+  const processTemplateString = useCallback((str, context, depth = 0) => {
+    if (typeof str !== 'string' || !str.includes('{{') || depth > 5) {
+      return str;
+    }
+
+    let result = str;
+    const matches = result.match(/\{\{([^}]+)\}\}/g);
+    if (matches) {
+      matches.forEach(match => {
+        const expressionStr = match.slice(2, -2).trim();
+        try {
+          let value = evaluateExpression(expressionStr, context, depth);
+          result = result.replace(match, value || '');
+        } catch (e) {
+          console.warn('Template processing error:', e.message, expressionStr);
+          result = result.replace(match, '');
+        }
+      });
+    }
+    return result;
+  }, [evaluateExpression]);
+
+  // Conditional Rendering Handler
+  const handleConditionalRendering = useCallback((node, context) => {
+    if (!node || typeof node !== 'object') return node;
+    
+    if (node.if) {
+      const condition = evaluateExpression(node.if, context);
+      if (!condition) return null;
+    }
+    
+    if (node.unless) {
+      const condition = evaluateExpression(node.unless, context);
+      if (condition) return null;
+    }
+    
+    if (node.show !== undefined) {
+      const shouldShow = evaluateExpression(node.show, context);
+      if (!shouldShow) return null;
+    }
+    
+    return node;
+  }, [evaluateExpression]);
+
+  // Event Handler Processor
+  const processEventHandlers = useCallback((props, componentId) => {
+    const processedProps = { ...props };
+    
+    Object.keys(processedProps).forEach(key => {
+      if (key.startsWith('on') && typeof processedProps[key] === 'string') {
+        const handlerString = processedProps[key];
+        const handlerName = handlerString.replace(/[{}]/g, '').trim();
+        
+        if (handlerName === 'handleToggle') {
+          processedProps[key] = (e) => {
+            e.stopPropagation();
+            eventHandlers.handleToggle(componentId);
+          };
+        } else if (handlerName === 'handleClick') {
+          processedProps[key] = (e) => {
+            e.stopPropagation();
+            eventHandlers.handleClick(e, componentId);
+          };
+        } else if (handlerName === 'handleFormSubmit') {
+          processedProps[key] = (e) => eventHandlers.handleFormSubmit(e, componentId);
+        } else {
+          processedProps[key] = (e) => {
+            e.stopPropagation();
+            console.log('Event triggered:', handlerName, componentId);
+            eventHandlers.handleClick(e, componentId);
+          };
+        }
+      }
+    });
+    
+    return processedProps;
+  }, [eventHandlers]);
+
+  // Simple Feature Components (no complex state)
+  const generateFeatureComponents = useCallback((features, featureExplanations) => {
+    if (!features || !Array.isArray(features)) return [];
+    
+    return features.map((feature, index) => ({
+      id: `feature-${index}`,
+      type: 'div',
+      props: { 
+        className: 'border-l-4 border-blue-400 pl-4 mb-4 hover:border-blue-500 transition-colors duration-300'
+      },
+      children: [
+        {
+          id: `feature-${index}-title`,
+          type: 'h4',
+          props: { className: 'font-medium mb-1 text-gray-900' },
+          children: [feature],
+          editable: { contentEditable: true }
+        },
+        ...(featureExplanations?.[feature] ? [{
+          id: `feature-${index}-explanation`,
+          type: 'p',
+          props: { className: 'text-sm leading-relaxed text-gray-600' },
+          children: [featureExplanations[feature]],
+          editable: { contentEditable: true }
+        }] : [])
+      ]
+    }));
+  }, []);
+
+  // Context-aware Specifications Components
+  const generateSpecComponents = useCallback((specifications, parentContext = null) => {
+    if (!specifications || typeof specifications !== 'object') return [];
+    
+    const entries = Object.entries(specifications);
+    
+    // Check if we're inside a table structure
+    const isTableContext = parentContext?.type === 'tbody' || parentContext?.type === 'table';
+    
+    if (isTableContext) {
+      // Generate proper table rows
+      return entries.map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'tr',
+        props: { 
+          className: 'hover:bg-gray-50 transition-colors duration-200'
+        },
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'td',
+            props: { 
+              className: 'px-6 py-4 font-medium text-gray-900'
+            },
+            children: [key],
+            editable: { contentEditable: true }
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'td',
+            props: { 
+              className: 'px-6 py-4 text-gray-600'
+            },
+            children: [value],
+            editable: { contentEditable: true }
+          }
+        ]
+      }));
+    } else {
+      // Generate div-based layout
+      return entries.map(([key, value], index) => ({
+        id: `spec-${index}`,
+        type: 'div',
+        props: { 
+          className: 'flex justify-between items-center p-3 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200'
+        },
+        children: [
+          {
+            id: `spec-${index}-key`,
+            type: 'div',
+            props: { 
+              className: 'font-medium text-gray-900'
+            },
+            children: [key],
+            editable: { contentEditable: true }
+          },
+          {
+            id: `spec-${index}-value`,
+            type: 'div',
+            props: { 
+              className: 'text-gray-600'
+            },
+            children: [value],
+            editable: { contentEditable: true }
+          }
+        ]
+      }));
+    }
+  }, []);
+
+  // Text editing functions
   const handleTextEdit = (componentId, currentText) => {
     if (!isEditing) return;
-    
     setEditingText(componentId);
     setEditValue(currentText);
   };
 
   const handleTextSave = (componentId) => {
     if (onUpdate) {
-      // Update the component text
       const updatedModel = updateComponentText(model, componentId, editValue);
       onUpdate(updatedModel);
     }
@@ -42,7 +334,6 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     setEditValue('');
   };
 
-  // Update component text in the model
   const updateComponentText = (model, targetId, newText) => {
     const updateNode = (node) => {
       if (!node) return node;
@@ -75,7 +366,6 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     };
   };
 
-  // Focus edit input when editing starts
   useEffect(() => {
     if (editingText && editInputRef.current) {
       editInputRef.current.focus();
@@ -83,147 +373,54 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     }
   }, [editingText]);
 
-  const processTemplateString = (str, context) => {
-    if (typeof str !== 'string' || !str.includes('{{')) {
-      return str;
-    }
-
-    let result = str;
-    const matches = result.match(/\{\{([^}]+)\}\}/g);
-    if (matches) {
-      matches.forEach(match => {
-        const expressionStr = match.slice(2, -2).trim();
-        try {
-          let value = '';
-          
-          // Handle simple property access
-          if (expressionStr.startsWith('content.')) {
-            const path = expressionStr.split('.');
-            let obj = context;
-            for (const key of path) {
-              obj = obj?.[key];
-            }
-            value = obj || '';
-          } else if (expressionStr.startsWith('images[')) {
-            const indexMatch = expressionStr.match(/images\[(\d+)\]/);
-            if (indexMatch) {
-              const index = parseInt(indexMatch[1]);
-              value = context.images?.[index] || '';
-            }
-          }
-          
-          result = result.replace(match, value);
-        } catch (e) {
-          console.error('Template processing error:', e, expressionStr);
-          result = result.replace(match, '');
-        }
-      });
-    }
-    return result;
-  };
-
-  const generateFeatureComponents = (features, featureExplanations, template = 'gallery-focused') => {
-    if (!features || !Array.isArray(features)) return [];
-    
-    // Enhanced feature styling with more options
-    const containerClass = 'border-l-4 border-blue-400 pl-4 mb-4 hover:border-blue-500 transition-colors';
-    const titleClass = 'font-medium mb-1 text-gray-900';
-    const explanationClass = 'text-sm leading-relaxed text-gray-600';
-    
-    return features.map((feature, index) => ({
-      id: `feature-${index}`,
-      type: 'div',
-      props: { className: containerClass },
-      children: [
-        {
-          id: `feature-${index}-title`,
-          type: 'h4',
-          props: { className: titleClass },
-          children: [feature],
-          editable: { contentEditable: true }
-        },
-        ...(featureExplanations?.[feature] ? [{
-          id: `feature-${index}-explanation`,
-          type: 'p',
-          props: { className: explanationClass },
-          children: [featureExplanations[feature]],
-          editable: { contentEditable: true }
-        }] : [])
-      ]
-    }));
-  };
-
-  const generateSpecComponents = (specifications) => {
-    if (!specifications || typeof specifications !== 'object') return [];
-    
-    const entries = Object.entries(specifications);
-    
-    return entries.map(([key, value], index) => ({
-      id: `spec-${index}`,
-      type: 'tr',
-      props: { className: 'hover:bg-gray-50 transition-colors' },
-      children: [
-        {
-          id: `spec-${index}-key`,
-          type: 'td',
-          props: { className: 'px-4 py-2 bg-gray-50 font-medium w-1/3' },
-          children: [key],
-          editable: { contentEditable: true }
-        },
-        {
-          id: `spec-${index}-value`,
-          type: 'td',
-          props: { className: 'px-4 py-2' },
-          children: [value],
-          editable: { contentEditable: true }
-        }
-      ]
-    }));
-  };
-
-  const processNode = (node, context) => {
+  // Enhanced Node Processing with parent context
+  const processNode = useCallback((node, context, parentNode = null) => {
     if (!node) return null;
 
-    // Handle string nodes
+    const conditionalNode = handleConditionalRendering(node, context);
+    if (!conditionalNode) return null;
+
     if (typeof node === 'string') {
       return processTemplateString(node, context);
     }
 
-    // Handle array nodes
     if (Array.isArray(node)) {
-      return node.map(child => processNode(child, context)).filter(Boolean);
+      return node.map(child => processNode(child, context, parentNode)).filter(Boolean);
     }
 
-    // Handle object nodes (components)
     if (typeof node === 'object' && node !== null) {
       const processedNode = { ...node };
 
-      // Process props
       if (processedNode.props) {
         processedNode.props = { ...processedNode.props };
+        
         for (const key in processedNode.props) {
           if (typeof processedNode.props[key] === 'string') {
             processedNode.props[key] = processTemplateString(processedNode.props[key], context);
           }
         }
+        
+        processedNode.props = processEventHandlers(processedNode.props, processedNode.id);
       }
 
-      // Process children
       if (processedNode.children) {
         if (typeof processedNode.children === 'string') {
-          // Check for special dynamic content patterns
           if (processedNode.children.includes('content.features') && processedNode.children.includes('map')) {
             processedNode.children = generateFeatureComponents(context.content?.features, context.content?.featureExplanations);
           } else if (processedNode.children.includes('content.specifications') && processedNode.children.includes('entries')) {
-            processedNode.children = generateSpecComponents(context.content?.specifications);
+            // Pass parent context to determine table vs div structure
+            processedNode.children = generateSpecComponents(context.content?.specifications, processedNode);
+          } else if (processedNode.children.includes('Object.entries(content.specifications)')) {
+            processedNode.children = generateSpecComponents(context.content?.specifications, processedNode);
+          } else if (processedNode.children.includes('gallery.component')) {
+            processedNode.children = [];
           } else {
-            // Regular template string processing
             processedNode.children = processTemplateString(processedNode.children, context);
           }
         } else if (Array.isArray(processedNode.children)) {
-          processedNode.children = processedNode.children.map(child => processNode(child, context)).filter(Boolean);
+          processedNode.children = processedNode.children.map(child => processNode(child, context, processedNode)).filter(Boolean);
         } else {
-          processedNode.children = processNode(processedNode.children, context);
+          processedNode.children = processNode(processedNode.children, context, processedNode);
         }
       }
 
@@ -231,22 +428,20 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     }
 
     return node;
-  };
+  }, [handleConditionalRendering, processTemplateString, processEventHandlers, generateFeatureComponents, generateSpecComponents]);
 
-  const renderComponent = (comp, key = 0) => {
+  // Component Rendering
+  const renderComponent = useCallback((comp, key = 0) => {
     if (!comp) return null;
 
-    // Handle arrays of components
     if (Array.isArray(comp)) {
       return comp.map((child, index) => renderComponent(child, `${key}-${index}`));
     }
 
-    // Handle string content
     if (typeof comp === 'string') {
       return comp;
     }
 
-    // Handle component objects
     if (typeof comp === 'object' && comp.type) {
       const { type, props = {}, children, id, editable } = comp;
       
@@ -263,13 +458,16 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         );
       }
       
-      // Enhanced props with better support for AI-generated features
       const enhancedProps = { ...props };
       
       // Add editing capabilities
       if (isEditing && editable?.contentEditable) {
+        const originalOnClick = enhancedProps.onClick;
         enhancedProps.onClick = (e) => {
           e.stopPropagation();
+          if (originalOnClick && typeof originalOnClick === 'function') {
+            originalOnClick(e);
+          }
           if (onComponentSelect) {
             onComponentSelect(comp);
           }
@@ -282,67 +480,46 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         }
       }
       
-      // Support for CSS animations and effects
-      if (enhancedProps.style) {
-        // Allow most CSS properties but sanitize dangerous ones
-        const { 
-          position, 
-          zIndex, 
-          ...safeStyle 
-        } = enhancedProps.style;
+      // Clean up className
+      if (enhancedProps.className) {
+        enhancedProps.className = enhancedProps.className
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+      
+      // Form handling
+      if (type === 'form') {
+        enhancedProps.onSubmit = (e) => eventHandlers.handleFormSubmit(e, id);
+      }
+      
+      // Input handling
+      if (type === 'input' || type === 'textarea') {
+        const fieldName = enhancedProps.name || id;
+        enhancedProps.value = formData[fieldName] || '';
+        enhancedProps.onChange = (e) => eventHandlers.handleInputChange(e, fieldName);
         
-        // Keep safe styles and some positioning
-        enhancedProps.style = {
-          ...safeStyle,
-          ...(position === 'relative' || position === 'absolute' ? { position } : {}),
-          ...(zIndex && zIndex < 1000 ? { zIndex } : {})
-        };
+        if (errors[fieldName]) {
+          enhancedProps.className = `${enhancedProps.className || ''} border-red-500`.trim();
+        }
       }
       
       // Map component types to HTML elements
       const elementMap = {
-        'div': 'div',
-        'section': 'section',
-        'article': 'article',
-        'header': 'header',
-        'footer': 'footer',
-        'main': 'main',
-        'aside': 'aside',
-        'nav': 'nav',
-        'h1': 'h1',
-        'h2': 'h2',
-        'h3': 'h3',
-        'h4': 'h4',
-        'h5': 'h5',
-        'h6': 'h6',
-        'p': 'p',
-        'span': 'span',
-        'a': 'a',
-        'img': 'img',
-        'button': 'button',
-        'input': 'input',
-        'textarea': 'textarea',
-        'select': 'select',
-        'ul': 'ul',
-        'ol': 'ol',
-        'li': 'li',
-        'table': 'table',
-        'thead': 'thead',
-        'tbody': 'tbody',
-        'tr': 'tr',
-        'th': 'th',
-        'td': 'td',
-        'svg': 'svg',
-        'path': 'path'
+        'div': 'div', 'section': 'section', 'article': 'article', 'header': 'header',
+        'footer': 'footer', 'main': 'main', 'aside': 'aside', 'nav': 'nav',
+        'h1': 'h1', 'h2': 'h2', 'h3': 'h3', 'h4': 'h4', 'h5': 'h5', 'h6': 'h6',
+        'p': 'p', 'span': 'span', 'a': 'a', 'img': 'img', 'button': 'button',
+        'input': 'input', 'textarea': 'textarea', 'select': 'select', 'form': 'form',
+        'ul': 'ul', 'ol': 'ol', 'li': 'li', 'table': 'table', 'thead': 'thead',
+        'tbody': 'tbody', 'tr': 'tr', 'th': 'th', 'td': 'td', 'svg': 'svg', 'path': 'path',
+        'label': 'label'
       };
       
       const Component = elementMap[type] || 'div';
-
-      // Check if this is a void element that cannot have children
       const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr', 'path'];
       const isVoidElement = voidElements.includes(type);
 
-      // Handle text editing for editable components
+      // Handle text editing
       if (isEditing && editable?.contentEditable && editingText === id) {
         const currentText = Array.isArray(children) ? children[0] : children;
         
@@ -367,12 +544,11 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         );
       }
 
-      // Process children only for non-void elements
+      // Process children
       let renderedChildren = null;
       if (!isVoidElement && children) {
         if (Array.isArray(children)) {
           renderedChildren = children.map((child, index) => {
-            // Handle text editing
             if (typeof child === 'string' && isEditing && editable?.contentEditable) {
               return (
                 <span
@@ -408,7 +584,33 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
         }
       }
 
-      // Render void elements without children
+      // Add error display for form fields
+      if ((type === 'input' || type === 'textarea') && errors[enhancedProps.name || id]) {
+        const errorElement = (
+          <div key={`${key}-error`} className="text-red-500 text-sm mt-1">
+            {errors[enhancedProps.name || id]}
+          </div>
+        );
+        
+        if (isVoidElement) {
+          return (
+            <div key={key}>
+              <Component {...enhancedProps} />
+              {errorElement}
+            </div>
+          );
+        } else {
+          return (
+            <div key={key}>
+              <Component {...enhancedProps}>
+                {renderedChildren}
+              </Component>
+              {errorElement}
+            </div>
+          );
+        }
+      }
+
       if (isVoidElement) {
         return <Component key={key} {...enhancedProps} />;
       }
@@ -421,11 +623,20 @@ const EnhancedJSONModelRenderer = ({ model, content, images, isEditing, onUpdate
     }
 
     return null;
-  };
+  }, [model, images, isEditing, onComponentSelect, selectedComponentId, editingText, editValue, componentState, formData, errors, eventHandlers, handleTextEdit, handleTextSave, handleTextCancel]);
 
   // Process the entire component tree
-  const context = { content, images };
-  const processedComponent = processNode(model.component, context);
+  const enhancedContext = useMemo(() => ({
+    content,
+    images,
+    state: componentState,
+    formData,
+    errors
+  }), [content, images, componentState, formData, errors]);
+
+  const processedComponent = useMemo(() => {
+    return processNode(model.component, enhancedContext);
+  }, [model.component, enhancedContext, processNode]);
   
   console.log('Processed component:', processedComponent);
 

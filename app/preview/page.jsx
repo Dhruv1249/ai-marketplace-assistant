@@ -16,25 +16,25 @@ export default function PreviewPage() {
   const [styleVariables, setStyleVariables] = useState({});
 
   useEffect(() => {
-  try {
-    const raw = localStorage.getItem('previewData');
-    console.log('Raw previewData from localStorage:', raw);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      console.log('Parsed previewData:', parsed);
-      if (parsed?.model && parsed.model.metadata && parsed.model.component && parsed.content) {
-        setData(parsed);
-        localStorage.removeItem('previewData'); // Clear to prevent stale data
+    try {
+      const raw = localStorage.getItem('previewData');
+      console.log('Raw previewData from localStorage:', raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        console.log('Parsed previewData:', parsed);
+        if (parsed?.model && parsed.model.metadata && parsed.model.component && parsed.content) {
+          setData(parsed);
+          // Keep localStorage data for refreshes - don't remove it
+        } else {
+          console.error('Invalid previewData structure:', parsed);
+        }
       } else {
-        console.error('Invalid previewData structure:', parsed);
+        console.error('No previewData found in localStorage');
       }
-    } else {
-      console.error('No previewData found in localStorage');
+    } catch (e) {
+      console.error('Failed to read or parse previewData:', e);
     }
-  } catch (e) {
-    console.error('Failed to read or parse previewData:', e);
-  }
-}, []);
+  }, []);
 
   // Handle template updates from enhanced editors
   const handleTemplateUpdate = useCallback((updatedTemplate) => {

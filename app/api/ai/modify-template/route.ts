@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { z } from 'zod';
+import fs from 'fs';
+import path from 'path';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || '',
@@ -92,6 +94,13 @@ CREATIVE FREEDOM RULES:
 6. Use styleVariables for hex color values: {"primaryColor": "#8b5cf6"}
 7. Use className props for Tailwind classes: "bg-purple-500 text-white"
 
+IMPORTANT: Keep template strings simple and avoid complex JavaScript expressions in children.
+Use basic patterns like:
+- "{{content.title}}" ✅
+- "{{images[0]}}" ✅  
+- "{{content.features.map}}" ✅
+- Avoid complex expressions with conditionals or nested functions ❌
+
 Available Tailwind features you can use:
 - Gradients: bg-gradient-to-r from-blue-500 to-purple-600
 - Animations: animate-pulse, animate-bounce, animate-spin
@@ -133,6 +142,7 @@ Respond with creative JSON:
   "component": {
     // Full creative freedom - add animations, effects, restructure
     // Use Tailwind classes in className props
+    // Keep template strings simple: {{content.title}}, {{images[0]}}, {{content.features.map}}
   }
 }
 
@@ -180,6 +190,30 @@ Be CREATIVE and INNOVATIVE! Transform the template to match the user's vision.`,
     // Validate the result
     if (typeof parsedResult.hasChanges !== 'boolean') {
       throw new Error('Invalid response format');
+    }
+
+    // Save AI output to file for debugging
+    try {
+      const debugDir = path.join(process.cwd(), 'debug');
+      
+      // Create debug directory if it doesn't exist
+      if (!fs.existsSync(debugDir)) {
+        fs.mkdirSync(debugDir, { recursive: true });
+      }
+      
+      const debugFile = path.join(debugDir, 'ai-template-output.json');
+      const debugData = {
+        timestamp: new Date().toISOString(),
+        prompt: prompt,
+        rawResponse: fullResponse,
+        cleanedResponse: cleanedText,
+        parsedResult: parsedResult
+      };
+      
+      fs.writeFileSync(debugFile, JSON.stringify(debugData, null, 2));
+      console.log('🐛 AI output saved to:', debugFile);
+    } catch (saveError) {
+      console.warn('Could not save debug file:', saveError);
     }
 
     return parsedResult;

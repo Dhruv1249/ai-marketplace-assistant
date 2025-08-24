@@ -1,0 +1,462 @@
+{
+  "metadata": {
+    "template": "feature-test-showcase",
+    "name": "Complete Feature Test",
+    "description": "Comprehensive test of all implemented features"
+  },
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#8b5cf6",
+    "backgroundColor": "#0f172a",
+    "textColor": "#e2e8f0",
+    "accentColor": "#06b6d4"
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-slate-900 text-slate-200 p-6"
+    },
+    "children": [
+      {
+        "id": "header",
+        "type": "div",
+        "props": {
+          "className": "text-center mb-12"
+        },
+        "children": [
+          {
+            "id": "main-title",
+            "type": "h1",
+            "editable": {
+              "contentEditable": true
+            },
+            "props": {
+              "className": "text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-4 hover:scale-105 transition-transform duration-300"
+            },
+            "children": ["🚀 Complete Feature Test Dashboard"]
+          },
+          {
+            "id": "subtitle",
+            "type": "p",
+            "props": {
+              "className": "text-xl text-slate-400 hover:text-slate-300 transition-colors duration-300"
+            },
+            "children": ["Testing: State Management • Animations • Forms • Conditionals • Events"]
+          }
+        ]
+      },
+      {
+        "id": "feature-grid",
+        "type": "div",
+        "props": {
+          "className": "grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"
+        },
+        "children": [
+          {
+            "id": "state-demo-card",
+            "type": "div",
+            "props": {
+              "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1 transition-all duration-300"
+            },
+            "children": [
+              {
+                "id": "state-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-2xl font-bold text-blue-400 mb-4 hover:text-blue-300 transition-colors duration-300"
+                },
+                "children": ["🎯 State Management Demo"]
+              },
+              {
+                "id": "toggle-button",
+                "type": "button",
+                "props": {
+                  "className": "px-4 py-2 bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white rounded-lg transition-all duration-200 mb-4 transform",
+                  "onClick": "handleToggle"
+                },
+                "children": ["Toggle State"]
+              },
+              {
+                "id": "state-display",
+                "type": "div",
+                "if": "state.toggle-button_active",
+                "props": {
+                  "className": "p-4 bg-green-900/30 border border-green-500/50 rounded-lg animate-pulse"
+                },
+                "children": [
+                  {
+                    "id": "state-message",
+                    "type": "p",
+                    "props": {
+                      "className": "text-green-400 font-semibold"
+                    },
+                    "children": ["✅ State is ACTIVE! Conditional rendering works!"]
+                  }
+                ]
+              },
+              {
+                "id": "state-counter",
+                "type": "div",
+                "props": {
+                  "className": "mt-4 text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                },
+                "children": ["Current state: {{state.toggle-button_active ? '🟢 ON' : '🔴 OFF'}}"]
+              }
+            ]
+          },
+          {
+            "id": "animation-demo-card",
+            "type": "div",
+            "props": {
+              "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1 transition-all duration-300"
+            },
+            "children": [
+              {
+                "id": "animation-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-2xl font-bold text-purple-400 mb-4 hover:text-purple-300 transition-colors duration-300"
+                },
+                "children": ["🎭 Animation System Demo"]
+              },
+              {
+                "id": "animation-box-1",
+                "type": "div",
+                "props": {
+                  "className": "w-full h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg mb-3 flex items-center justify-center text-white font-semibold hover:scale-105 hover:rotate-1 transition-all duration-300 cursor-pointer"
+                },
+                "children": ["Hover for Scale + Rotate Animation"]
+              },
+              {
+                "id": "animation-box-2",
+                "type": "div",
+                "props": {
+                  "className": "w-full h-16 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg mb-3 flex items-center justify-center text-white font-semibold hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 cursor-pointer"
+                },
+                "children": ["Hover for Scale + Glow Animation"]
+              },
+              {
+                "id": "hover-demo",
+                "type": "div",
+                "props": {
+                  "className": "w-full h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:scale-105 hover:bg-gradient-to-l hover:from-emerald-600 hover:to-green-600 transition-all duration-300 flex items-center justify-center text-white font-semibold cursor-pointer"
+                },
+                "children": ["Hover for Scale + Gradient Flip"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "form-demo-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "form-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-cyan-400 mb-6 hover:text-cyan-300 transition-colors duration-300"
+            },
+            "children": ["📝 Advanced Form Handling Demo"]
+          },
+          {
+            "id": "test-form",
+            "type": "form",
+            "props": {
+              "className": "space-y-4"
+            },
+            "children": [
+              {
+                "id": "form-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
+                },
+                "children": [
+                  {
+                    "id": "name-field",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2"
+                    },
+                    "children": [
+                      {
+                        "id": "name-label",
+                        "type": "label",
+                        "props": {
+                          "className": "block text-sm font-medium text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                        },
+                        "children": ["Full Name *"]
+                      },
+                      {
+                        "id": "name-input",
+                        "type": "input",
+                        "props": {
+                          "type": "text",
+                          "name": "name",
+                          "placeholder": "Enter your full name",
+                          "className": "w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 hover:border-slate-500 text-white placeholder-slate-400 transition-all duration-300"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "email-field",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-2"
+                    },
+                    "children": [
+                      {
+                        "id": "email-label",
+                        "type": "label",
+                        "props": {
+                          "className": "block text-sm font-medium text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                        },
+                        "children": ["Email Address *"]
+                      },
+                      {
+                        "id": "email-input",
+                        "type": "input",
+                        "props": {
+                          "type": "email",
+                          "name": "email",
+                          "placeholder": "your.email@example.com",
+                          "className": "w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 hover:border-slate-500 text-white placeholder-slate-400 transition-all duration-300"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "form-actions",
+                "type": "div",
+                "props": {
+                  "className": "flex items-center justify-between pt-4"
+                },
+                "children": [
+                  {
+                    "id": "form-data-display",
+                    "type": "div",
+                    "props": {
+                      "className": "text-sm text-slate-400 hover:text-slate-300 transition-colors duration-300"
+                    },
+                    "children": ["Live data: {{formData.name || 'No name'}} | {{formData.email || 'No email'}}"]
+                  },
+                  {
+                    "id": "submit-button",
+                    "type": "button",
+                    "props": {
+                      "type": "submit",
+                      "className": "px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50 text-white font-semibold rounded-lg transition-all duration-200 transform"
+                    },
+                    "children": ["Submit Form"]
+                  }
+                ]
+              },
+              {
+                "id": "form-success",
+                "type": "div",
+                "if": "state.test-form_submitted",
+                "props": {
+                  "className": "mt-4 p-4 bg-green-900/30 border border-green-500/50 rounded-lg animate-bounce"
+                },
+                "children": [
+                  {
+                    "id": "success-message",
+                    "type": "p",
+                    "props": {
+                      "className": "text-green-400 font-semibold"
+                    },
+                    "children": ["✅ Form submitted successfully! Check console for data."]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "template-expressions-section",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "expressions-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-pink-400 mb-6 hover:text-pink-300 transition-colors duration-300"
+            },
+            "children": ["🧠 Advanced Template Expressions"]
+          },
+          {
+            "id": "expressions-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
+            },
+            "children": [
+              {
+                "id": "conditional-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "conditional-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2 hover:text-pink-200 transition-colors duration-300"
+                    },
+                    "children": ["Conditional Expression:"]
+                  },
+                  {
+                    "id": "conditional-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                    },
+                    "children": ["{{state.toggle-button_active ? '🟢 Button is ON' : '🔴 Button is OFF'}}"]
+                  }
+                ]
+              },
+              {
+                "id": "fallback-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "fallback-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2 hover:text-pink-200 transition-colors duration-300"
+                    },
+                    "children": ["Fallback Expression:"]
+                  },
+                  {
+                    "id": "fallback-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                    },
+                    "children": ["{{formData.name || 'Please enter your name above'}}"]
+                  }
+                ]
+              },
+              {
+                "id": "content-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "content-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2 hover:text-pink-200 transition-colors duration-300"
+                    },
+                    "children": ["Content Access:"]
+                  },
+                  {
+                    "id": "content-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                    },
+                    "children": ["Title: {{content.title}}"]
+                  }
+                ]
+              },
+              {
+                "id": "image-demo",
+                "type": "div",
+                "props": {
+                  "className": "p-4 bg-slate-700 rounded-lg hover:bg-slate-600 hover:scale-105 transition-all duration-300 cursor-pointer"
+                },
+                "children": [
+                  {
+                    "id": "image-title",
+                    "type": "h3",
+                    "props": {
+                      "className": "font-semibold text-pink-300 mb-2 hover:text-pink-200 transition-colors duration-300"
+                    },
+                    "children": ["Image Access:"]
+                  },
+                  {
+                    "id": "image-result",
+                    "type": "p",
+                    "props": {
+                      "className": "text-slate-300 hover:text-slate-200 transition-colors duration-300"
+                    },
+                    "children": ["First image: {{images[0] || 'No images provided'}}"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "interactive-showcase",
+        "type": "div",
+        "props": {
+          "className": "bg-slate-800 rounded-xl p-6 border border-slate-700 mb-12 hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-500/20 transition-all duration-300"
+        },
+        "children": [
+          {
+            "id": "showcase-title",
+            "type": "h2",
+            "props": {
+              "className": "text-2xl font-bold text-yellow-400 mb-6 hover:text-yellow-300 transition-colors duration-300"
+            },
+            "children": ["⚡ Interactive Hover Showcase"]
+          },
+          {
+            "id": "hover-effects-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 md:grid-cols-3 gap-4"
+            },
+            "children": [
+              {
+                "id": "pulse-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-pulse cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Pulse"]
+              },
+              {
+                "id": "bounce-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-bounce cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Bounce"]
+              },
+              {
+                "id": "spin-demo",
+                "type": "div",
+                "props": {
+                  "className": "h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white font-semibold hover:animate-spin cursor-pointer transition-all duration-300"
+                },
+                "children": ["Hover for Spin"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
