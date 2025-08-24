@@ -6,8 +6,7 @@ import { Button } from '@/components/ui';
 import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
-import DeleteButton from '@/components/animated icon/DeleteButton';
-
+import galleryFocused from '@/lib/templates/gallery-focused.json';
 // Removed modal-based preview in favor of new tab preview
 
 const CreateProductPage = () => {
