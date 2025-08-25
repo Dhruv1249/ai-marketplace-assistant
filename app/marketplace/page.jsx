@@ -248,10 +248,10 @@ export default function Marketplace() {
           <span className="text-gray-400">Product Image</span>
         </div>
         {product.featured && (
-          <div className="absolute top-2 left-2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
-            Featured
-          </div>
-        )}
+  <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">
+    Featured
+  </div>
+)}
         <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm">
           <Eye size={16} className="text-gray-600" />
         </div>
@@ -328,12 +328,14 @@ export default function Marketplace() {
               </p>
             </div>
             <div className="mt-4 md:mt-0">
-              <Link href="/create">
-                <Button>
-                  <Plus className="mr-2" size={16} />
-                  Create Product
-                </Button>
-              </Link>
+             <Link href="/create">
+  <Button
+    className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400"
+  >
+    <Plus className="mr-2" size={16} />
+    Create Product
+  </Button>
+</Link>
             </div>
           </div>
         </div>
@@ -425,12 +427,12 @@ export default function Marketplace() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-blue-600 py-16 mt-16">
+      <div className="bg-gradient-to-r from-indigo-200 to-purple-300 py-16 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to sell your products?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
             Join thousands of sellers using AI to create compelling product listings 
             that convert visitors into customers.
           </p>

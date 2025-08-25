@@ -128,7 +128,7 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div ref={heroRef} className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
+      <div ref={heroRef} className="bg-gradient-to-r from-indigo-200 to-purple-300 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="contact-anim text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -228,11 +228,11 @@ export default function Contact() {
                   <textarea
                     rows={6}
                     placeholder="Tell us how we can help you..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
                     required
                   />
                 </div>
-                <Button className="w-full">
+                <Button className="w-full bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400">
                   <Send className="mr-2" size={16} />
                   Send Message
                 </Button>

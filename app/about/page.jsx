@@ -121,7 +121,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div ref={heroRef} className="bg-gradient-to-br from-blue-50 to-indigo-100 py-24">
+      <div ref={heroRef} className="bg-gradient-to-br from-indigo-200 to-purple-200 py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="about-hero-anim text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -269,12 +269,12 @@ export default function About() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-blue-600 py-16">
+      <div className="bg-gradient-to-r from-indigo-200 to-purple-300 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to join our community?
           </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto">
             Start creating professional product listings with AI assistance today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -412,8 +412,7 @@ useEffect(() => {
     // ------------------------------
 
     return (
-      <div className="flex min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-primarylw relative" style={{overflow:'hidden'}}>
-        {/* BACKGROUND BLOBS */}
+      <div className="flex min-h-screen bg-gradient-to-r from-indigo-200 to-purple-200 font-primarylw relative" style={{overflow:'hidden'}}>
         {livelyBlobs.map((blob, i) => (
           <div
             key={i}
@@ -476,7 +475,7 @@ useEffect(() => {
               <button
                 ref={loginBtnRef}
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold text-base md:text-lg py-3 px-5 mb-6 mt-4 cursor-pointer rounded-full shadow-md hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-200/60 transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-400 to-purple-300 hover:from-indigo-700 hover:to-indigo-200 text-white font-semibold text-base md:text-lg py-3 px-5 mb-6 mt-4 cursor-pointer rounded-full shadow-md hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-200/60 transition-all duration-200"
                 style={{ letterSpacing: '0.04em', boxShadow: '0 4px 24px 0 rgba(53,39,145,0.10)' }}
               >
                 <Cable width={22} height={22} stroke="#fff" strokeWidth={1.7} />
