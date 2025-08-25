@@ -3,7 +3,6 @@
   import { gsap } from 'gsap';
   import { motion, useAnimation } from "framer-motion";
   import { usePathname } from "next/navigation";
-
   // --- Firebase imports (added) ---
   import { auth } from "./firebase";
   import {
@@ -11,6 +10,7 @@
     signInWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    GithubAuthProvider,
     updateProfile,
     signOut, 
     onAuthStateChanged
@@ -199,6 +199,7 @@ const [signupLoading, setSignupLoading] = useState(false);
 const [signupError, setSignupError] = useState("");
 const [welcomeName, setWelcomeName] = useState("");
 const [isLoggedIn, setIsLoggedIn] = useState(false);
+const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
 // Firebase handles persistence -- no need for localStorage welcomeName anymore
 useEffect(() => {
@@ -367,6 +368,25 @@ const closeSignup = () => {
   setShowSignup(false);
   setSignupLoading(false);
 };
+const handleGithub = async () => {
+  setErrorMsg("");
+  setLoading(true);
+  try {
+    const provider = new GithubAuthProvider();
+    await signInWithPopup(auth, provider);
+    setLoading(false);
+    alert("Signed in with GitHub ✅");
+  } catch (err) {
+    setLoading(false);
+    if (err.code === 'auth/account-exists-with-different-credential') {
+      setErrorMsg(
+        "An account with your GitHub email already exists. Please sign in with the associated provider (e.g. Google), then link GitHub in your account settings."
+      );
+    } else {
+      setErrorMsg(err.message);
+    }
+  }
+};
 
 const handleSignupSubmit = async (e) => {
   if (e && e.preventDefault) e.preventDefault();
@@ -375,6 +395,9 @@ const handleSignupSubmit = async (e) => {
   if (!signupUsername.trim()) return setSignupError("Please enter a username.");
   if (!signupEmail.trim()) return setSignupError("Please enter an email.");
   if (!signupPassword) return setSignupError("Please enter a password.");
+  if (!signupConfirmPassword) return setSignupError("Please confirm your password.");
+  if (signupPassword !== signupConfirmPassword)
+    return setSignupError("Passwords do not match.");
 
   setSignupLoading(true);
   try {
@@ -393,6 +416,7 @@ const handleSignupSubmit = async (e) => {
     // Prefill email in the login form and show a notice
     setEmail(signupEmail);
     setNoticeMsg("Account created successfully. Please sign in with your email and password.");
+    setSignupConfirmPassword(""); // clear
     // Focus email input
     setTimeout(() => emailInputRef.current?.focus(), 0);
   } catch (err) {
@@ -506,9 +530,10 @@ useEffect(() => {
               <button
                 ref={el => (socialBtnsRef.current[1] = el)}
                 type="button"
+                onClick={handleGithub}
                 // GitHub left unconnected intentionally — you can wire OAuth if desired
-                className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 text-sm px-4 mb-6 py-1 cursor-pointer rounded-full flex items-center justify-center gap-1 transition-transform"
-              >
+               className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 text-sm px-4 mb-6 py-1 cursor-pointer rounded-full flex items-center justify-center gap-1 transition-transform"
+>
                 {/* GitHub icon SVG - white */}
                 <svg className="size-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -524,10 +549,9 @@ useEffect(() => {
           </form>
           <footer className="flex justify-between">
             <a ref={el => (footerLinksRef.current[0] = el)} className="text-blue-600 hover:text-blue-800 text-xs md:text-sm float-left" href="#">Forgot Password?</a>
-            {/* wired Create Account to sign up (added) */}
            <button
   ref={el => (footerLinksRef.current[1] = el)}
-  onClick={openSignup} // <-- changed from handleSignup
+  onClick={openSignup} 
   className="text-blue-600 hover:text-blue-800 text-xs md:text-sm float-right bg-transparent border-0 p-0"
 >
   Create Account
@@ -548,68 +572,82 @@ useEffect(() => {
         <h3 className="text-lg font-semibold text-gray-900">Create account</h3>
       </div>
       <form onSubmit={handleSignupSubmit} className="px-6 pt-5 pb-6">
-        {signupError && (
-          <p className="text-sm text-red-600 mb-3">{signupError}</p>
-        )}
-        <div className="mb-4">
-          <label htmlFor="su-username" className="block text-sm text-gray-700 mb-1">
-            Username
-          </label>
-          <input
-            id="su-username"
-            type="text"
-            value={signupUsername}
-            onChange={(e) => setSignupUsername(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-            placeholder="Your username"
-            autoComplete="off"
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="su-email" className="block text-sm text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            id="su-email"
-            type="email"
-            value={signupEmail}
-            onChange={(e) => setSignupEmail(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-            placeholder="you@example.com"
-            autoComplete="off"
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="su-password" className="block text-sm text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            id="su-password"
-            type="password"
-            value={signupPassword}
-            onChange={(e) => setSignupPassword(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-            placeholder="••••••••"
-            autoComplete="new-password"
-          />
-        </div>
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={closeSignup}
-            className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={signupLoading}
-            className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {signupLoading ? "Creating..." : "Create account"}
-          </button>
-        </div>
-      </form>
+  {signupError && (
+    <p className="text-sm text-red-600 mb-3">{signupError}</p>
+  )}
+  <div className="mb-1">
+    <label htmlFor="su-username" className="block text-sm text-gray-700 mb-1">
+      Username
+    </label>
+    <input
+      id="su-username"
+      type="text"
+      value={signupUsername}
+      onChange={(e) => setSignupUsername(e.target.value)}
+      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+      placeholder="Your username"
+      autoComplete="off"
+    />
+  </div>
+  <div className="mb-1">
+    <label htmlFor="su-email" className="block text-sm text-gray-700 mb-1">
+      Email
+    </label>
+    <input
+      id="su-email"
+      type="email"
+      value={signupEmail}
+      onChange={(e) => setSignupEmail(e.target.value)}
+      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+      placeholder="you@example.com"
+      autoComplete="off"
+    />
+  </div>
+  <div className="mb-1">
+    <label htmlFor="su-password" className="block text-sm text-gray-700 mb-1">
+      Password
+    </label>
+    <input
+      id="su-password"
+      type="password"
+      value={signupPassword}
+      onChange={(e) => setSignupPassword(e.target.value)}
+      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+      placeholder="••••••••"
+      autoComplete="new-password"
+    />
+  </div>
+  <div className="mb-5">
+    <label htmlFor="su-confirmpassword" className="block text-sm text-gray-700 mb-1">
+      Confirm Password
+    </label>
+    <input
+      id="su-confirmpassword"
+      type="password"
+      value={signupConfirmPassword}
+      onChange={(e) => setSignupConfirmPassword(e.target.value)}
+      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+      placeholder="Re-enter password"
+      autoComplete="new-password"
+    />
+  </div>
+  <div className="flex items-center justify-end gap-3">
+    <button
+      type="button"
+      onClick={closeSignup}
+      className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      disabled={signupLoading}
+      className="px-4 py-2 rounded-full bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 hover:from-indigo-300 hover:to-purple-400 disabled:opacity-60 border-0 shadow-none font-semibold transition-all"
+    >
+      {signupLoading ? "Creating..." : "Create account"}
+    </button>
+  </div>
+</form>
     </div>
   </div>
 )}
