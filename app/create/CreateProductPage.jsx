@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
 import { Button } from '@/components/ui';
-import { ArrowLeft, Eye, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Eye, Plus, Trash2, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import TemplateSelector from '@/components/templates/TemplateSelector';
 import galleryFocused from '@/lib/templates/gallery-focused.json';
@@ -152,6 +152,88 @@ const CreateProductPage = () => {
     setCurrentStep(3);
   };
 
+  const regenerateSection = async (section) => {
+    if (!generatedContent) return;
+    
+    setIsGeneratingContent(true);
+    try {
+      const response = await fetch('/api/ai/regenerate-section', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          section,
+          context: {
+            title: generatedContent.title,
+            description: generatedContent.description,
+            category: generatedContent.category || '',
+            targetAudience: generatedContent.targetAudience || '',
+            tone: generatedContent.tone || 'professional'
+          },
+          currentContent: generatedContent[section]
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setGeneratedContent(prev => ({
+          ...prev,
+          [section]: result.data
+        }));
+      } else {
+        setGenerationError(`Failed to regenerate ${section}: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error regenerating section:', error);
+      setGenerationError(`Failed to regenerate ${section}`);
+    } finally {
+      setIsGeneratingContent(false);
+    }
+  };
+
+  const regenerateAllContent = async () => {
+    if (!generatedContent) return;
+    
+    setIsGeneratingContent(true);
+    try {
+      const response = await fetch('/api/ai/generate-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productTitle: generatedContent.title,
+          productDescription: generatedContent.description,
+          category: generatedContent.category || '',
+          targetAudience: generatedContent.targetAudience || '',
+          tone: generatedContent.tone || 'professional',
+          generateOptions: {
+            features: true,
+            specifications: true,
+            seoKeywords: true,
+            metaDescription: true
+          }
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setGeneratedContent(result.data);
+        // Reset feature explanations since content changed
+        setFeatureExplanations({});
+        setFeaturesConfirmed(false);
+      } else {
+        setGenerationError(`Failed to regenerate content: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error regenerating all content:', error);
+      setGenerationError('Failed to regenerate content');
+    } finally {
+      setIsGeneratingContent(false);
+    }
+  };
+
   const openPreview = () => {
   if (!generatedContent) {
     console.error('Cannot open preview: missing generatedContent');
@@ -249,16 +331,32 @@ const CreateProductPage = () => {
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-gray-900">Generated Content</h2>
-                  <Button variant="outline" size="sm" onClick={() => setCurrentStep(1)}>
-                    Regenerate
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={regenerateAllContent}
+                    disabled={isGeneratingContent}
+                  >
+                    {isGeneratingContent ? 'Regenerating...' : 'Regenerate All'}
                   </Button>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Title
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Product Title
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => regenerateSection('title')}
+                        disabled={isGeneratingContent}
+                      >
+                        <Wand2 className="mr-1" size={12} />
+                        Regenerate
+                      </Button>
+                    </div>
                     <input
                       type="text"
                       value={generatedContent.title}
@@ -269,9 +367,20 @@ const CreateProductPage = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Description
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => regenerateSection('description')}
+                        disabled={isGeneratingContent}
+                      >
+                        <Wand2 className="mr-1" size={12} />
+                        Regenerate
+                      </Button>
+                    </div>
                     <textarea
                       value={generatedContent.description}
                       rows={6}
@@ -286,7 +395,7 @@ const CreateProductPage = () => {
                       <label className="block text-sm font-medium text-gray-700">
                         Key Features
                       </label>
-                      {!featuresConfirmed && generatedContent.features.length > 0 && (
+                      <div className="flex gap-2">
                         <Button
                           variant="outline"
                           size="sm"
@@ -296,9 +405,18 @@ const CreateProductPage = () => {
                           }}
                           disabled={isGeneratingExplanations}
                         >
-                          {isGeneratingExplanations ? 'Generating...' : 'Confirm Features'}
+                          {isGeneratingExplanations ? 'Generating...' : 'Add Description using AI'}
                         </Button>
-                      )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => regenerateSection('features')}
+                          disabled={isGeneratingExplanations}
+                        >
+                          <Wand2 className="mr-1" size={12} />
+                          Regenerate
+                        </Button>
+                      </div>
                     </div>
                     
                     <div className="space-y-3">
@@ -370,11 +488,20 @@ const CreateProductPage = () => {
                             </div>
                           )}
                           
-                          {featuresConfirmed && !featureExplanations[feature] && feature.trim() && (
-                            <div className="mt-2 p-3 bg-gray-50 rounded-lg">
-                              <p className="text-sm text-gray-500 italic">
-                                Explanation will be generated when you finish editing this feature...
-                              </p>
+                          {!featureExplanations[feature] && feature.trim() && (
+                            <div className="mt-2 p-3 bg-gray-50 rounded-lg border-l-4 border-gray-300">
+                              <textarea
+                                value=""
+                                onChange={(e) => {
+                                  setFeatureExplanations(prev => ({
+                                    ...prev,
+                                    [feature]: e.target.value
+                                  }));
+                                }}
+                                className="w-full text-sm text-gray-700 leading-relaxed bg-transparent border-none resize-none focus:outline-none"
+                                rows={2}
+                                placeholder="Add manual explanation for this feature..."
+                              />
                             </div>
                           )}
                         </div>
@@ -415,6 +542,165 @@ const CreateProductPage = () => {
                         </p>
                       </div>
                     )}
+                  </div>
+
+                  {/* Specifications Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Specifications
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => regenerateSection('specifications')}
+                        disabled={isGeneratingContent}
+                      >
+                        <Wand2 className="mr-1" size={12} />
+                        Regenerate
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {generatedContent.specifications && Object.entries(generatedContent.specifications).map(([key, value], index) => (
+                        <div key={index} className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={key}
+                            placeholder="Specification name"
+                            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                            onChange={(e) => {
+                              const newSpecs = { ...generatedContent.specifications };
+                              delete newSpecs[key];
+                              newSpecs[e.target.value] = value;
+                              setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
+                            }}
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={value}
+                              placeholder="Specification value"
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                              onChange={(e) => {
+                                const newSpecs = { ...generatedContent.specifications };
+                                newSpecs[key] = e.target.value;
+                                setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="p-2 text-gray-500 hover:text-red-600"
+                              onClick={() => {
+                                const newSpecs = { ...generatedContent.specifications };
+                                delete newSpecs[key];
+                                setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
+                              }}
+                              aria-label="Remove specification"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      className="mt-2 inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                      onClick={() => {
+                        const newSpecs = { ...(generatedContent.specifications || {}), '': '' };
+                        setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
+                      }}
+                    >
+                      <Plus size={16} className="mr-1.5" /> Add specification
+                    </button>
+                  </div>
+
+                  {/* SEO Keywords Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        SEO Keywords
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => regenerateSection('seoKeywords')}
+                        disabled={isGeneratingContent}
+                      >
+                        <Wand2 className="mr-1" size={12} />
+                        Regenerate
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      {generatedContent.seoKeywords && generatedContent.seoKeywords.map((keyword, index) => (
+                        <div key={index} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={keyword}
+                            placeholder="SEO keyword"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                            onChange={(e) => {
+                              const newKeywords = [...generatedContent.seoKeywords];
+                              newKeywords[index] = e.target.value;
+                              setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="p-2 text-gray-500 hover:text-red-600"
+                            onClick={() => {
+                              const newKeywords = generatedContent.seoKeywords.filter((_, i) => i !== index);
+                              setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
+                            }}
+                            aria-label="Remove keyword"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      className="mt-2 inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
+                      onClick={() => {
+                        const newKeywords = [...(generatedContent.seoKeywords || []), ''];
+                        setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
+                      }}
+                    >
+                      <Plus size={16} className="mr-1.5" /> Add keyword
+                    </button>
+                  </div>
+
+                  {/* Meta Description Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Meta Description
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => regenerateSection('metaDescription')}
+                        disabled={isGeneratingContent}
+                      >
+                        <Wand2 className="mr-1" size={12} />
+                        Regenerate
+                      </Button>
+                    </div>
+                    <textarea
+                      value={generatedContent.metaDescription || ''}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
+                      placeholder="SEO meta description (recommended: under 160 characters)"
+                      onChange={(e) => setGeneratedContent(prev => ({ ...prev, metaDescription: e.target.value }))}
+                    />
+                    <div className="text-xs text-gray-500 mt-1">
+                      {(generatedContent.metaDescription || '').length}/160 characters recommended
+                    </div>
                   </div>
 
                   <div className="flex gap-4">

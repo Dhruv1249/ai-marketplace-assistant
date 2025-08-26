@@ -6,6 +6,7 @@ import { Wand2, Loader2 } from 'lucide-react';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
+    productTitle: '',
     productDescription: '',
     category: '',
     targetAudience: '',
@@ -13,6 +14,19 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [generateOptions, setGenerateOptions] = useState({
+    features: true,
+    specifications: true,
+    seoKeywords: true,
+    metaDescription: true
+  });
+  const [aiGenerationStates, setAiGenerationStates] = useState({
+    productTitle: false,
+    productDescription: false,
+    category: false,
+    targetAudience: false
+  });
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -22,7 +36,12 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
     setError('');
   };
 
-  const handleGenerate = async () => {
+  const handleGenerateClick = () => {
+    if (!formData.productTitle.trim()) {
+      setError('Please provide a product title');
+      return;
+    }
+
     if (!formData.productDescription.trim()) {
       setError('Please provide a product description');
       return;
@@ -33,10 +52,26 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
       return;
     }
 
+    if (!formData.category.trim()) {
+      setError('Please provide a product category');
+      return;
+    }
+
+    if (!formData.targetAudience.trim()) {
+      setError('Please provide a target audience');
+      return;
+    }
+
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmGenerate = async () => {
+    setShowConfirmDialog(false);
     setIsGenerating(true);
     setError('');
 
     console.log('Sending form data:', formData);
+    console.log('Generate options:', generateOptions);
 
     try {
       const response = await fetch('/api/ai/generate-content', {
@@ -44,7 +79,10 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          generateOptions
+        }),
       });
 
       const result = await response.json();
@@ -62,6 +100,51 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
     }
   };
 
+  const handleCancelGenerate = () => {
+    setShowConfirmDialog(false);
+  };
+
+  const handleOptionChange = (option, checked) => {
+    setGenerateOptions(prev => ({
+      ...prev,
+      [option]: checked
+    }));
+  };
+
+  const handleIndividualAiGeneration = async (field) => {
+    setAiGenerationStates(prev => ({ ...prev, [field]: true }));
+    
+    try {
+      const response = await fetch('/api/ai/generate-field', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          field: field,
+          context: formData,
+          currentValue: formData[field]
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFormData(prev => ({
+          ...prev,
+          [field]: result.data
+        }));
+      } else {
+        setError(`Failed to generate ${field}: ${result.error}`);
+      }
+    } catch (err) {
+      console.error('Individual generation error:', err);
+      setError(`Failed to generate ${field}`);
+    } finally {
+      setAiGenerationStates(prev => ({ ...prev, [field]: false }));
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex items-center justify-between mb-6">
@@ -72,10 +155,66 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
       </div>
 
       <div className="space-y-4">
+        {/* Product Title */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Product Description * (minimum 10 characters)
-          </label>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Product Title *
+            </label>
+            <button
+              type="button"
+              onClick={() => handleIndividualAiGeneration('productTitle')}
+              disabled={aiGenerationStates.productTitle}
+              className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {aiGenerationStates.productTitle ? (
+                <>
+                  <Loader2 className="animate-spin mr-1" size={12} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-1" size={12} />
+                  ✨ AI
+                </>
+              )}
+            </button>
+          </div>
+          <input
+            type="text"
+            value={formData.productTitle}
+            onChange={(e) => handleInputChange('productTitle', e.target.value)}
+            placeholder="e.g., Premium Wireless Headphones"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
+            style={{ color: '#111827', backgroundColor: '#ffffff' }}
+          />
+        </div>
+
+        {/* Product Description */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Product Description * (minimum 10 characters)
+            </label>
+            <button
+              type="button"
+              onClick={() => handleIndividualAiGeneration('productDescription')}
+              disabled={aiGenerationStates.productDescription}
+              className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {aiGenerationStates.productDescription ? (
+                <>
+                  <Loader2 className="animate-spin mr-1" size={12} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-1" size={12} />
+                  ✨ AI
+                </>
+              )}
+            </button>
+          </div>
           <textarea
             value={formData.productDescription}
             onChange={(e) => handleInputChange('productDescription', e.target.value)}
@@ -89,22 +228,78 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
           </div>
         </div>
 
+        {/* Category and Target Audience */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="Category"
-            value={formData.category}
-            onChange={(e) => handleInputChange('category', e.target.value)}
-            placeholder="e.g., Electronics, Clothing, Home & Garden"
-          />
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Category *
+              </label>
+              <button
+                type="button"
+                onClick={() => handleIndividualAiGeneration('category')}
+                disabled={aiGenerationStates.category}
+                className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {aiGenerationStates.category ? (
+                  <>
+                    <Loader2 className="animate-spin mr-1" size={12} />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-1" size={12} />
+                    ✨ AI
+                  </>
+                )}
+              </button>
+            </div>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => handleInputChange('category', e.target.value)}
+              placeholder="e.g., Electronics, Clothing, Home & Garden"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
+              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+            />
+          </div>
 
-          <Input
-            label="Target Audience"
-            value={formData.targetAudience}
-            onChange={(e) => handleInputChange('targetAudience', e.target.value)}
-            placeholder="e.g., Tech enthusiasts, Parents, Professionals"
-          />
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Target Audience *
+              </label>
+              <button
+                type="button"
+                onClick={() => handleIndividualAiGeneration('targetAudience')}
+                disabled={aiGenerationStates.targetAudience}
+                className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {aiGenerationStates.targetAudience ? (
+                  <>
+                    <Loader2 className="animate-spin mr-1" size={12} />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="mr-1" size={12} />
+                    ✨ AI
+                  </>
+                )}
+              </button>
+            </div>
+            <input
+              type="text"
+              value={formData.targetAudience}
+              onChange={(e) => handleInputChange('targetAudience', e.target.value)}
+              placeholder="e.g., Tech enthusiasts, Parents, Professionals"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
+              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+            />
+          </div>
         </div>
 
+        {/* Tone */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tone
@@ -122,6 +317,29 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
           </select>
         </div>
 
+        {/* Generation Options */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">What to Generate:</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries({
+              features: 'Key Features',
+              specifications: 'Specifications',
+              seoKeywords: 'SEO Keywords',
+              metaDescription: 'Meta Description'
+            }).map(([key, label]) => (
+              <label key={key} className="flex items-center space-x-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={generateOptions[key]}
+                  onChange={(e) => handleOptionChange(key, e.target.checked)}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-gray-700">{label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
             <p className="text-sm text-red-600">{error}</p>
@@ -129,7 +347,7 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
         )}
 
         <Button
-          onClick={handleGenerate}
+          onClick={handleGenerateClick}
           disabled={isGenerating || !formData.productDescription.trim() || formData.productDescription.trim().length < 10}
           className="w-full"
         >
@@ -150,6 +368,37 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
           AI-powered content generation for your product
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Generate AI Content?
+            </h3>
+            <div className="space-y-3 mb-6">
+              <p className="text-gray-600">
+                AI will generate the following content based on your input:
+              </p>
+              <ul className="text-sm text-gray-600 space-y-1 ml-4">
+                {generateOptions.features && <li>• Key features list</li>}
+                {generateOptions.specifications && <li>• Technical specifications</li>}
+                {generateOptions.seoKeywords && <li>• SEO keywords</li>}
+                {generateOptions.metaDescription && <li>• Meta description</li>}
+              </ul>
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={handleCancelGenerate}>
+                Cancel
+              </Button>
+              <Button onClick={handleConfirmGenerate}>
+                <Wand2 className="mr-2" size={16} />
+                Generate Content
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
