@@ -401,7 +401,7 @@ const CreateProductPage = () => {
                 <li>• Review and edit generated content before proceeding</li>
                 <li>• Set competitive pricing with optional discounts</li>
                 <li>• Upload high-quality images for better presentation</li>
-                <li>��� Feature explanations help customers understand benefits</li>
+                <li>• Feature explanations help customers understand benefits</li>
               </ul>
             </div>
 
