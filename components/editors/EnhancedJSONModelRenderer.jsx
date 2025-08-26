@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo, useReducer } from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
+import ComponentEditDialog from './ComponentEditDialog';
 
 // Enhanced error boundary component
 const ErrorBoundary = ({ children, fallback, onError }) => {
@@ -106,10 +107,14 @@ const EnhancedJSONModelRenderer = ({
     errors: {}
   });
 
-  // UI state
+  // UI state - keeping old inline editing as fallback
   const [editingText, setEditingText] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [renderError, setRenderError] = useState(null);
+  
+  // Dialog state for enhanced editing
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingComponent, setEditingComponent] = useState(null);
   
   const editInputRef = useRef(null);
   const renderCountRef = useRef(0);
@@ -549,7 +554,58 @@ const EnhancedJSONModelRenderer = ({
     }
   }, []);
 
-  // Text editing functions
+  // Dialog-based editing functions
+  const handleComponentEdit = useCallback((component) => {
+    if (!isEditing) return;
+    setEditingComponent(component);
+    setEditDialogOpen(true);
+  }, [isEditing]);
+
+  const handleDialogSave = useCallback((updatedComponent) => {
+    if (onUpdate && editingComponent) {
+      const updatedModel = updateComponentInModel(model, editingComponent.id, updatedComponent);
+      onUpdate(updatedModel);
+    }
+    setEditDialogOpen(false);
+    setEditingComponent(null);
+  }, [model, onUpdate, editingComponent]);
+
+  const handleDialogClose = useCallback(() => {
+    setEditDialogOpen(false);
+    setEditingComponent(null);
+  }, []);
+
+  // Update component in model
+  const updateComponentInModel = useCallback((model, targetId, updatedComponent) => {
+    const updateNode = (node) => {
+      if (!node) return node;
+      
+      if (Array.isArray(node)) {
+        return node.map(updateNode);
+      }
+      
+      if (typeof node === 'object' && node !== null) {
+        if (node.id === targetId) {
+          return updatedComponent;
+        }
+        
+        const updated = { ...node };
+        if (updated.children) {
+          updated.children = updateNode(updated.children);
+        }
+        return updated;
+      }
+      
+      return node;
+    };
+
+    return {
+      ...model,
+      component: updateNode(model.component)
+    };
+  }, []);
+
+  // Text editing functions (keeping as fallback)
   const handleTextEdit = (componentId, currentText) => {
     if (!isEditing) return;
     setEditingText(componentId);
@@ -696,7 +752,7 @@ const EnhancedJSONModelRenderer = ({
       
       const enhancedProps = { ...props };
       
-      // Add editing capabilities
+      // Add editing capabilities - NOW OPENS DIALOG INSTEAD OF INLINE EDITING
       if (isEditing && editable?.contentEditable) {
         const originalOnClick = enhancedProps.onClick;
         enhancedProps.onClick = (e) => {
@@ -704,15 +760,17 @@ const EnhancedJSONModelRenderer = ({
           if (originalOnClick && typeof originalOnClick === 'function') {
             originalOnClick(e);
           }
+          // Open dialog instead of inline editing
+          handleComponentEdit(comp);
           if (onComponentSelect) {
             onComponentSelect(comp);
           }
         };
         
-        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all`.trim();
+        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all hover:bg-blue-50`.trim();
         
         if (selectedComponentId === id) {
-          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2';
+          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2 bg-blue-50';
         }
       }
       
@@ -755,27 +813,34 @@ const EnhancedJSONModelRenderer = ({
       const voidElements = ['img', 'input', 'br', 'hr', 'meta', 'link', 'area', 'base', 'col', 'embed', 'source', 'track', 'wbr', 'path'];
       const isVoidElement = voidElements.includes(type);
 
-      // Handle text editing
+      // Keep fallback inline editing for emergency cases
       if (isEditing && editable?.contentEditable && editingText === id) {
         const currentText = Array.isArray(children) ? children[0] : children;
         
         return (
           <div key={key} className="relative">
-            <input
+            <div className="absolute -top-6 left-0 text-xs text-blue-600 bg-white px-2 rounded border border-blue-200">
+              Editing: {id}
+            </div>
+            <textarea
               ref={editInputRef}
-              type="text"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && e.ctrlKey) {
                   handleTextSave(id);
                 } else if (e.key === 'Escape') {
                   handleTextCancel();
                 }
               }}
               onBlur={() => handleTextSave(id)}
-              className="w-full px-2 py-1 border-2 border-blue-500 rounded focus:outline-none"
+              className="w-full px-3 py-2 border-2 border-blue-500 rounded focus:outline-none resize-none"
+              rows={Math.min(Math.max(editValue.split('\n').length, 2), 8)}
+              placeholder="Edit text content... (Ctrl+Enter to save, Escape to cancel)"
             />
+            <div className="text-xs text-gray-500 mt-1">
+              Ctrl+Enter to save • Escape to cancel
+            </div>
           </div>
         );
       }
@@ -785,38 +850,10 @@ const EnhancedJSONModelRenderer = ({
       if (!isVoidElement && children) {
         if (Array.isArray(children)) {
           renderedChildren = children.map((child, index) => {
-            if (typeof child === 'string' && isEditing && editable?.contentEditable) {
-              return (
-                <span
-                  key={`${key}-child-${index}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleTextEdit(id, child);
-                  }}
-                  className="cursor-text hover:bg-blue-50 px-1 rounded"
-                >
-                  {child}
-                </span>
-              );
-            }
             return renderComponent(child, `${key}-child-${index}`);
           });
         } else {
-          if (typeof children === 'string' && isEditing && editable?.contentEditable) {
-            renderedChildren = (
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleTextEdit(id, children);
-                }}
-                className="cursor-text hover:bg-blue-50 px-1 rounded"
-              >
-                {children}
-              </span>
-            );
-          } else {
-            renderedChildren = renderComponent(children, `${key}-child`);
-          }
+          renderedChildren = renderComponent(children, `${key}-child`);
         }
       }
 
@@ -859,7 +896,7 @@ const EnhancedJSONModelRenderer = ({
     }
 
     return null;
-  }, [model, images, isEditing, onComponentSelect, selectedComponentId, editingText, editValue, state.componentState, state.formData, state.errors, eventHandlers, handleTextEdit, handleTextSave, handleTextCancel]);
+  }, [model, images, isEditing, onComponentSelect, selectedComponentId, editingText, editValue, state.componentState, state.formData, state.errors, eventHandlers, handleComponentEdit, handleTextEdit, handleTextSave, handleTextCancel]);
 
   // Process the entire component tree with updated context
   const enhancedContext = useMemo(() => ({
@@ -920,6 +957,15 @@ const EnhancedJSONModelRenderer = ({
     >
       <div className="json-model-renderer">
         {renderComponent(processedComponent)}
+        
+        {/* Component Edit Dialog */}
+        <ComponentEditDialog
+          isOpen={editDialogOpen}
+          onClose={handleDialogClose}
+          component={editingComponent}
+          onSave={handleDialogSave}
+          debug={debug}
+        />
       </div>
     </ErrorBoundary>
   );
