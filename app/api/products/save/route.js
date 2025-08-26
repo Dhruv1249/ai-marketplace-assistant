@@ -4,92 +4,112 @@ import path from 'path';
 
 export async function POST(request) {
   try {
-    const { productId, standardData, customData, thumbnailImage, additionalImages } = await request.json();
+    const formData = await request.formData();
+    
+    // Extract data from FormData
+    const productId = formData.get('productId');
+    const standardData = JSON.parse(formData.get('standardData'));
+    const customData = formData.get('customData') ? JSON.parse(formData.get('customData')) : null;
+    
+    // Extract image files
+    const thumbnailFile = formData.get('thumbnailImage');
+    const additionalFiles = [];
+    
+    // Get all additional image files
+    let index = 0;
+    while (formData.get(`additionalImage_${index}`)) {
+      additionalFiles.push(formData.get(`additionalImage_${index}`));
+      index++;
+    }
 
     if (!productId || !standardData) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required data' },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        success: false,
+        error: 'Missing required data'
+      }, { status: 400 });
     }
 
     // Create product directory
     const productDir = path.join(process.cwd(), 'development', 'products', productId);
+    const imagesDir = path.join(productDir, 'images');
     
     try {
       await fs.mkdir(productDir, { recursive: true });
-    } catch (error) {
-      console.error('Error creating product directory:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to create product directory' },
-        { status: 500 }
-      );
-    }
-
-    // Save standard product data
-    const standardPath = path.join(productDir, 'standard.json');
-    try {
-      await fs.writeFile(standardPath, JSON.stringify(standardData, null, 2));
-    } catch (error) {
-      console.error('Error saving standard data:', error);
-      return NextResponse.json(
-        { success: false, error: 'Failed to save standard product data' },
-        { status: 500 }
-      );
-    }
-
-    // Save custom product data if provided
-    if (customData) {
-      const customPath = path.join(productDir, 'custom.json');
-      try {
-        await fs.writeFile(customPath, JSON.stringify(customData, null, 2));
-      } catch (error) {
-        console.error('Error saving custom data:', error);
-        // Don't fail the entire request if custom data fails
-      }
-    }
-
-    // Create images directory
-    const imagesDir = path.join(productDir, 'images');
-    try {
       await fs.mkdir(imagesDir, { recursive: true });
     } catch (error) {
-      console.error('Error creating images directory:', error);
+      console.error('Error creating directories:', error);
+      return NextResponse.json({
+        success: false,
+        error: 'Failed to create product directory'
+      }, { status: 500 });
     }
 
-    // Note: In a real implementation, you would save the actual image files here
-    // For now, we're just creating placeholder files to maintain the structure
-    if (thumbnailImage) {
+    // Save images
+    const savedImages = {
+      thumbnail: null,
+      additional: []
+    };
+
+    // Save thumbnail image
+    if (thumbnailFile && thumbnailFile instanceof File) {
       try {
-        const thumbnailPath = path.join(imagesDir, 'thumbnail.txt');
-        await fs.writeFile(thumbnailPath, 'Thumbnail image placeholder - implement actual image saving');
+        const thumbnailBuffer = Buffer.from(await thumbnailFile.arrayBuffer());
+        const thumbnailExtension = path.extname(thumbnailFile.name) || '.jpg';
+        const thumbnailPath = path.join(imagesDir, `thumbnail${thumbnailExtension}`);
+        
+        await fs.writeFile(thumbnailPath, thumbnailBuffer);
+        savedImages.thumbnail = `thumbnail${thumbnailExtension}`;
       } catch (error) {
-        console.error('Error creating thumbnail placeholder:', error);
+        console.error('Error saving thumbnail:', error);
       }
     }
 
-    if (additionalImages && additionalImages.length > 0) {
-      for (let i = 0; i < additionalImages.length; i++) {
+    // Save additional images
+    for (let i = 0; i < additionalFiles.length; i++) {
+      const file = additionalFiles[i];
+      if (file && file instanceof File) {
         try {
-          const imagePath = path.join(imagesDir, `additional-${i + 1}.txt`);
-          await fs.writeFile(imagePath, `Additional image ${i + 1} placeholder - implement actual image saving`);
+          const buffer = Buffer.from(await file.arrayBuffer());
+          const extension = path.extname(file.name) || '.jpg';
+          const filename = `additional-${i + 1}${extension}`;
+          const filePath = path.join(imagesDir, filename);
+          
+          await fs.writeFile(filePath, buffer);
+          savedImages.additional.push(filename);
         } catch (error) {
-          console.error(`Error creating additional image ${i + 1} placeholder:`, error);
+          console.error(`Error saving additional image ${i + 1}:`, error);
         }
       }
+    }
+
+    // Update standardData with actual saved image filenames
+    const updatedStandardData = {
+      ...standardData,
+      images: savedImages
+    };
+
+    // Save standard.json
+    const standardPath = path.join(productDir, 'standard.json');
+    await fs.writeFile(standardPath, JSON.stringify(updatedStandardData, null, 2));
+
+    // Save custom.json if provided
+    if (customData) {
+      const customPath = path.join(productDir, 'custom.json');
+      await fs.writeFile(customPath, JSON.stringify(customData, null, 2));
     }
 
     return NextResponse.json({
       success: true,
       productId,
-      message: 'Product saved successfully'
+      message: 'Product saved successfully',
+      savedImages
     });
 
   } catch (error) {
-    console.error('Error in save product API:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Error saving product:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'Internal server error'
+    }, { status: 500 });
   }
 }

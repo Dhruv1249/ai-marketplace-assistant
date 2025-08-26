@@ -4,7 +4,7 @@ import path from 'path';
 
 export async function GET(request, { params }) {
   try {
-    const { productId } = params;
+    const { productId } = await params;
 
     if (!productId) {
       return NextResponse.json(

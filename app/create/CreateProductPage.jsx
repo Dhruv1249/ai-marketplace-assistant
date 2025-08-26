@@ -266,79 +266,6 @@ const CreateProductPage = () => {
     }
   };
 
-  const handlePublish = async (publishData) => {
-    try {
-      // Generate unique product ID
-      const productId = `product-${Date.now()}`;
-      
-      // Create product directory
-      const productDir = `development/products/${productId}`;
-      
-      // Prepare standard product data
-      const standardData = {
-        id: productId,
-        title: publishData.generatedContent.title,
-        description: publishData.generatedContent.description,
-        pricing: publishData.pricing,
-        features: publishData.generatedContent.features || [],
-        featureExplanations: publishData.featureExplanations || {},
-        specifications: publishData.generatedContent.specifications || {},
-        seoKeywords: publishData.generatedContent.seoKeywords || [],
-        metaDescription: publishData.generatedContent.metaDescription || '',
-        images: {
-          thumbnail: publishData.thumbnailImage ? 'thumbnail.jpg' : null,
-          additional: publishData.additionalImages.map((_, index) => `additional-${index + 1}.jpg`)
-        },
-        hasCustomPage: publishData.createCustomPage,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      // Save standard product data
-      const response = await fetch('/api/products/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId,
-          standardData,
-          customData: publishData.createCustomPage ? {
-            model: publishData.pageModel,
-            content: {
-              ...publishData.generatedContent,
-              featureExplanations: publishData.featureExplanations,
-              pricing: publishData.pricing
-            }
-          } : null,
-          thumbnailImage: publishData.thumbnailImage,
-          additionalImages: publishData.additionalImages
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        return {
-          success: true,
-          productId: productId,
-          message: 'Product published successfully!'
-        };
-      } else {
-        return {
-          success: false,
-          error: result.error || 'Failed to publish product'
-        };
-      }
-    } catch (error) {
-      console.error('Error publishing product:', error);
-      return {
-        success: false,
-        error: 'An unexpected error occurred while publishing'
-      };
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -442,6 +369,8 @@ const CreateProductPage = () => {
                 setThumbnailImage={setThumbnailImage}
                 additionalImages={additionalImages}
                 setAdditionalImages={setAdditionalImages}
+                pricing={pricing}
+                featureExplanations={featureExplanations}
                 onBack={() => handleStepChange(3)}
                 onContinue={() => setCurrentStep(5)}
                 onPreview={openPreview}
@@ -457,7 +386,6 @@ const CreateProductPage = () => {
                 pageModel={pageModel}
                 featureExplanations={featureExplanations}
                 onBack={() => handleStepChange(4)}
-                onPublish={handlePublish}
               />
             )}
           </div>
@@ -473,7 +401,7 @@ const CreateProductPage = () => {
                 <li>• Review and edit generated content before proceeding</li>
                 <li>• Set competitive pricing with optional discounts</li>
                 <li>• Upload high-quality images for better presentation</li>
-                <li>• Feature explanations help customers understand benefits</li>
+                <li>��� Feature explanations help customers understand benefits</li>
               </ul>
             </div>
 
@@ -484,6 +412,12 @@ const CreateProductPage = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Content:</span>
                     <span className="font-medium text-green-600">✓ Generated</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Feature Explanations:</span>
+                    <span className={`font-medium ${Object.keys(featureExplanations).length > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                      {Object.keys(featureExplanations).length > 0 ? `✓ ${Object.keys(featureExplanations).length} explanations` : '○ None'}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Pricing:</span>

@@ -14,6 +14,7 @@ const ImagesLayoutStep = ({
   additionalImages,
   setAdditionalImages,
   pricing,
+  featureExplanations,
   onBack,
   onContinue,
   onPreview
@@ -107,14 +108,29 @@ const ImagesLayoutStep = ({
         discount: { enabled: false, finalPrice: 99.99 }
       },
       features: generatedContent?.features || [],
+      featureExplanations: featureExplanations || {},
       specifications: generatedContent?.specifications || {},
       seoKeywords: generatedContent?.seoKeywords || [],
       metaDescription: generatedContent?.metaDescription || '',
       hasCustomPage: false
     };
     
-    // Store in localStorage and open standard page preview
+    // Store uploaded images for preview
+    const previewImages = [];
+    if (thumbnailImage?.url) {
+      previewImages.push(thumbnailImage.url);
+    }
+    additionalImages.forEach(img => {
+      if (img?.url) previewImages.push(img.url);
+    });
+    
+    // Store both data and images
     localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
+    localStorage.setItem('previewImages', JSON.stringify(previewImages));
+    
+    console.log('Preview data being stored:', standardPreviewData); // Debug log
+    console.log('Preview images being stored:', previewImages); // Debug log
+    
     window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
   };
 
@@ -280,6 +296,17 @@ const ImagesLayoutStep = ({
             </div>
           </div>
         )}
+
+        {/* Debug Info */}
+        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <h4 className="font-medium text-yellow-800 mb-2">Debug Info</h4>
+          <div className="text-xs text-yellow-700 space-y-1">
+            <div>Features: {generatedContent?.features?.length || 0}</div>
+            <div>Feature Explanations: {Object.keys(featureExplanations || {}).length}</div>
+            <div>Thumbnail: {thumbnailImage ? '✓' : '✗'}</div>
+            <div>Additional Images: {additionalImages.length}</div>
+          </div>
+        </div>
 
         {/* Navigation */}
         <div className="flex gap-3 pt-4">

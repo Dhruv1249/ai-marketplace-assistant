@@ -166,7 +166,9 @@ export default function Marketplace() {
             description: product.description,
             price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
             currency: 'USD',
-            image: '/api/placeholder/300/200', // Placeholder - implement actual image loading
+            image: product.images?.thumbnail 
+              ? `/api/products/${product.id}/images/${product.images.thumbnail}`
+              : '/api/placeholder/300/200',
             rating: 4.8, // Default - implement rating system
             reviews: 124, // Default - implement review system
             seller: 'AI Marketplace Seller', // Default - implement seller system
@@ -235,8 +237,19 @@ export default function Marketplace() {
     <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
       {/* Product Image */}
       <div className="relative">
-        <div className="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-          <span className="text-gray-400">Product Image</span>
+        <div className="w-full h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.nextSibling.style.display = 'flex';
+            }}
+          />
+          <div className="w-full h-full bg-gray-200 items-center justify-center hidden">
+            <span className="text-gray-400">Product Image</span>
+          </div>
         </div>
         {product.featured && (
           <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">

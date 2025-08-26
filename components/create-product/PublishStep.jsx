@@ -11,8 +11,7 @@ const PublishStep = ({
   additionalImages,
   pageModel,
   featureExplanations,
-  onBack,
-  onPublish
+  onBack
 }) => {
   const [createCustomPage, setCreateCustomPage] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -23,21 +22,67 @@ const PublishStep = ({
     setPublishStatus(null);
 
     try {
-      const result = await onPublish({
-        createCustomPage,
-        generatedContent,
-        pricing,
-        thumbnailImage,
-        additionalImages,
-        pageModel,
-        featureExplanations
+      // Generate unique product ID
+      const productId = `product-${Date.now()}`;
+      
+      // Prepare standard product data
+      const standardData = {
+        id: productId,
+        title: generatedContent.title,
+        description: generatedContent.description,
+        pricing: pricing,
+        features: generatedContent.features || [],
+        featureExplanations: featureExplanations || {},
+        specifications: generatedContent.specifications || {},
+        seoKeywords: generatedContent.seoKeywords || [],
+        metaDescription: generatedContent.metaDescription || '',
+        hasCustomPage: createCustomPage,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('productId', productId);
+      formData.append('standardData', JSON.stringify(standardData));
+      
+      if (createCustomPage) {
+        const customData = {
+          model: pageModel,
+          content: {
+            ...generatedContent,
+            featureExplanations: featureExplanations,
+            pricing: pricing
+          }
+        };
+        formData.append('customData', JSON.stringify(customData));
+      }
+
+      // Add thumbnail image
+      if (thumbnailImage?.file) {
+        formData.append('thumbnailImage', thumbnailImage.file);
+      }
+
+      // Add additional images
+      additionalImages.forEach((image, index) => {
+        if (image?.file) {
+          formData.append(`additionalImage_${index}`, image.file);
+        }
       });
 
+      // Save product data
+      const response = await fetch('/api/products/save', {
+        method: 'POST',
+        body: formData, // Send as FormData instead of JSON
+      });
+
+      const result = await response.json();
+      
       if (result.success) {
         setPublishStatus({
           type: 'success',
           message: 'Product published successfully!',
-          productId: result.productId
+          productId: productId
         });
       } else {
         setPublishStatus({
@@ -46,6 +91,7 @@ const PublishStep = ({
         });
       }
     } catch (error) {
+      console.error('Error publishing product:', error);
       setPublishStatus({
         type: 'error',
         message: 'An unexpected error occurred while publishing'
@@ -66,6 +112,7 @@ const PublishStep = ({
         discount: { enabled: false, finalPrice: 99.99 }
       },
       features: generatedContent?.features || [],
+      featureExplanations: featureExplanations || {},
       specifications: generatedContent?.specifications || {},
       seoKeywords: generatedContent?.seoKeywords || [],
       metaDescription: generatedContent?.metaDescription || '',

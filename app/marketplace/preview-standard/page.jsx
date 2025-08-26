@@ -32,8 +32,11 @@ export default function StandardPreviewPage() {
     // Load preview data from localStorage
     try {
       const previewData = localStorage.getItem('standardPreviewData');
+      console.log('Raw preview data:', previewData); // Debug log
       if (previewData) {
         const data = JSON.parse(previewData);
+        console.log('Parsed preview data:', data); // Debug log
+        console.log('Feature explanations:', data.featureExplanations); // Debug log
         setProductData(data);
       }
     } catch (error) {
@@ -43,83 +46,81 @@ export default function StandardPreviewPage() {
     }
   }, []);
 
-  // Helper functions
+  // Helper functions - Use actual uploaded images for preview
+  const getProductImages = () => {
+    // For preview, we'll try to use the actual uploaded images from the creation flow
+    const images = [];
+    
+    // Try to get the actual uploaded images from the creation flow
+    try {
+      const createFlowData = localStorage.getItem('previewImages');
+      if (createFlowData) {
+        const uploadedImages = JSON.parse(createFlowData);
+        uploadedImages.forEach((imageUrl, index) => {
+          images.push({
+            id: index === 0 ? 'thumbnail' : `additional-${index}`,
+            label: index === 0 ? 'Image 1 (Thumbnail)' : `Image ${index + 1}`,
+            url: imageUrl,
+            hasImage: true
+          });
+        });
+      }
+    } catch (error) {
+      console.log('No uploaded images found for preview');
+    }
+    
+    // If no uploaded images, show placeholder images
+    if (images.length === 0) {
+      // Show at least one image (thumbnail)
+      images.push({
+        id: 'thumbnail',
+        label: 'Image 1 (Thumbnail)',
+        url: '/api/placeholder/600/400',
+        hasImage: true
+      });
+      
+      // Add 2-3 additional placeholder images for preview
+      for (let i = 1; i <= 2; i++) {
+        images.push({
+          id: `additional-${i}`,
+          label: `Image ${i + 1}`,
+          url: '/api/placeholder/600/400',
+          hasImage: true
+        });
+      }
+    }
+    
+    return images;
+  };
+
   const nextImage = () => {
-    const imageCount = 4; // Default placeholder count
+    const images = getProductImages();
     setCurrentImageIndex((prev) => 
-      prev === imageCount - 1 ? 0 : prev + 1
+      prev === images.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevImage = () => {
-    const imageCount = 4; // Default placeholder count
+    const images = getProductImages();
     setCurrentImageIndex((prev) => 
-      prev === 0 ? imageCount - 1 : prev - 1
+      prev === 0 ? images.length - 1 : prev - 1
     );
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading preview...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!productData) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Preview Not Available</h1>
-          <p className="text-gray-600 mb-6">No preview data found.</p>
-          <Button onClick={() => window.close()}>
-            Close Preview
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Convert the JSON data to the expected format
-  const formattedProduct = {
-    id: productData.id,
-    title: productData.title,
-    description: productData.description,
-    price: productData.pricing?.discount?.finalPrice || productData.pricing?.basePrice || 0,
-    originalPrice: productData.pricing?.discount?.enabled ? productData.pricing?.basePrice : null,
-    currency: 'USD',
-    images: [
-      '/api/placeholder/600/400', // Placeholder - implement actual image loading
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-    ],
-    rating: 4.8, // Default rating - implement actual rating system
-    reviews: 0, // Keep empty as requested
-    seller: {
-      name: 'AI Marketplace Seller', // Default seller - implement actual seller system
-      rating: 4.9,
-      totalSales: 1250,
-    },
-    category: 'Product', // Default category - add to product data
-    inStock: true, // Default - implement inventory system
-    stockCount: 15, // Default - implement inventory system
-    features: productData.features || [],
-    specifications: productData.specifications || {},
-    shipping: {
-      free: true, // Default - implement shipping system
-      estimatedDays: '2-3 business days',
-    },
-    policies: {
-      returns: '30-day return policy', // Default - implement policy system
-      warranty: '2-year manufacturer warranty',
-    }
   };
 
   const renderTabContent = () => {
+    if (!productData) return null;
+
+    console.log('Rendering tab content with productData:', productData); // Debug log
+
+    const formattedProduct = {
+      description: productData.description,
+      features: productData.features || [],
+      featureExplanations: productData.featureExplanations || {},
+      specifications: productData.specifications || {}
+    };
+
+    console.log('Formatted product for tab:', formattedProduct); // Debug log
+
     switch (activeTab) {
       case 'description':
         return (
@@ -130,17 +131,31 @@ export default function StandardPreviewPage() {
           </div>
         );
       case 'features':
+        console.log('Rendering features tab:', formattedProduct.features); // Debug log
+        console.log('Feature explanations:', formattedProduct.featureExplanations); // Debug log
         return (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {formattedProduct.features.length > 0 ? (
-              <ul className="space-y-3">
-                {formattedProduct.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-4">
+                {formattedProduct.features.map((feature, index) => {
+                  console.log(`Feature ${index}:`, feature, 'Explanation:', formattedProduct.featureExplanations[feature]); // Debug log
+                  return (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start mb-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <h4 className="font-medium text-gray-900">{feature}</h4>
+                      </div>
+                      {formattedProduct.featureExplanations[feature] && (
+                        <div className="ml-5 mt-2 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                          <p className="text-sm text-blue-800 leading-relaxed">
+                            {formattedProduct.featureExplanations[feature]}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <p className="text-gray-500 italic">No features listed for this product.</p>
             )}
@@ -174,6 +189,65 @@ export default function StandardPreviewPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading preview...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!productData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Preview Not Available</h1>
+          <p className="text-gray-600 mb-6">No preview data found.</p>
+          <Button onClick={() => window.close()}>
+            Close Preview
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const productImages = getProductImages();
+
+  // Convert the JSON data to the expected format
+  const formattedProduct = {
+    id: productData.id,
+    title: productData.title,
+    description: productData.description,
+    price: productData.pricing?.discount?.finalPrice || productData.pricing?.basePrice || 0,
+    originalPrice: productData.pricing?.discount?.enabled ? productData.pricing?.basePrice : null,
+    currency: 'USD',
+    images: productImages,
+    rating: 4.8, // Default rating - implement actual rating system
+    reviews: 0, // Keep empty as requested
+    seller: {
+      name: 'AI Marketplace Seller', // Default seller - implement actual seller system
+      rating: 4.9,
+      totalSales: 1250,
+    },
+    category: 'Product', // Default category - add to product data
+    inStock: true, // Default - implement inventory system
+    stockCount: 15, // Default - implement inventory system
+    features: productData.features || [],
+    featureExplanations: productData.featureExplanations || {},
+    specifications: productData.specifications || {},
+    shipping: {
+      free: true, // Default - implement shipping system
+      estimatedDays: '2-3 business days',
+    },
+    policies: {
+      returns: '30-day return policy', // Default - implement policy system
+      warranty: '2-year manufacturer warranty',
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Preview Header */}
@@ -190,6 +264,15 @@ export default function StandardPreviewPage() {
               Close Preview
             </Button>
           </div>
+        </div>
+      </div>
+
+      {/* Debug Info - Remove in production */}
+      <div className="bg-yellow-50 border-b border-yellow-200 p-2">
+        <div className="max-w-7xl mx-auto px-4 text-xs">
+          <strong>Debug:</strong> Features: {productData.features?.length || 0}, 
+          Feature Explanations: {Object.keys(productData.featureExplanations || {}).length}, 
+          Images: {productImages.length}
         </div>
       </div>
 
@@ -231,35 +314,60 @@ export default function StandardPreviewPage() {
           <div>
             <div className="relative">
               <div className="aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-                <span className="text-gray-400">Product Image {currentImageIndex + 1}</span>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
-                >
-                  <ChevronRight size={20} />
-                </button>
+                <img
+                  src={productImages[currentImageIndex]?.url}
+                  alt={productImages[currentImageIndex]?.label || 'Product Image'}
+                  className="w-full h-full object-cover"
+                />
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </>
+                )}
               </div>
               
-              {/* Thumbnail Images */}
-              <div className="grid grid-cols-4 gap-2">
-                {formattedProduct.images.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`aspect-square bg-gray-200 rounded-lg flex items-center justify-center text-xs ${
-                      currentImageIndex === index ? 'ring-2 ring-blue-500' : ''
-                    }`}
-                  >
-                    Img {index + 1}
-                  </button>
-                ))}
-              </div>
+              {/* Dynamic Thumbnail Grid - Only show if more than 1 image */}
+              {productImages.length > 1 && (
+                <div className={`grid gap-2 ${
+                  productImages.length === 2 ? 'grid-cols-2' :
+                  productImages.length === 3 ? 'grid-cols-3' :
+                  'grid-cols-4'
+                }`}>
+                  {productImages.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`aspect-square bg-gray-200 rounded-lg flex flex-col items-center justify-center text-xs p-2 overflow-hidden ${
+                        currentImageIndex === index ? 'ring-2 ring-blue-500' : ''
+                      }`}
+                    >
+                      <img
+                        src={image.url}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover rounded"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+              
+              {/* Image Counter */}
+              {productImages.length > 1 && (
+                <div className="text-center mt-2 text-sm text-gray-500">
+                  {currentImageIndex + 1} of {productImages.length} images (Preview)
+                </div>
+              )}
             </div>
           </div>
 
@@ -419,7 +527,7 @@ export default function StandardPreviewPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Features
+                Features ({formattedProduct.features.length})
               </button>
               <button 
                 onClick={() => setActiveTab('specifications')}
@@ -439,7 +547,7 @@ export default function StandardPreviewPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Reviews ({formattedProduct.reviews})
+                Reviews (0)
               </button>
             </nav>
           </div>

@@ -57,23 +57,59 @@ export default function ProductPage() {
     }
   }, [productId]);
 
-  // Helper functions
-  const nextImage = () => {
-    if (productData?.standard) {
-      const imageCount = 4; // Default placeholder count
-      setCurrentImageIndex((prev) => 
-        prev === imageCount - 1 ? 0 : prev + 1
-      );
+  // Helper functions - Dynamic image loading based on available images
+  const getProductImages = () => {
+    if (!productData?.standard) return [];
+    
+    const product = productData.standard;
+    const images = [];
+    
+    // Add thumbnail as first image if it exists
+    if (product.images?.thumbnail) {
+      images.push({
+        id: 'thumbnail',
+        label: 'Image 1 (Thumbnail)',
+        url: `/api/products/${productId}/images/${product.images.thumbnail}`,
+        hasImage: true
+      });
     }
+    
+    // Add additional images dynamically based on what's available
+    const additionalImages = product.images?.additional || [];
+    additionalImages.forEach((imageName, index) => {
+      images.push({
+        id: `additional-${index + 1}`,
+        label: `Image ${images.length + 1}`,
+        url: `/api/products/${productId}/images/${imageName}`,
+        hasImage: true
+      });
+    });
+    
+    // If no images at all, add a placeholder
+    if (images.length === 0) {
+      images.push({
+        id: 'placeholder',
+        label: 'Product Image',
+        url: '/api/placeholder/600/400',
+        hasImage: false
+      });
+    }
+    
+    return images;
+  };
+
+  const nextImage = () => {
+    const images = getProductImages();
+    setCurrentImageIndex((prev) => 
+      prev === images.length - 1 ? 0 : prev + 1
+    );
   };
 
   const prevImage = () => {
-    if (productData?.standard) {
-      const imageCount = 4; // Default placeholder count
-      setCurrentImageIndex((prev) => 
-        prev === 0 ? imageCount - 1 : prev - 1
-      );
-    }
+    const images = getProductImages();
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? images.length - 1 : prev - 1
+    );
   };
 
   const renderTabContent = () => {
@@ -83,6 +119,7 @@ export default function ProductPage() {
     const formattedProduct = {
       description: product.description,
       features: product.features || [],
+      featureExplanations: product.featureExplanations || {},
       specifications: product.specifications || {}
     };
 
@@ -97,16 +134,25 @@ export default function ProductPage() {
         );
       case 'features':
         return (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {formattedProduct.features.length > 0 ? (
-              <ul className="space-y-3">
+              <div className="space-y-4">
                 {formattedProduct.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-start mb-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <h4 className="font-medium text-gray-900">{feature}</h4>
+                    </div>
+                    {formattedProduct.featureExplanations[feature] && (
+                      <div className="ml-5 mt-2 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                        <p className="text-sm text-blue-800 leading-relaxed">
+                          {formattedProduct.featureExplanations[feature]}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
               <p className="text-gray-500 italic">No features listed for this product.</p>
             )}
@@ -171,6 +217,7 @@ export default function ProductPage() {
   }
 
   const product = productData.standard;
+  const productImages = getProductImages();
 
   // Convert the JSON data to the expected format
   const formattedProduct = {
@@ -180,12 +227,7 @@ export default function ProductPage() {
     price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
     originalPrice: product.pricing?.discount?.enabled ? product.pricing?.basePrice : null,
     currency: 'USD',
-    images: [
-      '/api/placeholder/600/400', // Placeholder - implement actual image loading
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-    ],
+    images: productImages,
     rating: 4.8, // Default rating - implement actual rating system
     reviews: 0, // Keep empty as requested
     seller: {
@@ -197,6 +239,7 @@ export default function ProductPage() {
     inStock: true, // Default - implement inventory system
     stockCount: 15, // Default - implement inventory system
     features: product.features || [],
+    featureExplanations: product.featureExplanations || {},
     specifications: product.specifications || {},
     shipping: {
       free: true, // Default - implement shipping system
@@ -254,35 +297,87 @@ export default function ProductPage() {
           <div>
             <div className="relative">
               <div className="aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
-                <span className="text-gray-400">Product Image {currentImageIndex + 1}</span>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
-                >
-                  <ChevronRight size={20} />
-                </button>
+                {productImages[currentImageIndex]?.hasImage ? (
+                  <img
+                    src={productImages[currentImageIndex].url}
+                    alt={productImages[currentImageIndex].label}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/api/placeholder/600/400';
+                    }}
+                  />
+                ) : (
+                  <div className="text-center">
+                    <span className="text-gray-400 text-lg font-medium">
+                      {productImages[currentImageIndex]?.label || 'Product Image'}
+                    </span>
+                    <div className="text-gray-300 text-sm mt-2">
+                      No image available
+                    </div>
+                  </div>
+                )}
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:shadow-lg"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </>
+                )}
               </div>
               
-              {/* Thumbnail Images */}
-              <div className="grid grid-cols-4 gap-2">
-                {formattedProduct.images.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`aspect-square bg-gray-200 rounded-lg flex items-center justify-center text-xs ${
-                      currentImageIndex === index ? 'ring-2 ring-blue-500' : ''
-                    }`}
-                  >
-                    Img {index + 1}
-                  </button>
-                ))}
-              </div>
+              {/* Dynamic Thumbnail Grid - Only show if more than 1 image */}
+              {productImages.length > 1 && (
+                <div className={`grid gap-2 ${
+                  productImages.length === 2 ? 'grid-cols-2' :
+                  productImages.length === 3 ? 'grid-cols-3' :
+                  'grid-cols-4'
+                }`}>
+                  {productImages.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`aspect-square bg-gray-200 rounded-lg flex flex-col items-center justify-center text-xs p-2 overflow-hidden ${
+                        currentImageIndex === index ? 'ring-2 ring-blue-500' : ''
+                      }`}
+                    >
+                      {image.hasImage ? (
+                        <img
+                          src={image.url}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover rounded"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className={`flex flex-col items-center justify-center w-full h-full ${image.hasImage ? 'hidden' : ''}`}>
+                        <span className="font-medium">{index + 1}</span>
+                        <span className="text-gray-500 mt-1">
+                          {index === 0 && productImages.length > 1 ? 'Main' : 
+                           index === 0 ? 'Image' : 'View'}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              
+              {/* Image Counter */}
+              {productImages.length > 1 && (
+                <div className="text-center mt-2 text-sm text-gray-500">
+                  {currentImageIndex + 1} of {productImages.length} images
+                </div>
+              )}
             </div>
           </div>
 
@@ -454,7 +549,7 @@ export default function ProductPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Features
+                Features ({formattedProduct.features.length})
               </button>
               <button 
                 onClick={() => setActiveTab('specifications')}
