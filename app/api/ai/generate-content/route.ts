@@ -3,10 +3,17 @@ import { generateProductContent, ContentGenerationRequest } from '@/lib/ai/gemin
 import { z } from 'zod';
 
 const generateContentSchema = z.object({
+  productTitle: z.string().optional(),
   productDescription: z.string().min(10, 'Product description must be at least 10 characters'),
   category: z.string().optional(),
   targetAudience: z.string().optional(),
   tone: z.enum(['professional', 'casual', 'friendly', 'technical']).optional(),
+  generateOptions: z.object({
+    features: z.boolean().optional(),
+    specifications: z.boolean().optional(),
+    seoKeywords: z.boolean().optional(),
+    metaDescription: z.boolean().optional(),
+  }).optional(),
 });
 
 export async function POST(request: NextRequest) {

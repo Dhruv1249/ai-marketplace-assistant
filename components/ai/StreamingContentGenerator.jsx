@@ -74,6 +74,28 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
     console.log('Generate options:', generateOptions);
 
     try {
+      // Check if any options are selected for AI generation
+      const hasSelectedOptions = Object.values(generateOptions).some(option => option === true);
+      
+      if (!hasSelectedOptions) {
+        // No AI generation needed, just create basic content with user input
+        const basicContent = {
+          title: formData.productTitle,
+          description: formData.productDescription,
+          category: formData.category,
+          targetAudience: formData.targetAudience,
+          tone: formData.tone,
+          features: [],
+          specifications: {},
+          seoKeywords: [],
+          metaDescription: ''
+        };
+        
+        onContentGenerated(basicContent);
+        return;
+      }
+
+      // Make API call only if options are selected
       const response = await fetch('/api/ai/generate-content', {
         method: 'POST',
         headers: {
@@ -91,7 +113,20 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
         throw new Error(result.error || 'Failed to generate content');
       }
 
-      onContentGenerated(result.data);
+      // Ensure the result has the basic structure with user-provided data
+      const finalContent = {
+        title: formData.productTitle,
+        description: formData.productDescription,
+        category: formData.category,
+        targetAudience: formData.targetAudience,
+        tone: formData.tone,
+        features: result.data.features || [],
+        specifications: result.data.specifications || {},
+        seoKeywords: result.data.seoKeywords || [],
+        metaDescription: result.data.metaDescription || ''
+      };
+
+      onContentGenerated(finalContent);
     } catch (err) {
       console.error('Generation error:', err);
       setError(err.message || 'Failed to generate content');
@@ -144,6 +179,9 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
       setAiGenerationStates(prev => ({ ...prev, [field]: false }));
     }
   };
+
+  // Check if at least one option is selected for UI feedback
+  const hasSelectedOptions = Object.values(generateOptions).some(option => option === true);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -338,6 +376,9 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               </label>
             ))}
           </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Uncheck all to create a basic product page with just your title and description.
+          </p>
         </div>
 
         {error && (
@@ -354,18 +395,21 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
           {isGenerating ? (
             <>
               <Loader2 className="animate-spin mr-2" size={16} />
-              Generating Content...
+              {hasSelectedOptions ? 'Generating Content...' : 'Creating Content...'}
             </>
           ) : (
             <>
               <Wand2 className="mr-2" size={16} />
-              Generate Content
+              {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}
             </>
           )}
         </Button>
 
         <div className="text-xs text-gray-500 text-center">
-          AI-powered content generation for your product
+          {hasSelectedOptions 
+            ? 'AI-powered content generation for your product'
+            : 'Create basic product page with your provided information'
+          }
         </div>
       </div>
 
@@ -374,18 +418,27 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Generate AI Content?
+              {hasSelectedOptions ? 'Generate AI Content?' : 'Create Basic Content?'}
             </h3>
             <div className="space-y-3 mb-6">
-              <p className="text-gray-600">
-                AI will generate the following content based on your input:
-              </p>
-              <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                {generateOptions.features && <li>• Key features list</li>}
-                {generateOptions.specifications && <li>• Technical specifications</li>}
-                {generateOptions.seoKeywords && <li>• SEO keywords</li>}
-                {generateOptions.metaDescription && <li>• Meta description</li>}
-              </ul>
+              {hasSelectedOptions ? (
+                <>
+                  <p className="text-gray-600">
+                    AI will generate the following content based on your input:
+                  </p>
+                  <ul className="text-sm text-gray-600 space-y-1 ml-4">
+                    {generateOptions.features && <li>• Key features list</li>}
+                    {generateOptions.specifications && <li>• Technical specifications</li>}
+                    {generateOptions.seoKeywords && <li>• SEO keywords</li>}
+                    {generateOptions.metaDescription && <li>• Meta description</li>}
+                  </ul>
+                </>
+              ) : (
+                <p className="text-gray-600">
+                  Create a basic product page with your provided title and description. 
+                  You can add additional content later using the generate buttons in the next step.
+                </p>
+              )}
             </div>
             <div className="flex gap-3 justify-end">
               <Button variant="outline" onClick={handleCancelGenerate}>
@@ -393,7 +446,7 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               </Button>
               <Button onClick={handleConfirmGenerate}>
                 <Wand2 className="mr-2" size={16} />
-                Generate Content
+                {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}
               </Button>
             </div>
           </div>

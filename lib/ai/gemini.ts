@@ -5,10 +5,17 @@ const ai = new GoogleGenAI({
 });
 
 export interface ContentGenerationRequest {
+  productTitle?: string;
   productDescription: string;
   category?: string;
   targetAudience?: string;
   tone?: 'professional' | 'casual' | 'friendly' | 'technical';
+  generateOptions?: {
+    features?: boolean;
+    specifications?: boolean;
+    seoKeywords?: boolean;
+    metaDescription?: boolean;
+  };
 }
 
 export interface GeneratedContent {
@@ -32,30 +39,79 @@ export async function generateContentWithStreaming(
 ): Promise<GeneratedContent> {
   const MAX_RETRIES = 1;
 
+  // Default generate options if not provided
+  const options = {
+    features: true,
+    specifications: true,
+    seoKeywords: true,
+    metaDescription: true,
+    ...request.generateOptions
+  };
+
   async function callAI(): Promise<string> {
     const config = {};
     const model = 'gemini-2.5-flash-lite';
+    
+    // Build the JSON structure based on selected options only (no title/description)
+    let jsonFields = [];
+
+    if (options.features) {
+      jsonFields.push(`  "features": ["feature1", "feature2", "feature3", "feature4", "feature5"]`);
+    }
+
+    if (options.specifications) {
+      jsonFields.push(`  "specifications": {"spec1": "value1", "spec2": "value2", "spec3": "value3"}`);
+    }
+
+    if (options.seoKeywords) {
+      jsonFields.push(`  "seoKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"]`);
+    }
+
+    if (options.metaDescription) {
+      jsonFields.push(`  "metaDescription": "SEO description (max 160 chars)"`);
+    }
+
+    // If no sections selected, return empty content
+    if (jsonFields.length === 0) {
+      return '{}';
+    }
+
+    let jsonStructure = `{\n${jsonFields.join(',\n')}\n}`;
+
+    // Build sections list for prompt
+    let sectionsToGenerate = [];
+
+    if (options.features) {
+      sectionsToGenerate.push('- Key Features (4-6 items)');
+    }
+    if (options.specifications) {
+      sectionsToGenerate.push('- Technical Specifications (5-8 items)');
+    }
+    if (options.seoKeywords) {
+      sectionsToGenerate.push('- SEO Keywords (8-12 items)');
+    }
+    if (options.metaDescription) {
+      sectionsToGenerate.push('- Meta Description (under 160 chars)');
+    }
+
     const contents = [
       {
         role: 'user',
         parts: [
           {
-            text: `Generate comprehensive e-commerce product content for: ${request.productDescription}
+            text: `Generate e-commerce product content for: ${request.productDescription}
             
+Product Title: ${request.productTitle || ''}
 Category: ${request.category || 'General'}
 Target Audience: ${request.targetAudience || 'General consumers'}
 Tone: ${request.tone || 'professional'}
 
+Generate ONLY the following content sections:
+${sectionsToGenerate.join('\n')}
+
 IMPORTANT: Respond ONLY with valid JSON in this exact format. Do not include any other text, explanations, or markdown formatting:
 
-{
-  "title": "Product title (max 60 chars)",
-  "description": "Detailed description (2-3 paragraphs)",
-  "features": ["feature1", "feature2", "feature3", "feature4", "feature5"],
-  "specifications": {"spec1": "value1", "spec2": "value2", "spec3": "value3"},
-  "seoKeywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-  "metaDescription": "SEO description (max 160 chars)"
-}`,
+${jsonStructure}`,
           },
         ],
       },
@@ -78,6 +134,7 @@ IMPORTANT: Respond ONLY with valid JSON in this exact format. Do not include any
   }
 
   console.log('Starting AI generation with request:', request);
+  console.log('Generate options:', options);
   console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
@@ -126,8 +183,18 @@ IMPORTANT: Respond ONLY with valid JSON in this exact format. Do not include any
         const parsedResult = JSON.parse(cleanedText);
         console.log(`Attempt ${attempt}: Successfully parsed JSON:`, parsedResult);
         
+        // Create the final result - use provided title/description, only AI-generated optional content
+        const finalResult: GeneratedContent = {
+          title: request.productTitle || 'Product Title',
+          description: request.productDescription,
+          features: options.features ? (parsedResult.features || []) : [],
+          specifications: options.specifications ? (parsedResult.specifications || {}) : {},
+          seoKeywords: options.seoKeywords ? (parsedResult.seoKeywords || []) : [],
+          metaDescription: options.metaDescription ? (parsedResult.metaDescription || '') : ''
+        };
+        
         // Validate the parsed result has required fields
-        if (!parsedResult.title || !parsedResult.description || !parsedResult.features) {
+        if (!finalResult.title || !finalResult.description) {
           console.log(`Attempt ${attempt}: Parsed JSON missing required fields`);
           if (attempt === MAX_RETRIES) {
             throw new Error('Failed to generate content after 5 attempts. The AI response was missing required fields. Please try again.');
@@ -135,8 +202,8 @@ IMPORTANT: Respond ONLY with valid JSON in this exact format. Do not include any
           continue; // Try again
         }
         
-        // Success! Return the parsed result
-        return parsedResult;
+        // Success! Return the final result
+        return finalResult;
         
       } catch (parseError) {
         console.error(`Attempt ${attempt}: JSON parse error:`, parseError);

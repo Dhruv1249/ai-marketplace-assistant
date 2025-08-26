@@ -235,31 +235,31 @@ const CreateProductPage = () => {
   };
 
   const openPreview = () => {
-  if (!generatedContent) {
-    console.error('Cannot open preview: missing generatedContent');
-    return;
-  }
-  if (!pageModel || !pageModel.metadata || !pageModel.component) {
-    console.error('Cannot open preview: invalid pageModel', pageModel);
-    setPageModel(galleryFocused); // Fallback to default
-    return;
-  }
-  try {
-    const payload = {
-      model: pageModel,
-      content: {
-        ...generatedContent,
-        featureExplanations: featureExplanations || {}
-      },
-      images: images || []
-    };
-    console.log('Saving previewData:', JSON.stringify(payload, null, 2));
-    localStorage.setItem('previewData', JSON.stringify(payload));
-    window.open('/preview', '_blank', 'noopener,noreferrer');
-  } catch (e) {
-    console.error('Failed to save previewData:', e);
-  }
-};
+    if (!generatedContent) {
+      console.error('Cannot open preview: missing generatedContent');
+      return;
+    }
+    if (!pageModel || !pageModel.metadata || !pageModel.component) {
+      console.error('Cannot open preview: invalid pageModel', pageModel);
+      setPageModel(galleryFocused); // Fallback to default
+      return;
+    }
+    try {
+      const payload = {
+        model: pageModel,
+        content: {
+          ...generatedContent,
+          featureExplanations: featureExplanations || {}
+        },
+        images: images || []
+      };
+      console.log('Saving previewData:', JSON.stringify(payload, null, 2));
+      localStorage.setItem('previewData', JSON.stringify(payload));
+      window.open('/preview', '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      console.error('Failed to save previewData:', e);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -354,7 +354,7 @@ const CreateProductPage = () => {
                         disabled={isGeneratingContent}
                       >
                         <Wand2 className="mr-1" size={12} />
-                        Regenerate
+                        {generatedContent.title ? 'Regenerate' : 'Generate'}
                       </Button>
                     </div>
                     <input
@@ -378,7 +378,7 @@ const CreateProductPage = () => {
                         disabled={isGeneratingContent}
                       >
                         <Wand2 className="mr-1" size={12} />
-                        Regenerate
+                        {generatedContent.description ? 'Regenerate' : 'Generate'}
                       </Button>
                     </div>
                     <textarea
@@ -414,13 +414,13 @@ const CreateProductPage = () => {
                           disabled={isGeneratingExplanations}
                         >
                           <Wand2 className="mr-1" size={12} />
-                          Regenerate
+                          {generatedContent.features && generatedContent.features.length > 0 ? 'Regenerate' : 'Generate'}
                         </Button>
                       </div>
                     </div>
                     
                     <div className="space-y-3">
-                      {generatedContent.features.map((feature, index) => (
+                      {generatedContent.features && generatedContent.features.map((feature, index) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-3">
                           <div className="flex items-center gap-2 mb-2">
                             <input
@@ -534,10 +534,10 @@ const CreateProductPage = () => {
                       )}
                     </div>
                     
-                    {!featuresConfirmed && generatedContent.features.length > 0 && (
+                    {!featuresConfirmed && generatedContent.features && generatedContent.features.length > 0 && (
                       <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
                         <p className="text-sm text-amber-800">
-                          <strong>Tip:</strong> Click "Confirm Features" to generate detailed explanations for each feature. 
+                          <strong>Tip:</strong> Click "Add Description using AI" to generate detailed explanations for each feature. 
                           Explanations will help customers better understand your product's benefits.
                         </p>
                       </div>
@@ -557,7 +557,7 @@ const CreateProductPage = () => {
                         disabled={isGeneratingContent}
                       >
                         <Wand2 className="mr-1" size={12} />
-                        Regenerate
+                        {generatedContent.specifications && Object.keys(generatedContent.specifications).length > 0 ? 'Regenerate' : 'Generate'}
                       </Button>
                     </div>
                     <div className="space-y-2">
@@ -630,7 +630,7 @@ const CreateProductPage = () => {
                         disabled={isGeneratingContent}
                       >
                         <Wand2 className="mr-1" size={12} />
-                        Regenerate
+                        {generatedContent.seoKeywords && generatedContent.seoKeywords.length > 0 ? 'Regenerate' : 'Generate'}
                       </Button>
                     </div>
                     <div className="space-y-2">
@@ -687,7 +687,7 @@ const CreateProductPage = () => {
                         disabled={isGeneratingContent}
                       >
                         <Wand2 className="mr-1" size={12} />
-                        Regenerate
+                        {generatedContent.metaDescription ? 'Regenerate' : 'Generate'}
                       </Button>
                     </div>
                     <textarea
@@ -703,25 +703,40 @@ const CreateProductPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <Button 
+                  <div className="flex gap-4"><Button 
                       variant="outline" 
                       onClick={() => handleStepChange(1)}
                       disabled={isGeneratingExplanations}
                     >
                       Back
                     </Button>
-                    <Button 
-                      onClick={handleConfirmFeaturesAndContinue}
-                      disabled={isGeneratingExplanations}
-                    >
-                      {isGeneratingExplanations 
-                        ? 'Generating Explanations...' 
-                        : featuresConfirmed 
-                          ? 'Continue to Layout' 
-                          : 'Generate Explanations & Continue'
-                      }
-                    </Button>
+                    {!featuresConfirmed && generatedContent.features && generatedContent.features.length > 0 ? (
+                      <>
+                        <Button 
+                          onClick={handleConfirmFeaturesAndContinue}
+                          disabled={isGeneratingExplanations}
+                        >
+                          {isGeneratingExplanations 
+                            ? 'Generating Explanations...' 
+                            : 'Generate Explanations & Continue'
+                          }
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => setCurrentStep(3)}
+                          disabled={isGeneratingExplanations}
+                        >
+                          Continue Without Explanations
+                        </Button>
+                      </>
+                    ) : (
+                      <Button 
+                        onClick={() => setCurrentStep(3)}
+                        disabled={isGeneratingExplanations}
+                      >
+                        Continue to Layout
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -773,24 +788,6 @@ const CreateProductPage = () => {
                   )}
                 </div>
 
-                {/* <div className="mt-6 bg-gray-50 border rounded p-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Selected Layout Config</p>
-                  <pre className="text-xs text-gray-700 overflow-auto">
-{JSON.stringify({
-  type: selectedLayout,
-  sections: [
-    { id: 'hero', type: 'hero', order: 1, visible: true, config: {} },
-    { id: 'gallery', type: 'gallery', order: 2, visible: selectedLayout !== 'single-column', config: {} },
-    { id: 'description', type: 'description', order: 3, visible: true, config: {} },
-    { id: 'features', type: 'features', order: 4, visible: true, config: {} },
-    { id: 'specs', type: 'specifications', order: 5, visible: selectedLayout !== 'feature-blocks', config: {} },
-    { id: 'cta', type: 'cta', order: 6, visible: true, config: {} },
-  ],
-  theme: { primaryColor: '#2563eb', secondaryColor: '#111827', fontFamily: 'Inter' }
-}, null, 2)}
-                  </pre>
-                </div> */}
-
                 <div className="flex gap-4 mt-6">
                   <Button variant="outline" onClick={() => handleStepChange(2)}>
                     Back
@@ -802,8 +799,7 @@ const CreateProductPage = () => {
                     Continue to Publish
                   </Button>
                 </div>
-
-                </div>
+              </div>
             )}
 
             {currentStep === 4 && (
@@ -831,7 +827,7 @@ const CreateProductPage = () => {
                 <li>• Include key features and benefits</li>
                 <li>• Mention your target audience</li>
                 <li>• Review and edit generated content before proceeding</li>
-                <li>• Click "Confirm Features" to generate detailed explanations</li>
+                <li>• Click "Add Description using AI" to generate detailed explanations</li>
                 <li>• Feature explanations help customers understand benefits</li>
               </ul>
             </div>
@@ -851,7 +847,7 @@ const CreateProductPage = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-700">Keywords</p>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {generatedContent.seoKeywords.map((keyword, index) => (
+                      {generatedContent.seoKeywords && generatedContent.seoKeywords.map((keyword, index) => (
                         <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
                           {keyword}
                         </span>
