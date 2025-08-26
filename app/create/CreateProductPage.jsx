@@ -1,51 +1,51 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import StreamingContentGenerator from '@/components/ai/StreamingContentGenerator';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui';
-import { ArrowLeft, Eye, Plus, Trash2, Wand2 } from 'lucide-react';
+import { ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
-import TemplateSelector from '@/components/templates/TemplateSelector';
 import galleryFocused from '@/lib/templates/gallery-focused.json';
-// Removed modal-based preview in favor of new tab preview
+
+// Import step components
+import ContentGenerationStep from '@/components/create-product/ContentGenerationStep';
+import ContentReviewStep from '@/components/create-product/ContentReviewStep';
+import PricingStep from '@/components/create-product/PricingStep';
+import ImagesLayoutStep from '@/components/create-product/ImagesLayoutStep';
+import PublishStep from '@/components/create-product/PublishStep';
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [pageModel, setPageModel] = useState(galleryFocused);
-  const [images, setImages] = useState([]); // array of preview URLs
+  const [pricing, setPricing] = useState({
+    basePrice: 0,
+    discount: {
+      enabled: false,
+      type: 'percentage',
+      value: 0,
+      finalPrice: 0
+    }
+  });
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  const [additionalImages, setAdditionalImages] = useState([]);
   const [featureExplanations, setFeatureExplanations] = useState({});
   const [isGeneratingExplanations, setIsGeneratingExplanations] = useState(false);
   const [featuresConfirmed, setFeaturesConfirmed] = useState(false);
   const [showBackWarning, setShowBackWarning] = useState(false);
   const [pendingStep, setPendingStep] = useState(null);
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
-  const [generationError, setGenerationError] = useState('');
-  const prevUrlsRef = useRef([]);
-
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      try {
-        prevUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
-      } catch {}
-    };
-  }, []);
 
   const handleContentGenerated = (content) => {
     setGeneratedContent(content);
     setCurrentStep(2);
   };
 
-  const handleEditContent = () => {
-    setCurrentStep(2);
-  };
-
   const steps = [
     { id: 1, name: 'Generate Content', description: 'Use AI to create your product page content' },
     { id: 2, name: 'Review & Edit', description: 'Review and customize the generated content' },
-    { id: 3, name: 'Design Layout', description: 'Choose and customize your page layout' },
-    { id: 4, name: 'Publish', description: 'Publish your product page to the marketplace' }
+    { id: 3, name: 'Set Pricing', description: 'Configure product pricing and discounts' },
+    { id: 4, name: 'Images & Layout', description: 'Upload images and choose layout template' },
+    { id: 5, name: 'Publish', description: 'Publish your product page to the marketplace' }
   ];
 
   const generateFeatureExplanations = async () => {
@@ -112,7 +112,7 @@ const CreateProductPage = () => {
       return;
     }
 
-    // If going back and there are changes or AI is generating, show warning
+    // If going back and there are changes, show warning
     if (targetStep < currentStep) {
       setShowBackWarning(true);
       setPendingStep(targetStep);
@@ -122,12 +122,17 @@ const CreateProductPage = () => {
   };
 
   const confirmStepChange = () => {
-    // Reset all state when going back
+    // Reset state based on step
     if (pendingStep === 1) {
       setGeneratedContent(null);
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
-      setImages([]);
+      setPricing({
+        basePrice: 0,
+        discount: { enabled: false, type: 'percentage', value: 0, finalPrice: 0 }
+      });
+      setThumbnailImage(null);
+      setAdditionalImages([]);
       setPageModel(galleryFocused);
     } else if (pendingStep === 2) {
       setFeatureExplanations({});
@@ -142,14 +147,6 @@ const CreateProductPage = () => {
   const cancelStepChange = () => {
     setShowBackWarning(false);
     setPendingStep(null);
-  };
-
-  const handleConfirmFeaturesAndContinue = async () => {
-    if (!featuresConfirmed) {
-      setFeaturesConfirmed(true);
-      await generateFeatureExplanations();
-    }
-    setCurrentStep(3);
   };
 
   const regenerateSection = async (section) => {
@@ -182,11 +179,10 @@ const CreateProductPage = () => {
           [section]: result.data
         }));
       } else {
-        setGenerationError(`Failed to regenerate ${section}: ${result.error}`);
+        console.error(`Failed to regenerate ${section}:`, result.error);
       }
     } catch (error) {
       console.error('Error regenerating section:', error);
-      setGenerationError(`Failed to regenerate ${section}`);
     } finally {
       setIsGeneratingContent(false);
     }
@@ -224,11 +220,10 @@ const CreateProductPage = () => {
         setFeatureExplanations({});
         setFeaturesConfirmed(false);
       } else {
-        setGenerationError(`Failed to regenerate content: ${result.error}`);
+        console.error('Failed to regenerate content:', result.error);
       }
     } catch (error) {
       console.error('Error regenerating all content:', error);
-      setGenerationError('Failed to regenerate content');
     } finally {
       setIsGeneratingContent(false);
     }
@@ -241,23 +236,106 @@ const CreateProductPage = () => {
     }
     if (!pageModel || !pageModel.metadata || !pageModel.component) {
       console.error('Cannot open preview: invalid pageModel', pageModel);
-      setPageModel(galleryFocused); // Fallback to default
+      setPageModel(galleryFocused);
       return;
     }
     try {
+      // Create images array for preview
+      const previewImages = [];
+      if (thumbnailImage?.url) {
+        previewImages.push(thumbnailImage.url);
+      }
+      additionalImages.forEach(img => {
+        if (img?.url) previewImages.push(img.url);
+      });
+
       const payload = {
         model: pageModel,
         content: {
           ...generatedContent,
-          featureExplanations: featureExplanations || {}
+          featureExplanations: featureExplanations || {},
+          pricing: pricing
         },
-        images: images || []
+        images: previewImages
       };
-      console.log('Saving previewData:', JSON.stringify(payload, null, 2));
+      
       localStorage.setItem('previewData', JSON.stringify(payload));
       window.open('/preview', '_blank', 'noopener,noreferrer');
     } catch (e) {
       console.error('Failed to save previewData:', e);
+    }
+  };
+
+  const handlePublish = async (publishData) => {
+    try {
+      // Generate unique product ID
+      const productId = `product-${Date.now()}`;
+      
+      // Create product directory
+      const productDir = `development/products/${productId}`;
+      
+      // Prepare standard product data
+      const standardData = {
+        id: productId,
+        title: publishData.generatedContent.title,
+        description: publishData.generatedContent.description,
+        pricing: publishData.pricing,
+        features: publishData.generatedContent.features || [],
+        featureExplanations: publishData.featureExplanations || {},
+        specifications: publishData.generatedContent.specifications || {},
+        seoKeywords: publishData.generatedContent.seoKeywords || [],
+        metaDescription: publishData.generatedContent.metaDescription || '',
+        images: {
+          thumbnail: publishData.thumbnailImage ? 'thumbnail.jpg' : null,
+          additional: publishData.additionalImages.map((_, index) => `additional-${index + 1}.jpg`)
+        },
+        hasCustomPage: publishData.createCustomPage,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      // Save standard product data
+      const response = await fetch('/api/products/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId,
+          standardData,
+          customData: publishData.createCustomPage ? {
+            model: publishData.pageModel,
+            content: {
+              ...publishData.generatedContent,
+              featureExplanations: publishData.featureExplanations,
+              pricing: publishData.pricing
+            }
+          } : null,
+          thumbnailImage: publishData.thumbnailImage,
+          additionalImages: publishData.additionalImages
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        return {
+          success: true,
+          productId: productId,
+          message: 'Product published successfully!'
+        };
+      } else {
+        return {
+          success: false,
+          error: result.error || 'Failed to publish product'
+        };
+      }
+    } catch (error) {
+      console.error('Error publishing product:', error);
+      return {
+        success: false,
+        error: 'An unexpected error occurred while publishing'
+      };
     }
   };
 
@@ -324,497 +402,63 @@ const CreateProductPage = () => {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {currentStep === 1 && (
-              <StreamingContentGenerator onContentGenerated={handleContentGenerated} />
+              <ContentGenerationStep onContentGenerated={handleContentGenerated} />
             )}
 
-            {currentStep === 2 && generatedContent && (
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900">Generated Content</h2>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={regenerateAllContent}
-                    disabled={isGeneratingContent}
-                  >
-                    {isGeneratingContent ? 'Regenerating...' : 'Regenerate All'}
-                  </Button>
-                </div>
-
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Product Title
-                      </label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => regenerateSection('title')}
-                        disabled={isGeneratingContent}
-                      >
-                        <Wand2 className="mr-1" size={12} />
-                        {generatedContent.title ? 'Regenerate' : 'Generate'}
-                      </Button>
-                    </div>
-                    <input
-                      type="text"
-                      value={generatedContent.title}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                      onChange={(e) => setGeneratedContent(prev => ({ ...prev, title: e.target.value }))}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Description
-                      </label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => regenerateSection('description')}
-                        disabled={isGeneratingContent}
-                      >
-                        <Wand2 className="mr-1" size={12} />
-                        {generatedContent.description ? 'Regenerate' : 'Generate'}
-                      </Button>
-                    </div>
-                    <textarea
-                      value={generatedContent.description}
-                      rows={6}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                      onChange={(e) => setGeneratedContent(prev => ({ ...prev, description: e.target.value }))}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Key Features
-                      </label>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setFeaturesConfirmed(true);
-                            generateFeatureExplanations();
-                          }}
-                          disabled={isGeneratingExplanations}
-                        >
-                          {isGeneratingExplanations ? 'Generating...' : 'Add Description using AI'}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => regenerateSection('features')}
-                          disabled={isGeneratingExplanations}
-                        >
-                          <Wand2 className="mr-1" size={12} />
-                          {generatedContent.features && generatedContent.features.length > 0 ? 'Regenerate' : 'Generate'}
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {generatedContent.features && generatedContent.features.map((feature, index) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-3">
-                          <div className="flex items-center gap-2 mb-2">
-                            <input
-                              type="text"
-                              value={feature}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                              style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                              onChange={(e) => {
-                                const oldFeature = feature;
-                                const newFeature = e.target.value;
-                                const newFeatures = [...generatedContent.features];
-                                newFeatures[index] = newFeature;
-                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                                
-                                // Update explanation key if feature name changed
-                                if (featuresConfirmed && featureExplanations[oldFeature]) {
-                                  const newExplanations = { ...featureExplanations };
-                                  newExplanations[newFeature] = newExplanations[oldFeature];
-                                  delete newExplanations[oldFeature];
-                                  setFeatureExplanations(newExplanations);
-                                }
-                              }}
-                              onBlur={() => {
-                                // Generate explanation for user-added features
-                                if (featuresConfirmed && feature.trim() && !featureExplanations[feature]) {
-                                  generateSingleFeatureExplanation(feature, index);
-                                }
-                              }}
-                            />
-                            <button
-                              type="button"
-                              className="p-2 text-gray-500 hover:text-red-600"
-                              onClick={() => {
-                                const featureToRemove = feature;
-                                const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                                setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                                
-                                // Remove explanation for deleted feature
-                                if (featureExplanations[featureToRemove]) {
-                                  const newExplanations = { ...featureExplanations };
-                                  delete newExplanations[featureToRemove];
-                                  setFeatureExplanations(newExplanations);
-                                }
-                              }}
-                              aria-label="Remove feature"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                          
-                          {featuresConfirmed && featureExplanations[feature] && (
-                            <div className="mt-2 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
-                              <textarea
-                                value={featureExplanations[feature]}
-                                onChange={(e) => {
-                                  setFeatureExplanations(prev => ({
-                                    ...prev,
-                                    [feature]: e.target.value
-                                  }));
-                                }}
-                                className="w-full text-sm text-blue-800 leading-relaxed bg-transparent border-none resize-none focus:outline-none"
-                                rows={Math.max(2, Math.ceil(featureExplanations[feature].length / 80))}
-                                placeholder="Edit feature explanation..."
-                              />
-                            </div>
-                          )}
-                          
-                          {!featureExplanations[feature] && feature.trim() && (
-                            <div className="mt-2 p-3 bg-gray-50 rounded-lg border-l-4 border-gray-300">
-                              <textarea
-                                value=""
-                                onChange={(e) => {
-                                  setFeatureExplanations(prev => ({
-                                    ...prev,
-                                    [feature]: e.target.value
-                                  }));
-                                }}
-                                className="w-full text-sm text-gray-700 leading-relaxed bg-transparent border-none resize-none focus:outline-none"
-                                rows={2}
-                                placeholder="Add manual explanation for this feature..."
-                              />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        type="button"
-                        className="inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
-                        onClick={() => {
-                          const newFeatures = [...(generatedContent.features || []), ''];
-                          setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                        }}
-                      >
-                        <Plus size={16} className="mr-1.5" /> Add feature
-                      </button>
-                      
-                      {featuresConfirmed && (
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-3 py-1.5 text-sm rounded border border-blue-300 text-blue-700 hover:bg-blue-50"
-                          onClick={() => {
-                            setFeaturesConfirmed(false);
-                            setFeatureExplanations({});
-                          }}
-                        >
-                          Reset Confirmations
-                        </button>
-                      )}
-                    </div>
-                    
-                    {!featuresConfirmed && generatedContent.features && generatedContent.features.length > 0 && (
-                      <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                        <p className="text-sm text-amber-800">
-                          <strong>Tip:</strong> Click "Add Description using AI" to generate detailed explanations for each feature. 
-                          Explanations will help customers better understand your product's benefits.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Specifications Section */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Specifications
-                      </label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => regenerateSection('specifications')}
-                        disabled={isGeneratingContent}
-                      >
-                        <Wand2 className="mr-1" size={12} />
-                        {generatedContent.specifications && Object.keys(generatedContent.specifications).length > 0 ? 'Regenerate' : 'Generate'}
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      {generatedContent.specifications && Object.entries(generatedContent.specifications).map(([key, value], index) => (
-                        <div key={index} className="grid grid-cols-2 gap-2">
-                          <input
-                            type="text"
-                            value={key}
-                            placeholder="Specification name"
-                            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                            onChange={(e) => {
-                              const newSpecs = { ...generatedContent.specifications };
-                              delete newSpecs[key];
-                              newSpecs[e.target.value] = value;
-                              setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
-                            }}
-                          />
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={value}
-                              placeholder="Specification value"
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                              style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                              onChange={(e) => {
-                                const newSpecs = { ...generatedContent.specifications };
-                                newSpecs[key] = e.target.value;
-                                setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
-                              }}
-                            />
-                            <button
-                              type="button"
-                              className="p-2 text-gray-500 hover:text-red-600"
-                              onClick={() => {
-                                const newSpecs = { ...generatedContent.specifications };
-                                delete newSpecs[key];
-                                setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
-                              }}
-                              aria-label="Remove specification"
-                            >
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      className="mt-2 inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
-                      onClick={() => {
-                        const newSpecs = { ...(generatedContent.specifications || {}), '': '' };
-                        setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
-                      }}
-                    >
-                      <Plus size={16} className="mr-1.5" /> Add specification
-                    </button>
-                  </div>
-
-                  {/* SEO Keywords Section */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        SEO Keywords
-                      </label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => regenerateSection('seoKeywords')}
-                        disabled={isGeneratingContent}
-                      >
-                        <Wand2 className="mr-1" size={12} />
-                        {generatedContent.seoKeywords && generatedContent.seoKeywords.length > 0 ? 'Regenerate' : 'Generate'}
-                      </Button>
-                    </div>
-                    <div className="space-y-2">
-                      {generatedContent.seoKeywords && generatedContent.seoKeywords.map((keyword, index) => (
-                        <div key={index} className="flex gap-2">
-                          <input
-                            type="text"
-                            value={keyword}
-                            placeholder="SEO keyword"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                            style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                            onChange={(e) => {
-                              const newKeywords = [...generatedContent.seoKeywords];
-                              newKeywords[index] = e.target.value;
-                              setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
-                            }}
-                          />
-                          <button
-                            type="button"
-                            className="p-2 text-gray-500 hover:text-red-600"
-                            onClick={() => {
-                              const newKeywords = generatedContent.seoKeywords.filter((_, i) => i !== index);
-                              setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
-                            }}
-                            aria-label="Remove keyword"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      className="mt-2 inline-flex items-center px-3 py-1.5 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-50"
-                      onClick={() => {
-                        const newKeywords = [...(generatedContent.seoKeywords || []), ''];
-                        setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
-                      }}
-                    >
-                      <Plus size={16} className="mr-1.5" /> Add keyword
-                    </button>
-                  </div>
-
-                  {/* Meta Description Section */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Meta Description
-                      </label>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => regenerateSection('metaDescription')}
-                        disabled={isGeneratingContent}
-                      >
-                        <Wand2 className="mr-1" size={12} />
-                        {generatedContent.metaDescription ? 'Regenerate' : 'Generate'}
-                      </Button>
-                    </div>
-                    <textarea
-                      value={generatedContent.metaDescription || ''}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                      style={{ color: '#111827', backgroundColor: '#ffffff' }}
-                      placeholder="SEO meta description (recommended: under 160 characters)"
-                      onChange={(e) => setGeneratedContent(prev => ({ ...prev, metaDescription: e.target.value }))}
-                    />
-                    <div className="text-xs text-gray-500 mt-1">
-                      {(generatedContent.metaDescription || '').length}/160 characters recommended
-                    </div>
-                  </div>
-
-                  <div className="flex gap-4"><Button 
-                      variant="outline" 
-                      onClick={() => handleStepChange(1)}
-                      disabled={isGeneratingExplanations}
-                    >
-                      Back
-                    </Button>
-                    {!featuresConfirmed && generatedContent.features && generatedContent.features.length > 0 ? (
-                      <>
-                        <Button 
-                          onClick={handleConfirmFeaturesAndContinue}
-                          disabled={isGeneratingExplanations}
-                        >
-                          {isGeneratingExplanations 
-                            ? 'Generating Explanations...' 
-                            : 'Generate Explanations & Continue'
-                          }
-                        </Button>
-                        <Button 
-                          variant="outline"
-                          onClick={() => setCurrentStep(3)}
-                          disabled={isGeneratingExplanations}
-                        >
-                          Continue Without Explanations
-                        </Button>
-                      </>
-                    ) : (
-                      <Button 
-                        onClick={() => setCurrentStep(3)}
-                        disabled={isGeneratingExplanations}
-                      >
-                        Continue to Layout
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
+            {currentStep === 2 && (
+              <ContentReviewStep
+                generatedContent={generatedContent}
+                setGeneratedContent={setGeneratedContent}
+                featureExplanations={featureExplanations}
+                setFeatureExplanations={setFeatureExplanations}
+                featuresConfirmed={featuresConfirmed}
+                setFeaturesConfirmed={setFeaturesConfirmed}
+                isGeneratingExplanations={isGeneratingExplanations}
+                isGeneratingContent={isGeneratingContent}
+                onRegenerateSection={regenerateSection}
+                onRegenerateAll={regenerateAllContent}
+                onGenerateFeatureExplanations={generateFeatureExplanations}
+                onGenerateSingleFeatureExplanation={generateSingleFeatureExplanation}
+                onBack={() => handleStepChange(1)}
+                onContinue={() => setCurrentStep(3)}
+              />
             )}
 
             {currentStep === 3 && (
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Choose Layout</h2>
-                <TemplateSelector
-                  content={generatedContent}
-                  value={pageModel?.metadata?.template || 'gallery-focused'}
-                  onChange={setPageModel}
-                />
-
-                {/* Image upload */}
-                <div className="mt-6">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Upload Images (3-5)</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      // Limit to 5 and at least 3 advised
-                      const slice = files.slice(0, 5);
-                      // Create object URLs for preview
-                      const urls = slice.map((file) => URL.createObjectURL(file));
-                      // Revoke previously-created URLs to avoid leaks
-                      try {
-                        prevUrlsRef.current.forEach((u) => URL.revokeObjectURL(u));
-                      } catch {}
-                      prevUrlsRef.current = urls;
-                      setImages(urls);
-                    }}
-                    className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
-                  {images?.length > 0 && (
-                    <div className="grid grid-cols-3 gap-2 mt-3">
-                      {images.map((src, i) => (
-                        <div key={i} className="aspect-square rounded border overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={src} alt={`Upload ${i + 1}`} className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {images?.length > 0 && images.length < 3 && (
-                    <p className="text-xs text-amber-600 mt-1">Consider uploading at least 3 images for a better preview.</p>
-                  )}
-                </div>
-
-                <div className="flex gap-4 mt-6">
-                  <Button variant="outline" onClick={() => handleStepChange(2)}>
-                    Back
-                  </Button>
-                  <Button variant="outline" onClick={openPreview}>
-                    <Eye className="mr-2" size={16} /> Preview Template
-                  </Button>
-                  <Button onClick={() => setCurrentStep(4)}>
-                    Continue to Publish
-                  </Button>
-                </div>
-              </div>
+              <PricingStep
+                pricing={pricing}
+                setPricing={setPricing}
+                onBack={() => handleStepChange(2)}
+                onContinue={() => setCurrentStep(4)}
+              />
             )}
 
             {currentStep === 4 && (
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Publish Product</h2>
-                <p className="text-gray-600">Publishing functionality coming soon...</p>
-                <div className="flex gap-4 mt-6">
-                  <Button variant="outline" onClick={() => handleStepChange(3)}>
-                    Back
-                  </Button>
-                  <Button>
-                    Publish to Marketplace
-                  </Button>
-                </div>
-              </div>
+              <ImagesLayoutStep
+                generatedContent={generatedContent}
+                pageModel={pageModel}
+                setPageModel={setPageModel}
+                thumbnailImage={thumbnailImage}
+                setThumbnailImage={setThumbnailImage}
+                additionalImages={additionalImages}
+                setAdditionalImages={setAdditionalImages}
+                onBack={() => handleStepChange(3)}
+                onContinue={() => setCurrentStep(5)}
+                onPreview={openPreview}
+              />
+            )}
+
+            {currentStep === 5 && (
+              <PublishStep
+                generatedContent={generatedContent}
+                pricing={pricing}
+                thumbnailImage={thumbnailImage}
+                additionalImages={additionalImages}
+                pageModel={pageModel}
+                featureExplanations={featureExplanations}
+                onBack={() => handleStepChange(4)}
+                onPublish={handlePublish}
+              />
             )}
           </div>
 
@@ -827,10 +471,41 @@ const CreateProductPage = () => {
                 <li>• Include key features and benefits</li>
                 <li>• Mention your target audience</li>
                 <li>• Review and edit generated content before proceeding</li>
-                <li>• Click "Add Description using AI" to generate detailed explanations</li>
+                <li>• Set competitive pricing with optional discounts</li>
+                <li>• Upload high-quality images for better presentation</li>
                 <li>• Feature explanations help customers understand benefits</li>
               </ul>
             </div>
+
+            {generatedContent && (
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Progress Summary</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Content:</span>
+                    <span className="font-medium text-green-600">✓ Generated</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Pricing:</span>
+                    <span className={`font-medium ${pricing.basePrice > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                      {pricing.basePrice > 0 ? `✓ $${pricing.discount.finalPrice || pricing.basePrice}` : '○ Pending'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Images:</span>
+                    <span className={`font-medium ${thumbnailImage ? 'text-green-600' : 'text-gray-400'}`}>
+                      {thumbnailImage ? `✓ ${1 + additionalImages.length} uploaded` : '○ Pending'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Template:</span>
+                    <span className="font-medium text-blue-600 capitalize">
+                      {pageModel?.metadata?.template?.replace('-', ' ') || 'Gallery Focused'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {generatedContent && (
               <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -902,8 +577,6 @@ const CreateProductPage = () => {
           </div>
         </div>
       )}
-
-      {/* New tab preview uses /preview route and localStorage */}
     </div>
   );
 };

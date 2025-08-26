@@ -1,8 +1,8 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Search, Filter, Star, Eye, Plus } from 'lucide-react';
+import { Search, Filter, Star, Eye, Plus, Loader2 } from 'lucide-react';
 import styled from 'styled-components';
 
 // ✅ Custom Buy Button with Tooltip
@@ -148,87 +148,78 @@ const StyledWrapper = styled.div`
 `;
 
 export default function Marketplace() {
-  // ✅ Products list (unchanged)
-  const products = [
-    {
-      id: '1',
-      title: 'Premium Wireless Headphones',
-      description: 'High-quality wireless headphones with noise cancellation and 30-hour battery life.',
-      price: 99.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.8,
-      reviews: 124,
-      seller: 'TechGear Pro',
-      category: 'Electronics',
-      featured: true,
-    },
-    {
-      id: '2',
-      title: 'Organic Cotton T-Shirt',
-      description: 'Comfortable, sustainable t-shirt made from 100% organic cotton.',
-      price: 29.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.6,
-      reviews: 89,
-      seller: 'EcoWear',
-      category: 'Clothing',
-      featured: false,
-    },
-    {
-      id: '3',
-      title: 'Smart Home Security Camera',
-      description: 'AI-powered security camera with motion detection and cloud storage.',
-      price: 49.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.7,
-      reviews: 203,
-      seller: 'SecureHome',
-      category: 'Electronics',
-      featured: true,
-    },
-    {
-      id: '4',
-      title: 'Artisan Coffee Beans',
-      description: 'Single-origin coffee beans roasted to perfection by local artisans.',
-      price: 24.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.9,
-      reviews: 156,
-      seller: 'Mountain Roasters',
-      category: 'Food & Beverage',
-      featured: false,
-    },
-    {
-      id: '5',
-      title: 'Yoga Mat Premium',
-      description: 'Non-slip yoga mat with excellent grip and cushioning for all practice levels.',
-      price: 79.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.5,
-      reviews: 67,
-      seller: 'ZenFit',
-      category: 'Sports & Fitness',
-      featured: false,
-    },
-    {
-      id: '6',
-      title: 'Handcrafted Wooden Watch',
-      description: 'Unique timepiece crafted from sustainable bamboo with leather strap.',
-      price: 59.99,
-      currency: 'USD',
-      image: '/api/placeholder/300/200',
-      rating: 4.4,
-      reviews: 43,
-      seller: 'WoodCraft Co',
-      category: 'Accessories',
-      featured: true,
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load products from development directory
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products/list');
+        const result = await response.json();
+        
+        if (result.success && result.products.length > 0) {
+          // Convert products to marketplace format
+          const formattedProducts = result.products.map(product => ({
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
+            currency: 'USD',
+            image: '/api/placeholder/300/200', // Placeholder - implement actual image loading
+            rating: 4.8, // Default - implement rating system
+            reviews: 124, // Default - implement review system
+            seller: 'AI Marketplace Seller', // Default - implement seller system
+            category: 'Product', // Default - add category to product data
+            featured: Math.random() > 0.5, // Random for now
+            hasCustomPage: product.hasCustomPage
+          }));
+          setProducts(formattedProducts);
+        } else {
+          // Fallback to sample data if no products found
+          setProducts([
+            {
+              id: 'sample-1',
+              title: 'Sample Product - Create Your First Product!',
+              description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
+              price: 99.99,
+              currency: 'USD',
+              image: '/api/placeholder/300/200',
+              rating: 4.8,
+              reviews: 0,
+              seller: 'Sample Seller',
+              category: 'Sample',
+              featured: true,
+              hasCustomPage: false
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to sample data on error
+        setProducts([
+          {
+            id: 'sample-1',
+            title: 'Sample Product - Create Your First Product!',
+            description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
+            price: 99.99,
+            currency: 'USD',
+            image: '/api/placeholder/300/200',
+            rating: 4.8,
+            reviews: 0,
+            seller: 'Sample Seller',
+            category: 'Sample',
+            featured: true,
+            hasCustomPage: false
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const categories = [
     'All Categories',
@@ -248,10 +239,10 @@ export default function Marketplace() {
           <span className="text-gray-400">Product Image</span>
         </div>
         {product.featured && (
-  <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">
-    Featured
-  </div>
-)}
+          <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">
+            Featured
+          </div>
+        )}
         <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm">
           <Eye size={16} className="text-gray-600" />
         </div>
@@ -297,21 +288,31 @@ export default function Marketplace() {
         {/* Price and Actions */}
         <div className="flex items-center justify-between">
           <div className="text-lg font-bold text-gray-900">
-            ${product.price}
+            ${product.price.toFixed(2)}
           </div>
           <div className="flex space-x-2">
-            <Link href={`/marketplace/${product.id}`}>
+            <Link href={product.hasCustomPage ? `/marketplace/${product.id}/custom` : `/marketplace/${product.id}`}>
               <Button size="sm" variant="outline">
                 View
               </Button>
             </Link>
-            {/* ✅ Custom Buy Button Replaced Here */}
-            <BuyButton price={product.price} />
+            <BuyButton price={product.price.toFixed(2)} />
           </div>
         </div>
       </div>
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading marketplace...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

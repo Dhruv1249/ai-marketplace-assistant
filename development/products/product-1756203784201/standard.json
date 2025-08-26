@@ -1,0 +1,26 @@
+{
+  "id": "product-1756203784201",
+  "title": "sdgfasdfas",
+  "description": "dfasdfasdasdfasdf",
+  "pricing": {
+    "basePrice": 1199,
+    "discount": {
+      "enabled": true,
+      "type": "fixed",
+      "value": 69,
+      "finalPrice": 1130
+    }
+  },
+  "features": [],
+  "featureExplanations": {},
+  "specifications": {},
+  "seoKeywords": [],
+  "metaDescription": "",
+  "images": {
+    "thumbnail": "thumbnail.jpg",
+    "additional": []
+  },
+  "hasCustomPage": true,
+  "createdAt": "2025-08-26T10:23:04.201Z",
+  "updatedAt": "2025-08-26T10:23:04.201Z"
+}

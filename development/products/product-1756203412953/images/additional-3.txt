@@ -1,0 +1,1 @@
+Additional image 3 placeholder - implement actual image saving

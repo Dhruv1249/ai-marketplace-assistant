@@ -1,0 +1,1 @@
+Thumbnail image placeholder - implement actual image saving

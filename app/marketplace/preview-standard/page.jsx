@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { 
@@ -21,71 +20,106 @@ import {
 import HeartButton from '@/components/animated icon/HeartButton';
 import AddToCartButton from '@/components/animated icon/AddToCartButton';
 
-export default function ProductPage() {
-  const params = useParams();
-  const { productId } = params;
-  
-  // All hooks must be at the top, before any conditional returns
+export default function StandardPreviewPage() {
+  // All hooks must be at the top
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`/api/products/${productId}`);
-        const result = await response.json();
-
-        if (result.success) {
-          setProductData(result);
-        } else {
-          setError(result.error || 'Product not found');
-        }
-      } catch (err) {
-        console.error('Error fetching product:', err);
-        setError('Failed to load product');
-      } finally {
-        setLoading(false);
+    // Load preview data from localStorage
+    try {
+      const previewData = localStorage.getItem('standardPreviewData');
+      if (previewData) {
+        const data = JSON.parse(previewData);
+        setProductData(data);
       }
-    };
-
-    if (productId) {
-      fetchProduct();
+    } catch (error) {
+      console.error('Error loading preview data:', error);
+    } finally {
+      setLoading(false);
     }
-  }, [productId]);
+  }, []);
 
   // Helper functions
   const nextImage = () => {
-    if (productData?.standard) {
-      const imageCount = 4; // Default placeholder count
-      setCurrentImageIndex((prev) => 
-        prev === imageCount - 1 ? 0 : prev + 1
-      );
-    }
+    const imageCount = 4; // Default placeholder count
+    setCurrentImageIndex((prev) => 
+      prev === imageCount - 1 ? 0 : prev + 1
+    );
   };
 
   const prevImage = () => {
-    if (productData?.standard) {
-      const imageCount = 4; // Default placeholder count
-      setCurrentImageIndex((prev) => 
-        prev === 0 ? imageCount - 1 : prev - 1
-      );
+    const imageCount = 4; // Default placeholder count
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? imageCount - 1 : prev - 1
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading preview...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!productData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Preview Not Available</h1>
+          <p className="text-gray-600 mb-6">No preview data found.</p>
+          <Button onClick={() => window.close()}>
+            Close Preview
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Convert the JSON data to the expected format
+  const formattedProduct = {
+    id: productData.id,
+    title: productData.title,
+    description: productData.description,
+    price: productData.pricing?.discount?.finalPrice || productData.pricing?.basePrice || 0,
+    originalPrice: productData.pricing?.discount?.enabled ? productData.pricing?.basePrice : null,
+    currency: 'USD',
+    images: [
+      '/api/placeholder/600/400', // Placeholder - implement actual image loading
+      '/api/placeholder/600/400',
+      '/api/placeholder/600/400',
+      '/api/placeholder/600/400',
+    ],
+    rating: 4.8, // Default rating - implement actual rating system
+    reviews: 0, // Keep empty as requested
+    seller: {
+      name: 'AI Marketplace Seller', // Default seller - implement actual seller system
+      rating: 4.9,
+      totalSales: 1250,
+    },
+    category: 'Product', // Default category - add to product data
+    inStock: true, // Default - implement inventory system
+    stockCount: 15, // Default - implement inventory system
+    features: productData.features || [],
+    specifications: productData.specifications || {},
+    shipping: {
+      free: true, // Default - implement shipping system
+      estimatedDays: '2-3 business days',
+    },
+    policies: {
+      returns: '30-day return policy', // Default - implement policy system
+      warranty: '2-year manufacturer warranty',
     }
   };
 
   const renderTabContent = () => {
-    if (!productData?.standard) return null;
-
-    const product = productData.standard;
-    const formattedProduct = {
-      description: product.description,
-      features: product.features || [],
-      specifications: product.specifications || {}
-    };
-
     switch (activeTab) {
       case 'description':
         return (
@@ -140,87 +174,32 @@ export default function ProductPage() {
     }
   };
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading product...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error || !productData?.standard) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-          <p className="text-gray-600 mb-6">{error || 'The requested product could not be found.'}</p>
-          <Link href="/marketplace">
-            <Button>
-              <ArrowLeft className="mr-2" size={16} />
-              Back to Marketplace
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const product = productData.standard;
-
-  // Convert the JSON data to the expected format
-  const formattedProduct = {
-    id: productId,
-    title: product.title,
-    description: product.description,
-    price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
-    originalPrice: product.pricing?.discount?.enabled ? product.pricing?.basePrice : null,
-    currency: 'USD',
-    images: [
-      '/api/placeholder/600/400', // Placeholder - implement actual image loading
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-      '/api/placeholder/600/400',
-    ],
-    rating: 4.8, // Default rating - implement actual rating system
-    reviews: 0, // Keep empty as requested
-    seller: {
-      name: 'AI Marketplace Seller', // Default seller - implement actual seller system
-      rating: 4.9,
-      totalSales: 1250,
-    },
-    category: 'Product', // Default category - add to product data
-    inStock: true, // Default - implement inventory system
-    stockCount: 15, // Default - implement inventory system
-    features: product.features || [],
-    specifications: product.specifications || {},
-    shipping: {
-      free: true, // Default - implement shipping system
-      estimatedDays: '2-3 business days',
-    },
-    policies: {
-      returns: '30-day return policy', // Default - implement policy system
-      warranty: '2-year manufacturer warranty',
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white">
+      {/* Preview Header */}
+      <div className="bg-blue-50 border-b border-blue-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mr-3">
+                PREVIEW MODE
+              </div>
+              <span className="text-blue-700 font-medium">Standard Product Page Preview</span>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => window.close()}>
+              Close Preview
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Breadcrumb */}
       <div className="bg-gray-50 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center space-x-2 text-sm">
-            <Link href="/" className="text-gray-500 hover:text-gray-700">
-              Home
-            </Link>
+            <span className="text-gray-500">Home</span>
             <span className="text-gray-400">/</span>
-            <Link href="/marketplace" className="text-gray-500 hover:text-gray-700">
-              Marketplace
-            </Link>
+            <span className="text-gray-500">Marketplace</span>
             <span className="text-gray-400">/</span>
             <span className="text-gray-900">{formattedProduct.category}</span>
             <span className="text-gray-400">/</span>
@@ -232,17 +211,15 @@ export default function ProductPage() {
       {/* Back Button and Custom Page Link */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/marketplace" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+          <span className="inline-flex items-center text-gray-600">
             <ArrowLeft size={20} className="mr-2" />
             Back to Marketplace
-          </Link>
-          {product.hasCustomPage && (
-            <Link href={`/marketplace/${productId}/custom`}>
-              <Button variant="outline" size="sm">
-                <Globe className="mr-2" size={16} />
-                View Custom Page
-              </Button>
-            </Link>
+          </span>
+          {productData.hasCustomPage && (
+            <Button variant="outline" size="sm" disabled>
+              <Globe className="mr-2" size={16} />
+              View Custom Page
+            </Button>
           )}
         </div>
       </div>
@@ -329,18 +306,6 @@ export default function ProductPage() {
                   </span>
                 )}
               </div>
-
-              {/* Custom Page Link */}
-              {product.hasCustomPage && (
-                <div className="mb-6">
-                  <Link href={`/marketplace/${productId}/custom`}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Globe className="mr-2" size={16} />
-                      View Enhanced Custom Page
-                    </Button>
-                  </Link>
-                </div>
-              )}
 
               {/* Stock Status */}
               <div className="mb-6">
@@ -474,35 +439,13 @@ export default function ProductPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                Reviews (0)
+                Reviews ({formattedProduct.reviews})
               </button>
             </nav>
           </div>
 
           <div className="py-8">
             {renderTabContent()}
-          </div>
-        </div>
-
-        {/* Related Products */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
-            You might also like
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="w-full h-32 bg-gray-200 rounded-lg mb-3 flex items-center justify-center">
-                  <span className="text-gray-400 text-sm">Related Product {item}</span>
-                </div>
-                <h3 className="font-medium text-gray-900 mb-1">Related Product {item}</h3>
-                <p className="text-gray-600 text-sm mb-2">Short description...</p>
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-gray-900">$99.99</span>
-                  <Button size="sm" variant="outline">View</Button>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>
