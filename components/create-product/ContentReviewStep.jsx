@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
+import BackButton from '../animated icon/BackButton';
 
 const ContentReviewStep = ({
   generatedContent,
@@ -402,13 +403,12 @@ const ContentReviewStep = ({
         </div>
 
         <div className="flex gap-4">
-          <Button 
-            variant="outline" 
+          <BackButton
             onClick={onBack}
             disabled={isGeneratingExplanations}
           >
             Back
-          </Button>
+          </BackButton>
           {!featuresConfirmed && generatedContent.features && generatedContent.features.length > 0 ? (
             <>
               <Button 
