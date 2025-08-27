@@ -337,18 +337,18 @@ For a "wireless bluetooth headphones" product:
 
 ### Environment Variables
 
-| Variable | Description | Required | Example |
-|----------|-------------|----------|---------|
-| `GEMINI_API_KEY` | Google Gemini AI API key | Yes | `AIzaSy...` |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase API key | Yes | `AIzaSy...` |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | Yes | `project.firebaseapp.com` |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | Yes | `project-id` |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket | Yes | `project.firebasestorage.app` |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID | Yes | `123456789` |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app ID | Yes | `1:123:web:abc` |
-| `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` | Firebase analytics ID | No | `G-XXXXXXXX` |
-| `NEXT_PUBLIC_GITHUB_CLIENT_ID` | GitHub OAuth client ID | No | `0v231iy...` |
-| `NEXT_PUBLIC_GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | No | `8176bf3...` |
+| Variable | Description | Required | 
+|----------|-------------|----------|
+| `GEMINI_API_KEY` | Google Gemini AI API key | Yes |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase API key | Yes | 
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | Yes | 
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | Yes | 
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket | Yes | 
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID | Yes | 
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app ID | Yes | 
+| `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` | Firebase analytics ID | No | 
+| `NEXT_PUBLIC_GITHUB_CLIENT_ID` | GitHub OAuth client ID | No | 
+| `NEXT_PUBLIC_GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | No | 
 
 ## 🎨 Component Architecture
 
