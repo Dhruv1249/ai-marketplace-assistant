@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button, Input } from '../ui';
 import { Wand2, Loader2 } from 'lucide-react';
 import LaunchButton from '../animated icon/LaunchButton';
+import BackButton from '../animated icon/BackButton';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
@@ -398,9 +399,9 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               )}
             </div>
             <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={handleCancelGenerate}>
+              <BackButton variant="outline" onClick={handleCancelGenerate}>
                 Cancel
-              </Button>
+              </BackButton>
               <Button onClick={handleConfirmGenerate}>
                 <Wand2 className="mr-2" size={16} />
                 {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}

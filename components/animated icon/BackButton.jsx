@@ -48,7 +48,7 @@ const StyledWrapper = styled.div`
   }
 
   button:hover {
-    box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
     transform: translateY(-2px);
   }
 `;
