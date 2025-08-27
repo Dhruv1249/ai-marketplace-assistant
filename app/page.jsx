@@ -115,6 +115,33 @@ const TypingText = ({
   );
 };
 
+function HomePage() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return unsub;
+  }, []);
+
+  return (
+    <div className="flex items-center gap-4">
+      {/* Contact Button */}
+      <Link href="/contact">
+        <Button className="bg-blue-600 text-white">Contact</Button>
+      </Link>
+      {/* Dashboard Button - Only for signed in users */}
+      {user && (
+        <Link href="/dashboard">
+          <Button className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400">
+            Dashboard
+          </Button>
+        </Link>
+      )}
+    </div>
+  );
+}
 export default function Home() {
   const rootRef = useRef(null);
   const heroRef = useRef(null);

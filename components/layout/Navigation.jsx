@@ -28,6 +28,7 @@ const handleLogout = async () => {
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
     { href: '/create', label: 'Create Product', icon: Plus },
     { href: '/seller-info', label: 'Seller Info', icon: User },
+     { href: '/dashboard', label: 'Dashboard', icon: User2 },
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Mail },
     { href: '/login', label: 'Login', icon: User2 },
@@ -57,50 +58,52 @@ const handleLogout = async () => {
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const activeClass = isActive(item.href)
-                ? "text-blue-600 bg-blue-50"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
+      <div className="hidden md:flex items-center space-x-8">
+  {navItems
+    .filter(item => !item.requiresAuth || isLoggedIn) // 👈 Only show Dashboard if logged in
+    .map((item) => {
+      const Icon = item.icon;
+      const activeClass = isActive(item.href)
+        ? "text-blue-600 bg-blue-50"
+        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
 
-             if (item.href === "/login") {
-  return (
-    <React.Fragment key="auth-buttons">
-      <a
-        href={item.href}
-        className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
-      >
-        <Icon size={16} />
-        <span>{item.label}</span>
-      </a>
-      {isLoggedIn && (
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+      if (item.href === "/login") {
+        return (
+          <React.Fragment key="auth-buttons">
+            <a
+              href={item.href}
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
+            >
+              <Icon size={16} />
+              <span>{item.label}</span>
+            </a>
+            {isLoggedIn && (
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </button>
+            )}
+          </React.Fragment>
+        );
+      }
+
+      // Default: Next.js Link
+      return (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
         >
-          <LogOut size={16} />
-          <span>Logout</span>
-        </button>
-      )}
-    </React.Fragment>
-  );
-}
-
-              // Default: Next.js Link
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
-                >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
+          <Icon size={16} />
+          <span>{item.label}</span>
+        </Link>
+      );
+    })}
+</div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">

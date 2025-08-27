@@ -1,6 +1,7 @@
 // app/login/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth,GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
