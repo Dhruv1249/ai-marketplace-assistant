@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { DollarSign, Percent, Calculator } from 'lucide-react';
 import Checkbox from '@/components/animated icon/CheckBox';
+import BackButton from '@/components/animated icon/BackButton';
+import ContinueButton from '@/components/animated icon/ContinueButton';
 
 const PricingStep = ({ 
   pricing, 
@@ -229,12 +231,8 @@ const PricingStep = ({
 
         {/* Navigation */}
         <div className="flex gap-4 pt-4">
-          <Button variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          <Button onClick={handleContinue}>
-            Continue to Images & Layout
-          </Button>
+          <BackButton onClick={onBack} />
+          <ContinueButton onClick={handleContinue} label="Submit" />
         </div>
       </div>
     </div>
