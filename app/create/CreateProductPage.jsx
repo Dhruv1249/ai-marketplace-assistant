@@ -12,6 +12,10 @@ import ContentReviewStep from '@/components/create-product/ContentReviewStep';
 import PricingStep from '@/components/create-product/PricingStep';
 import ImagesLayoutStep from '@/components/create-product/ImagesLayoutStep';
 import PublishStep from '@/components/create-product/PublishStep';
+import BackButton from '@/components/animated icon/BackButton';
+import DeleteButton from '@/components/animated icon/DeleteButton';
+import DiscardButton from '@/components/animated icon/Discard';
+
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
@@ -482,16 +486,12 @@ const CreateProductPage = () => {
               Are you sure you want to continue?
             </p>
             <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={cancelStepChange}>
+              <BackButton variant="outline" onClick={cancelStepChange}>
                 Cancel
-              </Button>
-              <Button 
-                variant="destructive" 
-                onClick={confirmStepChange}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
-                Discard Changes
-              </Button>
+              </BackButton>
+              <DiscardButton onClick={confirmStepChange} />
+
+              
             </div>
           </div>
         </div>
