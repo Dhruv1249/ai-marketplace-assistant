@@ -4,6 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
+import LaunchButton from '../animated icon/LaunchButton';
 
 const ContentReviewStep = ({
   generatedContent,
@@ -27,14 +28,12 @@ const ContentReviewStep = ({
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-gray-900">Generated Content</h2>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={onRegenerateAll}
-          disabled={isGeneratingContent}
+        <LaunchButton 
+        onClick={onRegenerateAll} 
+        disabled={isGeneratingContent}
         >
-          {isGeneratingContent ? 'Regenerating...' : 'Regenerate All'}
-        </Button>
+        {isGeneratingContent ? "Regenerating..." : "Regenerate All"}
+      </LaunchButton>
       </div>
 
       <div className="space-y-6">
@@ -44,15 +43,13 @@ const ContentReviewStep = ({
             <label className="block text-sm font-medium text-gray-700">
               Product Title
             </label>
-            <Button
-              variant="outline"
-              size="sm"
+            <LaunchButton
               onClick={() => onRegenerateSection('title')}
               disabled={isGeneratingContent}
             >
               <Wand2 className="mr-1" size={12} />
               {generatedContent.title ? 'Regenerate' : 'Generate'}
-            </Button>
+            </LaunchButton>
           </div>
           <input
             type="text"
@@ -69,15 +66,13 @@ const ContentReviewStep = ({
             <label className="block text-sm font-medium text-gray-700">
               Description
             </label>
-            <Button
-              variant="outline"
-              size="sm"
+            <LaunchButton
               onClick={() => onRegenerateSection('description')}
               disabled={isGeneratingContent}
             >
               <Wand2 className="mr-1" size={12} />
               {generatedContent.description ? 'Regenerate' : 'Generate'}
-            </Button>
+            </LaunchButton>
           </div>
           <textarea
             value={generatedContent.description}
@@ -95,9 +90,7 @@ const ContentReviewStep = ({
               Key Features
             </label>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
+              <LaunchButton
                 onClick={() => {
                   setFeaturesConfirmed(true);
                   onGenerateFeatureExplanations();
@@ -105,8 +98,8 @@ const ContentReviewStep = ({
                 disabled={isGeneratingExplanations}
               >
                 {isGeneratingExplanations ? 'Generating...' : 'Add Description using AI'}
-              </Button>
-              <Button
+              </LaunchButton>
+              <LaunchButton
                 variant="outline"
                 size="sm"
                 onClick={() => onRegenerateSection('features')}
@@ -114,7 +107,7 @@ const ContentReviewStep = ({
               >
                 <Wand2 className="mr-1" size={12} />
                 {generatedContent.features && generatedContent.features.length > 0 ? 'Regenerate' : 'Generate'}
-              </Button>
+              </LaunchButton>
             </div>
           </div>
           
@@ -249,15 +242,13 @@ const ContentReviewStep = ({
             <label className="block text-sm font-medium text-gray-700">
               Specifications
             </label>
-            <Button
-              variant="outline"
-              size="sm"
+            <LaunchButton
               onClick={() => onRegenerateSection('specifications')}
               disabled={isGeneratingContent}
             >
               <Wand2 className="mr-1" size={12} />
               {generatedContent.specifications && Object.keys(generatedContent.specifications).length > 0 ? 'Regenerate' : 'Generate'}
-            </Button>
+            </LaunchButton>
           </div>
           <div className="space-y-2">
             {generatedContent.specifications && Object.entries(generatedContent.specifications).map(([key, value], index) => (
@@ -322,7 +313,7 @@ const ContentReviewStep = ({
             <label className="block text-sm font-medium text-gray-700">
               SEO Keywords
             </label>
-            <Button
+            <LaunchButton
               variant="outline"
               size="sm"
               onClick={() => onRegenerateSection('seoKeywords')}
@@ -330,7 +321,7 @@ const ContentReviewStep = ({
             >
               <Wand2 className="mr-1" size={12} />
               {generatedContent.seoKeywords && generatedContent.seoKeywords.length > 0 ? 'Regenerate' : 'Generate'}
-            </Button>
+            </LaunchButton>
           </div>
           <div className="space-y-2">
             {generatedContent.seoKeywords && generatedContent.seoKeywords.map((keyword, index) => (
@@ -379,7 +370,7 @@ const ContentReviewStep = ({
             <label className="block text-sm font-medium text-gray-700">
               Meta Description
             </label>
-            <Button
+            <LaunchButton
               variant="outline"
               size="sm"
               onClick={() => onRegenerateSection('metaDescription')}
@@ -387,7 +378,7 @@ const ContentReviewStep = ({
             >
               <Wand2 className="mr-1" size={12} />
               {generatedContent.metaDescription ? 'Regenerate' : 'Generate'}
-            </Button>
+            </LaunchButton>
           </div>
           <textarea
             value={generatedContent.metaDescription || ''}
