@@ -5,6 +5,7 @@ import { Button } from '@/components/ui';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
 import LaunchButton from '../animated icon/LaunchButton';
+import DeleteButton from '../animated icon/DeleteButton';
 
 const ContentReviewStep = ({
   generatedContent,
@@ -142,25 +143,20 @@ const ContentReviewStep = ({
                       }
                     }}
                   />
-                  <button
-                    type="button"
-                    className="p-2 text-gray-500 hover:text-red-600"
-                    onClick={() => {
-                      const featureToRemove = feature;
-                      const newFeatures = generatedContent.features.filter((_, i) => i !== index);
-                      setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
-                      
-                      // Remove explanation for deleted feature
-                      if (featureExplanations[featureToRemove]) {
-                        const newExplanations = { ...featureExplanations };
-                        delete newExplanations[featureToRemove];
-                        setFeatureExplanations(newExplanations);
-                      }
-                    }}
-                    aria-label="Remove feature"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="p-2 text-gray-500 hover:text-red-600">
+                    <DeleteButton
+                      onClick={() => {
+                        const featureToRemove = feature;
+                        const newFeatures = generatedContent.features.filter((_, i) => i !== index);
+                        setGeneratedContent(prev => ({ ...prev, features: newFeatures }));
+                        if (featureExplanations[featureToRemove]) {
+                          const newExplanations = { ...featureExplanations };
+                          delete newExplanations[featureToRemove];
+                        }
+                      }}
+                    />
+                  </div>
+
                 </div>
                 
                 {featuresConfirmed && featureExplanations[feature] && (
@@ -279,18 +275,15 @@ const ContentReviewStep = ({
                       setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
                     }}
                   />
-                  <button
-                    type="button"
-                    className="p-2 text-gray-500 hover:text-red-600"
-                    onClick={() => {
-                      const newSpecs = { ...generatedContent.specifications };
-                      delete newSpecs[key];
-                      setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
-                    }}
-                    aria-label="Remove specification"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="p-0.5 text-gray-500 hover:text-red-600">
+                    <DeleteButton
+                      onClick={() => {
+                        const newSpecs = { ...generatedContent.specifications };
+                        delete newSpecs[key];
+                        setGeneratedContent(prev => ({ ...prev, specifications: newSpecs }));
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             ))}
@@ -338,17 +331,15 @@ const ContentReviewStep = ({
                     setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
                   }}
                 />
-                <button
-                  type="button"
-                  className="p-2 text-gray-500 hover:text-red-600"
-                  onClick={() => {
-                    const newKeywords = generatedContent.seoKeywords.filter((_, i) => i !== index);
-                    setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
-                  }}
-                  aria-label="Remove keyword"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <div className="p-0.5 text-gray-500 hover:text-red-600">
+                  <DeleteButton
+                    onClick={() => {
+                      const newKeywords = generatedContent.seoKeywords.filter((_, i) => i !== index);
+                      setGeneratedContent(prev => ({ ...prev, seoKeywords: newKeywords }));
+                    }}
+                  />
+                </div>
+
               </div>
             ))}
           </div>
