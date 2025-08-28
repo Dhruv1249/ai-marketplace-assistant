@@ -28,7 +28,7 @@ const handleLogout = async () => {
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
     { href: '/create', label: 'Create Product', icon: Plus },
     { href: '/seller-info', label: 'Seller Info', icon: User },
-     { href: '/dashboard', label: 'Dashboard', icon: User2 },
+     { href: '/dashboard', label: 'Dashboard', icon: User2, requiresAuth: true },
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Mail },
     { href: '/login', label: 'Login', icon: User2 },
@@ -118,23 +118,25 @@ const handleLogout = async () => {
         {/* Mobile Navigation */}
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
+           {navItems
+  .filter(item => !item.requiresAuth || isLoggedIn)
+  .map((item) => {
+    const Icon = item.icon;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
+          isActive(item.href)
+            ? 'text-blue-600 bg-blue-50'
+            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+        }`}
+      >
+        <Icon size={16} />
+        <span>{item.label}</span>
+      </Link>
+    );
+  })}
           </div>
         </div>
       </div>
