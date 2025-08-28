@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { Eye, Upload, X, Image as ImageIcon, FileText } from 'lucide-react';
 import TemplateSelector from '@/components/templates/TemplateSelector';
+import DeleteButton from '../animated icon/DeleteButton';
 
 const ImagesLayoutStep = ({
   generatedContent,
@@ -169,12 +170,10 @@ const ImagesLayoutStep = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <button
-                onClick={removeThumbnail}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-              >
-                <X size={16} />
-              </button>
+              <div className="absolute -top-2 -right-2">
+                <DeleteButton onClick={removeThumbnail} />
+              </div>
+
               <Button
                 variant="outline"
                 size="sm"
