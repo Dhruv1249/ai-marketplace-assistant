@@ -74,7 +74,7 @@ const StyledWrapper = styled.div`
   .button::before {
     position: absolute;
     top: -20px;
-    content: "Delete";
+    content: "Discard";
     color: white;
     transition-duration: 0.3s;
     font-size: 2px;
