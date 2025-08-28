@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { DollarSign, Percent, Calculator } from 'lucide-react';
+import Checkbox from '@/components/animated icon/CheckBox';
+import BackButton from '@/components/animated icon/BackButton';
+import ContinueButton from '@/components/animated icon/ContinueButton';
 
 const PricingStep = ({ 
   pricing, 
@@ -108,18 +111,12 @@ const PricingStep = ({
         </div>
 
         {/* Discount Toggle */}
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="discount-enabled"
-            checked={discountEnabled}
-            onChange={(e) => setDiscountEnabled(e.target.checked)}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="discount-enabled" className="ml-2 block text-sm text-gray-700">
-            Apply discount (optional)
-          </label>
-        </div>
+        <Checkbox 
+          checked={discountEnabled} 
+          onChange={(e) => setDiscountEnabled(e.target.checked)} 
+          label="Apply discount (optional)" 
+        />
+
 
         {/* Discount Configuration */}
         {discountEnabled && (
@@ -234,12 +231,8 @@ const PricingStep = ({
 
         {/* Navigation */}
         <div className="flex gap-4 pt-4">
-          <Button variant="outline" onClick={onBack}>
-            Back
-          </Button>
-          <Button onClick={handleContinue}>
-            Continue to Images & Layout
-          </Button>
+          <BackButton onClick={onBack} />
+          <ContinueButton onClick={handleContinue} label="Submit" />
         </div>
       </div>
     </div>
