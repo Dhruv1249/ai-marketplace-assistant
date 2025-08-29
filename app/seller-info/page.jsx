@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ArrowLeft, Upload, Sparkles, User, Camera, Eye, Save } from 'lucide-react';
 import { Button } from '@/components/ui';
 import SellerInfoTemplateSelector from '@/components/seller-info/SellerInfoTemplateSelector';
-import EnhancedSellerInfoRenderer from '@/components/seller-info/EnhancedSellerInfoRenderer';
 import PhotoOptionsModal from '@/components/seller-info/PhotoOptionsModal';
 import AIContentGenerator from '@/components/seller-info/AIContentGenerator';
 import DeleteIcon from '@/components/animated icon/DeleteIcon';

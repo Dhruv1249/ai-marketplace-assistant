@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette } from 'lucide-react';
 import SimpleSellerInfoRenderer from '@/components/seller-info/SimpleSellerInfoRenderer';
-import SellerInfoTemplatePreview from '@/components/seller-info/SellerInfoTemplatePreview';
 import EnhancedSourceCodeEditor from '@/components/editors/EnhancedSourceCodeEditor';
 import EnhancedAIAssistant from '@/components/editors/EnhancedAIAssistant';
 
@@ -24,11 +23,9 @@ const TEMPLATE_MAP = {
 export default function SellerInfoPreviewPage() {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [useEnhancedRenderer, setUseEnhancedRenderer] = useState(true);
   const [sourceCodeEditorOpen, setSourceCodeEditorOpen] = useState(false);
   const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const [selectedComponentId, setSelectedComponentId] = useState(null);
-  const [styleVariables, setStyleVariables] = useState({});
 
   useEffect(() => {
     try {
@@ -60,7 +57,7 @@ export default function SellerInfoPreviewPage() {
   }, []);
 
   const handleSourceCodeReset = useCallback(() => {
-    setStyleVariables({});
+    // Reset any style variables if needed
   }, []);
 
   // Handle AI assistant template updates
@@ -92,18 +89,6 @@ export default function SellerInfoPreviewPage() {
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">Renderer:</label>
-              <select
-                value={useEnhancedRenderer ? 'enhanced' : 'legacy'}
-                onChange={(e) => setUseEnhancedRenderer(e.target.value === 'enhanced')}
-                className="px-3 py-1 border border-gray-300 rounded text-sm"
-              >
-                <option value="enhanced">Enhanced JSON</option>
-                <option value="legacy">Legacy React</option>
-              </select>
-            </div>
-
             <button
               onClick={() => setIsEditing(!isEditing)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
@@ -125,25 +110,21 @@ export default function SellerInfoPreviewPage() {
               )}
             </button>
 
-            {useEnhancedRenderer && (
-              <>
-                <button
-                  onClick={() => setSourceCodeEditorOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-                >
-                  <Code size={16} />
-                  Source Code
-                </button>
+            <button
+              onClick={() => setSourceCodeEditorOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              <Code size={16} />
+              Source Code
+            </button>
 
-                <button
-                  onClick={() => setAiAssistantOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
-                >
-                  <Bot size={16} />
-                  AI Assistant
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => setAiAssistantOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
+            >
+              <Bot size={16} />
+              AI Assistant
+            </button>
             
             <div className="text-xs text-gray-500">
               Keep the seller info tab open to maintain your data.
@@ -170,7 +151,7 @@ export default function SellerInfoPreviewPage() {
             </div>
             <div className="flex gap-1">
               <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
-                {useEnhancedRenderer ? 'JSON Model' : 'React Component'}
+                Enhanced JSON Renderer
               </span>
             </div>
           </div>
@@ -180,7 +161,7 @@ export default function SellerInfoPreviewPage() {
         </div>
       )}
 
-      {/* Full Screen Preview - No Container, No Box */}
+      {/* Full Screen Preview */}
       <div className="w-full">
         {!data ? (
           <div className="flex items-center justify-center min-h-[60vh]">
@@ -194,28 +175,19 @@ export default function SellerInfoPreviewPage() {
             </div>
           </div>
         ) : (
-          <>
-            {useEnhancedRenderer ? (
-              <SimpleSellerInfoRenderer
-                templateType={data.templateType}
-                sellerData={data.sellerData}
-                isEditing={isEditing}
-                onUpdate={handleTemplateUpdate}
-                onComponentSelect={handleComponentSelect}
-                selectedComponentId={selectedComponentId}
-              />
-            ) : (
-              <SellerInfoTemplatePreview 
-                templateType={data.templateType} 
-                sellerData={data.sellerData} 
-              />
-            )}
-          </>
+          <SimpleSellerInfoRenderer
+            templateType={data.templateType}
+            sellerData={data.sellerData}
+            isEditing={isEditing}
+            onUpdate={handleTemplateUpdate}
+            onComponentSelect={handleComponentSelect}
+            selectedComponentId={selectedComponentId}
+          />
         )}
       </div>
 
       {/* Edit Mode Helper */}
-      {isEditing && useEnhancedRenderer && (
+      {isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
           <h3 className="font-semibold mb-2">Edit Mode Active</h3>
           <ul className="text-sm space-y-1">
@@ -228,35 +200,31 @@ export default function SellerInfoPreviewPage() {
       )}
 
       {/* Enhanced Editors */}
-      {useEnhancedRenderer && (
-        <>
-          <EnhancedSourceCodeEditor
-            isOpen={sourceCodeEditorOpen}
-            onClose={() => setSourceCodeEditorOpen(false)}
-            onSave={handleSourceCodeSave}
-            onReset={handleSourceCodeReset}
-            templateData={{
-              model: getCurrentTemplate(),
-              content: data?.sellerData || {},
-              images: data?.sellerData?.photos?.map(photo => photo.url) || []
-            }}
-            templateName={getTemplateName()}
-            onTemplateUpdate={handleTemplateUpdate}
-          />
+      <EnhancedSourceCodeEditor
+        isOpen={sourceCodeEditorOpen}
+        onClose={() => setSourceCodeEditorOpen(false)}
+        onSave={handleSourceCodeSave}
+        onReset={handleSourceCodeReset}
+        templateData={{
+          model: getCurrentTemplate(),
+          content: data?.sellerData || {},
+          images: data?.sellerData?.photos?.map(photo => photo.url) || []
+        }}
+        templateName={getTemplateName()}
+        onTemplateUpdate={handleTemplateUpdate}
+      />
 
-          <EnhancedAIAssistant
-            isOpen={aiAssistantOpen}
-            onClose={() => setAiAssistantOpen(false)}
-            onTemplateUpdate={handleAITemplateUpdate}
-            templateData={{
-              model: getCurrentTemplate(),
-              content: data?.sellerData || {},
-              images: data?.sellerData?.photos?.map(photo => photo.url) || []
-            }}
-            templateName={getTemplateName()}
-          />
-        </>
-      )}
+      <EnhancedAIAssistant
+        isOpen={aiAssistantOpen}
+        onClose={() => setAiAssistantOpen(false)}
+        onTemplateUpdate={handleAITemplateUpdate}
+        templateData={{
+          model: getCurrentTemplate(),
+          content: data?.sellerData || {},
+          images: data?.sellerData?.photos?.map(photo => photo.url) || []
+        }}
+        templateName={getTemplateName()}
+      />
     </div>
   );
 }
