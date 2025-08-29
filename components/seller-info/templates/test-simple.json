@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "template": "test-simple",
+    "name": "Simple Test Template",
+    "version": "1.0"
+  },
+  "component": {
+    "id": "test-root",
+    "type": "div",
+    "props": {
+      "className": "p-4 border border-gray-300"
+    },
+    "children": [
+      {
+        "id": "test-name",
+        "type": "h1",
+        "props": {
+          "className": "text-2xl font-bold"
+        },
+        "children": "{{content.name}}"
+      },
+      {
+        "id": "test-title",
+        "type": "p",
+        "props": {
+          "className": "text-lg text-blue-600"
+        },
+        "children": "{{content.title}}"
+      },
+      {
+        "id": "test-static",
+        "type": "p",
+        "props": {
+          "className": "text-gray-600"
+        },
+        "children": "This is static text"
+      }
+    ]
+  }
+}

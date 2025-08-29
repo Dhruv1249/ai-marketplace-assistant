@@ -150,12 +150,12 @@
                       {
                         "id": "safe-fallback",
                         "type": "p",
-                        "children": ["Safe fallback: {{nonExistentData || 'Fallback works!'}}"
+                        "children": "Safe fallback: {{nonExistentData || 'Fallback works!'}}"
                       },
                       {
                         "id": "nested-conditional",
                         "type": "p",
-                        "children": ["Nested: {{state.toggle-button_active ? 'Active!' : 'Inactive'}}"
+                        "children": "Nested: {{state.toggle-button_active ? 'Active!' : 'Inactive'}}"
                       },
                       {
                         "id": "ai-expression-test",
@@ -463,17 +463,17 @@
                       {
                         "id": "undefined-access",
                         "type": "p",
-                        "children": ["Undefined: {{undefined.property || 'Safely handled'}}"
+                        "children": "Undefined: {{undefined.property || 'Safely handled'}}"
                       },
                       {
                         "id": "null-access",
                         "type": "p",
-                        "children": ["Null: {{null.property || 'Safely handled'}}"
+                        "children": "Null: {{null.property || 'Safely handled'}}"
                       },
                       {
                         "id": "deep-access",
                         "type": "p",
-                        "children": ["Deep: {{content.deep.nested.property || 'Safely handled'}}"
+                        "children": "Deep: {{content.deep.nested.property || 'Safely handled'}}"
                       }
                     ]
                   }

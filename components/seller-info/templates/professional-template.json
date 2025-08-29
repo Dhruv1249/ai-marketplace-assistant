@@ -1,0 +1,612 @@
+{
+  "metadata": {
+    "template": "seller-info-professional",
+    "name": "Professional Seller Info Template",
+    "description": "Clean, professional layout for business-focused sellers",
+    "version": "1.0"
+  },
+  "styleVariables": {
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#64748b",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1f2937"
+  },
+  "component": {
+    "id": "professional-seller-root",
+    "type": "div",
+    "props": {
+      "className": "max-w-6xl mx-auto bg-white"
+    },
+    "children": [
+      {
+        "id": "header-section",
+        "type": "div",
+        "props": {
+          "className": "bg-gray-50 border-b"
+        },
+        "children": [
+          {
+            "id": "header-content",
+            "type": "div",
+            "props": {
+              "className": "px-8 py-12"
+            },
+            "children": [
+              {
+                "id": "header-flex",
+                "type": "div",
+                "props": {
+                  "className": "flex flex-col md:flex-row gap-8 items-start"
+                },
+                "children": [
+                  {
+                    "id": "profile-photo-section",
+                    "type": "div",
+                    "props": {
+                      "className": "flex-shrink-0"
+                    },
+                    "children": [
+                      {
+                        "id": "profile-photo-container",
+                        "type": "div",
+                        "if": "content.photos && content.photos.length > 0",
+                        "props": {
+                          "className": "relative"
+                        },
+                        "children": [
+                          {
+                            "id": "profile-image",
+                            "type": "img",
+                            "props": {
+                              "src": "{{content.photos[0].url}}",
+                              "alt": "{{content.name}}",
+                              "className": "w-32 h-32 rounded-lg object-cover border-4 border-white shadow-lg"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "profile-placeholder",
+                        "type": "div",
+                        "unless": "content.photos && content.photos.length > 0",
+                        "props": {
+                          "className": "w-32 h-32 rounded-lg bg-gray-200 flex items-center justify-center border-4 border-white shadow-lg"
+                        },
+                        "children": [
+                          {
+                            "id": "placeholder-initial",
+                            "type": "span",
+                            "props": {
+                              "className": "text-gray-400 text-4xl font-bold"
+                            },
+                            "children": "{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "basic-info-section",
+                    "type": "div",
+                    "props": {
+                      "className": "flex-1"
+                    },
+                    "children": [
+                      {
+                        "id": "seller-name",
+                        "type": "h1",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-3xl font-bold text-gray-900 mb-2"
+                        },
+                        "children": "{{content.name || 'Your Name'}}"
+                      },
+                      {
+                        "id": "seller-title",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-xl text-blue-600 font-medium mb-4"
+                        },
+                        "children": "{{content.title || 'Your Professional Title'}}"
+                      },
+                      {
+                        "id": "seller-bio",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed mb-6"
+                        },
+                        "children": "{{content.bio || 'Your professional bio will appear here...'}}"
+                      },
+                      {
+                        "id": "contact-info-grid",
+                        "type": "div",
+                        "props": {
+                          "className": "grid grid-cols-1 md:grid-cols-2 gap-4"
+                        },
+                        "children": [
+                          {
+                            "id": "email-contact",
+                            "type": "div",
+                            "if": "content.contact && content.contact.email",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "email-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "✉️"
+                              },
+                              {
+                                "id": "email-text",
+                                "type": "span",
+                                "children": "{{content.contact.email}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "phone-contact",
+                            "type": "div",
+                            "if": "content.contact && content.contact.phone",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "phone-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "📞"
+                              },
+                              {
+                                "id": "phone-text",
+                                "type": "span",
+                                "children": "{{content.contact.phone}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "location-contact",
+                            "type": "div",
+                            "if": "content.contact && content.contact.location",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "location-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "📍"
+                              },
+                              {
+                                "id": "location-text",
+                                "type": "span",
+                                "children": "{{content.contact.location}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "website-contact",
+                            "type": "div",
+                            "if": "content.contact && content.contact.website",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "website-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "🌐"
+                              },
+                              {
+                                "id": "website-link",
+                                "type": "a",
+                                "props": {
+                                  "href": "{{content.contact.website}}",
+                                  "className": "text-blue-600 hover:underline"
+                                },
+                                "children": "Website"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "main-content-section",
+        "type": "div",
+        "props": {
+          "className": "px-8 py-8"
+        },
+        "children": [
+          {
+            "id": "content-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 lg:grid-cols-3 gap-8"
+            },
+            "children": [
+              {
+                "id": "main-content",
+                "type": "div",
+                "props": {
+                  "className": "lg:col-span-2 space-y-8"
+                },
+                "children": [
+                  {
+                    "id": "story-section",
+                    "type": "div",
+                    "if": "content.story",
+                    "children": [
+                      {
+                        "id": "story-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-2xl font-bold text-gray-900 mb-4"
+                        },
+                        "children": "My Story"
+                      },
+                      {
+                        "id": "story-content",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed"
+                        },
+                        "children": "{{content.story}}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "experience-section",
+                    "type": "div",
+                    "if": "content.experience",
+                    "children": [
+                      {
+                        "id": "experience-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-2xl font-bold text-gray-900 mb-4"
+                        },
+                        "children": "Experience & Background"
+                      },
+                      {
+                        "id": "experience-content",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed"
+                        },
+                        "children": "{{content.experience}}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "business-info-section",
+                    "type": "div",
+                    "if": "content.businessInfo && (content.businessInfo.businessName || content.businessInfo.description)",
+                    "children": [
+                      {
+                        "id": "business-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-2xl font-bold text-gray-900 mb-4"
+                        },
+                        "children": "Business Information"
+                      },
+                      {
+                        "id": "business-name",
+                        "type": "h3",
+                        "if": "content.businessInfo.businessName",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-xl font-semibold text-gray-800 mb-2"
+                        },
+                        "children": "{{content.businessInfo.businessName}}"
+                      },
+                      {
+                        "id": "business-stats",
+                        "type": "div",
+                        "props": {
+                          "className": "grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"
+                        },
+                        "children": [
+                          {
+                            "id": "founded-stat",
+                            "type": "div",
+                            "if": "content.businessInfo.founded",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "founded-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "📅"
+                              },
+                              {
+                                "id": "founded-text",
+                                "type": "span",
+                                "children": "Founded {{content.businessInfo.founded}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "employees-stat",
+                            "type": "div",
+                            "if": "content.businessInfo.employees",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "employees-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "👥"
+                              },
+                              {
+                                "id": "employees-text",
+                                "type": "span",
+                                "children": "{{content.businessInfo.employees}} employees"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "service-stat",
+                            "type": "div",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-600"
+                            },
+                            "children": [
+                              {
+                                "id": "service-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "🏢"
+                              },
+                              {
+                                "id": "service-text",
+                                "type": "span",
+                                "children": "Service Provider"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "business-description",
+                        "type": "p",
+                        "if": "content.businessInfo.description",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed"
+                        },
+                        "children": "{{content.businessInfo.description}}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "sidebar",
+                "type": "div",
+                "props": {
+                  "className": "space-y-6"
+                },
+                "children": [
+                  {
+                    "id": "specialties-section",
+                    "type": "div",
+                    "if": "content.specialties && content.specialties.length > 0",
+                    "children": [
+                      {
+                        "id": "specialties-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-lg font-semibold text-gray-900 mb-3"
+                        },
+                        "children": "Specialties"
+                      },
+                      {
+                        "id": "specialties-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-2"
+                        },
+                        "children": "SPECIALTIES_ARRAY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "achievements-section",
+                    "type": "div",
+                    "if": "content.achievements && content.achievements.length > 0",
+                    "children": [
+                      {
+                        "id": "achievements-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-lg font-semibold text-gray-900 mb-3"
+                        },
+                        "children": "Key Achievements"
+                      },
+                      {
+                        "id": "achievements-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-2"
+                        },
+                        "children": "ACHIEVEMENTS_ARRAY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "social-section",
+                    "type": "div",
+                    "children": [
+                      {
+                        "id": "social-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-lg font-semibold text-gray-900 mb-3"
+                        },
+                        "children": "Connect"
+                      },
+                      {
+                        "id": "social-links",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-2"
+                        },
+                        "children": [
+                          {
+                            "id": "linkedin-link",
+                            "type": "a",
+                            "if": "content.contact && content.contact.social && content.contact.social.linkedin",
+                            "props": {
+                              "href": "{{content.contact.social.linkedin}}",
+                              "className": "flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                            },
+                            "children": [
+                              {
+                                "id": "linkedin-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "💼"
+                              },
+                              {
+                                "id": "linkedin-text",
+                                "type": "span",
+                                "children": "LinkedIn"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "twitter-link",
+                            "type": "a",
+                            "if": "content.contact && content.contact.social && content.contact.social.twitter",
+                            "props": {
+                              "href": "{{content.contact.social.twitter}}",
+                              "className": "flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                            },
+                            "children": [
+                              {
+                                "id": "twitter-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "🐦"
+                              },
+                              {
+                                "id": "twitter-text",
+                                "type": "span",
+                                "children": "Twitter"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "instagram-link",
+                            "type": "a",
+                            "if": "content.contact && content.contact.social && content.contact.social.instagram",
+                            "props": {
+                              "href": "{{content.contact.social.instagram}}",
+                              "className": "flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                            },
+                            "children": [
+                              {
+                                "id": "instagram-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "📷"
+                              },
+                              {
+                                "id": "instagram-text",
+                                "type": "span",
+                                "children": "Instagram"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "facebook-link",
+                            "type": "a",
+                            "if": "content.contact && content.contact.social && content.contact.social.facebook",
+                            "props": {
+                              "href": "{{content.contact.social.facebook}}",
+                              "className": "flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+                            },
+                            "children": [
+                              {
+                                "id": "facebook-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "📘"
+                              },
+                              {
+                                "id": "facebook-text",
+                                "type": "span",
+                                "children": "Facebook"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

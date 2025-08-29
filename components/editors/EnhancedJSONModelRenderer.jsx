@@ -3,6 +3,14 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo, useReducer } from 'react';
 import ImageGallery from '@/components/ui/ImageGallery';
 import ComponentEditDialog from './ComponentEditDialog';
+import { evaluateExpression, processTemplateString } from './utils/expressionEvaluator.js';
+import { handleConditionalRendering } from './utils/conditionalRenderer.js';
+import { 
+  generateSpecialtiesArray, 
+  generateAchievementsArray, 
+  generateFeatureComponents, 
+  generateSpecComponents 
+} from './utils/arrayProcessors.js';
 
 // Enhanced error boundary component
 const ErrorBoundary = ({ children, fallback, onError }) => {
@@ -128,76 +136,6 @@ const EnhancedJSONModelRenderer = ({
     return <div>Invalid template model: Component is missing</div>;
   }
 
-  // Inject custom animations and ensure Tailwind animations work
-  useEffect(() => {
-    const styleId = 'enhanced-json-animations';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = `
-        /* Custom Keyframe Animations */
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInLeft {
-          from { opacity: 0; transform: translateX(-30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInRight {
-          from { opacity: 0; transform: translateX(30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slideIn {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-          50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
-        }
-        
-        /* Custom Animation Classes */
-        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
-        .animate-fadeInLeft { animation: fadeInLeft 0.6s ease-out forwards; }
-        .animate-fadeInRight { animation: fadeInRight 0.6s ease-out forwards; }
-        .animate-slideIn { animation: slideIn 0.6s ease-out forwards; }
-        .animate-glow { animation: glow 2s ease-in-out infinite; }
-        
-        /* Ensure Tailwind animations work */
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .animate-bounce {
-          animation: bounce 1s infinite;
-        }
-        .animate-spin {
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: .5; }
-        }
-        @keyframes bounce {
-          0%, 100% {
-            transform: translateY(-25%);
-            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-          }
-          50% {
-            transform: translateY(0);
-            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-          }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-  }, []);
-
   // Enhanced State Management Functions
   const updateComponentState = useCallback((key, value) => {
     dispatch({ type: 'SET_COMPONENT_STATE', key, value });
@@ -292,135 +230,6 @@ const EnhancedJSONModelRenderer = ({
     }
   }), [state.componentState, state.formData, updateComponentState, updateFormData, setFormErrors, debug]);
 
-  // Enhanced Template Expression Evaluator with better error handling
-  const evaluateExpression = useCallback((expression, context, depth = 0) => {
-    if (depth > 10) {
-      console.warn('Expression evaluation depth exceeded:', expression);
-      return expression;
-    }
-    
-    try {
-      // Handle content access
-      if (expression.startsWith('content.')) {
-        const path = expression.replace('content.', '').split('.');
-        let obj = context.content;
-        for (const key of path) {
-          obj = obj?.[key];
-        }
-        return obj || '';
-      }
-      
-      // Handle image access
-      if (expression.startsWith('images[')) {
-        const indexMatch = expression.match(/images\[(\d+)\]/);
-        if (indexMatch) {
-          const index = parseInt(indexMatch[1]);
-          return context.images?.[index] || '';
-        }
-      }
-      
-      // Handle state access - use new state structure
-      if (expression.startsWith('state.')) {
-        const key = expression.replace('state.', '');
-        return state.componentState[key];
-      }
-      
-      // Handle form data access - use new state structure
-      if (expression.startsWith('formData.')) {
-        const key = expression.replace('formData.', '');
-        return state.formData[key] || '';
-      }
-      
-      // Handle ternary expressions
-      if (expression.includes('?') && expression.includes(':')) {
-        const conditionMatch = expression.match(/(.+?)\s*\?\s*(.+?)\s*:\s*(.+)/);
-        if (conditionMatch) {
-          const [, condition, trueValue, falseValue] = conditionMatch;
-          const conditionResult = evaluateExpression(condition.trim(), context, depth + 1);
-          return conditionResult ? evaluateExpression(trueValue.trim(), context, depth + 1) : evaluateExpression(falseValue.trim(), context, depth + 1);
-        }
-      }
-      
-      // Handle fallback expressions
-      if (expression.includes('||')) {
-        const [primary, fallback] = expression.split('||').map(s => s.trim());
-        const primaryValue = evaluateExpression(primary, context, depth + 1);
-        return primaryValue || evaluateExpression(fallback, context, depth + 1);
-      }
-      
-      // Handle string literals
-      if (expression.startsWith('"') && expression.endsWith('"')) {
-        return expression.slice(1, -1);
-      }
-      if (expression.startsWith("'") && expression.endsWith("'")) {
-        return expression.slice(1, -1);
-      }
-      
-      // Handle numbers
-      if (!isNaN(expression) && expression.trim() !== '') {
-        return Number(expression);
-      }
-      
-      // Handle booleans and null
-      if (expression === 'true') return true;
-      if (expression === 'false') return false;
-      if (expression === 'null') return null;
-      if (expression === 'undefined') return undefined;
-      
-      return expression;
-    } catch (error) {
-      if (debug) {
-        console.warn('Expression evaluation error:', error.message, expression);
-      }
-      return '';
-    }
-  }, [state.componentState, state.formData, debug]);
-
-  // Template String Processing
-  const processTemplateString = useCallback((str, context, depth = 0) => {
-    if (typeof str !== 'string' || !str.includes('{{') || depth > 5) {
-      return str;
-    }
-
-    let result = str;
-    const matches = result.match(/\{\{([^}]+)\}\}/g);
-    if (matches) {
-      matches.forEach(match => {
-        const expressionStr = match.slice(2, -2).trim();
-        try {
-          let value = evaluateExpression(expressionStr, context, depth);
-          result = result.replace(match, value || '');
-        } catch (e) {
-          console.warn('Template processing error:', e.message, expressionStr);
-          result = result.replace(match, '');
-        }
-      });
-    }
-    return result;
-  }, [evaluateExpression]);
-
-  // Conditional Rendering Handler
-  const handleConditionalRendering = useCallback((node, context) => {
-    if (!node || typeof node !== 'object') return node;
-    
-    if (node.if) {
-      const condition = evaluateExpression(node.if, context);
-      if (!condition) return null;
-    }
-    
-    if (node.unless) {
-      const condition = evaluateExpression(node.unless, context);
-      if (condition) return null;
-    }
-    
-    if (node.show !== undefined) {
-      const shouldShow = evaluateExpression(node.show, context);
-      if (!shouldShow) return null;
-    }
-    
-    return node;
-  }, [evaluateExpression]);
-
   // Event Handler Processor
   const processEventHandlers = useCallback((props, componentId) => {
     const processedProps = { ...props };
@@ -454,105 +263,6 @@ const EnhancedJSONModelRenderer = ({
     
     return processedProps;
   }, [eventHandlers]);
-
-  // Simple Feature Components (no complex state)
-  const generateFeatureComponents = useCallback((features, featureExplanations) => {
-    if (!features || !Array.isArray(features)) return [];
-    
-    return features.map((feature, index) => ({
-      id: `feature-${index}`,
-      type: 'div',
-      props: { 
-        className: 'border-l-4 border-blue-400 pl-4 mb-4 hover:border-blue-500 transition-colors duration-300'
-      },
-      children: [
-        {
-          id: `feature-${index}-title`,
-          type: 'h4',
-          props: { className: 'font-medium mb-1 text-gray-900' },
-          children: [feature],
-          editable: { contentEditable: true }
-        },
-        ...(featureExplanations?.[feature] ? [{
-          id: `feature-${index}-explanation`,
-          type: 'p',
-          props: { className: 'text-sm leading-relaxed text-gray-600' },
-          children: [featureExplanations[feature]],
-          editable: { contentEditable: true }
-        }] : [])
-      ]
-    }));
-  }, []);
-
-  // Context-aware Specifications Components
-  const generateSpecComponents = useCallback((specifications, parentContext = null) => {
-    if (!specifications || typeof specifications !== 'object') return [];
-    
-    const entries = Object.entries(specifications);
-    
-    // Check if we're inside a table structure
-    const isTableContext = parentContext?.type === 'tbody' || parentContext?.type === 'table';
-    
-    if (isTableContext) {
-      // Generate proper table rows
-      return entries.map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'tr',
-        props: { 
-          className: 'hover:bg-gray-50 transition-colors duration-200'
-        },
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'td',
-            props: { 
-              className: 'px-6 py-4 font-medium text-gray-900'
-            },
-            children: [key],
-            editable: { contentEditable: true }
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'td',
-            props: { 
-              className: 'px-6 py-4 text-gray-600'
-            },
-            children: [value],
-            editable: { contentEditable: true }
-          }
-        ]
-      }));
-    } else {
-      // Generate div-based layout
-      return entries.map(([key, value], index) => ({
-        id: `spec-${index}`,
-        type: 'div',
-        props: { 
-          className: 'flex justify-between items-center p-3 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200'
-        },
-        children: [
-          {
-            id: `spec-${index}-key`,
-            type: 'div',
-            props: { 
-              className: 'font-medium text-gray-900'
-            },
-            children: [key],
-            editable: { contentEditable: true }
-          },
-          {
-            id: `spec-${index}-value`,
-            type: 'div',
-            props: { 
-              className: 'text-gray-600'
-            },
-            children: [value],
-            editable: { contentEditable: true }
-          }
-        ]
-      }));
-    }
-  }, []);
 
   // Dialog-based editing functions
   const handleComponentEdit = useCallback((component) => {
@@ -706,6 +416,16 @@ const EnhancedJSONModelRenderer = ({
             processedNode.children = generateSpecComponents(context.content?.specifications, processedNode);
           } else if (processedNode.children.includes('gallery.component')) {
             processedNode.children = [];
+          } else if (processedNode.children === 'SPECIALTIES_ARRAY') {
+            // Handle seller info specialties array
+            const items = context.content?.specialties || [];
+            const templateType = model?.metadata?.template || 'professional';
+            processedNode.children = generateSpecialtiesArray(items, templateType);
+          } else if (processedNode.children === 'ACHIEVEMENTS_ARRAY') {
+            // Handle seller info achievements array
+            const items = context.content?.achievements || [];
+            const templateType = model?.metadata?.template || 'professional';
+            processedNode.children = generateAchievementsArray(items, templateType);
           } else {
             processedNode.children = processTemplateString(processedNode.children, context);
           }
@@ -720,7 +440,7 @@ const EnhancedJSONModelRenderer = ({
     }
 
     return node;
-  }, [handleConditionalRendering, processTemplateString, processEventHandlers, generateFeatureComponents, generateSpecComponents]);
+  }, [processEventHandlers, model]);
 
   // Component Rendering
   const renderComponent = useCallback((comp, key = 0) => {
@@ -752,7 +472,7 @@ const EnhancedJSONModelRenderer = ({
       
       const enhancedProps = { ...props };
       
-      // Add editing capabilities - NOW OPENS DIALOG INSTEAD OF INLINE EDITING
+      // Add editing capabilities
       if (isEditing && editable?.contentEditable) {
         const originalOnClick = enhancedProps.onClick;
         enhancedProps.onClick = (e) => {
@@ -912,6 +632,7 @@ const EnhancedJSONModelRenderer = ({
       renderCountRef.current += 1;
       if (debug) {
         console.log(`Render #${renderCountRef.current} - Processing component tree`);
+        console.log('Context:', enhancedContext);
       }
       return processNode(model.component, enhancedContext);
     } catch (error) {

@@ -1,0 +1,394 @@
+{
+  "metadata": {
+    "template": "seller-info-personal",
+    "name": "Personal Seller Info Template",
+    "description": "Warm, friendly layout for personal service providers",
+    "version": "1.0"
+  },
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#10b981",
+    "backgroundColor": "#f0f9ff",
+    "textColor": "#1f2937"
+  },
+  "component": {
+    "id": "personal-seller-root",
+    "type": "div",
+    "props": {
+      "className": "max-w-5xl mx-auto bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen"
+    },
+    "children": [
+      {
+        "id": "header-section",
+        "type": "div",
+        "props": {
+          "className": "text-center px-8 py-16"
+        },
+        "children": [
+          {
+            "id": "profile-photo-section",
+            "type": "div",
+            "props": {
+              "className": "relative inline-block mb-8"
+            },
+            "children": [
+              {
+                "id": "profile-photo",
+                "type": "img",
+                "if": "content.photos && content.photos.length > 0",
+                "props": {
+                  "src": "{{content.photos[0].url}}",
+                  "alt": "{{content.name}}",
+                  "className": "w-48 h-48 rounded-full object-cover border-4 border-white shadow-xl"
+                }
+              },
+              {
+                "id": "profile-placeholder",
+                "type": "div",
+                "unless": "content.photos && content.photos.length > 0",
+                "props": {
+                  "className": "w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-green-400 flex items-center justify-center border-4 border-white shadow-xl mx-auto"
+                },
+                "children": [
+                  {
+                    "id": "placeholder-initial",
+                    "type": "span",
+                    "props": {
+                      "className": "text-white text-7xl font-bold"
+                    },
+                    "children": "{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "greeting-name",
+            "type": "h1",
+            "editable": {
+              "contentEditable": true
+            },
+            "props": {
+              "className": "text-4xl md:text-5xl font-bold text-gray-900 mb-4"
+            },
+            "children": "Hi, I'm {{content.name || 'Your Name'}}"
+          },
+          {
+            "id": "personal-title",
+            "type": "p",
+            "editable": {
+              "contentEditable": true
+            },
+            "props": {
+              "className": "text-2xl text-blue-600 font-medium mb-6"
+            },
+            "children": "{{content.title || 'What You Do'}}"
+          },
+          {
+            "id": "personal-bio",
+            "type": "p",
+            "editable": {
+              "contentEditable": true
+            },
+            "props": {
+              "className": "text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed"
+            },
+            "children": "{{content.bio || 'A warm, personal introduction about yourself...'}}"
+          }
+        ]
+      },
+      {
+        "id": "content-cards-section",
+        "type": "div",
+        "props": {
+          "className": "px-8 pb-16"
+        },
+        "children": [
+          {
+            "id": "content-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto space-y-8"
+            },
+            "children": [
+              {
+                "id": "personal-story-section",
+                "type": "div",
+                "if": "content.story",
+                "props": {
+                  "className": "bg-white rounded-2xl p-8 shadow-lg"
+                },
+                "children": [
+                  {
+                    "id": "story-title-with-icon",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+                    },
+                    "children": [
+                      {
+                        "id": "story-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-8 h-8 bg-blue-500 rounded-full"
+                        }
+                      },
+                      {
+                        "id": "story-title-text",
+                        "type": "span",
+                        "children": "My Story"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "story-content",
+                    "type": "p",
+                    "editable": {
+                      "contentEditable": true
+                    },
+                    "props": {
+                      "className": "text-gray-700 leading-relaxed text-lg"
+                    },
+                    "children": "{{content.story}}"
+                  }
+                ]
+              },
+              {
+                "id": "what-i-do-section",
+                "type": "div",
+                "if": "content.experience",
+                "props": {
+                  "className": "bg-white rounded-2xl p-8 shadow-lg"
+                },
+                "children": [
+                  {
+                    "id": "experience-title-with-icon",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+                    },
+                    "children": [
+                      {
+                        "id": "experience-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-8 h-8 bg-green-500 rounded-full"
+                        }
+                      },
+                      {
+                        "id": "experience-title-text",
+                        "type": "span",
+                        "children": "What I Do"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "experience-content",
+                    "type": "p",
+                    "editable": {
+                      "contentEditable": true
+                    },
+                    "props": {
+                      "className": "text-gray-700 leading-relaxed text-lg"
+                    },
+                    "children": "{{content.experience}}"
+                  }
+                ]
+              },
+              {
+                "id": "skills-achievements-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-2 gap-8"
+                },
+                "children": [
+                  {
+                    "id": "skills-section",
+                    "type": "div",
+                    "if": "content.specialties && content.specialties.length > 0",
+                    "props": {
+                      "className": "bg-white rounded-2xl p-6 shadow-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "skills-title-with-icon",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold text-gray-900 mb-4 flex items-center gap-3"
+                        },
+                        "children": [
+                          {
+                            "id": "skills-icon",
+                            "type": "div",
+                            "props": {
+                              "className": "w-6 h-6 bg-yellow-500 rounded-full"
+                            }
+                          },
+                          {
+                            "id": "skills-title-text",
+                            "type": "span",
+                            "children": "What I'm Good At"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "skills-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-3"
+                        },
+                        "children": "SPECIALTIES_ARRAY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "proud-of-section",
+                    "type": "div",
+                    "if": "content.achievements && content.achievements.length > 0",
+                    "props": {
+                      "className": "bg-white rounded-2xl p-6 shadow-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "proud-title-with-icon",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold text-gray-900 mb-4 flex items-center gap-3"
+                        },
+                        "children": [
+                          {
+                            "id": "proud-icon",
+                            "type": "div",
+                            "props": {
+                              "className": "w-6 h-6 bg-purple-500 rounded-full"
+                            }
+                          },
+                          {
+                            "id": "proud-title-text",
+                            "type": "span",
+                            "children": "Things I'm Proud Of"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "proud-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-3"
+                        },
+                        "children": "ACHIEVEMENTS_ARRAY"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "connect-section",
+                "type": "div",
+                "props": {
+                  "className": "bg-gradient-to-r from-blue-500 to-green-500 rounded-2xl p-8 text-white text-center"
+                },
+                "children": [
+                  {
+                    "id": "connect-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-2xl font-bold mb-6"
+                    },
+                    "children": "Let's Connect!"
+                  },
+                  {
+                    "id": "connect-subtitle",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg mb-6 opacity-90"
+                    },
+                    "children": "I'd love to hear from you and discuss how we can work together."
+                  },
+                  {
+                    "id": "contact-info-flex",
+                    "type": "div",
+                    "props": {
+                      "className": "flex flex-wrap justify-center gap-6"
+                    },
+                    "children": [
+                      {
+                        "id": "email-contact",
+                        "type": "div",
+                        "if": "content.contact && content.contact.email",
+                        "props": {
+                          "className": "flex items-center gap-2"
+                        },
+                        "children": [
+                          {
+                            "id": "email-icon",
+                            "type": "span",
+                            "props": {
+                              "className": "w-5 h-5 inline-block"
+                            },
+                            "children": "📧"
+                          },
+                          {
+                            "id": "email-text",
+                            "type": "span",
+                            "children": "{{content.contact.email}}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "phone-contact",
+                        "type": "div",
+                        "if": "content.contact && content.contact.phone",
+                        "props": {
+                          "className": "flex items-center gap-2"
+                        },
+                        "children": [
+                          {
+                            "id": "phone-icon",
+                            "type": "span",
+                            "props": {
+                              "className": "w-5 h-5 inline-block"
+                            },
+                            "children": "📞"
+                          },
+                          {
+                            "id": "phone-text",
+                            "type": "span",
+                            "children": "{{content.contact.phone}}"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "location-contact",
+                        "type": "div",
+                        "if": "content.contact && content.contact.location",
+                        "props": {
+                          "className": "flex items-center gap-2"
+                        },
+                        "children": [
+                          {
+                            "id": "location-icon",
+                            "type": "span",
+                            "props": {
+                              "className": "w-5 h-5 inline-block"
+                            },
+                            "children": "📍"
+                          },
+                          {
+                            "id": "location-text",
+                            "type": "span",
+                            "children": "{{content.contact.location}}"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
