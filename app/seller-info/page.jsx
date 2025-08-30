@@ -1,14 +1,27 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Upload, Sparkles, User, Camera, Eye, Save } from 'lucide-react';
 import { Button } from '@/components/ui';
 import SellerInfoTemplateSelector from '@/components/seller-info/SellerInfoTemplateSelector';
 import PhotoOptionsModal from '@/components/seller-info/PhotoOptionsModal';
-import AIContentGenerator from '@/components/seller-info/AIContentGenerator';
+import UniversalAIContentGenerator from '@/components/shared/UniversalAIContentGenerator';
 import DeleteIcon from '@/components/animated icon/DeleteIcon';
 import SaveButton from '@/components/animated icon/SaveButton';
+
+// Import templates
+import professionalTemplate from '@/components/seller-info/templates/professional-template.json';
+import creativeTemplate from '@/components/seller-info/templates/creative-template.json';
+import executiveTemplate from '@/components/seller-info/templates/executive-template.json';
+import personalTemplate from '@/components/seller-info/templates/personal-template.json';
+
+const TEMPLATE_MAP = {
+  'professional': professionalTemplate,
+  'creative': creativeTemplate,
+  'executive': executiveTemplate,
+  'personal': personalTemplate,
+};
 
 export default function SellerInfoPage() {
   const [step, setStep] = useState(1);
@@ -47,6 +60,20 @@ export default function SellerInfoPage() {
   });
 
   const fileInputRef = useRef(null);
+  const photoUrlsRef = useRef([]); // Track URLs for cleanup
+
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoUrlsRef.current.forEach(url => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // Ignore errors during cleanup
+        }
+      });
+    };
+  }, []);
 
   const handleInputChange = (field, value) => {
     if (field.includes('.')) {
@@ -149,19 +176,22 @@ export default function SellerInfoPage() {
   const handlePhotoUpload = (event) => {
     const files = Array.from(event.target.files);
     files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSellerData(prev => ({
-          ...prev,
-          photos: [...prev.photos, {
-            id: Date.now() + Math.random(),
-            url: e.target.result,
-            type: 'uploaded',
-            name: file.name
-          }]
-        }));
-      };
-      reader.readAsDataURL(file);
+      // Use URL.createObjectURL instead of base64 for shorter URLs (like create product page)
+      const url = URL.createObjectURL(file);
+      
+      // Track URL for cleanup
+      photoUrlsRef.current.push(url);
+      
+      setSellerData(prev => ({
+        ...prev,
+        photos: [...prev.photos, {
+          id: Date.now() + Math.random(),
+          url: url,
+          type: 'uploaded',
+          name: file.name,
+          file: file // Keep reference to original file
+        }]
+      }));
     });
   };
 
@@ -178,10 +208,25 @@ export default function SellerInfoPage() {
   };
 
   const removePhoto = (photoId) => {
-    setSellerData(prev => ({
-      ...prev,
-      photos: prev.photos.filter(photo => photo.id !== photoId)
-    }));
+    setSellerData(prev => {
+      const photoToRemove = prev.photos.find(photo => photo.id === photoId);
+      
+      // Clean up object URL if it's an uploaded photo
+      if (photoToRemove && photoToRemove.type === 'uploaded' && photoToRemove.url) {
+        try {
+          URL.revokeObjectURL(photoToRemove.url);
+          // Remove from tracking array
+          photoUrlsRef.current = photoUrlsRef.current.filter(url => url !== photoToRemove.url);
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+      }
+      
+      return {
+        ...prev,
+        photos: prev.photos.filter(photo => photo.id !== photoId)
+      };
+    });
   };
 
   const handleAIContentGenerated = (content) => {
@@ -191,12 +236,58 @@ export default function SellerInfoPage() {
     }));
   };
 
+  // FIXED: Save data in the same format as product page
   const handlePreview = () => {
-    localStorage.setItem('sellerInfoPreviewData', JSON.stringify({
-      sellerData,
-      templateType: selectedTemplate
-    }));
-    window.open('/seller-info/preview', '_blank');
+    try {
+      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || professionalTemplate;
+      
+      // Create the same data structure as product page
+      const payload = {
+        model: selectedTemplateModel,  // The JSON template with placeholders
+        content: {                     // The actual seller data to fill placeholders
+          name: sellerData.name || '',
+          title: sellerData.title || '',
+          bio: sellerData.bio || '',
+          story: sellerData.story || '',
+          experience: sellerData.experience || '',
+          specialties: sellerData.specialties || [],
+          achievements: sellerData.achievements || [],
+          photos: sellerData.photos || [],
+          contact: {
+            email: sellerData.contact?.email || '',
+            phone: sellerData.contact?.phone || '',
+            location: sellerData.contact?.location || '',
+            website: sellerData.contact?.website || '',
+            social: {
+              linkedin: sellerData.contact?.social?.linkedin || '',
+              twitter: sellerData.contact?.social?.twitter || '',
+              instagram: sellerData.contact?.social?.instagram || '',
+              facebook: sellerData.contact?.social?.facebook || ''
+            }
+          },
+          businessInfo: {
+            businessName: sellerData.businessInfo?.businessName || '',
+            founded: sellerData.businessInfo?.founded || '',
+            employees: sellerData.businessInfo?.employees || '',
+            description: sellerData.businessInfo?.description || ''
+          }
+        },
+        images: sellerData.photos?.map(photo => photo.url) || []  // Array of image URLs (now short blob URLs)
+      };
+      
+      console.log('=== SELLER INFO PREVIEW PAYLOAD ===');
+      console.log('Payload structure (same as product page):', payload);
+      console.log('Model (template with placeholders):', payload.model);
+      console.log('Content (actual data):', payload.content);
+      console.log('Images (URLs - now short blob URLs):', payload.images);
+      console.log('===================================');
+      
+      localStorage.setItem('sellerInfoPreviewData', JSON.stringify(payload));
+      window.open('/seller-info/preview', '_blank');
+    } catch (error) {
+      console.error('Failed to save preview data:', error);
+      alert('Failed to open preview. Please try again.');
+    }
   };
 
   const handleSave = () => {
@@ -777,11 +868,12 @@ export default function SellerInfoPage() {
         sellerData={sellerData}
       />
 
-      <AIContentGenerator
+      <UniversalAIContentGenerator
         isOpen={showAIGenerator}
         onClose={() => setShowAIGenerator(false)}
         onContentGenerated={handleAIContentGenerated}
         currentData={sellerData}
+        type="seller-info"
       />
     </div>
   );

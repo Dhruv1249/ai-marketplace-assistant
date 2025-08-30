@@ -27,7 +27,7 @@ export default function SimpleSellerInfoRenderer({
 }) {
   const template = TEMPLATE_MAP[templateType] || TEMPLATE_MAP['professional'];
   
-  // Transform seller data to content format
+  // Transform seller data to content format that matches template expectations
   const content = {
     name: sellerData?.name || '',
     title: sellerData?.title || '',
@@ -36,6 +36,7 @@ export default function SimpleSellerInfoRenderer({
     experience: sellerData?.experience || '',
     specialties: sellerData?.specialties || [],
     achievements: sellerData?.achievements || [],
+    // Keep photos in the original format for template compatibility
     photos: sellerData?.photos || [],
     contact: {
       email: sellerData?.contact?.email || '',
@@ -57,16 +58,20 @@ export default function SimpleSellerInfoRenderer({
     }
   };
 
+  // Extract image URLs for the images array (used by EnhancedJSONModelRenderer)
   const images = sellerData?.photos?.map(photo => photo.url) || [];
 
   // Debug logging
-  console.log('=== SELLER INFO RENDERER DEBUG ===');
-  console.log('Template Type:', templateType);
-  console.log('Template:', template);
-  console.log('Seller Data:', sellerData);
-  console.log('Transformed Content:', content);
-  console.log('Images:', images);
-  console.log('=====================================');
+  if (debug) {
+    console.log('=== SELLER INFO RENDERER DEBUG ===');
+    console.log('Template Type:', templateType);
+    console.log('Template:', template);
+    console.log('Original Seller Data:', sellerData);
+    console.log('Transformed Content:', content);
+    console.log('Images Array:', images);
+    console.log('Photos in content:', content.photos);
+    console.log('=====================================');
+  }
 
   return (
     <EnhancedJSONModelRenderer
@@ -77,7 +82,7 @@ export default function SimpleSellerInfoRenderer({
       onUpdate={onUpdate}
       onComponentSelect={onComponentSelect}
       selectedComponentId={selectedComponentId}
-      debug={true}
+      debug={debug}
     />
   );
 }

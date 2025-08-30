@@ -4,14 +4,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { X, Save, RotateCcw, Eye, EyeOff, Code, Settings } from 'lucide-react';
 import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
 
-export default function EnhancedSourceCodeEditor({ 
+export default function UniversalSourceCodeEditor({ 
   isOpen, 
   onClose, 
   onSave, 
   onReset,
   templateData,
   templateName,
-  onTemplateUpdate
+  onTemplateUpdate,
+  type = 'product' // 'product' or 'seller-info'
 }) {
   const [jsonCode, setJsonCode] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
@@ -45,6 +46,12 @@ export default function EnhancedSourceCodeEditor({
     if (!data?.model) return '';
     
     const actualData = getActualData();
+    
+    console.log('=== UNIVERSAL SOURCE CODE EDITOR DEBUG ===');
+    console.log('Type:', type);
+    console.log('Template Data:', data);
+    console.log('Actual Data:', actualData);
+    console.log('==========================================');
     
     // Deep clone the template to avoid modifying original
     const processedTemplate = JSON.parse(JSON.stringify(data.model));
@@ -202,7 +209,7 @@ export default function EnhancedSourceCodeEditor({
     const finalTemplate = processNode(processedTemplate);
     
     return JSON.stringify(finalTemplate, null, 2);
-  }, [templateData]);
+  }, [templateData, type]);
 
   // Validate JSON template
   const validateTemplate = useCallback((jsonString) => {
@@ -378,7 +385,7 @@ export default function EnhancedSourceCodeEditor({
             <div className="flex border-b bg-gray-50">
               <div className="px-4 py-3 text-sm font-medium border-b-2 border-blue-500 text-blue-600 bg-white flex items-center gap-2">
                 <Settings size={16} />
-                JSON Template (Your Data)
+                JSON Template ({type === 'seller-info' ? 'Seller Data' : 'Product Data'})
               </div>
             </div>
             
@@ -424,7 +431,7 @@ export default function EnhancedSourceCodeEditor({
                 <h3 className="text-sm font-medium text-gray-700">Live Preview</h3>
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  Your Content
+                  Your {type === 'seller-info' ? 'Seller' : 'Product'} Content
                 </div>
               </div>
               <div className="flex-1 overflow-auto bg-white">
@@ -467,7 +474,7 @@ export default function EnhancedSourceCodeEditor({
           <div className="flex items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Settings size={16} className="text-blue-500" />
-              <span>JSON Template Editor • Your actual form data filled in • Fully editable</span>
+              <span>JSON Template Editor • Your actual {type === 'seller-info' ? 'seller' : 'product'} data filled in • Fully editable</span>
             </div>
           </div>
           
