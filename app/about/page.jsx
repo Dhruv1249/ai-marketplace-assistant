@@ -6,6 +6,37 @@ gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { Wand2, Target, Users, Lightbulb, ArrowRight } from 'lucide-react';
+import dynamic from "next/dynamic";
+
+// Client-only testimonial carousel with random animation, NO hydration mismatch
+const AnimatedTestimonials = dynamic(
+  () => import("@/components/animated icon/aboutus").then(mod => mod.AnimatedTestimonials),
+  { ssr: false }
+);
+
+const testimonials = [
+  {
+    quote:
+      "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
+    name: "Jainam Jyoat",
+    designation: "Dhruvs dad",
+    src: "/images/Jainam.jpeg",
+  },
+  {
+    quote:
+      "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
+    name: "Dhruv",
+    designation: "Jainam Son",
+    src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    quote:
+      "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
+    name: "Yukta Shree",
+    designation: "Food Lover",
+    src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+];
 
 export default function About() {
   const values = [
@@ -234,37 +265,16 @@ export default function About() {
         </div>
       </div>
 
-      {/* Team Section */}
+      {/* Team Section replaced with AnimatedTestimonials */}
       <div ref={teamRef} className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="section-heading text-3xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We're a diverse team of engineers, designers, and e-commerce experts 
-              passionate about empowering sellers.
+              Discover the real-world impact we bring through the voices of our users.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {team.map((member, index) => (
-              <div key={index} className="text-center">
-                <div className="about-team-avatar w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-600">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-blue-600 font-medium mb-3">
-                  {member.role}
-                </p>
-                <p className="text-gray-600">
-                  {member.description}
-                </p>
-              </div>
-            ))}
-          </div>
+          <AnimatedTestimonials testimonials={testimonials} />
         </div>
       </div>
 
