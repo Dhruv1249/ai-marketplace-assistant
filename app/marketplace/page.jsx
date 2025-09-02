@@ -9,7 +9,7 @@ import styled from 'styled-components';
 const BuyButton = ({ price }) => {
   return (
     <StyledWrapper>
-      <div data-tooltip={`Price: $${price}`} className="button">
+      <div data-tooltip={`Price: ${Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} className="button">
         <div className="button-wrapper">
           <div className="text">Buy Now</div>
           <span className="icon">
@@ -35,7 +35,7 @@ const StyledWrapper = styled.div`
     --width: 100px;
     --height: 35px;
     --tooltip-height: 35px;
-    --tooltip-width: 90px;
+    --tooltip-width: 110px;
     --gap-between-tooltip-to-button: 18px;
     --button-color: #222;
     --tooltip-color: #fff;
@@ -164,7 +164,12 @@ export default function Marketplace() {
             id: product.id,
             title: product.title,
             description: product.description,
-            price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
+            price:
+  product.pricing?.discount?.finalPrice !== undefined && product.pricing?.discount?.finalPrice !== null
+    ? product.pricing.discount.finalPrice
+    : (product.pricing?.basePrice !== undefined && product.pricing?.basePrice !== null
+      ? product.pricing.basePrice
+      : 0),
             currency: 'USD',
             image: product.images?.thumbnail 
               ? `/api/products/${product.id}/images/${product.images.thumbnail}`
@@ -309,7 +314,7 @@ export default function Marketplace() {
                 View
               </Button>
             </Link>
-            <BuyButton price={product.price.toFixed(2)} />
+            <BuyButton price={product.price} />
           </div>
         </div>
       </div>
