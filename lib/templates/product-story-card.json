@@ -1,0 +1,240 @@
+{
+  "metadata": {
+    "template": "product-story-card",
+    "name": "Product Story Card",
+    "description": "Dark card-based layout, gallery, details, story with video, features, and specs for a luxury patio set.",
+    "version": "1.0",
+    "editable": true,
+    "category": "e-commerce",
+    "tags": ["patio", "furniture", "gallery", "story", "product", "dark", "card"],
+    "sections": ["gallery", "story", "details", "features", "specifications"],
+    "responsive": true,
+    "customizable": {
+      "colors": true,
+      "fonts": true,
+      "spacing": true,
+      "layout": true
+    }
+  },
+  "editingConfig": {
+    "allowedOperations": ["reorder", "style", "content", "add", "remove"],
+    "constraints": {
+      "minSections": 2,
+      "maxSections": 8,
+      "requiredSections": ["gallery", "details"]
+    },
+    "sectionTypes": {
+      "gallery": { "maxCount": 1, "required": true },
+      "story": { "maxCount": 1, "required": false },
+      "details": { "maxCount": 1, "required": true },
+      "features": { "maxCount": 1, "required": false },
+      "specifications": { "maxCount": 1, "required": false }
+    }
+  },
+  "styleVariables": {
+    "primaryColor": "#2563eb",
+    "accentColor": "#3b82f6",
+    "backgroundColor": "#121212",
+    "cardBg": "#1E1E1E",
+    "textMain": "#FFFFFF",
+    "textSecondary": "#B0B0B0",
+    "borderCustom": "#333333",
+    "fontFamily": "Inter, sans-serif",
+    "headingFont": "Inter, sans-serif",
+    "fontSize": "16px",
+    "lineHeight": "1.7",
+    "borderRadius": "14px",
+    "spacing": "1.25rem",
+    "containerMaxWidth": "1280px",
+    "shadows": {
+      "small": "0 1px 3px rgba(0,0,0,0.12)",
+      "medium": "0 4px 14px rgba(0,0,0,0.16)",
+      "large": "0 20px 48px rgba(0,0,0,0.22)"
+    }
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": { "className": "flex flex-col min-h-screen" },
+    "children": [
+      {
+        "id": "main-content",
+        "type": "main",
+        "props": { "className": "flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8" },
+        "children": [
+          {
+            "id": "main-grid-row",
+            "type": "div",
+            "props": { "className": "flex flex-col lg:flex-row gap-12" },
+            "children": [
+              {
+                "id": "gallery-col",
+                "type": "div",
+                "props": { "className": "lg:w-1/2" },
+                "children": [
+                  {
+                    "id": "gallery-aspect",
+                    "type": "div",
+                    "props": { "className": "aspect-w-1 aspect-h-1" },
+                    "children": [{
+                      "id": "main-img",
+                      "type": "img",
+                      "props": {
+                        "alt": "Luxury Wicker Patio Dining Set",
+                        "className": "w-full h-full object-cover rounded-lg shadow-lg",
+                        "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuAeK7-cwiTprEXGTj766vKaQ0CipT2TApPS2Y3QoHiik28wllBiwZx60Znvd3CWHM0AtqP-MZJAihc40Xq6OlvBVjwjtoaf-_JyGhn6JnFreAEgvXgnUrMFmwG5Ag9dZJFbtMWK2dEV5ZY3d5SSjJmkZAbqKnWhWu3WqDD4hckEOc38dxPlpEt8s0bHyeukcaBaBDQ8EuE0UIKIeEfmMamPUZkkYkQyyPeLNh40b0GcnKZYrxv417IXeRsCDxuhs76MLOVlXvRQz23E"
+                      }
+                    }]
+                  },
+                  {
+                    "id": "gallery-thumbs",
+                    "type": "div",
+                    "props": { "className": "grid grid-cols-5 gap-4 mt-4" },
+                    "children": [
+                      {
+                        "id": "thumb-1",
+                        "type": "img",
+                        "props": {"alt": "Thumbnail 1", "className": "w-full h-auto cursor-pointer rounded-md border-2 border-blue-500", "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuAeK7-cwiTprEXGTj766vKaQ0CipT2TApPS2Y3QoHiik28wllBiwZx60Znvd3CWHM0AtqP-MZJAihc40Xq6OlvBVjwjtoaf-_JyGhn6JnFreAEgvXgnUrMFmwG5Ag9dZJFbtMWK2dEV5ZY3d5SSjJmkZAbqKnWhWu3WqDD4hckEOc38dxPlpEt8s0bHyeukcaBaBDQ8EuE0UIKIeEfmMamPUZkkYkQyyPeLNh40b0GcnKZYrxv417IXeRsCDxuhs76MLOVlXvRQz23E" }
+                      },
+                      {
+                        "id": "thumb-2",
+                        "type": "img",
+                        "props": {"alt": "Thumbnail 2", "className": "w-full h-auto cursor-pointer rounded-md", "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuAwbP8zTG56yvlf62WIZVNis0puBHaVKTMRf_tQTKU9PimXxcDGvmXfkjdkWEK-yVcMZoG1IXaMC-4bi3beHmrO-YO0HaQA8hYl3ZS37psbX_G9c7-937PRpH03kCplssck5Rg1WPfY1J606FmCNNU9CLEw0Dt09OTx1vSWqAWVn0UPARVZjh-_pva7QzQMfipsb3S7dEBIutYB0Sz7nINNbkH8DNPGzwRQY50oMxbhq3pjjEpoTY6cNTokgQvwzhE5_zCyjKK6Am7F" }
+                      },
+                      {
+                        "id": "thumb-3",
+                        "type": "img",
+                        "props": {"alt": "Thumbnail 3", "className": "w-full h-auto cursor-pointer rounded-md", "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuBjjEBrYU32ldL6L0rMuapclRJzEFkDG6lRYjRn8Md1sPjldwXIdPxs7NVv8Au9Hqns6vk_e9351lf3C5ZBBjElf5vZYPg4dQPi04Mhqy4TYSDSlTUnl92NhVk6-8OezOdgusata777eDtpc8S-38VdqFW0Q4irixrf3pOxZT5qKSu7C8arYuBzxXBcvBWta6tqpQC8bTgJl_qYV31h5V9BHfNDa7gED8ZkimHBoxIOqd45OyB0xXadXhExrBua8tj-439c7U4Uq559" }
+                      },
+                      {
+                        "id": "thumb-4",
+                        "type": "img",
+                        "props": {"alt": "Thumbnail 4", "className": "w-full h-auto cursor-pointer rounded-md", "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuCvFR6iQbSGWIZD5Vml_k9j9ojsrGNjtO6WCsRxLp98QllC0RMXkSTL3UdJy1tBBVZNg0sHE69xVWPm3m0vKxFkX5kY4zjkfoPXCeV7d9o0BKCly4PyMKK8YOvy5-0OIqBWFvFw82Jz4GcV2uRwFKiF9z2MD85Bq9on1hfW9AZBUmJYjVLCsj__jTe2g5IcHvpwU-dQGoARRLBSjA6VYyCk5P3gBl3D0737KPtuqBNwbRihkzTMuSAzifq84WNwNmRHVc5JIapw65lS" }
+                      },
+                      {
+                        "id": "thumb-add",
+                        "type": "div",
+                        "props": { "className": "w-full h-full bg-gray-700 rounded-md flex items-center justify-center text-gray-400 cursor-pointer" },
+                        "children": [
+                          { "type": "span", "props": { "className": "material-icons" }, "children": ["add_photo_alternate"] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "story-col",
+                "type": "div",
+                "props": { "className": "lg:w-1/2" },
+                "children": [
+                  {
+                    "id": "story-card",
+                    "type": "div",
+                    "props": { "className": "bg-card p-8 rounded-lg shadow-lg" },
+                    "children": [
+                      { "id": "product-title", "type": "h1", "props": { "className": "text-3xl font-bold text-main" }, "children": ["Luxury Wicker Patio Dining Set"] },
+                      {
+                        "id": "story-main",
+                        "type": "div",
+                        "props": { "className": "mt-8" },
+                        "children": [
+                          { "id": "story-title", "type": "h2", "props": { "className": "text-2xl font-bold text-main mb-4" }, "children": ["The Story Behind the Set"] },
+                          {
+                            "id": "story-desc",
+                            "type": "div",
+                            "props": { "className": "space-y-4 text-secondary leading-relaxed" },
+                            "children": [
+                              { "id": "story-p1", "type": "p", "children": ["Our journey began with a vision to create outdoor furniture that doesn't just fill a space, but defines it. The Luxury Wicker Patio Dining Set is born from this vision, inspired by the tranquil elegance of Mediterranean coastal living. Each piece is handwoven by artisans who have passed down their craft through generations, ensuring every curve and detail reflects a commitment to quality and artistry."] },
+                              { "id": "story-p2", "type": "p", "children": ["The all-weather wicker is sourced from sustainable farms, and our eco-friendly process ensures minimal environmental impact. We believe in creating products that are not only beautiful but also responsible. The cushions are filled with a plush, resilient foam made from recycled materials, offering comfort that you can feel good about. This set isn't just furniture; it's a piece of a story, a testament to craftsmanship, and an invitation to create your own unforgettable moments outdoors."] },
+                              {
+                                "id": "story-video-aspect",
+                                "type": "div",
+                                "props": { "className": "aspect-w-16 aspect-h-9 rounded-lg overflow-hidden mt-6" },
+                                "children": [
+                                  {
+                                    "id": "story-video",
+                                    "type": "iframe",
+                                    "props": {
+                                      "className": "w-full h-full",
+                                      "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                                      "frameBorder": "0",
+                                      "allow": "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                                      "allowFullScreen": true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "details-section",
+            "type": "div",
+            "props": { "className": "mt-12 bg-card p-8 rounded-lg shadow-lg" },
+            "children": [
+              { "id": "details-title", "type": "h2", "props": { "className": "text-2xl font-bold text-main mb-4" }, "children": ["Product Details"] },
+              {
+                "id": "details-scroll",
+                "type": "div",
+                "props": { "className": "max-h-96 overflow-y-auto pr-4 space-y-4 text-secondary leading-relaxed" },
+                "children": [
+                  { "id": "product-desc1", "type": "p", "children": ["Elevate your outdoor entertaining with the Luxury Wicker Patio Dining Set. Crafted from high-quality, all-weather wicker, this elegant set offers exceptional durability and timeless style, designed to withstand the elements while providing a sophisticated centerpiece for your patio, deck, or garden. The robust construction ensures lasting enjoyment, making it a worthwhile investment for creating memorable al fresco dining experiences season after season."] },
+                  { "id": "product-desc2", "type": "p", "children": ["This meticulously designed dining set features plush, all-weather cushions that provide unparalleled comfort for your guests. The premium fabric is engineered to resist fading, mildew, and water, ensuring your cushions remain vibrant and supportive throughout the outdoor season. Whether hosting intimate family dinners or lively gatherings with friends, this set offers ample seating and a spacious dining surface, promising both comfort and functionality for any occasion."] },
+                  {
+                    "id": "features-list-section",
+                    "type": "div",
+                    "children": [
+                      { "id": "features-list-title", "type": "h3", "props": { "className": "text-xl font-semibold text-main pt-4" }, "children": ["Key Features"] },
+                      { "id": "features-list", "type": "ul", "props": { "className": "list-disc list-inside space-y-2" }, "children": [
+                        { "id": "feature-1", "type": "li", "children": ["Experience enduring elegance with our all-weather wicker, meticulously woven to resist fading and cracking."] },
+                        { "id": "feature-2", "type": "li", "children": ["Plush, deep-seating cushions with water-repellent and fade-resistant fabric covers."] },
+                        { "id": "feature-3", "type": "li", "children": ["Spacious tempered glass tabletop offers a sophisticated and easy-to-clean surface."] },
+                        { "id": "feature-4", "type": "li", "children": ["Sturdy, rust-proof aluminum frame for long-lasting durability."] },
+                        { "id": "feature-5", "type": "li", "children": ["Set includes one dining table and six armchairs."] }
+                      ]}
+                    ]
+                  },
+                  {
+                    "id": "specs-list-section",
+                    "type": "div",
+                    "children": [
+                      { "id": "specs-list-title", "type": "h3", "props": { "className": "text-xl font-semibold text-main pt-4" }, "children": ["Specifications"] },
+                      { "id": "specs-list", "type": "ul", "props": { "className": "list-disc list-inside space-y-2" }, "children": [
+                        { "id": "spec-1", "type": "li", "children": ["Table Dimensions: 72\" L x 40\" W x 30\" H"] },
+                        { "id": "spec-2", "type": "li", "children": ["Chair Dimensions: 24\" W x 26\" D x 35\" H"] },
+                        { "id": "spec-3", "type": "li", "children": ["Materials: All-weather wicker, aluminum, tempered glass, polyester fabric"] },
+                        { "id": "spec-4", "type": "li", "children": ["Cushion Thickness: 4 inches"] },
+                        { "id": "spec-5", "type": "li", "children": ["Weight Capacity: 300 lbs per chair"] }
+                      ]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "footer",
+        "type": "footer",
+        "props": { "className": "w-12 h-12 bg-white text-black rounded-full flex items-center justify-center fixed bottom-4 left-4" },
+        "children": [
+          {
+            "id": "footer-logo",
+            "type": "span",
+            "props": { "className": "font-bold text-lg" },
+            "children": ["N"]
+          }
+        ]
+      }
+    ]
+  }
+}

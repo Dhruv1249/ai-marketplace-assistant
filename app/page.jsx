@@ -7,13 +7,13 @@ import { Wand2, Zap, Users, TrendingUp, Star } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
-import { auth } from './login/firebase'; // path may vary, adjust if needed
+import { auth } from './login/firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
-import { Box } from "../components/animated icon/Box"; // adjust path if needed
-import { Rocket } from "../components/animated icon/Rocket"; // adjust path if needed
-import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; // adjust path if needed
-import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; // adjust path if needed
-import { Users as UsersComponent } from "../components/animated icon/Users"; // adjust path if needed
+import { Box } from "../components/animated icon/Box"; 
+import { Rocket } from "../components/animated icon/Rocket"; 
+import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; 
+import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; 
+import { Users as UsersComponent } from "../components/animated icon/Users";
 import ReadMoreButton from "../components/animated icon/ReadMoreButton";
 import Explore from '@/components/animated icon/Explore';
 

@@ -267,11 +267,13 @@ const EnhancedJSONModelRenderer = ({
   // Dialog-based editing functions
   const handleComponentEdit = useCallback((component) => {
     if (!isEditing) return;
+    console.log('Opening edit dialog for component:', component);
     setEditingComponent(component);
     setEditDialogOpen(true);
   }, [isEditing]);
 
   const handleDialogSave = useCallback((updatedComponent) => {
+    console.log('Dialog save - updating component:', updatedComponent);
     if (onUpdate && editingComponent) {
       const updatedModel = updateComponentInModel(model, editingComponent.id, updatedComponent);
       onUpdate(updatedModel);
@@ -472,15 +474,19 @@ const EnhancedJSONModelRenderer = ({
       
       const enhancedProps = { ...props };
       
-      // Add editing capabilities
+      // FIXED: Make ALL elements with editable property clickable for dialog editing
       if (isEditing && editable?.contentEditable) {
         const originalOnClick = enhancedProps.onClick;
+        
         enhancedProps.onClick = (e) => {
           e.stopPropagation();
           if (originalOnClick && typeof originalOnClick === 'function') {
             originalOnClick(e);
           }
-          // Open dialog instead of inline editing
+          
+          console.log('Editable element clicked for editing:', { id, type, children });
+          
+          // Open dialog for ALL editable elements (like create page)
           handleComponentEdit(comp);
           if (onComponentSelect) {
             onComponentSelect(comp);
@@ -488,6 +494,55 @@ const EnhancedJSONModelRenderer = ({
         };
         
         enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all hover:bg-blue-50`.trim();
+        
+        if (selectedComponentId === id) {
+          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2 bg-blue-50';
+        }
+      }
+      
+      // FIXED: Also make elements without explicit editable property clickable if they have text content
+      else if (isEditing && !editable?.contentEditable && id && children && (
+        typeof children === 'string' || 
+        (Array.isArray(children) && children.some(child => typeof child === 'string'))
+      )) {
+        // FIXED: Special handling for array-generated components (specialties, achievements)
+        const isArrayComponent = id && (id.startsWith('specialty-') || id.startsWith('achievement-'));
+        
+        // Make text-containing elements editable even if not explicitly marked
+        const originalOnClick = enhancedProps.onClick;
+        
+        enhancedProps.onClick = (e) => {
+          e.stopPropagation();
+          if (originalOnClick && typeof originalOnClick === 'function') {
+            originalOnClick(e);
+          }
+          
+          console.log('Text element clicked for editing:', { id, type, children, isArrayComponent });
+          
+          // Create editable version of component
+          const editableComp = {
+            ...comp,
+            editable: { contentEditable: true }
+          };
+          
+          // FIXED: For array components, ensure they're properly marked as editable
+          if (isArrayComponent) {
+            console.log('🎯 Array component clicked - opening edit dialog');
+            editableComp.isArrayItem = true;
+          }
+          
+          handleComponentEdit(editableComp);
+          if (onComponentSelect) {
+            onComponentSelect(editableComp);
+          }
+        };
+        
+        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all hover:bg-blue-50`.trim();
+        
+        // FIXED: Special styling for array components
+        if (isArrayComponent) {
+          enhancedProps.className += ' ring-1 ring-purple-200 hover:ring-purple-400';
+        }
         
         if (selectedComponentId === id) {
           enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2 bg-blue-50';

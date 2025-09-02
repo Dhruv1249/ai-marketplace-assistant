@@ -9,11 +9,9 @@ const PublishStep = ({
   pricing,
   thumbnailImage,
   additionalImages,
-  pageModel,
   featureExplanations,
   onBack
 }) => {
-  const [createCustomPage, setCreateCustomPage] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState(null);
 
@@ -36,7 +34,7 @@ const PublishStep = ({
         specifications: generatedContent.specifications || {},
         seoKeywords: generatedContent.seoKeywords || [],
         metaDescription: generatedContent.metaDescription || '',
-        hasCustomPage: createCustomPage,
+        hasCustomPage: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -45,18 +43,6 @@ const PublishStep = ({
       const formData = new FormData();
       formData.append('productId', productId);
       formData.append('standardData', JSON.stringify(standardData));
-      
-      if (createCustomPage) {
-        const customData = {
-          model: pageModel,
-          content: {
-            ...generatedContent,
-            featureExplanations: featureExplanations,
-            pricing: pricing
-          }
-        };
-        formData.append('customData', JSON.stringify(customData));
-      }
 
       // Add thumbnail image
       if (thumbnailImage?.file) {
@@ -116,42 +102,23 @@ const PublishStep = ({
       specifications: generatedContent?.specifications || {},
       seoKeywords: generatedContent?.seoKeywords || [],
       metaDescription: generatedContent?.metaDescription || '',
-      hasCustomPage: createCustomPage
+      hasCustomPage: false
     };
     
-    // Store in localStorage and open standard page preview
-    localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
-    window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
-  };
-
-  const previewCustomPage = () => {
-    if (!generatedContent || !pageModel) return;
-    
-    try {
-      // Create images array for preview
-      const previewImages = [];
-      if (thumbnailImage?.url) {
-        previewImages.push(thumbnailImage.url);
-      }
-      additionalImages.forEach(img => {
-        if (img?.url) previewImages.push(img.url);
-      });
-
-      const payload = {
-        model: pageModel,
-        content: {
-          ...generatedContent,
-          featureExplanations: featureExplanations || {},
-          pricing: pricing
-        },
-        images: previewImages
-      };
-      
-      localStorage.setItem('previewData', JSON.stringify(payload));
-      window.open('/preview', '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      console.error('Failed to save previewData:', e);
+    // Store uploaded images for preview
+    const previewImages = [];
+    if (thumbnailImage?.url) {
+      previewImages.push(thumbnailImage.url);
     }
+    additionalImages.forEach(img => {
+      if (img?.url) previewImages.push(img.url);
+    });
+    
+    // Store both data and images
+    localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
+    localStorage.setItem('previewImages', JSON.stringify(previewImages));
+    
+    window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
   };
 
   const isFormValid = () => {
@@ -169,9 +136,9 @@ const PublishStep = ({
 
       {!publishStatus && (
         <div className="space-y-6">
-          {/* Publishing Options */}
+          {/* Publishing Information */}
           <div className="bg-blue-50 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-3">Publishing Options</h3>
+            <h3 className="font-medium text-blue-900 mb-3">Publishing Information</h3>
             
             <div className="space-y-3">
               <div className="flex items-start">
@@ -181,36 +148,16 @@ const PublishStep = ({
                 <div className="ml-1">
                   <p className="text-sm font-medium text-gray-900">Standard Product Page</p>
                   <p className="text-sm text-gray-600">
-                    A standard product page will always be created for marketplace listing
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="custom-page"
-                    type="checkbox"
-                    checked={createCustomPage}
-                    onChange={(e) => setCreateCustomPage(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                </div>
-                <div className="ml-3">
-                  <label htmlFor="custom-page" className="text-sm font-medium text-gray-900">
-                    Create Custom Page (Recommended)
-                  </label>
-                  <p className="text-sm text-gray-600">
-                    Create a custom designed page using your selected template for enhanced presentation
+                    Your product will be published with a clean, professional layout optimized for the marketplace
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Preview Options */}
+          {/* Preview Option */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-medium text-gray-900 mb-3">Preview Your Pages</h3>
+            <h3 className="font-medium text-gray-900 mb-3">Preview Your Product Page</h3>
             <div className="flex gap-3">
               <Button
                 variant="outline"
@@ -219,19 +166,8 @@ const PublishStep = ({
                 disabled={!isFormValid()}
               >
                 <FileText className="mr-2" size={16} />
-                Preview Standard Page
+                Preview Product Page
               </Button>
-              {createCustomPage && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={previewCustomPage}
-                  disabled={!isFormValid()}
-                >
-                  <Eye className="mr-2" size={16} />
-                  Preview Custom Page
-                </Button>
-              )}
             </div>
           </div>
 
@@ -272,16 +208,16 @@ const PublishStep = ({
               </div>
               
               <div>
-                <p className="text-gray-600">Template:</p>
-                <p className="font-medium text-gray-900 capitalize">
-                  {pageModel?.metadata?.template?.replace('-', ' ') || 'Gallery Focused'}
-                </p>
-              </div>
-              
-              <div>
                 <p className="text-gray-600">SEO Keywords:</p>
                 <p className="font-medium text-gray-900">
                   {generatedContent?.seoKeywords?.length || 0} keywords
+                </p>
+              </div>
+
+              <div>
+                <p className="text-gray-600">Feature Explanations:</p>
+                <p className="font-medium text-gray-900">
+                  {Object.keys(featureExplanations || {}).length} explanations
                 </p>
               </div>
             </div>
@@ -383,16 +319,14 @@ const PublishStep = ({
                   onClick={() => window.open(`/marketplace/${publishStatus.productId}`, '_blank')}
                 >
                   <FileText className="mr-2" size={16} />
-                  View Standard Page
+                  View Product Page
                 </Button>
-                {createCustomPage && (
-                  <Button
-                    onClick={() => window.open(`/marketplace/${publishStatus.productId}/custom`, '_blank')}
-                  >
-                    <Globe className="mr-2" size={16} />
-                    View Custom Page
-                  </Button>
-                )}
+                <Button
+                  onClick={() => window.location.href = '/marketplace'}
+                >
+                  <Globe className="mr-2" size={16} />
+                  Browse Marketplace
+                </Button>
               </div>
             </div>
           ) : (

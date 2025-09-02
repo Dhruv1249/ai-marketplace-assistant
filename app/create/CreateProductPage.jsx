@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
-import galleryFocused from '@/lib/templates/gallery-focused.json';
 
 // Import step components
 import ContentGenerationStep from '@/components/create-product/ContentGenerationStep';
@@ -20,7 +19,6 @@ import DiscardButton from '@/components/animated icon/Discard';
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
-  const [pageModel, setPageModel] = useState(galleryFocused);
   const [pricing, setPricing] = useState({
     basePrice: 0,
     discount: {
@@ -39,6 +37,19 @@ const CreateProductPage = () => {
   const [pendingStep, setPendingStep] = useState(null);
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
 
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Effect to scroll to top whenever step changes
+  useEffect(() => {
+    scrollToTop();
+  }, [currentStep]);
+
   const handleContentGenerated = (content) => {
     setGeneratedContent(content);
     setCurrentStep(2);
@@ -48,7 +59,7 @@ const CreateProductPage = () => {
     { id: 1, name: 'Generate Content', description: 'Use AI to create your product page content' },
     { id: 2, name: 'Review & Edit', description: 'Review and customize the generated content' },
     { id: 3, name: 'Set Pricing', description: 'Configure product pricing and discounts' },
-    { id: 4, name: 'Images & Layout', description: 'Upload images and choose layout template' },
+    { id: 4, name: 'Images & Upload', description: 'Upload product images' },
     { id: 5, name: 'Publish', description: 'Publish your product page to the marketplace' }
   ];
 
@@ -137,7 +148,6 @@ const CreateProductPage = () => {
       });
       setThumbnailImage(null);
       setAdditionalImages([]);
-      setPageModel(galleryFocused);
     } else if (pendingStep === 2) {
       setFeatureExplanations({});
       setFeaturesConfirmed(false);
@@ -238,13 +248,26 @@ const CreateProductPage = () => {
       console.error('Cannot open preview: missing generatedContent');
       return;
     }
-    if (!pageModel || !pageModel.metadata || !pageModel.component) {
-      console.error('Cannot open preview: invalid pageModel', pageModel);
-      setPageModel(galleryFocused);
-      return;
-    }
+    
     try {
-      // Create images array for preview
+      // Create standard page preview data
+      const standardPreviewData = {
+        id: 'preview',
+        title: generatedContent?.title || 'Product Title',
+        description: generatedContent?.description || 'Product description',
+        pricing: pricing || {
+          basePrice: 99.99,
+          discount: { enabled: false, finalPrice: 99.99 }
+        },
+        features: generatedContent?.features || [],
+        featureExplanations: featureExplanations || {},
+        specifications: generatedContent?.specifications || {},
+        seoKeywords: generatedContent?.seoKeywords || [],
+        metaDescription: generatedContent?.metaDescription || '',
+        hasCustomPage: false
+      };
+      
+      // Store uploaded images for preview
       const previewImages = [];
       if (thumbnailImage?.url) {
         previewImages.push(thumbnailImage.url);
@@ -252,19 +275,12 @@ const CreateProductPage = () => {
       additionalImages.forEach(img => {
         if (img?.url) previewImages.push(img.url);
       });
-
-      const payload = {
-        model: pageModel,
-        content: {
-          ...generatedContent,
-          featureExplanations: featureExplanations || {},
-          pricing: pricing
-        },
-        images: previewImages
-      };
       
-      localStorage.setItem('previewData', JSON.stringify(payload));
-      window.open('/preview', '_blank', 'noopener,noreferrer');
+      // Store both data and images
+      localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
+      localStorage.setItem('previewImages', JSON.stringify(previewImages));
+      
+      window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
     } catch (e) {
       console.error('Failed to save previewData:', e);
     }
@@ -367,8 +383,6 @@ const CreateProductPage = () => {
             {currentStep === 4 && (
               <ImagesLayoutStep
                 generatedContent={generatedContent}
-                pageModel={pageModel}
-                setPageModel={setPageModel}
                 thumbnailImage={thumbnailImage}
                 setThumbnailImage={setThumbnailImage}
                 additionalImages={additionalImages}
@@ -387,7 +401,6 @@ const CreateProductPage = () => {
                 pricing={pricing}
                 thumbnailImage={thumbnailImage}
                 additionalImages={additionalImages}
-                pageModel={pageModel}
                 featureExplanations={featureExplanations}
                 onBack={() => handleStepChange(4)}
               />
@@ -433,12 +446,6 @@ const CreateProductPage = () => {
                     <span className="text-gray-600">Images:</span>
                     <span className={`font-medium ${thumbnailImage ? 'text-green-600' : 'text-gray-400'}`}>
                       {thumbnailImage ? `✓ ${1 + additionalImages.length} uploaded` : '○ Pending'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Template:</span>
-                    <span className="font-medium text-blue-600 capitalize">
-                      {pageModel?.metadata?.template?.replace('-', ' ') || 'Gallery Focused'}
                     </span>
                   </div>
                 </div>
