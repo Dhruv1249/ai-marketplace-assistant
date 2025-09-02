@@ -2,65 +2,79 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Upload, Sparkles, User, Camera, Eye, Save } from 'lucide-react';
+import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette } from 'lucide-react';
 import { Button } from '@/components/ui';
-import SellerInfoTemplateSelector from '@/components/seller-info/SellerInfoTemplateSelector';
-import PhotoOptionsModal from '@/components/seller-info/PhotoOptionsModal';
-import UniversalAIContentGenerator from '@/components/shared/UniversalAIContentGenerator';
-import DeleteIcon from '@/components/animated icon/DeleteIcon';
 import SaveButton from '@/components/animated icon/SaveButton';
 
+// Import step components
+import ProductBasicsStep from '@/components/product-story/ProductBasicsStep';
+import ProductStoryStep from '@/components/product-story/ProductStoryStep';
+import ProcessStep from '@/components/product-story/ProcessStep';
+import ImpactStep from '@/components/product-story/ImpactStep';
+import VisualsStep from '@/components/product-story/VisualsStep';
+import TemplateStep from '@/components/product-story/TemplateStep';
+
 // Import templates
-import professionalTemplate from '@/components/seller-info/templates/professional-template.json';
-import creativeTemplate from '@/components/seller-info/templates/creative-template.json';
-import executiveTemplate from '@/components/seller-info/templates/executive-template.json';
-import personalTemplate from '@/components/seller-info/templates/personal-template.json';
+import journeyTemplate from '@/components/seller-info/templates/journey-template.json';
+import craftTemplate from '@/components/seller-info/templates/craft-template.json';
+import impactTemplate from '@/components/seller-info/templates/impact-template.json';
+import modernTemplate from '@/components/seller-info/templates/modern-template.json';
 
 const TEMPLATE_MAP = {
-  'professional': professionalTemplate,
-  'creative': creativeTemplate,
-  'executive': executiveTemplate,
-  'personal': personalTemplate,
+  'journey': journeyTemplate,
+  'craft': craftTemplate,
+  'impact': impactTemplate,
+  'modern': modernTemplate,
 };
 
-export default function SellerInfoPage() {
+export default function ProductStoryPage() {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState('professional');
-  const [showPhotoModal, setShowPhotoModal] = useState(false);
-  const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState('journey');
   
-  const [sellerData, setSellerData] = useState({
-    name: '',
-    title: '',
-    bio: '',
-    story: '',
-    experience: '',
-    specialties: [],
-    achievements: [],
-    contact: {
-      email: '',
-      phone: '',
-      location: '',
-      website: '',
-      social: {
-        linkedin: '',
-        twitter: '',
-        instagram: '',
-        facebook: ''
-      }
+  const [productStoryData, setProductStoryData] = useState({
+    basics: {
+      name: '',
+      category: '',
+      problem: '',
+      audience: '',
+      value: ''
     },
-    photos: [],
-    businessInfo: {
-      businessName: '',
-      founded: '',
-      employees: '',
-      description: ''
+    story: {
+      origin: '',
+      solution: '',
+      unique: '',
+      vision: ''
+    },
+    process: {
+      creation: '',
+      materials: '',
+      time: '',
+      quality: '',
+      ethics: ''
+    },
+    impact: {
+      testimonials: [],
+      cases: [],
+      metrics: [],
+      awards: []
+    },
+    visuals: {
+      hero: [],
+      process: [],
+      beforeAfter: [],
+      lifestyle: [],
+      team: []
     }
   });
 
-  const fileInputRef = useRef(null);
-  const photoUrlsRef = useRef([]); // Track URLs for cleanup
+  const fileInputRefs = {
+    hero: useRef(null),
+    process: useRef(null),
+    lifestyle: useRef(null),
+    beforeAfter: useRef(null)
+  };
+  const photoUrlsRef = useRef([]);
 
   // Cleanup object URLs on unmount
   useEffect(() => {
@@ -75,76 +89,102 @@ export default function SellerInfoPage() {
     };
   }, []);
 
-  const handleInputChange = (field, value) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setSellerData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value
-        }
-      }));
-    } else {
-      setSellerData(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
-  };
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [step]);
 
-  const handleNestedInputChange = (parent, child, value) => {
-    setSellerData(prev => ({
+  const handleInputChange = (section, field, value) => {
+    setProductStoryData(prev => ({
       ...prev,
-      [parent]: {
-        ...prev[parent],
-        [child]: value
+      [section]: {
+        ...prev[section],
+        [field]: value
       }
     }));
   };
 
-  const handleArrayInputChange = (field, index, value) => {
-    setSellerData(prev => ({
+  const handleArrayInputChange = (section, field, index, value) => {
+    setProductStoryData(prev => ({
       ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
+      [section]: {
+        ...prev[section],
+        [field]: prev[section][field].map((item, i) => i === index ? value : item)
+      }
     }));
   };
 
-  const addArrayItem = (field) => {
-    setSellerData(prev => ({
+  const addArrayItem = (section, field) => {
+    setProductStoryData(prev => ({
       ...prev,
-      [field]: [...prev[field], '']
+      [section]: {
+        ...prev[section],
+        [field]: [...prev[section][field], '']
+      }
     }));
   };
 
-  const removeArrayItem = (field, index) => {
-    setSellerData(prev => ({
+  const removeArrayItem = (section, field, index) => {
+    setProductStoryData(prev => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [section]: {
+        ...prev[section],
+        [field]: prev[section][field].filter((_, i) => i !== index)
+      }
     }));
   };
 
-  const generateFieldContent = async (fieldType, currentValue) => {
+  const generateFieldContent = async (section, fieldType, currentValue) => {
     setIsGenerating(true);
     try {
       let prompt = '';
-      const context = `Name: ${sellerData.name}, Title: ${sellerData.title}, Business: ${sellerData.businessInfo.businessName}`;
+      const context = `Product: ${productStoryData.basics.name}, Category: ${productStoryData.basics.category}, Problem: ${productStoryData.basics.problem}`;
       
       switch (fieldType) {
-        case 'title':
-          prompt = `Improve this professional title to be more compelling and specific: "${currentValue}". Consider the context: ${context}. Return only the improved title.`;
+        case 'category':
+          prompt = `Suggest a better category or product type for: "${currentValue}". Context: ${context}. Return only the improved category name, be specific and clear.`;
           break;
-        case 'bio':
-          prompt = `Write a compelling professional bio based on this input: "${currentValue}". Context: ${context}. Make it 2-3 sentences, professional, and engaging. Return only the bio.`;
+        case 'problem':
+          prompt = `Improve this problem description to be more compelling: "${currentValue}". Context: ${context}. Make it clear what specific problem this product solves. 2-3 sentences.`;
           break;
-        case 'story':
-          prompt = `Create an engaging personal story based on this input: "${currentValue}". Context: ${context}. Make it 4-6 sentences about their journey, what drives them, and what makes them unique. Return only the story.`;
+        case 'audience':
+          prompt = `Refine this target audience description: "${currentValue}". Context: ${context}. Be more specific about who would benefit from this product. Return only the improved audience description.`;
           break;
-        case 'experience':
-          prompt = `Write a professional experience summary based on this input: "${currentValue}". Context: ${context}. Include education, career progression, and expertise. 3-4 sentences. Return only the experience summary.`;
+        case 'value':
+          prompt = `Write a compelling value proposition for this product: "${currentValue}". Context: ${context}. Explain why customers should choose this product and what unique value it provides. 2-3 sentences.`;
+          break;
+        case 'origin':
+          prompt = `Write a compelling origin story for this product: "${currentValue}". Context: ${context}. Make it engaging and authentic, explaining how and why this product was created. 3-4 sentences.`;
+          break;
+        case 'solution':
+          prompt = `Describe the solution journey for this product: "${currentValue}". Context: ${context}. Explain how this product solves the problem and the journey to create it. 3-4 sentences.`;
+          break;
+        case 'unique':
+          prompt = `Explain what makes this product unique and special: "${currentValue}". Context: ${context}. Highlight the differentiators and special qualities. 2-3 sentences.`;
+          break;
+        case 'vision':
+          prompt = `Write about the vision and mission behind this product: "${currentValue}". Context: ${context}. Explain the bigger purpose and impact. 2-3 sentences.`;
+          break;
+        case 'creation':
+          prompt = `Describe the creation process and craftsmanship: "${currentValue}". Context: ${context}. Explain how it's made, the process, and attention to detail. 3-4 sentences.`;
+          break;
+        case 'materials':
+          prompt = `Describe the materials, ingredients, or technology used: "${currentValue}". Context: ${context}. Explain what goes into making this product and why these materials were chosen. 2-3 sentences.`;
+          break;
+        case 'time':
+          prompt = `Describe the time investment and expertise required: "${currentValue}". Context: ${context}. Explain the skill level, time commitment, and expertise involved. Return a concise description.`;
+          break;
+        case 'quality':
+          prompt = `Describe quality standards and certifications: "${currentValue}". Context: ${context}. Explain quality control measures, standards followed, and any certifications. 2-3 sentences.`;
+          break;
+        case 'ethics':
+          prompt = `Describe sustainability and ethical practices: "${currentValue}". Context: ${context}. Explain how this product is made sustainably or ethically. 2-3 sentences.`;
           break;
         default:
-          prompt = `Improve and make this more professional: "${currentValue}". Context: ${context}`;
+          prompt = `Improve and make this more compelling for a product story: "${currentValue}". Context: ${context}`;
       }
 
       const response = await fetch('/api/generate-content', {
@@ -163,7 +203,7 @@ export default function SellerInfoPage() {
       }
 
       const data = await response.json();
-      handleInputChange(fieldType, data.content);
+      handleInputChange(section, fieldType, data.content);
       
     } catch (error) {
       console.error('Error generating content:', error);
@@ -173,49 +213,35 @@ export default function SellerInfoPage() {
     }
   };
 
-  const handlePhotoUpload = (event) => {
+  const handlePhotoUpload = (event, visualType) => {
     const files = Array.from(event.target.files);
     files.forEach(file => {
-      // Use URL.createObjectURL instead of base64 for shorter URLs (like create product page)
       const url = URL.createObjectURL(file);
-      
-      // Track URL for cleanup
       photoUrlsRef.current.push(url);
       
-      setSellerData(prev => ({
+      setProductStoryData(prev => ({
         ...prev,
-        photos: [...prev.photos, {
-          id: Date.now() + Math.random(),
-          url: url,
-          type: 'uploaded',
-          name: file.name,
-          file: file // Keep reference to original file
-        }]
+        visuals: {
+          ...prev.visuals,
+          [visualType]: [...prev.visuals[visualType], {
+            id: Date.now() + Math.random(),
+            url: url,
+            type: 'uploaded',
+            name: file.name,
+            file: file
+          }]
+        }
       }));
     });
   };
 
-  const handleAIPhotoGenerated = (photoUrl, prompt) => {
-    setSellerData(prev => ({
-      ...prev,
-      photos: [...prev.photos, {
-        id: Date.now(),
-        url: photoUrl,
-        type: 'ai-generated',
-        prompt: prompt
-      }]
-    }));
-  };
-
-  const removePhoto = (photoId) => {
-    setSellerData(prev => {
-      const photoToRemove = prev.photos.find(photo => photo.id === photoId);
+  const removePhoto = (visualType, photoId) => {
+    setProductStoryData(prev => {
+      const photoToRemove = prev.visuals[visualType].find(photo => photo.id === photoId);
       
-      // Clean up object URL if it's an uploaded photo
       if (photoToRemove && photoToRemove.type === 'uploaded' && photoToRemove.url) {
         try {
           URL.revokeObjectURL(photoToRemove.url);
-          // Remove from tracking array
           photoUrlsRef.current = photoUrlsRef.current.filter(url => url !== photoToRemove.url);
         } catch (e) {
           // Ignore cleanup errors
@@ -224,65 +250,38 @@ export default function SellerInfoPage() {
       
       return {
         ...prev,
-        photos: prev.photos.filter(photo => photo.id !== photoId)
+        visuals: {
+          ...prev.visuals,
+          [visualType]: prev.visuals[visualType].filter(photo => photo.id !== photoId)
+        }
       };
     });
   };
 
-  const handleAIContentGenerated = (content) => {
-    setSellerData(prev => ({
-      ...prev,
-      ...content
-    }));
-  };
-
-  // FIXED: Save data in the same format as product page
   const handlePreview = () => {
     try {
-      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || professionalTemplate;
+      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || journeyTemplate;
       
-      // Create the same data structure as product page
+      // FIXED: Save in the format expected by UniversalPreviewPage
       const payload = {
-        model: selectedTemplateModel,  // The JSON template with placeholders
-        content: {                     // The actual seller data to fill placeholders
-          name: sellerData.name || '',
-          title: sellerData.title || '',
-          bio: sellerData.bio || '',
-          story: sellerData.story || '',
-          experience: sellerData.experience || '',
-          specialties: sellerData.specialties || [],
-          achievements: sellerData.achievements || [],
-          photos: sellerData.photos || [],
-          contact: {
-            email: sellerData.contact?.email || '',
-            phone: sellerData.contact?.phone || '',
-            location: sellerData.contact?.location || '',
-            website: sellerData.contact?.website || '',
-            social: {
-              linkedin: sellerData.contact?.social?.linkedin || '',
-              twitter: sellerData.contact?.social?.twitter || '',
-              instagram: sellerData.contact?.social?.instagram || '',
-              facebook: sellerData.contact?.social?.facebook || ''
-            }
-          },
-          businessInfo: {
-            businessName: sellerData.businessInfo?.businessName || '',
-            founded: sellerData.businessInfo?.founded || '',
-            employees: sellerData.businessInfo?.employees || '',
-            description: sellerData.businessInfo?.description || ''
-          }
-        },
-        images: sellerData.photos?.map(photo => photo.url) || []  // Array of image URLs (now short blob URLs)
+        productStoryData: productStoryData,
+        templateType: selectedTemplate,
+        model: selectedTemplateModel,
+        content: productStoryData,
+        images: getAllImages()
       };
       
-      console.log('=== SELLER INFO PREVIEW PAYLOAD ===');
-      console.log('Payload structure (same as product page):', payload);
-      console.log('Model (template with placeholders):', payload.model);
-      console.log('Content (actual data):', payload.content);
-      console.log('Images (URLs - now short blob URLs):', payload.images);
-      console.log('===================================');
+      console.log('=== PREVIEW PAYLOAD DEBUG ===');
+      console.log('Product Story Data:', productStoryData);
+      console.log('Template Type:', selectedTemplate);
+      console.log('Has basics.name:', !!productStoryData.basics.name);
+      console.log('Has basics.value:', !!productStoryData.basics.value);
+      console.log('Has story.origin:', !!productStoryData.story.origin);
+      console.log('Visuals data:', productStoryData.visuals);
+      console.log('Payload keys:', Object.keys(payload));
+      console.log('==============================');
       
-      localStorage.setItem('sellerInfoPreviewData', JSON.stringify(payload));
+      localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
       window.open('/seller-info/preview', '_blank');
     } catch (error) {
       console.error('Failed to save preview data:', error);
@@ -290,475 +289,82 @@ export default function SellerInfoPage() {
     }
   };
 
+  const getAllImages = () => {
+    const allImages = [];
+    Object.values(productStoryData.visuals).forEach(visualArray => {
+      visualArray.forEach(visual => {
+        if (visual.url) allImages.push(visual.url);
+      });
+    });
+    return allImages;
+  };
+
   const handleSave = () => {
-    // Save to localStorage or send to API
-    localStorage.setItem('sellerInfoData', JSON.stringify({
-      sellerData,
+    localStorage.setItem('productStoryData', JSON.stringify({
+      productStoryData,
       templateType: selectedTemplate,
       savedAt: new Date().toISOString()
     }));
-    alert('Seller information saved successfully!');
+    alert('Product story saved successfully!');
   };
 
   const renderStepContent = () => {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Basic Information</h2>
-              <p className="text-gray-600">Tell us about yourself and your business</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  value={sellerData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Your full name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Professional Title *
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={sellerData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., Senior Product Designer, CEO, Consultant"
-                  />
-                  <Button
-                    onClick={() => generateFieldContent('title', sellerData.title)}
-                    size="sm"
-                    className="bg-purple-600 hover:bg-purple-700"
-                    disabled={isGenerating || !sellerData.title.trim()}
-                  >
-                    <Sparkles size={14} />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Professional Bio *
-              </label>
-              <div className="flex items-start gap-2">
-                <textarea
-                  value={sellerData.bio}
-                  onChange={(e) => handleInputChange('bio', e.target.value)}
-                  rows={4}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="A brief professional summary about yourself..."
-                />
-                <Button
-                  onClick={() => generateFieldContent('bio', sellerData.bio)}
-                  size="sm"
-                  className="bg-purple-600 hover:bg-purple-700 mt-2"
-                  disabled={isGenerating || !sellerData.bio.trim()}
-                >
-                  <Sparkles size={14} />
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Story
-              </label>
-              <div className="flex items-start gap-2">
-                <textarea
-                  value={sellerData.story}
-                  onChange={(e) => handleInputChange('story', e.target.value)}
-                  rows={6}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Share your journey, what drives you, and what makes you unique..."
-                />
-                <Button
-                  onClick={() => generateFieldContent('story', sellerData.story)}
-                  size="sm"
-                  className="bg-purple-600 hover:bg-purple-700 mt-2"
-                  disabled={isGenerating || !sellerData.story.trim()}
-                >
-                  <Sparkles size={14} />
-                </Button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Experience & Background
-              </label>
-              <div className="flex items-start gap-2">
-                <textarea
-                  value={sellerData.experience}
-                  onChange={(e) => handleInputChange('experience', e.target.value)}
-                  rows={4}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Describe your professional experience, education, and background..."
-                />
-                <Button
-                  onClick={() => generateFieldContent('experience', sellerData.experience)}
-                  size="sm"
-                  className="bg-purple-600 hover:bg-purple-700 mt-2"
-                  disabled={isGenerating || !sellerData.experience.trim()}
-                >
-                  <Sparkles size={14} />
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex justify-center pt-4 border-t">
-              <Button
-                onClick={() => setShowAIGenerator(true)}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
-              >
-                <Sparkles size={16} />
-                Generate Content with AI
-              </Button>
-            </div>
-          </div>
+          <ProductBasicsStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+          />
         );
-
       case 2:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Specialties & Achievements</h2>
-              <p className="text-gray-600">Highlight your expertise and accomplishments</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Specialties & Skills
-              </label>
-              {sellerData.specialties.map((specialty, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    value={specialty}
-                    onChange={(e) => handleArrayInputChange('specialties', index, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., UI/UX Design, Digital Marketing, Web Development"
-                  />
-                  <Button
-                    onClick={() => removeArrayItem('specialties', index)}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-              <Button
-                onClick={() => addArrayItem('specialties')}
-                variant="outline"
-                size="sm"
-              >
-                Add Specialty
-              </Button>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Key Achievements
-              </label>
-              {sellerData.achievements.map((achievement, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    value={achievement}
-                    onChange={(e) => handleArrayInputChange('achievements', index, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., Increased sales by 150%, Led team of 20+ designers"
-                  />
-                  <Button
-                    onClick={() => removeArrayItem('achievements', index)}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-              <Button
-                onClick={() => addArrayItem('achievements')}
-                variant="outline"
-                size="sm"
-              >
-                Add Achievement
-              </Button>
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Business Information (Optional)</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Business Name
-                  </label>
-                  <input
-                    type="text"
-                    value={sellerData.businessInfo.businessName}
-                    onChange={(e) => handleNestedInputChange('businessInfo', 'businessName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Your business or company name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Founded
-                  </label>
-                  <input
-                    type="text"
-                    value={sellerData.businessInfo.founded}
-                    onChange={(e) => handleNestedInputChange('businessInfo', 'founded', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., 2020, January 2019"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Team Size
-                  </label>
-                  <input
-                    type="text"
-                    value={sellerData.businessInfo.employees}
-                    onChange={(e) => handleNestedInputChange('businessInfo', 'employees', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="e.g., 1-10, 50+, Just me"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Business Description
-                </label>
-                <textarea
-                  value={sellerData.businessInfo.description}
-                  onChange={(e) => handleNestedInputChange('businessInfo', 'description', e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Brief description of your business or services..."
-                />
-              </div>
-            </div>
-          </div>
+          <ProductStoryStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+          />
         );
-
       case 3:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Photos & Contact</h2>
-              <p className="text-gray-600">Add photos and contact information</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">
-                Work Environment Photos (Optional)
-              </label>
-              <p className="text-sm text-gray-600 mb-4">
-                Add photos that represent your work environment or profession. For example: office space, workshop, farm fields, studio, etc.
-              </p>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                {sellerData.photos.map((photo) => (
-                  <div key={photo.id} className="relative group">
-                    <img
-                      src={photo.url}
-                      alt="Work Environment"
-                      className="w-full h-32 object-cover rounded-lg border"
-                    />
-                    <button
-                      onClick={() => removePhoto(photo.id)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      ×
-                    </button>
-                    <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      {photo.type === 'ai-generated' ? 'Generated' : 'Uploaded'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => setShowPhotoModal(true)}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  <Camera size={16} />
-                  Add Photos
-                </Button>
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  className="hidden"
-                />
-                
-                <Button
-                  onClick={() => fileInputRef.current?.click()}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  <Upload size={16} />
-                  Upload Photos
-                </Button>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={sellerData.contact.email}
-                    onChange={(e) => handleNestedInputChange('contact', 'email', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="your@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={sellerData.contact.phone}
-                    onChange={(e) => handleNestedInputChange('contact', 'phone', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    value={sellerData.contact.location}
-                    onChange={(e) => handleNestedInputChange('contact', 'location', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="City, Country"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Website
-                  </label>
-                  <input
-                    type="url"
-                    value={sellerData.contact.website}
-                    onChange={(e) => handleNestedInputChange('contact', 'website', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://yourwebsite.com"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <h4 className="text-md font-medium text-gray-700 mb-3">Social Media (Optional)</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      LinkedIn
-                    </label>
-                    <input
-                      type="url"
-                      value={sellerData.contact.social.linkedin}
-                      onChange={(e) => handleNestedInputChange('contact', 'social', {...sellerData.contact.social, linkedin: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://linkedin.com/in/yourprofile"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Twitter
-                    </label>
-                    <input
-                      type="url"
-                      value={sellerData.contact.social.twitter}
-                      onChange={(e) => handleNestedInputChange('contact', 'social', {...sellerData.contact.social, twitter: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://twitter.com/yourhandle"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Instagram
-                    </label>
-                    <input
-                      type="url"
-                      value={sellerData.contact.social.instagram}
-                      onChange={(e) => handleNestedInputChange('contact', 'social', {...sellerData.contact.social, instagram: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://instagram.com/yourhandle"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Facebook
-                    </label>
-                    <input
-                      type="url"
-                      value={sellerData.contact.social.facebook}
-                      onChange={(e) => handleNestedInputChange('contact', 'social', {...sellerData.contact.social, facebook: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://facebook.com/yourpage"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProcessStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+          />
         );
-
       case 4:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Choose Your Template</h2>
-              <p className="text-gray-600">Select how you want to present your information</p>
-            </div>
-
-            <SellerInfoTemplateSelector
-              sellerData={sellerData}
-              value={selectedTemplate}
-              onChange={setSelectedTemplate}
-            />
-          </div>
+          <ImpactStep
+            productStoryData={productStoryData}
+            handleArrayInputChange={handleArrayInputChange}
+            addArrayItem={addArrayItem}
+            removeArrayItem={removeArrayItem}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+          />
         );
-
+      case 5:
+        return (
+          <VisualsStep
+            productStoryData={productStoryData}
+            handlePhotoUpload={handlePhotoUpload}
+            removePhoto={removePhoto}
+            fileInputRefs={fileInputRefs}
+          />
+        );
+      case 6:
+        return (
+          <TemplateStep
+            selectedTemplate={selectedTemplate}
+            setSelectedTemplate={setSelectedTemplate}
+            productStoryData={productStoryData}
+          />
+        );
       default:
         return null;
     }
@@ -773,7 +379,7 @@ export default function SellerInfoPage() {
             <Link href="/" className="text-gray-600 hover:text-gray-900">
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-xl font-semibold text-gray-900">Seller Information</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Create Product Story</h1>
           </div>
           
           <div className="flex items-center gap-3">
@@ -781,7 +387,7 @@ export default function SellerInfoPage() {
               onClick={handlePreview}
               variant="outline"
               className="flex items-center gap-2"
-              disabled={!sellerData.name || !sellerData.title}
+              disabled={!productStoryData.basics.name || !productStoryData.basics.category}
             >
               <Eye size={16} />
               Preview
@@ -790,7 +396,7 @@ export default function SellerInfoPage() {
             <SaveButton
               onClick={handleSave}
               className="flex items-center gap-2"
-              disabled={!sellerData.name || !sellerData.title}
+              disabled={!productStoryData.basics.name || !productStoryData.basics.category}
             >
               <Save size={16} />
               Save
@@ -804,27 +410,29 @@ export default function SellerInfoPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {[
-              { number: 1, title: 'Basic Info', completed: step > 1 },
-              { number: 2, title: 'Specialties', completed: step > 2 },
-              { number: 3, title: 'Photos & Contact', completed: step > 3 },
-              { number: 4, title: 'Template', completed: step > 4 }
+              { number: 1, title: 'Basics', icon: Package, completed: step > 1 },
+              { number: 2, title: 'Story', icon: Lightbulb, completed: step > 2 },
+              { number: 3, title: 'Process', icon: User, completed: step > 3 },
+              { number: 4, title: 'Impact', icon: Award, completed: step > 4 },
+              { number: 5, title: 'Visuals', icon: ImageIcon, completed: step > 5 },
+              { number: 6, title: 'Template', icon: Palette, completed: step > 6 }
             ].map((stepItem, index) => (
               <div key={stepItem.number} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                   step === stepItem.number
                     ? 'border-blue-600 bg-blue-600 text-white'
                     : stepItem.completed
                     ? 'border-green-600 bg-green-600 text-white'
                     : 'border-gray-300 text-gray-500'
                 }`}>
-                  {stepItem.completed ? '✓' : stepItem.number}
+                  {stepItem.completed ? '✓' : <stepItem.icon size={16} />}
                 </div>
                 <span className={`ml-2 text-sm font-medium ${
                   step === stepItem.number ? 'text-blue-600' : 'text-gray-500'
                 }`}>
                   {stepItem.title}
                 </span>
-                {index < 3 && (
+                {index < 5 && (
                   <div className={`w-12 h-0.5 mx-4 ${
                     stepItem.completed ? 'bg-green-600' : 'bg-gray-300'
                   }`} />
@@ -852,29 +460,13 @@ export default function SellerInfoPage() {
             
             <Button
               onClick={() => setStep(step + 1)}
-              disabled={step === 4 || (step === 1 && (!sellerData.name || !sellerData.title))}
+              disabled={step === 6 || (step === 1 && (!productStoryData.basics.name || !productStoryData.basics.category))}
             >
-              {step === 4 ? 'Complete' : 'Next'}
+              {step === 6 ? 'Complete' : 'Next'}
             </Button>
           </div>
         </div>
       </div>
-
-      {/* Modals */}
-      <PhotoOptionsModal
-        isOpen={showPhotoModal}
-        onClose={() => setShowPhotoModal(false)}
-        onPhotoGenerated={handleAIPhotoGenerated}
-        sellerData={sellerData}
-      />
-
-      <UniversalAIContentGenerator
-        isOpen={showAIGenerator}
-        onClose={() => setShowAIGenerator(false)}
-        onContentGenerated={handleAIContentGenerated}
-        currentData={sellerData}
-        type="seller-info"
-      />
     </div>
   );
 }

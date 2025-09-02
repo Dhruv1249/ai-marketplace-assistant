@@ -1,13 +1,13 @@
 import UniversalPreviewPage from '@/components/shared/UniversalPreviewPage';
 
-export default function SellerInfoPreviewPage() {
+export default function ProductStoryPreviewPage() {
   return (
     <UniversalPreviewPage
-      type="seller-info"
+      type="product-story"
       backUrl="/seller-info"
-      storageKey="sellerInfoPreviewData"
-      title="Seller Info Preview"
-      helpText="Keep the seller info tab open to maintain your data."
+      storageKey="productStoryPreviewData"
+      title="Product Story Preview"
+      helpText="Keep the product story tab open to maintain your data."
     />
   );
 }

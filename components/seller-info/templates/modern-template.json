@@ -1,0 +1,329 @@
+{
+  "metadata": {
+    "name": "Modern Minimal",
+    "description": "Clean, minimal design with focus on innovation and technology",
+    "template": "modern"
+  },
+  "styleVariables": {
+    "primaryColor": "#1f2937",
+    "secondaryColor": "#374151",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#6b7280"
+  },
+  "component": {
+    "id": "modern-story",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white"
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "div",
+        "props": {
+          "className": "bg-gray-900 text-white py-24"
+        },
+        "children": [
+          {
+            "id": "hero-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "product-name",
+                "type": "h1",
+                "props": {
+                  "className": "text-6xl font-light mb-6 tracking-tight"
+                },
+                "children": ["{{content.basics.name}}"]
+              },
+              {
+                "id": "product-category",
+                "type": "p",
+                "props": {
+                  "className": "text-xl text-gray-300 mb-8 font-light"
+                },
+                "children": ["{{content.basics.category}}"]
+              },
+              {
+                "id": "value-prop",
+                "type": "p",
+                "props": {
+                  "className": "text-lg text-gray-400 max-w-3xl mx-auto font-light leading-relaxed"
+                },
+                "children": ["{{content.basics.value}}"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "problem-section",
+        "type": "div",
+        "props": {
+          "className": "py-24"
+        },
+        "children": [
+          {
+            "id": "problem-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "problem-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-light text-gray-900 mb-12 text-center tracking-tight"
+                },
+                "children": ["The Challenge"]
+              },
+              {
+                "id": "problem-text",
+                "type": "p",
+                "props": {
+                  "className": "text-xl text-gray-600 text-center max-w-3xl mx-auto font-light leading-relaxed"
+                },
+                "children": ["{{content.basics.problem}}"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "solution-section",
+        "type": "div",
+        "props": {
+          "className": "py-24 bg-gray-50"
+        },
+        "children": [
+          {
+            "id": "solution-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "solution-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-light text-gray-900 mb-16 text-center tracking-tight"
+                },
+                "children": ["Our Solution"]
+              },
+              {
+                "id": "solution-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-2 gap-16 items-center"
+                },
+                "children": [
+                  {
+                    "id": "solution-content",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-8"
+                    },
+                    "children": [
+                      {
+                        "id": "origin-story",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-4"
+                        },
+                        "children": [
+                          {
+                            "id": "origin-title",
+                            "type": "h3",
+                            "props": {
+                              "className": "text-2xl font-light text-gray-900"
+                            },
+                            "children": ["Origin"]
+                          },
+                          {
+                            "id": "origin-text",
+                            "type": "p",
+                            "props": {
+                              "className": "text-gray-600 font-light leading-relaxed"
+                            },
+                            "children": ["{{content.story.origin}}"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "solution-journey",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-4"
+                        },
+                        "children": [
+                          {
+                            "id": "journey-title",
+                            "type": "h3",
+                            "props": {
+                              "className": "text-2xl font-light text-gray-900"
+                            },
+                            "children": ["Innovation"]
+                          },
+                          {
+                            "id": "journey-text",
+                            "type": "p",
+                            "props": {
+                              "className": "text-gray-600 font-light leading-relaxed"
+                            },
+                            "children": ["{{content.story.solution}}"]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "solution-visual",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-gray-200 rounded-lg h-96 flex items-center justify-center"
+                    },
+                    "children": [
+                      {
+                        "id": "visual-placeholder",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-500 font-light"
+                        },
+                        "children": ["Product Visual"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "unique-section",
+        "type": "div",
+        "props": {
+          "className": "py-24"
+        },
+        "children": [
+          {
+            "id": "unique-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "unique-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-light text-gray-900 mb-12 tracking-tight"
+                },
+                "children": ["What Sets Us Apart"]
+              },
+              {
+                "id": "unique-text",
+                "type": "p",
+                "props": {
+                  "className": "text-xl text-gray-600 max-w-3xl mx-auto font-light leading-relaxed"
+                },
+                "children": ["{{content.story.unique}}"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "process-section",
+        "type": "div",
+        "props": {
+          "className": "py-24 bg-gray-900 text-white"
+        },
+        "children": [
+          {
+            "id": "process-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "process-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-light mb-16 text-center tracking-tight"
+                },
+                "children": ["Precision & Quality"]
+              },
+              {
+                "id": "process-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-2 gap-16"
+                },
+                "children": [
+                  {
+                    "id": "creation-process",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": [
+                      {
+                        "id": "creation-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-2xl font-light text-white"
+                        },
+                        "children": ["Process"]
+                      },
+                      {
+                        "id": "creation-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-300 font-light leading-relaxed"
+                        },
+                        "children": ["{{content.process.creation}}"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "materials-info",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": [
+                      {
+                        "id": "materials-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-2xl font-light text-white"
+                        },
+                        "children": ["Materials"]
+                      },
+                      {
+                        "id": "materials-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-300 font-light leading-relaxed"
+                        },
+                        "children": ["{{content.process.materials}}"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,311 @@
+{
+  "metadata": {
+    "name": "Impact Story",
+    "description": "Social impact and mission-driven template",
+    "template": "impact"
+  },
+  "styleVariables": {
+    "primaryColor": "#059669",
+    "secondaryColor": "#047857",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#10b981"
+  },
+  "component": {
+    "id": "impact-story",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white"
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "div",
+        "props": {
+          "className": "bg-gradient-to-r from-green-600 to-emerald-700 text-white py-20"
+        },
+        "children": [
+          {
+            "id": "hero-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "product-name",
+                "type": "h1",
+                "props": {
+                  "className": "text-5xl font-bold mb-6"
+                },
+                "children": ["{{content.basics.name}}"]
+              },
+              {
+                "id": "mission-subtitle",
+                "type": "p",
+                "props": {
+                  "className": "text-2xl opacity-90 mb-8"
+                },
+                "children": ["Making a Difference"]
+              },
+              {
+                "id": "vision-text",
+                "type": "p",
+                "props": {
+                  "className": "text-lg opacity-80 max-w-2xl mx-auto"
+                },
+                "children": ["{{content.story.vision}}"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "problem-section",
+        "type": "div",
+        "props": {
+          "className": "py-20 bg-gray-50"
+        },
+        "children": [
+          {
+            "id": "problem-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "problem-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-gray-900 mb-12 text-center"
+                },
+                "children": ["The Challenge We Address"]
+              },
+              {
+                "id": "problem-content",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-2 gap-12 items-center"
+                },
+                "children": [
+                  {
+                    "id": "problem-text",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-700 leading-relaxed"
+                    },
+                    "children": ["{{content.basics.problem}}"]
+                  },
+                  {
+                    "id": "solution-text",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-700 leading-relaxed"
+                    },
+                    "children": ["{{content.story.solution}}"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "impact-section",
+        "type": "div",
+        "props": {
+          "className": "py-20"
+        },
+        "children": [
+          {
+            "id": "impact-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "impact-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-gray-900 mb-12 text-center"
+                },
+                "children": ["Our Impact"]
+              },
+              {
+                "id": "metrics-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-3 gap-8 mb-12"
+                },
+                "children": [
+                  {
+                    "id": "metric-1",
+                    "type": "div",
+                    "props": {
+                      "className": "text-center p-6 bg-green-50 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "metric-number",
+                        "type": "div",
+                        "props": {
+                          "className": "text-3xl font-bold text-green-600 mb-2"
+                        },
+                        "children": ["1000+"]
+                      },
+                      {
+                        "id": "metric-label",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-700"
+                        },
+                        "children": ["Lives Impacted"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "metric-2",
+                    "type": "div",
+                    "props": {
+                      "className": "text-center p-6 bg-green-50 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "metric-number-2",
+                        "type": "div",
+                        "props": {
+                          "className": "text-3xl font-bold text-green-600 mb-2"
+                        },
+                        "children": ["50+"]
+                      },
+                      {
+                        "id": "metric-label-2",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-700"
+                        },
+                        "children": ["Communities Served"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "metric-3",
+                    "type": "div",
+                    "props": {
+                      "className": "text-center p-6 bg-green-50 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "metric-number-3",
+                        "type": "div",
+                        "props": {
+                          "className": "text-3xl font-bold text-green-600 mb-2"
+                        },
+                        "children": ["95%"]
+                      },
+                      {
+                        "id": "metric-label-3",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-700"
+                        },
+                        "children": ["Success Rate"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ethics-section",
+        "type": "div",
+        "props": {
+          "className": "py-20 bg-green-50"
+        },
+        "children": [
+          {
+            "id": "ethics-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "ethics-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-gray-900 mb-12 text-center"
+                },
+                "children": ["Our Commitment"]
+              },
+              {
+                "id": "ethics-content",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-2 gap-12"
+                },
+                "children": [
+                  {
+                    "id": "sustainability",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-4"
+                    },
+                    "children": [
+                      {
+                        "id": "sustainability-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-2xl font-semibold text-green-800"
+                        },
+                        "children": ["Sustainability"]
+                      },
+                      {
+                        "id": "sustainability-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed"
+                        },
+                        "children": ["{{content.process.ethics}}"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "quality-commitment",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-4"
+                    },
+                    "children": [
+                      {
+                        "id": "quality-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-2xl font-semibold text-green-800"
+                        },
+                        "children": ["Quality Standards"]
+                      },
+                      {
+                        "id": "quality-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-gray-700 leading-relaxed"
+                        },
+                        "children": ["{{content.process.quality}}"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

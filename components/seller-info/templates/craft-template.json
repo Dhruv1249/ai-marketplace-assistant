@@ -1,0 +1,227 @@
+{
+  "metadata": {
+    "name": "Artisan Craft",
+    "description": "Craftsmanship-focused product story template",
+    "template": "craft"
+  },
+  "styleVariables": {
+    "primaryColor": "#d97706",
+    "secondaryColor": "#92400e",
+    "backgroundColor": "#fefbf3",
+    "textColor": "#1c1917",
+    "accentColor": "#f59e0b"
+  },
+  "component": {
+    "id": "craft-story",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-amber-50"
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "div",
+        "props": {
+          "className": "bg-gradient-to-r from-amber-600 to-orange-700 text-white py-20"
+        },
+        "children": [
+          {
+            "id": "hero-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "product-name",
+                "type": "h1",
+                "props": {
+                  "className": "text-5xl font-bold mb-6 font-serif"
+                },
+                "children": ["{{content.basics.name}}"]
+              },
+              {
+                "id": "craft-subtitle",
+                "type": "p",
+                "props": {
+                  "className": "text-2xl opacity-90 mb-8 font-serif italic"
+                },
+                "children": ["Handcrafted with Passion"]
+              },
+              {
+                "id": "value-prop",
+                "type": "p",
+                "props": {
+                  "className": "text-lg opacity-80 max-w-2xl mx-auto"
+                },
+                "children": ["{{content.basics.value}}"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "craftsmanship-section",
+        "type": "div",
+        "props": {
+          "className": "py-20"
+        },
+        "children": [
+          {
+            "id": "craft-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "craft-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-amber-900 mb-12 text-center font-serif"
+                },
+                "children": ["The Art of Creation"]
+              },
+              {
+                "id": "creation-story",
+                "type": "div",
+                "props": {
+                  "className": "grid md:grid-cols-2 gap-12 items-center"
+                },
+                "children": [
+                  {
+                    "id": "creation-text",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": [
+                      {
+                        "id": "creation-content",
+                        "type": "p",
+                        "props": {
+                          "className": "text-lg text-amber-900 leading-relaxed"
+                        },
+                        "children": ["{{content.process.creation}}"]
+                      },
+                      {
+                        "id": "materials-content",
+                        "type": "p",
+                        "props": {
+                          "className": "text-lg text-amber-800 leading-relaxed"
+                        },
+                        "children": ["{{content.process.materials}}"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "craft-placeholder",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-amber-200 rounded-lg h-64 flex items-center justify-center"
+                    },
+                    "children": [
+                      {
+                        "id": "placeholder-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-amber-700 font-medium"
+                        },
+                        "children": ["Craft Process Image"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "origin-section",
+        "type": "div",
+        "props": {
+          "className": "py-20 bg-white"
+        },
+        "children": [
+          {
+            "id": "origin-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "origin-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-amber-900 mb-12 text-center font-serif"
+                },
+                "children": ["Our Story"]
+              },
+              {
+                "id": "origin-content",
+                "type": "div",
+                "props": {
+                  "className": "prose prose-lg prose-amber max-w-none"
+                },
+                "children": [
+                  {
+                    "id": "origin-text",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-700 leading-relaxed mb-6"
+                    },
+                    "children": ["{{content.story.origin}}"]
+                  },
+                  {
+                    "id": "unique-text",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-700 leading-relaxed"
+                    },
+                    "children": ["{{content.story.unique}}"]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "quality-section",
+        "type": "div",
+        "props": {
+          "className": "py-20 bg-amber-100"
+        },
+        "children": [
+          {
+            "id": "quality-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "quality-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-4xl font-bold text-amber-900 mb-8 font-serif"
+                },
+                "children": ["Quality & Standards"]
+              },
+              {
+                "id": "quality-text",
+                "type": "p",
+                "props": {
+                  "className": "text-lg text-amber-800 max-w-3xl mx-auto leading-relaxed"
+                },
+                "children": ["{{content.process.quality}}"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

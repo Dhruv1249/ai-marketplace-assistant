@@ -13,6 +13,12 @@ import creativeTemplate from '@/components/seller-info/templates/creative-templa
 import executiveTemplate from '@/components/seller-info/templates/executive-template.json';
 import personalTemplate from '@/components/seller-info/templates/personal-template.json';
 
+// Import product story templates
+import journeyTemplate from '@/components/seller-info/templates/journey-template.json';
+import craftTemplate from '@/components/seller-info/templates/craft-template.json';
+import impactTemplate from '@/components/seller-info/templates/impact-template.json';
+import modernTemplate from '@/components/seller-info/templates/modern-template.json';
+
 const SELLER_TEMPLATE_MAP = {
   'professional': professionalTemplate,
   'creative': creativeTemplate,
@@ -20,14 +26,18 @@ const SELLER_TEMPLATE_MAP = {
   'personal': personalTemplate,
 };
 
+const PRODUCT_STORY_TEMPLATE_MAP = {
+  'journey': journeyTemplate,
+  'craft': craftTemplate,
+  'impact': impactTemplate,
+  'modern': modernTemplate,
+};
+
 /**
- * UNIFIED PREVIEW PAGE - MODULAR SOLUTION
- * 
- * This component handles BOTH product and seller-info previews using a single,
- * consistent data structure and rendering path. No more branching logic!
+ * UNIFIED PREVIEW PAGE - ENHANCED FOR PRODUCT STORIES
  */
 export default function UniversalPreviewPage({ 
-  type = 'product', // 'product' or 'seller-info'
+  type = 'product', // 'product', 'seller-info', or 'product-story'
   backUrl = '/create',
   storageKey = 'previewData',
   title = 'Template Preview',
@@ -42,7 +52,7 @@ export default function UniversalPreviewPage({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
 
-  // UNIFIED DATA LOADING - Works for both product and seller-info
+  // ENHANCED DATA LOADING - Works for product stories
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storageKey);
@@ -71,16 +81,46 @@ export default function UniversalPreviewPage({
   }, [storageKey, type]);
 
   /**
-   * NORMALIZE DATA STRUCTURE
-   * Converts any input format to unified: { model, content, images }
+   * ENHANCED NORMALIZE DATA STRUCTURE
+   * Handles product stories, seller info, and legacy formats
    */
   const normalizeDataStructure = (rawData, dataType) => {
     console.log('🔄 [NORMALIZE] Input data:', rawData);
+    console.log('🔄 [NORMALIZE] Data type:', dataType);
     
     // Already in unified format
-    if (rawData.model && rawData.content && Array.isArray(rawData.images)) {
+    if (rawData.model && rawData.content) {
       console.log('✅ [NORMALIZE] Already in unified format');
-      return rawData;
+      return {
+        model: rawData.model,
+        content: rawData.content,
+        images: rawData.images || []
+      };
+    }
+    
+    // NEW: Product story format from our form
+    if (dataType === 'product-story') {
+      console.log('🔄 [NORMALIZE] Converting product-story format');
+      
+      // If we have productStoryData and templateType (from our form)
+      if (rawData.productStoryData && rawData.templateType) {
+        const template = PRODUCT_STORY_TEMPLATE_MAP[rawData.templateType] || journeyTemplate;
+        
+        return {
+          model: template,
+          content: rawData.productStoryData,
+          images: getAllImagesFromProductStory(rawData.productStoryData)
+        };
+      }
+      
+      // If we already have model and content
+      if (rawData.model && rawData.content) {
+        return {
+          model: rawData.model,
+          content: rawData.content,
+          images: rawData.images || []
+        };
+      }
     }
     
     // Legacy seller-info format: { sellerData, templateType }
@@ -110,6 +150,23 @@ export default function UniversalPreviewPage({
     return null;
   };
 
+  // Helper function to extract all images from product story data
+  const getAllImagesFromProductStory = (productStoryData) => {
+    const images = [];
+    
+    if (productStoryData.visuals) {
+      Object.values(productStoryData.visuals).forEach(visualArray => {
+        if (Array.isArray(visualArray)) {
+          visualArray.forEach(visual => {
+            if (visual.url) images.push(visual.url);
+          });
+        }
+      });
+    }
+    
+    return images;
+  };
+
   /**
    * UNIFIED ARRAY EXTRACTION - Works for both product and seller-info
    */
@@ -118,7 +175,9 @@ export default function UniversalPreviewPage({
     
     const extractFromNode = (node, arrayData = { 
       specialties: currentContent?.specialties || [], 
-      achievements: currentContent?.achievements || [] 
+      achievements: currentContent?.achievements || [],
+      testimonials: currentContent?.impact?.testimonials || [],
+      metrics: currentContent?.impact?.metrics || []
     }) => {
       if (!node) return arrayData;
       
@@ -179,8 +238,7 @@ export default function UniversalPreviewPage({
   }, []);
 
   /**
-   * UNIFIED TEMPLATE UPDATE HANDLER - Works for both product and seller-info
-   * This is the KEY FIX - no more branching logic!
+   * UNIFIED TEMPLATE UPDATE HANDLER - Enhanced for product stories
    */
   const handleTemplateUpdate = useCallback((updatedTemplate) => {
     console.log('🔄 [UNIFIED UPDATE] === TEMPLATE UPDATE START ===');
@@ -195,7 +253,7 @@ export default function UniversalPreviewPage({
 
       console.log('📊 [UNIFIED UPDATE] Current data keys:', Object.keys(currentData));
       
-      // UNIFIED UPDATE LOGIC - Same for both product and seller-info
+      // UNIFIED UPDATE LOGIC - Same for all types
       let updatedData = {
         ...currentData,
         model: updatedTemplate
@@ -216,9 +274,29 @@ export default function UniversalPreviewPage({
         });
       }
       
+      // For product-story, handle impact arrays
+      if (type === 'product-story') {
+        const arrayData = extractArrayDataFromTemplate(updatedTemplate, currentData.content);
+        if (currentData.content.impact) {
+          updatedData.content = {
+            ...currentData.content,
+            impact: {
+              ...currentData.content.impact,
+              testimonials: arrayData.testimonials,
+              metrics: arrayData.metrics
+            }
+          };
+        }
+        
+        console.log('✅ [UNIFIED UPDATE] Updated product story arrays:', {
+          testimonials: arrayData.testimonials.length,
+          metrics: arrayData.metrics.length
+        });
+      }
+      
       console.log('💾 [UNIFIED UPDATE] Saving updated data to localStorage immediately...');
       
-      // IMMEDIATE SAVE AND RE-RENDER - Same for both types
+      // IMMEDIATE SAVE AND RE-RENDER - Same for all types
       try {
         localStorage.setItem(storageKey, JSON.stringify(updatedData));
         console.log('✅ [UNIFIED UPDATE] Successfully saved to localStorage');
@@ -282,7 +360,7 @@ export default function UniversalPreviewPage({
   };
 
   /**
-   * UNIFIED RENDERING - Single path for both product and seller-info
+   * UNIFIED RENDERING - Single path for all types
    */
   const renderPreviewContent = () => {
     if (!data) {
@@ -291,7 +369,9 @@ export default function UniversalPreviewPage({
           <div className="text-center">
             <p className="text-gray-700 text-lg mb-4">No preview data found.</p>
             <p className="text-gray-500">
-              {type === 'seller-info' 
+              {type === 'product-story' 
+                ? 'Go back to the Product Story page, fill in your information, and click Preview.'
+                : type === 'seller-info' 
                 ? 'Go back to the Seller Info page, fill in your information, and click Preview.'
                 : 'Go back to the Create page, generate content, choose a layout, and click Preview.'
               }
@@ -302,8 +382,9 @@ export default function UniversalPreviewPage({
     }
 
     console.log('🎨 [UNIFIED RENDER] Rendering with unified renderer, key:', renderKey);
+    console.log('🎨 [UNIFIED RENDER] Content data:', data.content);
     
-    // SINGLE RENDERER FOR BOTH TYPES - This is the key fix!
+    // SINGLE RENDERER FOR ALL TYPES
     return (
       <EnhancedJSONModelRenderer
         key={renderKey}
@@ -335,12 +416,13 @@ export default function UniversalPreviewPage({
           <div className="flex items-center gap-2">
             <Palette size={14} className="text-gray-500" />
             <span className="text-xs text-gray-600">
-              {type === 'seller-info' ? 'Seller Info Layout' : 'Product Layout'}
+              {type === 'product-story' ? 'Product Story Layout' : 
+               type === 'seller-info' ? 'Seller Info Layout' : 'Product Layout'}
             </span>
           </div>
           <div className="flex gap-1">
             <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
-              Unified Renderer
+              Enhanced Renderer
             </span>
             {hasUnsavedChanges && (
               <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded animate-pulse">
@@ -351,7 +433,9 @@ export default function UniversalPreviewPage({
         </div>
         <div className="text-xs text-gray-500">
           v{data.model.metadata.version || '1.0'} • Render: #{renderKey} • 
-          {type === 'seller-info' 
+          {type === 'product-story' 
+            ? ` Content: ${Object.keys(data?.content || {}).length} sections`
+            : type === 'seller-info' 
             ? ` Arrays: ${data?.content?.specialties?.length || 0} specialties, ${data?.content?.achievements?.length || 0} achievements`
             : ' Product Template'
           }
@@ -428,12 +512,12 @@ export default function UniversalPreviewPage({
       {/* Edit Mode Helper */}
       {isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
-          <h3 className="font-semibold mb-2">Edit Mode Active (Unified)</h3>
+          <h3 className="font-semibold mb-2">Edit Mode Active (Enhanced)</h3>
           <ul className="text-sm space-y-1">
             <li>• Click elements to select and edit them</li>
-            <li>• Changes save immediately for both types</li>
+            <li>• Changes save immediately for all types</li>
             <li>• Render key: #{renderKey} (increments on updates)</li>
-            <li>• Single renderer handles both product & seller-info</li>
+            <li>• Enhanced renderer with animations & CSS vars</li>
           </ul>
           {hasUnsavedChanges && (
             <div className="mt-2 text-xs bg-green-500 text-white px-2 py-1 rounded">
