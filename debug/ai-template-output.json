@@ -1,721 +1,320 @@
 {
-  "timestamp": "2025-08-30T06:58:25.067Z",
-  "prompt": "make it dark theme",
-  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a dark theme. This involved updating `styleVariables` to use dark background and text colors, and adjusting primary/secondary/accent colors to complement the dark aesthetic. Tailwind classes were modified to reflect the dark theme, such as changing background colors and text colors of elements like the main image container, headings, and buttons. Feature list borders were also adjusted to fit the new color scheme. The overall effect is a sophisticated and modern dark mode experience.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#93c5fd\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#111827\",\n    \"textColor\": \"#e5e7eb\",\n    \"accentColor\": \"#2563eb\",\n    \"fontFamily\": \"Inter, sans-serif\",\n    \"headingFont\": \"Inter, sans-serif\",\n    \"fontSize\": \"18px\",\n    \"lineHeight\": \"1.6\",\n    \"borderRadius\": \"8px\",\n    \"spacing\": \"1rem\",\n    \"containerMaxWidth\": \"1280px\",\n    \"shadows\": {\n      \"small\": \"0 1px 3px rgba(255,255,255,0.1)\",\n      \"medium\": \"0 4px 6px rgba(255,255,255,0.1)\",\n      \"large\": \"0 10px 25px rgba(255,255,255,0.1)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"gallery-focused\",\n    \"name\": \"Gallery Focused - Dark Theme\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-black text-gray-200 flex flex-col relative\"\n    },\n    \"children\": [\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"main-grid\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-8\"\n            },\n            \"children\": [\n              {\n                \"id\": \"gallery-section\",\n                \"type\": \"div\",\n                \"sectionType\": \"gallery\",\n                \"editable\": {\n                  \"moveable\": true,\n                  \"removeable\": false,\n                  \"duplicatable\": false,\n                  \"styleEditable\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Gallery Section\",\n                  \"description\": \"Product image gallery with thumbnails\",\n                  \"icon\": \"image\",\n                  \"category\": \"media\"\n                },\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-3\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"main-image-wrapper\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"aspect-video rounded-lg bg-gray-800 overflow-hidden flex items-center justify-center relative group\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"main-image\",\n                            \"type\": \"img\",\n                            \"props\": {\n                              \"src\": \"blob:http://localhost:3000/0efbb473-6c48-4171-b4d7-0c1093727bba\",\n                              \"alt\": \"Product image\",\n                              \"className\": \"w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"thumbnails-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1\"\n                    },\n                    \"children\": \"gallery.component\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"details-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"hero-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"hero\",\n                    \"editable\": {\n                      \"moveable\": false,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Hero Section\",\n                      \"description\": \"Main product title and description\",\n                      \"icon\": \"type\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"border-b pb-4 mb-4 border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"hero-title\",\n                        \"type\": \"h2\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"fontWeight\": true,\n                          \"color\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Title\",\n                          \"description\": \"Main product heading\",\n                          \"contentType\": \"text\"\n                        },\n                        \"props\": {\n                          \"className\": \"text-3xl font-bold mb-2 text-white\"\n                        },\n                        \"children\": [\n                          \"ghfghdfhgdf\"\n                        ]\n                      },\n                      {\n                        \"id\": \"hero-description\",\n                        \"type\": \"p\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"color\": true,\n                          \"lineHeight\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Description\",\n                          \"description\": \"Detailed product description\",\n                          \"contentType\": \"textarea\"\n                        },\n                        \"props\": {\n                          \"className\": \"whitespace-pre-line text-gray-300\"\n                        },\n                        \"children\": [\n                          \"ghdfhdfghdf\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"features\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Features Section\",\n                      \"description\": \"Product features list\",\n                      \"icon\": \"star\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-3 text-white\"\n                        },\n                        \"children\": [\n                          \"Key Features\"\n                        ]\n                      },\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-4\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"feature-0\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-0-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Innovative ghdfghdfghdf design for enhanced user experience.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-0-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This innovative ghdfghdfghdf design for enhanced user experience. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-1-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Durable construction utilizing premium hdfghdf materials.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-1-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This durable construction utilizing premium hdfghdf materials. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-2-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Seamless integration with existing ghdfghdfghdfgh systems.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-2-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This seamless integration with existing ghdfghdfghdfgh systems. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-3-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"High-performance ghdfghdfghdf capabilities for demanding tasks.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-3-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This high-performance ghdfghdfghdf capabilities for demanding tasks. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-4\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-4-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Intuitive interface for effortless operation.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-4-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This intuitive interface for effortless operation. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-5\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-5-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Energy-efficient operation to reduce consumption.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-5-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This energy-efficient operation to reduce consumption. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"specifications\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Specifications Section\",\n                      \"description\": \"Product specifications table\",\n                      \"icon\": \"list\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-3 text-white\"\n                        },\n                        \"children\": [\n                          \"Specifications\"\n                        ]\n                      },\n                      {\n                        \"id\": \"specs-table-container\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"overflow-x-auto\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-table\",\n                            \"type\": \"table\",\n                            \"props\": {\n                              \"className\": \"min-w-full divide-y divide-gray-700\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"specs-tbody\",\n                                \"type\": \"tbody\",\n                                \"props\": {\n                                  \"className\": \"divide-y divide-gray-700\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"spec-0\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-0-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Model Number\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-0-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ghdfhdfghdf-v1.0\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-1\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-1-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Dimensions (L x W x H)\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-1-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Customizable\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-2\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-2-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Weight\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-2-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Lightweight\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-3\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-3-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Material Composition\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-3-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Premium hdfghdf alloys\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-4\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-4-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Power Source\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-4-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Integrated battery / AC adapter\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-5\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-5-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Connectivity\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-5-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ghdfghdfghdfgh compatible protocols\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-6\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-6-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Operating Temperature\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-6-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"0-50°C\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-7\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-7-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Certifications\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-7-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ISO 9001, CE\"\n                                        ]\n                                      }\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"cta\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Call to Action\",\n                      \"description\": \"Purchase button\",\n                      \"icon\": \"shopping-cart\",\n                      \"category\": \"action\"\n                    },\n                    \"props\": {\n                      \"className\": \"mt-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"cta-button\",\n                        \"type\": \"button\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-1\"\n                        },\n                        \"children\": [\n                          \"Add to Cart\"\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
-  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a dark theme. This involved updating `styleVariables` to use dark background and text colors, and adjusting primary/secondary/accent colors to complement the dark aesthetic. Tailwind classes were modified to reflect the dark theme, such as changing background colors and text colors of elements like the main image container, headings, and buttons. Feature list borders were also adjusted to fit the new color scheme. The overall effect is a sophisticated and modern dark mode experience.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#93c5fd\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#111827\",\n    \"textColor\": \"#e5e7eb\",\n    \"accentColor\": \"#2563eb\",\n    \"fontFamily\": \"Inter, sans-serif\",\n    \"headingFont\": \"Inter, sans-serif\",\n    \"fontSize\": \"18px\",\n    \"lineHeight\": \"1.6\",\n    \"borderRadius\": \"8px\",\n    \"spacing\": \"1rem\",\n    \"containerMaxWidth\": \"1280px\",\n    \"shadows\": {\n      \"small\": \"0 1px 3px rgba(255,255,255,0.1)\",\n      \"medium\": \"0 4px 6px rgba(255,255,255,0.1)\",\n      \"large\": \"0 10px 25px rgba(255,255,255,0.1)\"\n    }\n  },\n  \"metadata\": {\n    \"template\": \"gallery-focused\",\n    \"name\": \"Gallery Focused - Dark Theme\"\n  },\n  \"component\": {\n    \"id\": \"root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-black text-gray-200 flex flex-col relative\"\n    },\n    \"children\": [\n      {\n        \"id\": \"container\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"main-grid\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-8\"\n            },\n            \"children\": [\n              {\n                \"id\": \"gallery-section\",\n                \"type\": \"div\",\n                \"sectionType\": \"gallery\",\n                \"editable\": {\n                  \"moveable\": true,\n                  \"removeable\": false,\n                  \"duplicatable\": false,\n                  \"styleEditable\": true\n                },\n                \"editingMeta\": {\n                  \"name\": \"Gallery Section\",\n                  \"description\": \"Product image gallery with thumbnails\",\n                  \"icon\": \"image\",\n                  \"category\": \"media\"\n                },\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"main-image-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-3\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"main-image-wrapper\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"aspect-video rounded-lg bg-gray-800 overflow-hidden flex items-center justify-center relative group\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"main-image\",\n                            \"type\": \"img\",\n                            \"props\": {\n                              \"src\": \"blob:http://localhost:3000/0efbb473-6c48-4171-b4d7-0c1093727bba\",\n                              \"alt\": \"Product image\",\n                              \"className\": \"w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"thumbnails-container\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1\"\n                    },\n                    \"children\": \"gallery.component\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"details-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"hero-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"hero\",\n                    \"editable\": {\n                      \"moveable\": false,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Hero Section\",\n                      \"description\": \"Main product title and description\",\n                      \"icon\": \"type\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"border-b pb-4 mb-4 border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"hero-title\",\n                        \"type\": \"h2\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"fontWeight\": true,\n                          \"color\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Title\",\n                          \"description\": \"Main product heading\",\n                          \"contentType\": \"text\"\n                        },\n                        \"props\": {\n                          \"className\": \"text-3xl font-bold mb-2 text-white\"\n                        },\n                        \"children\": [\n                          \"ghfghdfhgdf\"\n                        ]\n                      },\n                      {\n                        \"id\": \"hero-description\",\n                        \"type\": \"p\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true,\n                          \"textAlign\": true,\n                          \"fontSize\": true,\n                          \"color\": true,\n                          \"lineHeight\": true\n                        },\n                        \"editingMeta\": {\n                          \"name\": \"Product Description\",\n                          \"description\": \"Detailed product description\",\n                          \"contentType\": \"textarea\"\n                        },\n                        \"props\": {\n                          \"className\": \"whitespace-pre-line text-gray-300\"\n                        },\n                        \"children\": [\n                          \"ghdfhdfghdf\"\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"features-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"features\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Features Section\",\n                      \"description\": \"Product features list\",\n                      \"icon\": \"star\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"features-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-3 text-white\"\n                        },\n                        \"children\": [\n                          \"Key Features\"\n                        ]\n                      },\n                      {\n                        \"id\": \"features-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-4\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"feature-0\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-0-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Innovative ghdfghdfghdf design for enhanced user experience.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-0-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This innovative ghdfghdfghdf design for enhanced user experience. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-1-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Durable construction utilizing premium hdfghdf materials.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-1-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This durable construction utilizing premium hdfghdf materials. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-2-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Seamless integration with existing ghdfghdfghdfgh systems.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-2-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This seamless integration with existing ghdfghdfghdfgh systems. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-3-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"High-performance ghdfghdfghdf capabilities for demanding tasks.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-3-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This high-performance ghdfghdfghdf capabilities for demanding tasks. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-4\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-4-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Intuitive interface for effortless operation.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-4-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This intuitive interface for effortless operation. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"feature-5\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"border-l-4 border-blue-400 pl-4 mb-4\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"feature-5-title\",\n                                \"type\": \"h4\",\n                                \"props\": {\n                                  \"className\": \"font-medium mb-1 text-white\"\n                                },\n                                \"children\": [\n                                  \"Energy-efficient operation to reduce consumption.\"\n                                ]\n                              },\n                              {\n                                \"id\": \"feature-5-explanation\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm leading-relaxed text-gray-300\"\n                                },\n                                \"children\": [\n                                  \"This energy-efficient operation to reduce consumption. enhances the product's functionality and provides excellent value for users.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"specs-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"specifications\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": true,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Specifications Section\",\n                      \"description\": \"Product specifications table\",\n                      \"icon\": \"list\",\n                      \"category\": \"content\"\n                    },\n                    \"props\": {\n                      \"className\": \"mb-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specs-title\",\n                        \"type\": \"h3\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"text-xl font-semibold mb-3 text-white\"\n                        },\n                        \"children\": [\n                          \"Specifications\"\n                        ]\n                      },\n                      {\n                        \"id\": \"specs-table-container\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"overflow-x-auto\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"specs-table\",\n                            \"type\": \"table\",\n                            \"props\": {\n                              \"className\": \"min-w-full divide-y divide-gray-700\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"specs-tbody\",\n                                \"type\": \"tbody\",\n                                \"props\": {\n                                  \"className\": \"divide-y divide-gray-700\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"spec-0\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-0-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Model Number\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-0-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ghdfhdfghdf-v1.0\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-1\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-1-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Dimensions (L x W x H)\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-1-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Customizable\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-2\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-2-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Weight\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-2-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Lightweight\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-3\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-3-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Material Composition\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-3-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Premium hdfghdf alloys\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-4\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-4-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Power Source\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-4-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"Integrated battery / AC adapter\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-5\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-5-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Connectivity\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-5-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ghdfghdfghdfgh compatible protocols\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-6\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-6-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Operating Temperature\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-6-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"0-50°C\"\n                                        ]\n                                      }\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"spec-7\",\n                                    \"type\": \"tr\",\n                                    \"props\": {},\n                                    \"children\": [\n                                      {\n                                        \"id\": \"spec-7-key\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300\"\n                                        },\n                                        \"children\": [\n                                          \"Certifications\"\n                                        ]\n                                      },\n                                      {\n                                        \"id\": \"spec-7-value\",\n                                        \"type\": \"td\",\n                                        \"props\": {\n                                          \"className\": \"px-4 py-2 text-gray-200\"\n                                        },\n                                        \"children\": [\n                                          \"ISO 9001, CE\"\n                                        ]\n                                      }\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-section\",\n                    \"type\": \"div\",\n                    \"sectionType\": \"cta\",\n                    \"editable\": {\n                      \"moveable\": true,\n                      \"removeable\": false,\n                      \"duplicatable\": false,\n                      \"styleEditable\": true,\n                      \"contentEditable\": true\n                    },\n                    \"editingMeta\": {\n                      \"name\": \"Call to Action\",\n                      \"description\": \"Purchase button\",\n                      \"icon\": \"shopping-cart\",\n                      \"category\": \"action\"\n                    },\n                    \"props\": {\n                      \"className\": \"mt-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"cta-button\",\n                        \"type\": \"button\",\n                        \"editable\": {\n                          \"contentEditable\": true,\n                          \"styleEditable\": true\n                        },\n                        \"props\": {\n                          \"className\": \"px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-1\"\n                        },\n                        \"children\": [\n                          \"Add to Cart\"\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+  "timestamp": "2025-08-30T13:06:26.662Z",
+  "prompt": "black",
+  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#1f2937\",\n    \"textColor\": \"#e5e7eb\",\n    \"fontFamily\": \"'Inter', sans-serif\",\n    \"accentColor\": \"#93c5fc\"\n  },\n  \"metadata\": {\n    \"name\": \"Midnight Elegance\",\n    \"description\": \"A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability.\"\n  },\n  \"component\": {\n    \"id\": \"creative-seller-root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"relative overflow-hidden pt-24 pb-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse\"\n            }\n          },\n          {\n            \"id\": \"hero-content\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative px-8 py-16 text-center animate-fadeIn\"\n            },\n            \"children\": [\n              {\n                \"id\": \"profile-photo-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative inline-block mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"profile-photo\",\n                    \"type\": \"img\",\n                    \"if\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"src\": \"{{content.photos[0].url}}\",\n                      \"alt\": \"{{content.name}}\",\n                      \"className\": \"w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300\"\n                    }\n                  },\n                  {\n                    \"id\": \"profile-placeholder\",\n                    \"type\": \"div\",\n                    \"unless\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"className\": \"w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"placeholder-initial\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"text-white text-6xl font-bold\"\n                        },\n                        \"children\": \"{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"seller-name\",\n                \"type\": \"h1\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide\"\n                },\n                \"children\": \"{{content.name || 'Your Name'}}\"\n              },\n              {\n                \"id\": \"seller-title\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-2xl text-blue-300 font-semibold mb-6\"\n                },\n                \"children\": \"{{content.title || 'Your Creative Title'}}\"\n              },\n              {\n                \"id\": \"seller-bio\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed\"\n                },\n                \"children\": \"{{content.bio || 'Your creative bio will appear here...'}}\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"content-sections\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"px-8 py-12\"\n        },\n        \"children\": [\n          {\n            \"id\": \"content-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto space-y-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"story-section\",\n                \"type\": \"div\",\n                \"if\": \"content.story\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"story-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-6 text-center\"\n                    },\n                    \"children\": \"My Creative Journey\"\n                  },\n                  {\n                    \"id\": \"story-content\",\n                    \"type\": \"p\",\n                    \"editable\": {\n                      \"contentEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-gray-300 leading-relaxed text-lg\"\n                    },\n                    \"children\": \"{{content.story}}\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"skills-achievements-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 md:grid-cols-2 gap-8\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specialties-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.specialties && content.specialties.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specialties-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Creative Skills\"\n                      },\n                      {\n                        \"id\": \"specialties-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"SPECIALTIES_ARRAY\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"achievements-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.achievements && content.achievements.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"achievements-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Achievements\"\n                      },\n                      {\n                        \"id\": \"achievements-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"ACHIEVEMENTS_ARRAY\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"contact-social-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"connect-title\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": \"Let's Connect\"\n                  },\n                  {\n                    \"id\": \"contact-links\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"email-contact\",\n                        \"type\": \"div\",\n                        \"if\": \"content.contact && content.contact.email\",\n                        \"props\": {\n                          \"className\": \"flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"email-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block text-blue-400\"\n                            },\n                            \"children\": \"📧\"\n                          },\n                          {\n                            \"id\": \"email-text\",\n                            \"type\": \"span\",\n                            \"children\": \"{{content.contact.email}}\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"website-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.website\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.website}}\",\n                          \"className\": \"flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"website-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"🌐\"\n                          },\n                          {\n                            \"id\": \"website-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Portfolio\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"instagram-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.social && content.contact.social.instagram\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.social.instagram}}\",\n                          \"className\": \"flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"instagram-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"📷\"\n                          },\n                          {\n                            \"id\": \"instagram-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Instagram\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
+  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#1f2937\",\n    \"textColor\": \"#e5e7eb\",\n    \"fontFamily\": \"'Inter', sans-serif\",\n    \"accentColor\": \"#93c5fc\"\n  },\n  \"metadata\": {\n    \"name\": \"Midnight Elegance\",\n    \"description\": \"A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability.\"\n  },\n  \"component\": {\n    \"id\": \"creative-seller-root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"relative overflow-hidden pt-24 pb-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse\"\n            }\n          },\n          {\n            \"id\": \"hero-content\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative px-8 py-16 text-center animate-fadeIn\"\n            },\n            \"children\": [\n              {\n                \"id\": \"profile-photo-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative inline-block mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"profile-photo\",\n                    \"type\": \"img\",\n                    \"if\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"src\": \"{{content.photos[0].url}}\",\n                      \"alt\": \"{{content.name}}\",\n                      \"className\": \"w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300\"\n                    }\n                  },\n                  {\n                    \"id\": \"profile-placeholder\",\n                    \"type\": \"div\",\n                    \"unless\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"className\": \"w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"placeholder-initial\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"text-white text-6xl font-bold\"\n                        },\n                        \"children\": \"{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"seller-name\",\n                \"type\": \"h1\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide\"\n                },\n                \"children\": \"{{content.name || 'Your Name'}}\"\n              },\n              {\n                \"id\": \"seller-title\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-2xl text-blue-300 font-semibold mb-6\"\n                },\n                \"children\": \"{{content.title || 'Your Creative Title'}}\"\n              },\n              {\n                \"id\": \"seller-bio\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed\"\n                },\n                \"children\": \"{{content.bio || 'Your creative bio will appear here...'}}\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"content-sections\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"px-8 py-12\"\n        },\n        \"children\": [\n          {\n            \"id\": \"content-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto space-y-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"story-section\",\n                \"type\": \"div\",\n                \"if\": \"content.story\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"story-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-6 text-center\"\n                    },\n                    \"children\": \"My Creative Journey\"\n                  },\n                  {\n                    \"id\": \"story-content\",\n                    \"type\": \"p\",\n                    \"editable\": {\n                      \"contentEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-gray-300 leading-relaxed text-lg\"\n                    },\n                    \"children\": \"{{content.story}}\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"skills-achievements-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 md:grid-cols-2 gap-8\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specialties-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.specialties && content.specialties.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specialties-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Creative Skills\"\n                      },\n                      {\n                        \"id\": \"specialties-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"SPECIALTIES_ARRAY\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"achievements-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.achievements && content.achievements.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"achievements-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Achievements\"\n                      },\n                      {\n                        \"id\": \"achievements-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"ACHIEVEMENTS_ARRAY\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"contact-social-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"connect-title\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": \"Let's Connect\"\n                  },\n                  {\n                    \"id\": \"contact-links\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"email-contact\",\n                        \"type\": \"div\",\n                        \"if\": \"content.contact && content.contact.email\",\n                        \"props\": {\n                          \"className\": \"flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"email-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block text-blue-400\"\n                            },\n                            \"children\": \"📧\"\n                          },\n                          {\n                            \"id\": \"email-text\",\n                            \"type\": \"span\",\n                            \"children\": \"{{content.contact.email}}\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"website-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.website\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.website}}\",\n                          \"className\": \"flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"website-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"🌐\"\n                          },\n                          {\n                            \"id\": \"website-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Portfolio\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"instagram-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.social && content.contact.social.instagram\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.social.instagram}}\",\n                          \"className\": \"flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"instagram-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"📷\"\n                          },\n                          {\n                            \"id\": \"instagram-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Instagram\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
   "parsedResult": {
     "hasChanges": true,
-    "explanation": "Transformed the template to a dark theme. This involved updating `styleVariables` to use dark background and text colors, and adjusting primary/secondary/accent colors to complement the dark aesthetic. Tailwind classes were modified to reflect the dark theme, such as changing background colors and text colors of elements like the main image container, headings, and buttons. Feature list borders were also adjusted to fit the new color scheme. The overall effect is a sophisticated and modern dark mode experience.",
+    "explanation": "Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.",
     "styleVariables": {
-      "primaryColor": "#93c5fd",
+      "primaryColor": "#3b82f6",
       "secondaryColor": "#60a5fa",
-      "backgroundColor": "#111827",
+      "backgroundColor": "#1f2937",
       "textColor": "#e5e7eb",
-      "accentColor": "#2563eb",
-      "fontFamily": "Inter, sans-serif",
-      "headingFont": "Inter, sans-serif",
-      "fontSize": "18px",
-      "lineHeight": "1.6",
-      "borderRadius": "8px",
-      "spacing": "1rem",
-      "containerMaxWidth": "1280px",
-      "shadows": {
-        "small": "0 1px 3px rgba(255,255,255,0.1)",
-        "medium": "0 4px 6px rgba(255,255,255,0.1)",
-        "large": "0 10px 25px rgba(255,255,255,0.1)"
-      }
+      "fontFamily": "'Inter', sans-serif",
+      "accentColor": "#93c5fc"
     },
     "metadata": {
-      "template": "gallery-focused",
-      "name": "Gallery Focused - Dark Theme"
+      "name": "Midnight Elegance",
+      "description": "A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability."
     },
     "component": {
-      "id": "root",
+      "id": "creative-seller-root",
       "type": "div",
       "props": {
-        "className": "min-h-screen bg-black text-gray-200 flex flex-col relative"
+        "className": "max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white"
       },
       "children": [
         {
-          "id": "container",
+          "id": "hero-section",
           "type": "div",
           "props": {
-            "className": "flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+            "className": "relative overflow-hidden pt-24 pb-16"
           },
           "children": [
             {
-              "id": "main-grid",
+              "id": "hero-background",
               "type": "div",
               "props": {
-                "className": "grid grid-cols-1 lg:grid-cols-2 gap-8"
+                "className": "absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse"
+              }
+            },
+            {
+              "id": "hero-content",
+              "type": "div",
+              "props": {
+                "className": "relative px-8 py-16 text-center animate-fadeIn"
               },
               "children": [
                 {
-                  "id": "gallery-section",
+                  "id": "profile-photo-section",
                   "type": "div",
-                  "sectionType": "gallery",
-                  "editable": {
-                    "moveable": true,
-                    "removeable": false,
-                    "duplicatable": false,
-                    "styleEditable": true
-                  },
-                  "editingMeta": {
-                    "name": "Gallery Section",
-                    "description": "Product image gallery with thumbnails",
-                    "icon": "image",
-                    "category": "media"
-                  },
                   "props": {
-                    "className": "grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6"
+                    "className": "relative inline-block mb-6"
                   },
                   "children": [
                     {
-                      "id": "main-image-container",
-                      "type": "div",
+                      "id": "profile-photo",
+                      "type": "img",
+                      "if": "content.photos && content.photos.length > 0",
                       "props": {
-                        "className": "lg:col-span-3"
+                        "src": "{{content.photos[0].url}}",
+                        "alt": "{{content.name}}",
+                        "className": "w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                      }
+                    },
+                    {
+                      "id": "profile-placeholder",
+                      "type": "div",
+                      "unless": "content.photos && content.photos.length > 0",
+                      "props": {
+                        "className": "w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto"
                       },
                       "children": [
                         {
-                          "id": "main-image-wrapper",
-                          "type": "div",
+                          "id": "placeholder-initial",
+                          "type": "span",
                           "props": {
-                            "className": "aspect-video rounded-lg bg-gray-800 overflow-hidden flex items-center justify-center relative group"
+                            "className": "text-white text-6xl font-bold"
                           },
-                          "children": [
-                            {
-                              "id": "main-image",
-                              "type": "img",
-                              "props": {
-                                "src": "blob:http://localhost:3000/0efbb473-6c48-4171-b4d7-0c1093727bba",
-                                "alt": "Product image",
-                                "className": "w-full h-full object-cover cursor-zoom-in transition-transform duration-200 hover:scale-105"
-                              }
-                            }
-                          ]
+                          "children": "{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}"
                         }
                       ]
-                    },
-                    {
-                      "id": "thumbnails-container",
-                      "type": "div",
-                      "props": {
-                        "className": "lg:col-span-1 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-1 gap-2 overflow-auto max-h-[60vh] pr-1"
-                      },
-                      "children": "gallery.component"
                     }
                   ]
                 },
                 {
-                  "id": "details-section",
-                  "type": "div",
+                  "id": "seller-name",
+                  "type": "h1",
+                  "editable": {
+                    "contentEditable": true
+                  },
                   "props": {
-                    "className": ""
+                    "className": "text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide"
+                  },
+                  "children": "{{content.name || 'Your Name'}}"
+                },
+                {
+                  "id": "seller-title",
+                  "type": "p",
+                  "editable": {
+                    "contentEditable": true
+                  },
+                  "props": {
+                    "className": "text-2xl text-blue-300 font-semibold mb-6"
+                  },
+                  "children": "{{content.title || 'Your Creative Title'}}"
+                },
+                {
+                  "id": "seller-bio",
+                  "type": "p",
+                  "editable": {
+                    "contentEditable": true
+                  },
+                  "props": {
+                    "className": "text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed"
+                  },
+                  "children": "{{content.bio || 'Your creative bio will appear here...'}}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "content-sections",
+          "type": "div",
+          "props": {
+            "className": "px-8 py-12"
+          },
+          "children": [
+            {
+              "id": "content-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-4xl mx-auto space-y-12"
+              },
+              "children": [
+                {
+                  "id": "story-section",
+                  "type": "div",
+                  "if": "content.story",
+                  "props": {
+                    "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700"
                   },
                   "children": [
                     {
-                      "id": "hero-section",
-                      "type": "div",
-                      "sectionType": "hero",
-                      "editable": {
-                        "moveable": false,
-                        "removeable": false,
-                        "duplicatable": false,
-                        "styleEditable": true,
-                        "contentEditable": true
-                      },
-                      "editingMeta": {
-                        "name": "Hero Section",
-                        "description": "Main product title and description",
-                        "icon": "type",
-                        "category": "content"
-                      },
+                      "id": "story-title",
+                      "type": "h2",
                       "props": {
-                        "className": "border-b pb-4 mb-4 border-gray-700"
+                        "className": "text-3xl font-bold text-gray-100 mb-6 text-center"
                       },
-                      "children": [
-                        {
-                          "id": "hero-title",
-                          "type": "h2",
-                          "editable": {
-                            "contentEditable": true,
-                            "styleEditable": true,
-                            "textAlign": true,
-                            "fontSize": true,
-                            "fontWeight": true,
-                            "color": true
-                          },
-                          "editingMeta": {
-                            "name": "Product Title",
-                            "description": "Main product heading",
-                            "contentType": "text"
-                          },
-                          "props": {
-                            "className": "text-3xl font-bold mb-2 text-white"
-                          },
-                          "children": [
-                            "ghfghdfhgdf"
-                          ]
-                        },
-                        {
-                          "id": "hero-description",
-                          "type": "p",
-                          "editable": {
-                            "contentEditable": true,
-                            "styleEditable": true,
-                            "textAlign": true,
-                            "fontSize": true,
-                            "color": true,
-                            "lineHeight": true
-                          },
-                          "editingMeta": {
-                            "name": "Product Description",
-                            "description": "Detailed product description",
-                            "contentType": "textarea"
-                          },
-                          "props": {
-                            "className": "whitespace-pre-line text-gray-300"
-                          },
-                          "children": [
-                            "ghdfhdfghdf"
-                          ]
-                        }
-                      ]
+                      "children": "My Creative Journey"
                     },
                     {
-                      "id": "features-section",
-                      "type": "div",
-                      "sectionType": "features",
+                      "id": "story-content",
+                      "type": "p",
                       "editable": {
-                        "moveable": true,
-                        "removeable": true,
-                        "duplicatable": false,
-                        "styleEditable": true,
                         "contentEditable": true
                       },
-                      "editingMeta": {
-                        "name": "Features Section",
-                        "description": "Product features list",
-                        "icon": "star",
-                        "category": "content"
-                      },
                       "props": {
-                        "className": "mb-6"
+                        "className": "text-gray-300 leading-relaxed text-lg"
+                      },
+                      "children": "{{content.story}}"
+                    }
+                  ]
+                },
+                {
+                  "id": "skills-achievements-grid",
+                  "type": "div",
+                  "props": {
+                    "className": "grid grid-cols-1 md:grid-cols-2 gap-8"
+                  },
+                  "children": [
+                    {
+                      "id": "specialties-section",
+                      "type": "div",
+                      "if": "content.specialties && content.specialties.length > 0",
+                      "props": {
+                        "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700"
                       },
                       "children": [
                         {
-                          "id": "features-title",
+                          "id": "specialties-title",
                           "type": "h3",
-                          "editable": {
-                            "contentEditable": true,
-                            "styleEditable": true
-                          },
                           "props": {
-                            "className": "text-xl font-semibold mb-3 text-white"
+                            "className": "text-2xl font-bold text-gray-100 mb-4"
                           },
-                          "children": [
-                            "Key Features"
-                          ]
+                          "children": "Creative Skills"
                         },
                         {
-                          "id": "features-list",
+                          "id": "specialties-list",
                           "type": "div",
                           "props": {
-                            "className": "space-y-4"
+                            "className": "space-y-3"
                           },
-                          "children": [
-                            {
-                              "id": "feature-0",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-0-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "Innovative ghdfghdfghdf design for enhanced user experience."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-0-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This innovative ghdfghdfghdf design for enhanced user experience. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "id": "feature-1",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-1-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "Durable construction utilizing premium hdfghdf materials."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-1-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This durable construction utilizing premium hdfghdf materials. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "id": "feature-2",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-2-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "Seamless integration with existing ghdfghdfghdfgh systems."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-2-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This seamless integration with existing ghdfghdfghdfgh systems. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "id": "feature-3",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-3-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "High-performance ghdfghdfghdf capabilities for demanding tasks."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-3-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This high-performance ghdfghdfghdf capabilities for demanding tasks. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "id": "feature-4",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-4-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "Intuitive interface for effortless operation."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-4-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This intuitive interface for effortless operation. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "id": "feature-5",
-                              "type": "div",
-                              "props": {
-                                "className": "border-l-4 border-blue-400 pl-4 mb-4"
-                              },
-                              "children": [
-                                {
-                                  "id": "feature-5-title",
-                                  "type": "h4",
-                                  "props": {
-                                    "className": "font-medium mb-1 text-white"
-                                  },
-                                  "children": [
-                                    "Energy-efficient operation to reduce consumption."
-                                  ]
-                                },
-                                {
-                                  "id": "feature-5-explanation",
-                                  "type": "p",
-                                  "props": {
-                                    "className": "text-sm leading-relaxed text-gray-300"
-                                  },
-                                  "children": [
-                                    "This energy-efficient operation to reduce consumption. enhances the product's functionality and provides excellent value for users."
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
+                          "children": "SPECIALTIES_ARRAY"
                         }
                       ]
                     },
                     {
-                      "id": "specs-section",
+                      "id": "achievements-section",
                       "type": "div",
-                      "sectionType": "specifications",
-                      "editable": {
-                        "moveable": true,
-                        "removeable": true,
-                        "duplicatable": false,
-                        "styleEditable": true,
-                        "contentEditable": true
-                      },
-                      "editingMeta": {
-                        "name": "Specifications Section",
-                        "description": "Product specifications table",
-                        "icon": "list",
-                        "category": "content"
-                      },
+                      "if": "content.achievements && content.achievements.length > 0",
                       "props": {
-                        "className": "mb-6"
+                        "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700"
                       },
                       "children": [
                         {
-                          "id": "specs-title",
+                          "id": "achievements-title",
                           "type": "h3",
-                          "editable": {
-                            "contentEditable": true,
-                            "styleEditable": true
-                          },
                           "props": {
-                            "className": "text-xl font-semibold mb-3 text-white"
+                            "className": "text-2xl font-bold text-gray-100 mb-4"
+                          },
+                          "children": "Achievements"
+                        },
+                        {
+                          "id": "achievements-list",
+                          "type": "div",
+                          "props": {
+                            "className": "space-y-3"
+                          },
+                          "children": "ACHIEVEMENTS_ARRAY"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "contact-social-section",
+                  "type": "div",
+                  "props": {
+                    "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700"
+                  },
+                  "children": [
+                    {
+                      "id": "connect-title",
+                      "type": "h3",
+                      "props": {
+                        "className": "text-2xl font-bold text-gray-100 mb-6"
+                      },
+                      "children": "Let's Connect"
+                    },
+                    {
+                      "id": "contact-links",
+                      "type": "div",
+                      "props": {
+                        "className": "flex flex-wrap justify-center gap-6"
+                      },
+                      "children": [
+                        {
+                          "id": "email-contact",
+                          "type": "div",
+                          "if": "content.contact && content.contact.email",
+                          "props": {
+                            "className": "flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200"
                           },
                           "children": [
-                            "Specifications"
+                            {
+                              "id": "email-icon",
+                              "type": "span",
+                              "props": {
+                                "className": "w-5 h-5 inline-block text-blue-400"
+                              },
+                              "children": "📧"
+                            },
+                            {
+                              "id": "email-text",
+                              "type": "span",
+                              "children": "{{content.contact.email}}"
+                            }
                           ]
                         },
                         {
-                          "id": "specs-table-container",
-                          "type": "div",
+                          "id": "website-contact",
+                          "type": "a",
+                          "if": "content.contact && content.contact.website",
                           "props": {
-                            "className": "overflow-x-auto"
+                            "href": "{{content.contact.website}}",
+                            "className": "flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200"
                           },
                           "children": [
                             {
-                              "id": "specs-table",
-                              "type": "table",
+                              "id": "website-icon",
+                              "type": "span",
                               "props": {
-                                "className": "min-w-full divide-y divide-gray-700"
+                                "className": "w-5 h-5 inline-block"
                               },
-                              "children": [
-                                {
-                                  "id": "specs-tbody",
-                                  "type": "tbody",
-                                  "props": {
-                                    "className": "divide-y divide-gray-700"
-                                  },
-                                  "children": [
-                                    {
-                                      "id": "spec-0",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-0-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Model Number"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-0-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "ghdfhdfghdf-v1.0"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-1",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-1-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Dimensions (L x W x H)"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-1-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "Customizable"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-2",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-2-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Weight"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-2-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "Lightweight"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-3",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-3-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Material Composition"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-3-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "Premium hdfghdf alloys"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-4",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-4-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Power Source"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-4-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "Integrated battery / AC adapter"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-5",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-5-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Connectivity"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-5-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "ghdfghdfghdfgh compatible protocols"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-6",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-6-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Operating Temperature"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-6-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "0-50°C"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "id": "spec-7",
-                                      "type": "tr",
-                                      "props": {},
-                                      "children": [
-                                        {
-                                          "id": "spec-7-key",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 bg-gray-800 font-medium w-1/3 text-gray-300"
-                                          },
-                                          "children": [
-                                            "Certifications"
-                                          ]
-                                        },
-                                        {
-                                          "id": "spec-7-value",
-                                          "type": "td",
-                                          "props": {
-                                            "className": "px-4 py-2 text-gray-200"
-                                          },
-                                          "children": [
-                                            "ISO 9001, CE"
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
+                              "children": "🌐"
+                            },
+                            {
+                              "id": "website-text",
+                              "type": "span",
+                              "children": "Portfolio"
                             }
                           ]
-                        }
-                      ]
-                    },
-                    {
-                      "id": "cta-section",
-                      "type": "div",
-                      "sectionType": "cta",
-                      "editable": {
-                        "moveable": true,
-                        "removeable": false,
-                        "duplicatable": false,
-                        "styleEditable": true,
-                        "contentEditable": true
-                      },
-                      "editingMeta": {
-                        "name": "Call to Action",
-                        "description": "Purchase button",
-                        "icon": "shopping-cart",
-                        "category": "action"
-                      },
-                      "props": {
-                        "className": "mt-6"
-                      },
-                      "children": [
+                        },
                         {
-                          "id": "cta-button",
-                          "type": "button",
-                          "editable": {
-                            "contentEditable": true,
-                            "styleEditable": true
-                          },
+                          "id": "instagram-contact",
+                          "type": "a",
+                          "if": "content.contact && content.contact.social && content.contact.social.instagram",
                           "props": {
-                            "className": "px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 hover:shadow-lg transition-all duration-200 ease-in-out transform hover:-translate-y-1"
+                            "href": "{{content.contact.social.instagram}}",
+                            "className": "flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200"
                           },
                           "children": [
-                            "Add to Cart"
+                            {
+                              "id": "instagram-icon",
+                              "type": "span",
+                              "props": {
+                                "className": "w-5 h-5 inline-block"
+                              },
+                              "children": "📷"
+                            },
+                            {
+                              "id": "instagram-text",
+                              "type": "span",
+                              "children": "Instagram"
+                            }
                           ]
                         }
                       ]
