@@ -26,7 +26,7 @@ const SELLER_TEMPLATE_MAP = {
  * This component handles BOTH product and seller-info previews using a single,
  * consistent data structure and rendering path. No more branching logic!
  */
-export default function UniversalPreviewPage({ 
+export default function UniversalPreviewPageFixed({ 
   type = 'product', // 'product' or 'seller-info'
   backUrl = '/create',
   storageKey = 'previewData',

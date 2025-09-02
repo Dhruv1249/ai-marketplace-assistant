@@ -41,6 +41,51 @@ export default function UniversalSourceCodeEditor({
     images: templateData?.images || []
   });
 
+  // FIXED: Function to restore array placeholders for seller info
+  const restoreArrayPlaceholders = useCallback((template) => {
+    const restoreNode = (node) => {
+      if (!node) return node;
+      
+      if (Array.isArray(node)) {
+        return node.map(restoreNode);
+      }
+      
+      if (typeof node === 'object' && node !== null) {
+        const restored = { ...node };
+        
+        // Check if this is a specialties or achievements list that was expanded
+        if (restored.id === 'specialties-list' && Array.isArray(restored.children)) {
+          // Check if children are expanded specialty components
+          const firstChild = restored.children[0];
+          if (firstChild && typeof firstChild === 'object' && firstChild.id && firstChild.id.startsWith('specialty-')) {
+            // Restore to placeholder
+            restored.children = 'SPECIALTIES_ARRAY';
+            console.log('Restored specialties-list to SPECIALTIES_ARRAY');
+          }
+        } else if (restored.id === 'achievements-list' && Array.isArray(restored.children)) {
+          // Check if children are expanded achievement components
+          const firstChild = restored.children[0];
+          if (firstChild && typeof firstChild === 'object' && firstChild.id && firstChild.id.startsWith('achievement-')) {
+            // Restore to placeholder
+            restored.children = 'ACHIEVEMENTS_ARRAY';
+            console.log('Restored achievements-list to ACHIEVEMENTS_ARRAY');
+          }
+        } else if (restored.children) {
+          restored.children = restoreNode(restored.children);
+        }
+        
+        return restored;
+      }
+      
+      return node;
+    };
+    
+    return {
+      ...template,
+      component: restoreNode(template.component)
+    };
+  }, []);
+
   // Generate JSON with actual form data filled in
   const generateJSON = useCallback((data) => {
     if (!data?.model) return '';
@@ -117,7 +162,7 @@ export default function UniversalSourceCodeEditor({
         result = result.replace(/\{\{images\[2\]\}\}/g, actualData.images[2] || '');
         result = result.replace(/\{\{images\[3\]\}\}/g, actualData.images[3] || '');
         
-        // Handle seller info arrays
+        // FIXED: Handle seller info arrays - expand them for editing
         if (result === 'SPECIALTIES_ARRAY') {
           const specialties = actualData.content.specialties || [];
           return specialties.map((specialty, index) => ({
@@ -268,7 +313,7 @@ export default function UniversalSourceCodeEditor({
     return () => clearTimeout(timeoutId);
   }, [templateData, generateJSON, validateTemplate]);
 
-  // Handle save
+  // FIXED: Handle save with proper array placeholder restoration
   const handleSave = useCallback(async () => {
     const validation = await validateTemplate(jsonCode);
     if (!validation.valid) {
@@ -277,14 +322,30 @@ export default function UniversalSourceCodeEditor({
     }
     
     try {
-      const template = JSON.parse(jsonCode);
+      let template = JSON.parse(jsonCode);
+      
+      // FIXED: Restore array placeholders for seller info
+      if (type === 'seller-info') {
+        template = restoreArrayPlaceholders(template);
+      }
+      
+      console.log('=== SAVING TEMPLATE ===');
+      console.log('Type:', type);
+      console.log('Original JSON length:', jsonCode.length);
+      console.log('Processed template:', template);
+      console.log('======================');
+      
       onTemplateUpdate?.(template);
       setHasChanges(false);
+      
+      // Show success message
+      alert('Template saved successfully!');
     } catch (error) {
+      console.error('Save error:', error);
       alert('Invalid JSON format. Please check your syntax.');
       return;
     }
-  }, [jsonCode, onTemplateUpdate, validateTemplate]);
+  }, [jsonCode, onTemplateUpdate, validateTemplate, type, restoreArrayPlaceholders]);
 
   // Handle reset
   const handleReset = useCallback(() => {
@@ -410,6 +471,13 @@ export default function UniversalSourceCodeEditor({
                 Lines: {jsonCode.split('\n').length} • Editable
               </div>
               
+              {/* FIXED: Better info for seller info */}
+              {type === 'seller-info' && (
+                <div className="absolute top-12 right-4 text-xs text-blue-400 bg-blue-900 px-2 py-1 rounded">
+                  Arrays auto-restored on save
+                </div>
+              )}
+              
               {/* Validation Panel */}
               {validationResult && !validationResult.valid && (
                 <div className="absolute bottom-4 left-4 right-4 bg-red-900/90 backdrop-blur-sm text-red-100 p-4 rounded-lg max-h-32 overflow-y-auto">
@@ -476,6 +544,11 @@ export default function UniversalSourceCodeEditor({
               <Settings size={16} className="text-blue-500" />
               <span>JSON Template Editor • Your actual {type === 'seller-info' ? 'seller' : 'product'} data filled in • Fully editable</span>
             </div>
+            {type === 'seller-info' && (
+              <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                ℹ️ Specialties & Achievements arrays are automatically restored when saved
+              </div>
+            )}
           </div>
           
           <div className="flex items-center gap-3">
