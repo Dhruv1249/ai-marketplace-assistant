@@ -17,7 +17,6 @@ import { Users as UsersComponent } from "../components/animated icon/Users"; // 
 import ReadMoreButton from "../components/animated icon/ReadMoreButton";
 import Explore from '@/components/animated icon/Explore';
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 const AnimatedCartButton = () => {
