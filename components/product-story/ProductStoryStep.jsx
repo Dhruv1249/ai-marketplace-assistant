@@ -20,12 +20,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Origin Story *
+          Origin Story * ({productStoryData.story.origin.length}/400)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.origin}
-            onChange={(e) => handleInputChange('story', 'origin', e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 400) {
+                handleInputChange('story', 'origin', e.target.value);
+              }
+            }}
+            maxLength={400}
             rows={4}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="How and why was this product created? What inspired you to make it?"
@@ -43,12 +48,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Solution Journey *
+          Solution Journey * ({productStoryData.story.solution.length}/400)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.solution}
-            onChange={(e) => handleInputChange('story', 'solution', e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 400) {
+                handleInputChange('story', 'solution', e.target.value);
+              }
+            }}
+            maxLength={400}
             rows={4}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Describe the journey of creating this solution. What challenges did you overcome?"
@@ -66,12 +76,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          What Makes It Unique *
+          What Makes It Unique * ({productStoryData.story.unique.length}/400)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.unique}
-            onChange={(e) => handleInputChange('story', 'unique', e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 400) {
+                handleInputChange('story', 'unique', e.target.value);
+              }
+            }}
+            maxLength={400}
             rows={3}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What makes your product special and different from others?"
@@ -89,12 +104,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Vision & Mission
+          Vision & Mission ({productStoryData.story.vision.length}/400)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.vision}
-            onChange={(e) => handleInputChange('story', 'vision', e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 400) {
+                handleInputChange('story', 'vision', e.target.value);
+              }
+            }}
+            maxLength={400}
             rows={3}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What's the bigger vision or mission behind this product?"

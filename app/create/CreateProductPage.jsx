@@ -428,24 +428,14 @@ const CreateProductPage = () => {
             )}
 
             {currentStep === 5 && (
-              <>
-                <PublishStep
-                  generatedContent={generatedContent}
-                  pricing={pricing}
-                  thumbnailImage={thumbnailImage}
-                  additionalImages={additionalImages}
-                  featureExplanations={featureExplanations}
-                  onBack={() => handleStepChange(4)}
-                />
-                <div className="mt-6">
-                  <Button
-                    onClick={handlePublishProduct}
-                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg font-semibold rounded py-3 hover:opacity-90"
-                  >
-                    Publish to Marketplace
-                  </Button>
-                </div>
-              </>
+              <PublishStep
+                generatedContent={generatedContent}
+                pricing={pricing}
+                thumbnailImage={thumbnailImage}
+                additionalImages={additionalImages}
+                featureExplanations={featureExplanations}
+                onBack={() => handleStepChange(4)}
+              />
             )}
           </div>
 
