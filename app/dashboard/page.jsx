@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({});
   const [productStats, setProductStats] = useState({ created: 0, bought: 0 });
+  const [createdProducts, setCreatedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [aiSuggestions, setAISuggestions] = useState({});
   const [saveError, setSaveError] = useState(null);
@@ -53,6 +54,8 @@ export default function Dashboard() {
     setProfile(snap.exists() ? snap.data() : {});
     setEditData(snap.exists() ? snap.data() : {});
     const prodSnap = await getDocs(query(collection(db, "products"), where("ownerId", "==", u.uid)));
+    const createdList = prodSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setCreatedProducts(createdList);
     const boughtSnap = await getDocs(query(collection(db, "orders"), where("buyerId", "==", u.uid)));
     setProductStats({ created: prodSnap.size, bought: boughtSnap.size });
     const reviewSnap = await getDocs(query(collection(db, "reviews"), where("artisanId", "==", u.uid)));
@@ -421,6 +424,38 @@ export default function Dashboard() {
           <div className="p-4 bg-indigo-50 rounded-lg text-center">
             <div className="text-3xl font-bold text-indigo-600">{productStats.bought}</div>
             <div className="text-gray-700">Products Bought</div>
+          </div>
+        </div>
+        {/* Products Created Section */}
+        <div className="mb-6">
+          <div className="font-semibold text-blue-700 mb-1">Your Created Products</div>
+          {createdProducts.length === 0 && (
+            <div className="text-gray-400 italic">No products created yet.</div>
+          )}
+          <div className="grid md:grid-cols-2 gap-6">
+            {createdProducts.map(prod => (
+              <div
+                key={prod.id}
+                className="rounded-lg border bg-white shadow flex flex-col gap-2 p-4"
+              >
+                {prod.imageUrl && (
+                  <img
+                    src={prod.imageUrl}
+                    alt={prod.name || 'Product image'}
+                    className="w-full h-40 object-cover rounded mb-1"
+                  />
+                )}
+                <div className="font-bold text-lg text-indigo-700 truncate">{prod.name || prod.title || '(Unnamed Product)'}</div>
+                {prod.description && <div className="text-gray-700 text-sm">{prod.description}</div>}
+                {typeof prod.price !== 'undefined' && (
+                  <div className="font-semibold text-green-700">Price: ₹{prod.price}</div>
+                )}
+                {prod.createdAt && (
+                  <div className="text-xs text-gray-400">Created: {prod.createdAt.toDate?.().toLocaleString?.() || String(prod.createdAt)}</div>
+                )}
+                {/* Add further product details or controls as needed */}
+              </div>
+            ))}
           </div>
         </div>
         {/* Reviews */}

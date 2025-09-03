@@ -14,6 +14,8 @@ import PublishStep from '@/components/create-product/PublishStep';
 import BackButton from '@/components/animated icon/BackButton';
 import DeleteButton from '@/components/animated icon/DeleteButton';
 import DiscardButton from '@/components/animated icon/Discard';
+import { db, auth } from '@/app/login/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 const CreateProductPage = () => {
@@ -286,6 +288,36 @@ const CreateProductPage = () => {
     }
   };
 
+  // --- FIRESTORE: Publish Product Handler ---
+  const handlePublishProduct = async () => {
+    if (!auth.currentUser) {
+      alert("You must be logged in to publish a product.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "products"), {
+        ownerId: auth.currentUser.uid,
+        name: generatedContent?.title || '',
+        description: generatedContent?.description || '',
+        price: pricing.basePrice || 0,
+        discount: pricing.discount || {},
+        imageUrl: thumbnailImage?.url || '',
+        additionalImages: additionalImages.map(img => img.url),
+        features: generatedContent?.features || [],
+        featureExplanations: featureExplanations || {},
+        specifications: generatedContent?.specifications || {},
+        seoKeywords: generatedContent?.seoKeywords || [],
+        metaDescription: generatedContent?.metaDescription || '',
+        createdAt: serverTimestamp(),
+      });
+      alert("Product published successfully!");
+      // Optionally reset state or redirect here
+    } catch (err) {
+      alert("Failed to publish product: " + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -396,14 +428,24 @@ const CreateProductPage = () => {
             )}
 
             {currentStep === 5 && (
-              <PublishStep
-                generatedContent={generatedContent}
-                pricing={pricing}
-                thumbnailImage={thumbnailImage}
-                additionalImages={additionalImages}
-                featureExplanations={featureExplanations}
-                onBack={() => handleStepChange(4)}
-              />
+              <>
+                <PublishStep
+                  generatedContent={generatedContent}
+                  pricing={pricing}
+                  thumbnailImage={thumbnailImage}
+                  additionalImages={additionalImages}
+                  featureExplanations={featureExplanations}
+                  onBack={() => handleStepChange(4)}
+                />
+                <div className="mt-6">
+                  <Button
+                    onClick={handlePublishProduct}
+                    className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg font-semibold rounded py-3 hover:opacity-90"
+                  >
+                    Publish to Marketplace
+                  </Button>
+                </div>
+              </>
             )}
           </div>
 
