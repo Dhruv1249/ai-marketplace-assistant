@@ -25,7 +25,17 @@ export default function EnhancedSourceCodeEditor({
       description: "Product description...",
       features: ["Feature 1", "Feature 2", "Feature 3"],
       featureExplanations: {},
-      specifications: {}
+      specifications: {},
+      // Seller info defaults
+      name: "",
+      bio: "",
+      story: "",
+      experience: "",
+      specialties: [],
+      achievements: [],
+      contact: {},
+      businessInfo: {},
+      photos: []
     },
     images: templateData?.images || []
   });
@@ -45,16 +55,81 @@ export default function EnhancedSourceCodeEditor({
         // Replace template placeholders with actual form data
         let result = node;
         
-        // Simple replacements with actual data
+        // PRODUCT REPLACEMENTS
         result = result.replace(/\{\{content\.title\}\}/g, actualData.content.title || 'Product Title');
         result = result.replace(/\{\{content\.description\}\}/g, actualData.content.description || 'Product description');
         result = result.replace(/\{\{content\.price\}\}/g, actualData.content.price || '$0.00');
+        
+        // SELLER INFO REPLACEMENTS
+        // Basic seller info
+        result = result.replace(/\{\{content\.name\}\}/g, actualData.content.name || '');
+        result = result.replace(/\{\{content\.bio\}\}/g, actualData.content.bio || '');
+        result = result.replace(/\{\{content\.story\}\}/g, actualData.content.story || '');
+        result = result.replace(/\{\{content\.experience\}\}/g, actualData.content.experience || '');
+        
+        // Handle OR expressions with fallbacks
+        result = result.replace(/\{\{content\.name \|\| 'Your Name'\}\}/g, actualData.content.name || 'Your Name');
+        result = result.replace(/\{\{content\.title \|\| 'Your Professional Title'\}\}/g, actualData.content.title || 'Your Professional Title');
+        result = result.replace(/\{\{content\.bio \|\| 'Your professional bio will appear here\.\.\.'\}\}/g, actualData.content.bio || 'Your professional bio will appear here...');
+        
+        // Handle photo placeholders
+        result = result.replace(/\{\{content\.photos\[0\]\.url\}\}/g, actualData.content.photos?.[0]?.url || actualData.images?.[0] || '');
+        result = result.replace(/\{\{content\.photos\[1\]\.url\}\}/g, actualData.content.photos?.[1]?.url || actualData.images?.[1] || '');
+        result = result.replace(/\{\{content\.photos\[2\]\.url\}\}/g, actualData.content.photos?.[2]?.url || actualData.images?.[2] || '');
+        
+        // Handle complex expressions like charAt(0).toUpperCase()
+        const nameCharRegex = /\{\{content\.name \? content\.name\.charAt\(0\)\.toUpperCase\(\) : 'U'\}\}/g;
+        const nameChar = actualData.content.name ? actualData.content.name.charAt(0).toUpperCase() : 'U';
+        result = result.replace(nameCharRegex, nameChar);
+        
+        // Handle contact info
+        result = result.replace(/\{\{content\.contact\.email\}\}/g, actualData.content.contact?.email || '');
+        result = result.replace(/\{\{content\.contact\.phone\}\}/g, actualData.content.contact?.phone || '');
+        result = result.replace(/\{\{content\.contact\.location\}\}/g, actualData.content.contact?.location || '');
+        result = result.replace(/\{\{content\.contact\.website\}\}/g, actualData.content.contact?.website || '');
+        
+        // Handle social media links
+        result = result.replace(/\{\{content\.contact\.social\.linkedin\}\}/g, actualData.content.contact?.social?.linkedin || '');
+        result = result.replace(/\{\{content\.contact\.social\.twitter\}\}/g, actualData.content.contact?.social?.twitter || '');
+        result = result.replace(/\{\{content\.contact\.social\.instagram\}\}/g, actualData.content.contact?.social?.instagram || '');
+        result = result.replace(/\{\{content\.contact\.social\.facebook\}\}/g, actualData.content.contact?.social?.facebook || '');
+        
+        // Handle business info
+        result = result.replace(/\{\{content\.businessInfo\.businessName\}\}/g, actualData.content.businessInfo?.businessName || '');
+        result = result.replace(/\{\{content\.businessInfo\.founded\}\}/g, actualData.content.businessInfo?.founded || '');
+        result = result.replace(/\{\{content\.businessInfo\.employees\}\}/g, actualData.content.businessInfo?.employees || '');
+        result = result.replace(/\{\{content\.businessInfo\.description\}\}/g, actualData.content.businessInfo?.description || '');
+        
+        // Handle complex business info expressions
+        result = result.replace(/Founded \{\{content\.businessInfo\.founded\}\}/g, `Founded ${actualData.content.businessInfo?.founded || ''}`);
+        result = result.replace(/\{\{content\.businessInfo\.employees\}\} employees/g, `${actualData.content.businessInfo?.employees || ''} employees`);
         
         // Image replacements with actual uploaded images
         result = result.replace(/\{\{images\[0\]\}\}/g, actualData.images[0] || '');
         result = result.replace(/\{\{images\[1\]\}\}/g, actualData.images[1] || '');
         result = result.replace(/\{\{images\[2\]\}\}/g, actualData.images[2] || '');
         result = result.replace(/\{\{images\[3\]\}\}/g, actualData.images[3] || '');
+        
+        // Handle seller info arrays
+        if (result === 'SPECIALTIES_ARRAY') {
+          const specialties = actualData.content.specialties || [];
+          return specialties.map((specialty, index) => ({
+            id: `specialty-${index}`,
+            type: 'div',
+            props: { className: 'bg-blue-50 text-blue-800 px-3 py-2 rounded-lg text-sm' },
+            children: [specialty]
+          }));
+        }
+        
+        if (result === 'ACHIEVEMENTS_ARRAY') {
+          const achievements = actualData.content.achievements || [];
+          return achievements.map((achievement, index) => ({
+            id: `achievement-${index}`,
+            type: 'div',
+            props: { className: 'bg-green-50 text-green-800 px-3 py-2 rounded-lg text-sm' },
+            children: [achievement]
+          }));
+        }
         
         // Complex replacements for features and specs with actual data
         if (result.includes('{{content.features') && result.includes('map')) {

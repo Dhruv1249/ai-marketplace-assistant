@@ -35,8 +35,8 @@ const StyledWrapper = styled.div`
   }
 
   .trash-svg {
-  width: 23px;   /* smaller */
-  height: 23px;  /* smaller */
+  width: 30px;   /* smaller */
+  height: 30px;  /* smaller */
   fill: none;
 }
 
@@ -49,7 +49,7 @@ const StyledWrapper = styled.div`
   }
 
   .delete-button:active #lid-group {
-    transform: rotate(-12deg) scale(0.98);
+    transform: rotate(-10deg) scale(0.98);
   }
 
   .delete-button:hover .trash-svg {

@@ -2,24 +2,31 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui';
-import { Check, AlertCircle, Loader2, Globe, FileText, Eye } from 'lucide-react';
+import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 
 const PublishStep = ({
   generatedContent,
   pricing,
   thumbnailImage,
   additionalImages,
-  pageModel,
   featureExplanations,
   onBack
 }) => {
-  const [createCustomPage, setCreateCustomPage] = useState(true);
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState(null);
+  const [showStoryPageModal, setShowStoryPageModal] = useState(false);
+  const [wantsStoryPage, setWantsStoryPage] = useState(false);
+
+  const handlePublishClick = () => {
+    if (isFormValid()) {
+      setShowStoryPageModal(true);
+    }
+  };
 
   const handlePublish = async () => {
     setIsPublishing(true);
     setPublishStatus(null);
+    setShowStoryPageModal(false);
 
     try {
       // Generate unique product ID
@@ -36,7 +43,7 @@ const PublishStep = ({
         specifications: generatedContent.specifications || {},
         seoKeywords: generatedContent.seoKeywords || [],
         metaDescription: generatedContent.metaDescription || '',
-        hasCustomPage: createCustomPage,
+        hasCustomPage: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -45,18 +52,6 @@ const PublishStep = ({
       const formData = new FormData();
       formData.append('productId', productId);
       formData.append('standardData', JSON.stringify(standardData));
-      
-      if (createCustomPage) {
-        const customData = {
-          model: pageModel,
-          content: {
-            ...generatedContent,
-            featureExplanations: featureExplanations,
-            pricing: pricing
-          }
-        };
-        formData.append('customData', JSON.stringify(customData));
-      }
 
       // Add thumbnail image
       if (thumbnailImage?.file) {
@@ -116,42 +111,77 @@ const PublishStep = ({
       specifications: generatedContent?.specifications || {},
       seoKeywords: generatedContent?.seoKeywords || [],
       metaDescription: generatedContent?.metaDescription || '',
-      hasCustomPage: createCustomPage
+      hasCustomPage: false
     };
     
-    // Store in localStorage and open standard page preview
+    // Store uploaded images for preview
+    const previewImages = [];
+    if (thumbnailImage?.url) {
+      previewImages.push(thumbnailImage.url);
+    }
+    additionalImages.forEach(img => {
+      if (img?.url) previewImages.push(img.url);
+    });
+    
+    // Store both data and images
     localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
+    localStorage.setItem('previewImages', JSON.stringify(previewImages));
+    
     window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
   };
 
-  const previewCustomPage = () => {
-    if (!generatedContent || !pageModel) return;
-    
-    try {
-      // Create images array for preview
-      const previewImages = [];
-      if (thumbnailImage?.url) {
-        previewImages.push(thumbnailImage.url);
+  const handleCreateStoryPage = (productId) => {
+    // Store product data for the story page
+    const productStoryData = {
+      productId: productId,
+      productTitle: generatedContent.title,
+      productDescription: generatedContent.description,
+      productPricing: pricing,
+      basics: {
+        name: generatedContent.title,
+        category: generatedContent.category || 'Product',
+        problem: '',
+        audience: '',
+        value: generatedContent.description
+      },
+      story: {
+        origin: '',
+        solution: '',
+        unique: '',
+        vision: ''
+      },
+      process: {
+        creation: '',
+        materials: '',
+        time: '',
+        quality: '',
+        ethics: ''
+      },
+      impact: {
+        testimonials: [],
+        cases: [],
+        metrics: [],
+        awards: []
+      },
+      visuals: {
+        hero: [],
+        process: [],
+        beforeAfter: [],
+        lifestyle: [],
+        team: []
       }
-      additionalImages.forEach(img => {
-        if (img?.url) previewImages.push(img.url);
-      });
+    };
 
-      const payload = {
-        model: pageModel,
-        content: {
-          ...generatedContent,
-          featureExplanations: featureExplanations || {},
-          pricing: pricing
-        },
-        images: previewImages
-      };
-      
-      localStorage.setItem('previewData', JSON.stringify(payload));
-      window.open('/preview', '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      console.error('Failed to save previewData:', e);
-    }
+    // Store in localStorage for the product story page
+    localStorage.setItem('productStoryData', JSON.stringify({
+      productStoryData,
+      templateType: 'journey',
+      savedAt: new Date().toISOString(),
+      fromProductCreation: true
+    }));
+
+    // Open product story page in new tab
+    window.open('/seller-info', '_blank', 'noopener,noreferrer');
   };
 
   const isFormValid = () => {
@@ -169,9 +199,9 @@ const PublishStep = ({
 
       {!publishStatus && (
         <div className="space-y-6">
-          {/* Publishing Options */}
+          {/* Publishing Information */}
           <div className="bg-blue-50 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-3">Publishing Options</h3>
+            <h3 className="font-medium text-blue-900 mb-3">Publishing Information</h3>
             
             <div className="space-y-3">
               <div className="flex items-start">
@@ -181,36 +211,16 @@ const PublishStep = ({
                 <div className="ml-1">
                   <p className="text-sm font-medium text-gray-900">Standard Product Page</p>
                   <p className="text-sm text-gray-600">
-                    A standard product page will always be created for marketplace listing
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="custom-page"
-                    type="checkbox"
-                    checked={createCustomPage}
-                    onChange={(e) => setCreateCustomPage(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                </div>
-                <div className="ml-3">
-                  <label htmlFor="custom-page" className="text-sm font-medium text-gray-900">
-                    Create Custom Page (Recommended)
-                  </label>
-                  <p className="text-sm text-gray-600">
-                    Create a custom designed page using your selected template for enhanced presentation
+                    Your product will be published with a clean, professional layout optimized for the marketplace
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Preview Options */}
+          {/* Preview Option */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <h3 className="font-medium text-gray-900 mb-3">Preview Your Pages</h3>
+            <h3 className="font-medium text-gray-900 mb-3">Preview Your Product Page</h3>
             <div className="flex gap-3">
               <Button
                 variant="outline"
@@ -219,18 +229,38 @@ const PublishStep = ({
                 disabled={!isFormValid()}
               >
                 <FileText className="mr-2" size={16} />
-                Preview Standard Page
+                Preview Product Page
               </Button>
-              {createCustomPage && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={previewCustomPage}
-                  disabled={!isFormValid()}
-                >
-                  <Eye className="mr-2" size={16} />
-                  Preview Custom Page
-                </Button>
+            </div>
+          </div>
+
+          {/* Product Story Page Option */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-200">
+            <h3 className="font-medium text-gray-900 mb-3 flex items-center">
+              <BookOpen className="mr-2 text-purple-600" size={20} />
+              Enhanced Product Story Page
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Create a compelling product story page with rich visuals, detailed process information, and customer testimonials. 
+              This will be saved as a custom page alongside your standard product listing.
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="wantsStoryPage"
+                  checked={wantsStoryPage}
+                  onChange={(e) => setWantsStoryPage(e.target.checked)}
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                />
+                <label htmlFor="wantsStoryPage" className="ml-2 text-sm font-medium text-gray-900">
+                  Add Product Story Page
+                </label>
+              </div>
+              {wantsStoryPage && (
+                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                  Will be created after publishing
+                </span>
               )}
             </div>
           </div>
@@ -272,16 +302,16 @@ const PublishStep = ({
               </div>
               
               <div>
-                <p className="text-gray-600">Template:</p>
-                <p className="font-medium text-gray-900 capitalize">
-                  {pageModel?.metadata?.template?.replace('-', ' ') || 'Gallery Focused'}
-                </p>
-              </div>
-              
-              <div>
                 <p className="text-gray-600">SEO Keywords:</p>
                 <p className="font-medium text-gray-900">
                   {generatedContent?.seoKeywords?.length || 0} keywords
+                </p>
+              </div>
+
+              <div>
+                <p className="text-gray-600">Feature Explanations:</p>
+                <p className="font-medium text-gray-900">
+                  {Object.keys(featureExplanations || {}).length} explanations
                 </p>
               </div>
             </div>
@@ -344,7 +374,7 @@ const PublishStep = ({
               Back
             </Button>
             <Button 
-              onClick={handlePublish}
+              onClick={handlePublishClick}
               disabled={!isFormValid() || isPublishing}
               className="flex items-center"
             >
@@ -383,16 +413,23 @@ const PublishStep = ({
                   onClick={() => window.open(`/marketplace/${publishStatus.productId}`, '_blank')}
                 >
                   <FileText className="mr-2" size={16} />
-                  View Standard Page
+                  View Product Page
                 </Button>
-                {createCustomPage && (
+                {wantsStoryPage && (
                   <Button
-                    onClick={() => window.open(`/marketplace/${publishStatus.productId}/custom`, '_blank')}
+                    onClick={() => handleCreateStoryPage(publishStatus.productId)}
+                    className="bg-purple-600 hover:bg-purple-700"
                   >
-                    <Globe className="mr-2" size={16} />
-                    View Custom Page
+                    <BookOpen className="mr-2" size={16} />
+                    Create Story Page
                   </Button>
                 )}
+                <Button
+                  onClick={() => window.location.href = '/marketplace'}
+                >
+                  <Globe className="mr-2" size={16} />
+                  Browse Marketplace
+                </Button>
               </div>
             </div>
           ) : (
@@ -413,6 +450,67 @@ const PublishStep = ({
               </Button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Product Story Page Modal */}
+      {showStoryPageModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4 relative">
+            <button
+              onClick={() => setShowStoryPageModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <X size={20} />
+            </button>
+            
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <BookOpen className="text-purple-600" size={32} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Create Product Story Page?
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Would you like to create an enhanced product story page with rich visuals and detailed information? 
+                This will be saved as a custom page for "{generatedContent?.title}".
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-lg p-4 mb-6">
+              <h4 className="font-medium text-purple-900 mb-2">What you'll get:</h4>
+              <ul className="text-sm text-purple-800 space-y-1">
+                <li>• Rich visual storytelling layouts</li>
+                <li>• Detailed product creation process</li>
+                <li>• Customer testimonials section</li>
+                <li>• Professional template designs</li>
+                <li>• Enhanced SEO and engagement</li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setWantsStoryPage(false);
+                  handlePublish();
+                }}
+                className="flex-1"
+              >
+                Skip for Now
+              </Button>
+              <Button
+                onClick={() => {
+                  setWantsStoryPage(true);
+                  handlePublish();
+                }}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                <BookOpen className="mr-2" size={16} />
+                Yes, Create Story Page
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>

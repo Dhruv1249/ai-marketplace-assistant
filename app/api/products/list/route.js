@@ -25,28 +25,38 @@ export async function GET() {
       if (dir.isDirectory()) {
         try {
           const productDir = path.join(productsDir, dir.name);
+
+          // Prefer product.json, fallback to standard.json
+          // const productPath = path.join(productDir, 'product.json');
           const standardPath = path.join(productDir, 'standard.json');
-          
-          // Check if standard.json exists
+          let fileToRead = null;
+
           try {
-            await fs.access(standardPath);
-            const standardData = await fs.readFile(standardPath, 'utf-8');
-            const product = JSON.parse(standardData);
-            
-            // Check if custom.json exists
-            const customPath = path.join(productDir, 'custom.json');
+            await fs.access(productPath);
+            fileToRead = productPath;
+          } catch {
             try {
-              await fs.access(customPath);
-              product.hasCustomPage = true;
+              await fs.access(standardPath);
+              fileToRead = standardPath;
             } catch {
-              product.hasCustomPage = false;
+              // Skip if neither json file exists
+              continue;
             }
-            
-            products.push(product);
-          } catch (error) {
-            console.error(`Error reading standard.json for product ${dir.name}:`, error);
-            // Skip this product if standard.json is missing or invalid
           }
+
+          const productData = await fs.readFile(fileToRead, 'utf-8');
+          const product = JSON.parse(productData);
+
+          // Check if custom.json exists
+          const customPath = path.join(productDir, 'custom.json');
+          try {
+            await fs.access(customPath);
+            product.hasCustomPage = true;
+          } catch {
+            product.hasCustomPage = false;
+          }
+
+          products.push(product);
         } catch (error) {
           console.error(`Error processing product directory ${dir.name}:`, error);
         }

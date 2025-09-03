@@ -33,16 +33,71 @@ const ComponentEditDialog = ({
   });
   
   const [links, setLinks] = useState([]);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true); // FIXED: Default preview ON
   const textareaRef = useRef(null);
   const dialogRef = useRef(null);
+
+  // FIXED: Better text extraction from component children
+  const extractTextFromChildren = (children) => {
+    if (!children) return '';
+    
+    if (typeof children === 'string') {
+      return children;
+    }
+    
+    if (Array.isArray(children)) {
+      return children.map(child => {
+        if (typeof child === 'string') {
+          return child;
+        } else if (typeof child === 'object' && child !== null) {
+          // Handle object children by converting to string representation
+          if (child.toString && typeof child.toString === 'function') {
+            const str = child.toString();
+            // Avoid [object Object] by checking if toString returns meaningful content
+            if (str !== '[object Object]') {
+              return str;
+            }
+          }
+          // Try to extract text from nested structure
+          if (child.children) {
+            return extractTextFromChildren(child.children);
+          }
+          // Fallback: try to get any text content
+          return JSON.stringify(child);
+        }
+        return String(child);
+      }).join(' ');
+    }
+    
+    if (typeof children === 'object' && children !== null) {
+      // Handle single object child
+      if (children.toString && typeof children.toString === 'function') {
+        const str = children.toString();
+        if (str !== '[object Object]') {
+          return str;
+        }
+      }
+      if (children.children) {
+        return extractTextFromChildren(children.children);
+      }
+      // Last resort: stringify the object
+      return JSON.stringify(children);
+    }
+    
+    return String(children);
+  };
 
   // Initialize form data when component changes
   useEffect(() => {
     if (component && isOpen) {
-      const text = Array.isArray(component.children) 
-        ? component.children.join(' ') 
-        : (component.children || '');
+      // FIXED: Better text extraction to avoid [object Object]
+      const text = extractTextFromChildren(component.children);
+      
+      console.log('=== COMPONENT EDIT DIALOG DEBUG ===');
+      console.log('Component:', component);
+      console.log('Raw children:', component.children);
+      console.log('Extracted text:', text);
+      console.log('====================================');
       
       setFormData({
         text: text,
@@ -227,17 +282,18 @@ const ComponentEditDialog = ({
     return processedText;
   };
 
-  // Handle save
+  // FIXED: Handle save with proper text structure
   const handleSave = () => {
     if (!component) return;
     
     // Process text to include links
     let processedText = formData.text;
     
-    // Create updated component
+    // Create updated component with proper children structure
     const updatedComponent = {
       ...component,
-      children: [processedText],
+      // FIXED: Ensure children is always an array of strings, not objects
+      children: processedText ? [processedText] : [],
       props: {
         ...component.props,
         className: formData.className,
@@ -252,7 +308,12 @@ const ComponentEditDialog = ({
     };
     
     if (debug) {
-      console.log('Saving component:', updatedComponent);
+      console.log('=== SAVING COMPONENT ===');
+      console.log('Original component:', component);
+      console.log('Updated component:', updatedComponent);
+      console.log('Text being saved:', processedText);
+      console.log('Children structure:', updatedComponent.children);
+      console.log('========================');
     }
     
     onSave(updatedComponent);
@@ -275,7 +336,7 @@ const ComponentEditDialog = ({
     });
     setLinks([]);
     setActiveTab('content');
-    setShowPreview(false);
+    setShowPreview(true); // Reset to default ON
     onClose();
   };
 
@@ -756,16 +817,18 @@ const ComponentEditDialog = ({
                     <p><strong>Type:</strong> {component?.type}</p>
                     <p><strong>ID:</strong> {component?.id}</p>
                     <p><strong>Editable:</strong> {component?.editable?.contentEditable ? 'Yes' : 'No'}</p>
+                    <p><strong>Children Type:</strong> {typeof component?.children}</p>
+                    <p><strong>Children Length:</strong> {Array.isArray(component?.children) ? component.children.length : 'N/A'}</p>
                   </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Preview Panel */}
+          {/* FIXED: Preview Panel - Default ON */}
           {showPreview && (
             <div className="w-1/2 border-l border-gray-200 p-6 bg-gray-50">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Live Preview</h3>
               <div className="bg-white p-4 rounded-lg border border-gray-200">
                 <div 
                   className={formData.className}
@@ -774,6 +837,7 @@ const ComponentEditDialog = ({
               </div>
               <div className="mt-4 text-xs text-gray-500">
                 <p><strong>Classes:</strong> {formData.className || 'None'}</p>
+                <p><strong>Text Length:</strong> {formData.text.length} characters</p>
               </div>
             </div>
           )}

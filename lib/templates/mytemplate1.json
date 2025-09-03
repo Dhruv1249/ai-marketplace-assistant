@@ -1,0 +1,195 @@
+{
+  "metadata": {
+    "template": "luxury-patio-set",
+    "name": "Luxury Wicker Patio Dining Set",
+    "description": "Luxury wicker patio dining set with detailed features and a gallery-focused layout.",
+    "version": "1.0",
+    "editable": true,
+    "category": "e-commerce",
+    "tags": ["patio", "furniture", "gallery", "product"],
+    "sections": ["hero", "gallery", "features", "cta"],
+    "responsive": true,
+    "customizable": {
+      "colors": true,
+      "fonts": true,
+      "spacing": true,
+      "layout": true
+    }
+  },
+  "editingConfig": {
+    "allowedOperations": ["reorder", "style", "content", "add", "remove"],
+    "constraints": {
+      "minSections": 2,
+      "maxSections": 8,
+      "requiredSections": ["hero", "cta"]
+    },
+    "sectionTypes": {
+      "hero": { "maxCount": 1, "required": true },
+      "gallery": { "maxCount": 1, "required": false },
+      "features": { "maxCount": 1, "required": false },
+      "cta": { "maxCount": 2, "required": true }
+    }
+  },
+  "styleVariables": {
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#1e40af",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#3b82f6",
+    "fontFamily": "Inter, sans-serif",
+    "headingFont": "Inter, sans-serif",
+    "fontSize": "16px",
+    "lineHeight": "1.6",
+    "borderRadius": "8px",
+    "spacing": "1rem",
+    "containerMaxWidth": "1280px",
+    "shadows": {
+      "small": "0 1px 3px rgba(0,0,0,0.1)",
+      "medium": "0 4px 6px rgba(0,0,0,0.1)",
+      "large": "0 10px 25px rgba(0,0,0,0.1)"
+    }
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white flex flex-col relative"
+    },
+    "children": [
+      {
+        "id": "main-content",
+        "type": "main",
+        "props": { "className": "flex-grow" },
+        "children": [
+          {
+            "id": "product-main-section",
+            "type": "div",
+            "props": { "className": "container mx-auto px-4 sm:px-6 lg:px-8 py-8" },
+            "children": [
+              {
+                "id": "product-grid",
+                "type": "div",
+                "props": { "className": "grid grid-cols-1 lg:grid-cols-2 gap-12" },
+                "children": [
+                  {
+                    "id": "details-content-col",
+                    "type": "div",
+                    "props": { "className": "space-y-8" },
+                    "children": [
+                      {
+                        "id": "hero-content-section",
+                        "type": "div",
+                        "children": [
+                          {
+                            "id": "product-title",
+                            "type": "h2",
+                            "props": { "className": "text-3xl font-bold text-gray-900" },
+                            "children": ["Luxury Wicker Patio Dining Set with All-Weather Cushions"]
+                          },
+                          {
+                            "id": "desc-1",
+                            "type": "p",
+                            "props": { "className": "mt-4 text-gray-600 leading-relaxed" },
+                            "children": ["Elevate your outdoor entertaining with the Luxury Wicker Patio Dining Set. Crafted from high-quality, all-weather wicker, this elegant set offers exceptional durability and timeless style, designed to withstand the elements while providing a sophisticated centerpiece for your patio, deck, or garden. The robust construction ensures lasting enjoyment, making it a worthwhile investment for creating memorable al fresco dining experiences season after season."]
+                          },
+                          {
+                            "id": "desc-2",
+                            "type": "p",
+                            "props": { "className": "mt-4 text-gray-600 leading-relaxed" },
+                            "children": ["This meticulously designed dining set features plush, all-weather cushions that provide unparalleled comfort for your guests. The premium fabric is engineered to resist fading, mildew, and water, ensuring your cushions remain vibrant and supportive throughout the outdoor season. Whether hosting intimate family dinners or lively gatherings with friends, this set offers ample seating and a spacious dining surface, promising both comfort and functionality for any occasion."]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "features-section",
+                        "type": "div",
+                        "props": { "className": "border-t border-gray-200 pt-6" },
+                        "children": [
+                          {
+                            "id": "features-title",
+                            "type": "h3",
+                            "props": { "className": "text-2xl font-semibold text-gray-900" },
+                            "children": ["Key Features"]
+                          },
+                          {
+                            "id": "features-list",
+                            "type": "ul",
+                            "props": { "className": "mt-4 space-y-4" },
+                            "children": [
+                              {
+                                "id": "feature-1",
+                                "type": "li",
+                                "props": { "className": "flex items-start" },
+                                "children": [
+                                  {
+                                    "id": "feature-icon-container",
+                                    "type": "div",
+                                    "props": { "className": "flex-shrink-0" },
+                                    "children": [
+                                      {
+                                        "id": "feature-icon-bg",
+                                        "type": "div",
+                                        "props": { "className": "bg-blue-100 rounded-full p-2" },
+                                        "children": [
+                                          {
+                                            "id": "feature-icon",
+                                            "type": "span",
+                                            "props": { "className": "material-icons text-blue-600" },
+                                            "children": [""]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "id": "feature-desc",
+                                    "type": "p",
+                                    "props": { "className": "ml-4 text-gray-600" },
+                                    "children": ["Experience enduring elegance with our all-weather wicker, meticulously woven to resist fading and cracking from sun exposure, ensuring your patio set maintains its luxurious appeal year after year."]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "gallery-col",
+                    "type": "div",
+                    "props": { "className": "flex items-center justify-center" },
+                    "children": [
+                      {
+                        "id": "main-image",
+                        "type": "img",
+                        "props": {
+                          "className": "rounded-lg shadow-xl w-full h-auto max-w-lg",
+                          "alt": "Craft Journeys display featuring artisan pottery and a woman in a shawl",
+                          "src": "https://lh3.googleusercontent.com/aida-public/AB6AXuAeK7-cwiTprEXGTj766vKaQ0CipT2TApPS2Y3QoHiik28wllBiwZx60Znvd3CWHM0AtqP-MZJAihc40Xq6OlvBVjwjtoaf-_JyGhn6JnFreAEgvXgnUrMFmwG5Ag9dZJFbtMWK2dEV5ZY3d5SSjJmkZAbqKnWhWu3WqDD4hckEOc38dxPlpEt8s0bHyeukcaBaBDQ8EuE0UIKIeEfmMamPUZkkYkQyyPeLNh40b0GcnKZYrxv417IXeRsCDxuhs76MLOVlXvRQz23E"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "footer",
+        "type": "footer",
+        "props": { "className": "w-12 h-12 bg-black text-white rounded-full flex items-center justify-center fixed bottom-4 left-4" },
+        "children": [
+          {
+            "id": "footer-logo",
+            "type": "span",
+            "props": { "className": "font-bold text-lg" },
+            "children": ["N"]
+          }
+        ]
+      }
+    ]
+  }
+}

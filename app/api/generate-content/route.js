@@ -37,12 +37,19 @@ export async function POST(request) {
       throw new Error('Failed to generate content');
     }
 
-    const generatedText = await response.text();
+    let generatedText = await response.text();
+    generatedText = generatedText.trim();
+
+    // Enforce 400 character limit
+    if (generatedText.length > 400) {
+      generatedText = generatedText.substring(0, 397) + '...';
+    }
 
     return NextResponse.json({
       success: true,
-      content: generatedText.trim(),
-      prompt
+      content: generatedText,
+      prompt,
+      characterCount: generatedText.length
     });
 
   } catch (error) {

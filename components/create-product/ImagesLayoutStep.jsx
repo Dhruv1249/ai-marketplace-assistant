@@ -3,12 +3,10 @@
 import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { Eye, Upload, X, Image as ImageIcon, FileText } from 'lucide-react';
-import TemplateSelector from '@/components/templates/TemplateSelector';
+import DeleteButton from '../animated icon/DeleteButton';
 
 const ImagesLayoutStep = ({
   generatedContent,
-  pageModel,
-  setPageModel,
   thumbnailImage,
   setThumbnailImage,
   additionalImages,
@@ -97,46 +95,9 @@ const ImagesLayoutStep = ({
     setThumbnailImage(null);
   };
 
-  const previewStandardPage = () => {
-    // Create standard page preview data
-    const standardPreviewData = {
-      id: 'preview',
-      title: generatedContent?.title || 'Product Title',
-      description: generatedContent?.description || 'Product description',
-      pricing: pricing || {
-        basePrice: 99.99,
-        discount: { enabled: false, finalPrice: 99.99 }
-      },
-      features: generatedContent?.features || [],
-      featureExplanations: featureExplanations || {},
-      specifications: generatedContent?.specifications || {},
-      seoKeywords: generatedContent?.seoKeywords || [],
-      metaDescription: generatedContent?.metaDescription || '',
-      hasCustomPage: false
-    };
-    
-    // Store uploaded images for preview
-    const previewImages = [];
-    if (thumbnailImage?.url) {
-      previewImages.push(thumbnailImage.url);
-    }
-    additionalImages.forEach(img => {
-      if (img?.url) previewImages.push(img.url);
-    });
-    
-    // Store both data and images
-    localStorage.setItem('standardPreviewData', JSON.stringify(standardPreviewData));
-    localStorage.setItem('previewImages', JSON.stringify(previewImages));
-    
-    console.log('Preview data being stored:', standardPreviewData); // Debug log
-    console.log('Preview images being stored:', previewImages); // Debug log
-    
-    window.open('/marketplace/preview-standard', '_blank', 'noopener,noreferrer');
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Images & Layout</h2>
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Product Images</h2>
 
       <div className="space-y-8">
         {/* Thumbnail Image (Mandatory) */}
@@ -169,12 +130,10 @@ const ImagesLayoutStep = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <button
-                onClick={removeThumbnail}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-              >
-                <X size={16} />
-              </button>
+              <div className="absolute -top-2 -right-2">
+                <DeleteButton onClick={removeThumbnail} />
+              </div>
+
               <Button
                 variant="outline"
                 size="sm"
@@ -266,16 +225,6 @@ const ImagesLayoutStep = ({
           )}
         </div>
 
-        {/* Template Selection */}
-        <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Choose Layout Template</h3>
-          <TemplateSelector
-            content={generatedContent}
-            value={pageModel?.metadata?.template || 'gallery-focused'}
-            onChange={setPageModel}
-          />
-        </div>
-
         {/* Image Preview Summary */}
         {(thumbnailImage || additionalImages.length > 0) && (
           <div className="bg-gray-50 rounded-lg p-4">
@@ -297,17 +246,6 @@ const ImagesLayoutStep = ({
           </div>
         )}
 
-        {/* Debug Info */}
-        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-          <h4 className="font-medium text-yellow-800 mb-2">Debug Info</h4>
-          <div className="text-xs text-yellow-700 space-y-1">
-            <div>Features: {generatedContent?.features?.length || 0}</div>
-            <div>Feature Explanations: {Object.keys(featureExplanations || {}).length}</div>
-            <div>Thumbnail: {thumbnailImage ? '✓' : '✗'}</div>
-            <div>Additional Images: {additionalImages.length}</div>
-          </div>
-        </div>
-
         {/* Navigation */}
         <div className="flex gap-3 pt-4">
           <Button variant="outline" onClick={onBack}>
@@ -318,16 +256,8 @@ const ImagesLayoutStep = ({
             onClick={onPreview}
             disabled={!thumbnailImage}
           >
-            <Eye className="mr-2" size={16} />
-            Preview Custom Page
-          </Button>
-          <Button
-            variant="outline"
-            onClick={previewStandardPage}
-            disabled={!thumbnailImage}
-          >
             <FileText className="mr-2" size={16} />
-            Preview Standard Page
+            Preview Product Page
           </Button>
           <Button 
             onClick={onContinue}

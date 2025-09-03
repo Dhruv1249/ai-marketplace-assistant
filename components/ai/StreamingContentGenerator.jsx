@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Button, Input } from '../ui';
 import { Wand2, Loader2 } from 'lucide-react';
+import LaunchButton from '../animated icon/LaunchButton';
+import BackButton from '../animated icon/BackButton';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
@@ -199,24 +201,13 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
             <label className="block text-sm font-medium text-gray-700">
               Product Title *
             </label>
-            <button
+            <LaunchButton
               type="button"
               onClick={() => handleIndividualAiGeneration('productTitle')}
               disabled={aiGenerationStates.productTitle}
-              className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {aiGenerationStates.productTitle ? (
-                <>
-                  <Loader2 className="animate-spin mr-1" size={12} />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-1" size={12} />
-                  ✨ AI
-                </>
-              )}
-            </button>
+              >
+              ✨ AI
+            </LaunchButton>
           </div>
           <input
             type="text"
@@ -234,24 +225,13 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
             <label className="block text-sm font-medium text-gray-700">
               Product Description * (minimum 10 characters)
             </label>
-            <button
+            <LaunchButton
               type="button"
               onClick={() => handleIndividualAiGeneration('productDescription')}
               disabled={aiGenerationStates.productDescription}
-              className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {aiGenerationStates.productDescription ? (
-                <>
-                  <Loader2 className="animate-spin mr-1" size={12} />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-1" size={12} />
-                  ✨ AI
-                </>
-              )}
-            </button>
+              >
+              ✨ AI
+          </LaunchButton>
           </div>
           <textarea
             value={formData.productDescription}
@@ -273,24 +253,13 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               <label className="block text-sm font-medium text-gray-700">
                 Category *
               </label>
-              <button
+               <LaunchButton
                 type="button"
                 onClick={() => handleIndividualAiGeneration('category')}
                 disabled={aiGenerationStates.category}
-                className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {aiGenerationStates.category ? (
-                  <>
-                    <Loader2 className="animate-spin mr-1" size={12} />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-1" size={12} />
-                    ✨ AI
-                  </>
-                )}
-              </button>
+                >
+                ✨ AI
+              </LaunchButton> 
             </div>
             <input
               type="text"
@@ -307,24 +276,13 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               <label className="block text-sm font-medium text-gray-700">
                 Target Audience *
               </label>
-              <button
+              <LaunchButton
                 type="button"
                 onClick={() => handleIndividualAiGeneration('targetAudience')}
                 disabled={aiGenerationStates.targetAudience}
-                className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {aiGenerationStates.targetAudience ? (
-                  <>
-                    <Loader2 className="animate-spin mr-1" size={12} />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Wand2 className="mr-1" size={12} />
-                    ✨ AI
-                  </>
-                )}
-              </button>
+                >
+                ✨ AI
+              </LaunchButton>
             </div>
             <input
               type="text"
@@ -441,9 +399,9 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               )}
             </div>
             <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={handleCancelGenerate}>
+              <BackButton variant="outline" onClick={handleCancelGenerate}>
                 Cancel
-              </Button>
+              </BackButton>
               <Button onClick={handleConfirmGenerate}>
                 <Wand2 className="mr-2" size={16} />
                 {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}

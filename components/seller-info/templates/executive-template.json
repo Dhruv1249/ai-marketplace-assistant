@@ -1,0 +1,473 @@
+{
+  "metadata": {
+    "template": "seller-info-executive",
+    "name": "Executive Seller Info Template",
+    "description": "Premium, sophisticated layout for executive professionals",
+    "version": "1.0"
+  },
+  "styleVariables": {
+    "primaryColor": "#d97706",
+    "secondaryColor": "#374151",
+    "backgroundColor": "#111827",
+    "textColor": "#ffffff"
+  },
+  "component": {
+    "id": "executive-seller-root",
+    "type": "div",
+    "props": {
+      "className": "max-w-6xl mx-auto bg-gray-900 text-white min-h-screen"
+    },
+    "children": [
+      {
+        "id": "header-section",
+        "type": "div",
+        "props": {
+          "className": "bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700"
+        },
+        "children": [
+          {
+            "id": "header-content",
+            "type": "div",
+            "props": {
+              "className": "px-8 py-12"
+            },
+            "children": [
+              {
+                "id": "header-flex",
+                "type": "div",
+                "props": {
+                  "className": "flex flex-col md:flex-row gap-8 items-center"
+                },
+                "children": [
+                  {
+                    "id": "profile-photo-section",
+                    "type": "div",
+                    "props": {
+                      "className": "flex-shrink-0"
+                    },
+                    "children": [
+                      {
+                        "id": "profile-photo",
+                        "type": "img",
+                        "if": "content.photos && content.photos.length > 0",
+                        "props": {
+                          "src": "{{content.photos[0].url}}",
+                          "alt": "{{content.name}}",
+                          "className": "w-36 h-36 rounded object-cover border-4 border-yellow-400 shadow-2xl"
+                        }
+                      },
+                      {
+                        "id": "profile-placeholder",
+                        "type": "div",
+                        "unless": "content.photos && content.photos.length > 0",
+                        "props": {
+                          "className": "w-36 h-36 rounded bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center border-4 border-yellow-400 shadow-2xl"
+                        },
+                        "children": [
+                          {
+                            "id": "placeholder-initial",
+                            "type": "span",
+                            "props": {
+                              "className": "text-gray-900 text-5xl font-bold"
+                            },
+                            "children": "{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "executive-info-section",
+                    "type": "div",
+                    "props": {
+                      "className": "flex-1 text-center md:text-left"
+                    },
+                    "children": [
+                      {
+                        "id": "executive-name",
+                        "type": "h1",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-4xl md:text-5xl font-bold mb-3"
+                        },
+                        "children": "{{content.name || 'Executive Name'}}"
+                      },
+                      {
+                        "id": "executive-title",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-2xl text-yellow-400 font-medium mb-4"
+                        },
+                        "children": "{{content.title || 'Chief Executive Officer'}}"
+                      },
+                      {
+                        "id": "executive-bio",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-300 text-lg leading-relaxed max-w-3xl"
+                        },
+                        "children": "{{content.bio || 'Executive bio and leadership philosophy...'}}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "main-content-section",
+        "type": "div",
+        "props": {
+          "className": "px-8 py-12"
+        },
+        "children": [
+          {
+            "id": "content-grid",
+            "type": "div",
+            "props": {
+              "className": "grid grid-cols-1 lg:grid-cols-4 gap-8"
+            },
+            "children": [
+              {
+                "id": "main-content",
+                "type": "div",
+                "props": {
+                  "className": "lg:col-span-3 space-y-8"
+                },
+                "children": [
+                  {
+                    "id": "leadership-story-section",
+                    "type": "div",
+                    "if": "content.story",
+                    "children": [
+                      {
+                        "id": "leadership-story-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-3xl font-bold mb-6 text-yellow-400"
+                        },
+                        "children": "Leadership Journey"
+                      },
+                      {
+                        "id": "leadership-story-content",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-300 leading-relaxed text-lg"
+                        },
+                        "children": "{{content.story}}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "executive-experience-section",
+                    "type": "div",
+                    "if": "content.experience",
+                    "children": [
+                      {
+                        "id": "executive-experience-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-3xl font-bold mb-6 text-yellow-400"
+                        },
+                        "children": "Executive Experience"
+                      },
+                      {
+                        "id": "executive-experience-content",
+                        "type": "p",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-300 leading-relaxed text-lg"
+                        },
+                        "children": "{{content.experience}}"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "organization-leadership-section",
+                    "type": "div",
+                    "if": "content.businessInfo && (content.businessInfo.businessName || content.businessInfo.description)",
+                    "children": [
+                      {
+                        "id": "organization-leadership-title",
+                        "type": "h2",
+                        "props": {
+                          "className": "text-3xl font-bold mb-6 text-yellow-400"
+                        },
+                        "children": "Organization Leadership"
+                      },
+                      {
+                        "id": "organization-name",
+                        "type": "h3",
+                        "if": "content.businessInfo.businessName",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-2xl font-semibold text-white mb-4"
+                        },
+                        "children": "{{content.businessInfo.businessName}}"
+                      },
+                      {
+                        "id": "organization-stats",
+                        "type": "div",
+                        "props": {
+                          "className": "grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+                        },
+                        "children": [
+                          {
+                            "id": "founded-stat",
+                            "type": "div",
+                            "if": "content.businessInfo.founded",
+                            "props": {
+                              "className": "bg-gray-800 p-4 rounded-lg text-center"
+                            },
+                            "children": [
+                              {
+                                "id": "founded-label",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-yellow-400 font-semibold"
+                                },
+                                "children": "Founded"
+                              },
+                              {
+                                "id": "founded-value",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-white"
+                                },
+                                "children": "{{content.businessInfo.founded}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "team-size-stat",
+                            "type": "div",
+                            "if": "content.businessInfo.employees",
+                            "props": {
+                              "className": "bg-gray-800 p-4 rounded-lg text-center"
+                            },
+                            "children": [
+                              {
+                                "id": "team-size-label",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-yellow-400 font-semibold"
+                                },
+                                "children": "Team Size"
+                              },
+                              {
+                                "id": "team-size-value",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-white"
+                                },
+                                "children": "{{content.businessInfo.employees}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "role-stat",
+                            "type": "div",
+                            "props": {
+                              "className": "bg-gray-800 p-4 rounded-lg text-center"
+                            },
+                            "children": [
+                              {
+                                "id": "role-label",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-yellow-400 font-semibold"
+                                },
+                                "children": "Role"
+                              },
+                              {
+                                "id": "role-value",
+                                "type": "div",
+                                "props": {
+                                  "className": "text-white"
+                                },
+                                "children": "Executive Leader"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "organization-description",
+                        "type": "p",
+                        "if": "content.businessInfo.description",
+                        "editable": {
+                          "contentEditable": true
+                        },
+                        "props": {
+                          "className": "text-gray-300 leading-relaxed"
+                        },
+                        "children": "{{content.businessInfo.description}}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "sidebar",
+                "type": "div",
+                "props": {
+                  "className": "space-y-6"
+                },
+                "children": [
+                  {
+                    "id": "core-competencies-section",
+                    "type": "div",
+                    "if": "content.specialties && content.specialties.length > 0",
+                    "props": {
+                      "className": "bg-gray-800 p-6 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "core-competencies-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold text-yellow-400 mb-4"
+                        },
+                        "children": "Core Competencies"
+                      },
+                      {
+                        "id": "competencies-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-2"
+                        },
+                        "children": "SPECIALTIES_ARRAY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "key-achievements-section",
+                    "type": "div",
+                    "if": "content.achievements && content.achievements.length > 0",
+                    "props": {
+                      "className": "bg-gray-800 p-6 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "key-achievements-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold text-yellow-400 mb-4"
+                        },
+                        "children": "Key Achievements"
+                      },
+                      {
+                        "id": "achievements-list",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-3"
+                        },
+                        "children": "ACHIEVEMENTS_ARRAY"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "executive-contact-section",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-gray-800 p-6 rounded-lg"
+                    },
+                    "children": [
+                      {
+                        "id": "executive-contact-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold text-yellow-400 mb-4"
+                        },
+                        "children": "Executive Contact"
+                      },
+                      {
+                        "id": "contact-links",
+                        "type": "div",
+                        "props": {
+                          "className": "space-y-3"
+                        },
+                        "children": [
+                          {
+                            "id": "email-contact",
+                            "type": "div",
+                            "if": "content.contact && content.contact.email",
+                            "props": {
+                              "className": "flex items-center gap-2 text-gray-300"
+                            },
+                            "children": [
+                              {
+                                "id": "email-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block text-yellow-400"
+                                },
+                                "children": "📧"
+                              },
+                              {
+                                "id": "email-text",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-sm"
+                                },
+                                "children": "{{content.contact.email}}"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "linkedin-contact",
+                            "type": "a",
+                            "if": "content.contact && content.contact.social && content.contact.social.linkedin",
+                            "props": {
+                              "href": "{{content.contact.social.linkedin}}",
+                              "className": "flex items-center gap-2 text-yellow-400 hover:text-yellow-300"
+                            },
+                            "children": [
+                              {
+                                "id": "linkedin-icon",
+                                "type": "span",
+                                "props": {
+                                  "className": "w-4 h-4 inline-block"
+                                },
+                                "children": "💼"
+                              },
+                              {
+                                "id": "linkedin-text",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-sm"
+                                },
+                                "children": "LinkedIn Profile"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

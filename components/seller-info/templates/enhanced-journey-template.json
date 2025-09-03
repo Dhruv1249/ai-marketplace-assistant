@@ -1,0 +1,1472 @@
+{
+  "metadata": {
+    "name": "Enhanced Journey Story",
+    "description": "Complete template with working particles, enhanced animations, and all features",
+    "template": "journey",
+    "version": "10.0",
+    "features": [
+      "timeline",
+      "particles",
+      "animations",
+      "responsive",
+      "dynamic",
+      "all-fields",
+      "perfect-slider",
+      "proper-positioning",
+      "true-centering"
+    ]
+  },
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#1e40af",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#60a5fa",
+    "gradientStart": "#3b82f6",
+    "gradientEnd": "#1d4ed8"
+  },
+  "animations": {
+    "fadeInUp": {
+      "keyframes": {
+        "0%": {
+          "opacity": "0",
+          "transform": "translateY(30px)"
+        },
+        "100%": {
+          "opacity": "1",
+          "transform": "translateY(0)"
+        }
+      },
+      "duration": "0.8s",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "slideInLeft": {
+      "keyframes": {
+        "0%": {
+          "opacity": "0",
+          "transform": "translateX(-50px)"
+        },
+        "100%": {
+          "opacity": "1",
+          "transform": "translateX(0)"
+        }
+      },
+      "duration": "0.6s",
+      "easing": "ease-out"
+    },
+    "scaleIn": {
+      "keyframes": {
+        "0%": {
+          "opacity": "0",
+          "transform": "scale(0.9)"
+        },
+        "100%": {
+          "opacity": "1",
+          "transform": "scale(1)"
+        }
+      },
+      "duration": "0.5s",
+      "easing": "ease-out"
+    },
+    "floatSlow": {
+      "keyframes": {
+        "0%": {
+          "transform": "translateY(0px)"
+        },
+        "50%": {
+          "transform": "translateY(-15px)"
+        },
+        "100%": {
+          "transform": "translateY(0px)"
+        }
+      },
+      "duration": "4s",
+      "easing": "ease-in-out",
+      "iterations": "infinite"
+    },
+    "floatFast": {
+      "keyframes": {
+        "0%": {
+          "transform": "translateY(0px)"
+        },
+        "50%": {
+          "transform": "translateY(-10px)"
+        },
+        "100%": {
+          "transform": "translateY(0px)"
+        }
+      },
+      "duration": "2s",
+      "easing": "ease-in-out",
+      "iterations": "infinite"
+    },
+    "rotateSlow": {
+      "keyframes": {
+        "0%": {
+          "transform": "rotate(0deg)"
+        },
+        "100%": {
+          "transform": "rotate(360deg)"
+        }
+      },
+      "duration": "8s",
+      "easing": "linear",
+      "iterations": "infinite"
+    },
+    "pulseSlow": {
+      "keyframes": {
+        "0%": {
+          "opacity": "0.4",
+          "transform": "scale(1)"
+        },
+        "50%": {
+          "opacity": "1",
+          "transform": "scale(1.1)"
+        },
+        "100%": {
+          "opacity": "0.4",
+          "transform": "scale(1)"
+        }
+      },
+      "duration": "3s",
+      "easing": "ease-in-out",
+      "iterations": "infinite"
+    },
+    "twinkle": {
+      "keyframes": {
+        "0%": {
+          "opacity": "0.3"
+        },
+        "25%": {
+          "opacity": "1"
+        },
+        "50%": {
+          "opacity": "0.3"
+        },
+        "75%": {
+          "opacity": "0.8"
+        },
+        "100%": {
+          "opacity": "0.3"
+        }
+      },
+      "duration": "2.5s",
+      "easing": "ease-in-out",
+      "iterations": "infinite"
+    }
+  },
+  "component": {
+    "id": "enhanced-journey-story",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen bg-white"
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "section",
+        "props": {
+          "className": "relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden"
+        },
+        "children": [
+          {
+            "id": "hero-background",
+            "type": "div",
+            "props": {
+              "className": "absolute inset-0 bg-black/20"
+            }
+          },
+          {
+            "id": "hero-particles",
+            "type": "div",
+            "props": {
+              "className": "absolute inset-0 opacity-60 pointer-events-none"
+            },
+            "children": [
+              {
+                "id": "particle-1",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-1/4 left-1/4 w-3 h-3 bg-white rounded-full animate-pulseSlow"
+                }
+              },
+              {
+                "id": "particle-2",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-3/4 right-1/3 w-2 h-2 bg-blue-200 rounded-full animate-floatSlow"
+                }
+              },
+              {
+                "id": "particle-3",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-1/2 right-1/4 w-4 h-4 bg-blue-300 rounded-full animate-twinkle"
+                }
+              },
+              {
+                "id": "particle-4",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-1/3 left-3/4 w-1 h-1 bg-white rounded-full animate-floatFast"
+                }
+              },
+              {
+                "id": "particle-5",
+                "type": "div",
+                "props": {
+                  "className": "absolute bottom-1/4 left-1/2 w-2 h-2 bg-indigo-200 rounded-full animate-pulseSlow"
+                }
+              },
+              {
+                "id": "particle-6",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-1/6 right-1/6 w-3 h-3 border border-white rounded-full animate-rotateSlow"
+                }
+              }
+            ]
+          },
+          {
+            "id": "hero-container",
+            "type": "div",
+            "props": {
+              "className": "relative z-10 max-w-6xl mx-auto px-4 text-center"
+            },
+            "children": [
+              {
+                "id": "hero-badge",
+                "type": "div",
+                "props": {
+                  "className": "inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fadeInUp"
+                },
+                "children": [
+                  {
+                    "id": "badge-icon",
+                    "type": "span",
+                    "props": {
+                      "className": "w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulseSlow"
+                    }
+                  },
+                  "{{content.basics.category || 'Product'}}"
+                ]
+              },
+              {
+                "id": "hero-title",
+                "type": "h1",
+                "props": {
+                  "className": "text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fadeInUp"
+                },
+                "children": [
+                  "{{content.basics.name || 'Amazing Product'}}"
+                ],
+                "editable": {
+                  "contentEditable": true
+                }
+              },
+              {
+                "id": "hero-subtitle",
+                "type": "p",
+                "props": {
+                  "className": "text-lg sm:text-xl md:text-2xl text-blue-100 mb-8 max-w-4xl mx-auto leading-relaxed animate-fadeInUp"
+                },
+                "children": [
+                  "{{content.basics.value || 'Discover the story behind our innovative solution that transforms the way you work and live.'}}"
+                ],
+                "editable": {
+                  "contentEditable": true
+                }
+              },
+              {
+                "id": "hero-audience",
+                "type": "p",
+                "props": {
+                  "className": "text-base text-blue-200 mb-8 animate-fadeInUp"
+                },
+                "children": [
+                  "Perfect for {{content.basics.audience || 'everyone who values quality and innovation'}}"
+                ],
+                "editable": {
+                  "contentEditable": true
+                }
+              },
+              {
+                "id": "hero-cta",
+                "type": "div",
+                "props": {
+                  "className": "flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeInUp"
+                },
+                "children": [
+                  {
+                    "id": "cta-primary",
+                    "type": "button",
+                    "props": {
+                      "className": "px-8 py-4 bg-white text-blue-600 font-semibold rounded-full hover:bg-blue-50 hover-scale transition-all duration-300 shadow-lg hover:shadow-xl"
+                    },
+                    "children": [
+                      "Discover Our Journey"
+                    ]
+                  },
+                  {
+                    "id": "cta-secondary",
+                    "type": "button",
+                    "props": {
+                      "className": "px-8 py-4 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-blue-600 transition-all duration-300"
+                    },
+                    "children": [
+                      "Learn More"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "scroll-indicator",
+            "type": "div",
+            "props": {
+              "className": "absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-floatSlow"
+            },
+            "children": [
+              {
+                "id": "scroll-arrow",
+                "type": "div",
+                "props": {
+                  "className": "w-6 h-10 border-2 border-white rounded-full flex justify-center"
+                },
+                "children": [
+                  {
+                    "id": "scroll-dot",
+                    "type": "div",
+                    "props": {
+                      "className": "w-1 h-3 bg-white rounded-full mt-2 animate-pulseSlow"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "hero-gallery-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 bg-white"
+        },
+        "children": [
+          {
+            "id": "hero-gallery-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "hero-gallery",
+                "type": "div",
+                "props": {
+                  "className": "hero-gallery-component"
+                },
+                "children": "HERO_GALLERY"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "problem-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-gradient-to-b from-gray-50 to-white"
+        },
+        "children": [
+          {
+            "id": "problem-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "problem-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-12 md:mb-16 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "problem-badge",
+                    "type": "span",
+                    "props": {
+                      "className": "inline-block px-4 py-2 bg-red-100 text-red-600 rounded-full text-sm font-medium mb-4"
+                    },
+                    "children": [
+                      "The Challenge"
+                    ]
+                  },
+                  {
+                    "id": "problem-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "The Problem We Solve"
+                    ]
+                  },
+                  {
+                    "id": "problem-description",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed"
+                    },
+                    "children": [
+                      "{{content.basics.problem || 'Every day, millions of people face challenges that could be solved with the right solution. Our product addresses these pain points with innovative technology and thoughtful design.'}}"
+                    ],
+                    "editable": {
+                      "contentEditable": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "journey-timeline",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-white relative overflow-hidden"
+        },
+        "children": [
+          {
+            "id": "timeline-particles",
+            "type": "div",
+            "props": {
+              "className": "absolute inset-0 opacity-20 pointer-events-none"
+            },
+            "children": [
+              {
+                "id": "timeline-particle-1",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-10 right-10 w-2 h-2 bg-blue-400 rounded-full animate-twinkle"
+                }
+              },
+              {
+                "id": "timeline-particle-2",
+                "type": "div",
+                "props": {
+                  "className": "absolute bottom-20 left-20 w-3 h-3 bg-purple-400 rounded-full animate-floatSlow"
+                }
+              }
+            ]
+          },
+          {
+            "id": "timeline-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4 relative z-10"
+            },
+            "children": [
+              {
+                "id": "timeline-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-16 md:mb-20 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "timeline-badge-wrapper",
+                    "type": "div",
+                    "props": {
+                      "className": "flex justify-center items-center mb-4"
+                    },
+                    "children": [
+                      {
+                        "id": "timeline-spacer",
+                        "type": "div",
+                        "props": {
+                          "className": "w-24"
+                        }
+                      },
+                      {
+                        "id": "timeline-badge",
+                        "type": "span",
+                        "props": {
+                          "className": "inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium"
+                        },
+                        "children": [
+                          "Our Journey"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "timeline-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "From Idea to Innovation"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "timeline-wrapper",
+                "type": "div",
+                "props": {
+                  "className": "relative"
+                },
+                "children": [
+                  {
+                    "id": "timeline-line",
+                    "type": "div",
+                    "props": {
+                      "className": "absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-500 to-purple-600 rounded-full hidden md:block"
+                    }
+                  },
+                  {
+                    "id": "timeline-items",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-12 md:space-y-16"
+                    },
+                    "children": [
+                      {
+                        "id": "timeline-item-1",
+                        "type": "div",
+                        "props": {
+                          "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                        },
+                        "children": [
+                          {
+                            "id": "timeline-content-1",
+                            "type": "div",
+                            "props": {
+                              "className": "w-full md:w-5/12 md:pr-8 md:text-right mb-8 md:mb-0"
+                            },
+                            "children": [
+                              {
+                                "id": "timeline-step-1",
+                                "type": "div",
+                                "props": {
+                                  "className": "bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl hover-lift transition-all duration-300"
+                                },
+                                "children": [
+                                  {
+                                    "id": "step-1-title",
+                                    "type": "h3",
+                                    "props": {
+                                      "className": "text-xl md:text-2xl font-bold text-gray-900 mb-4"
+                                    },
+                                    "children": [
+                                      "The Spark"
+                                    ]
+                                  },
+                                  {
+                                    "id": "step-1-content",
+                                    "type": "p",
+                                    "props": {
+                                      "className": "text-gray-600 leading-relaxed"
+                                    },
+                                    "children": [
+                                      "{{content.story.origin || 'Every great product starts with a simple idea. Our journey began when we recognized a gap in the market and decided to create something truly innovative that would make a difference in people\\'s lives.'}}"
+                                    ],
+                                    "editable": {
+                                      "contentEditable": true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "timeline-marker-1",
+                            "type": "div",
+                            "props": {
+                              "className": "absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 rounded-full border-4 border-white shadow-lg z-10 hidden md:block animate-pulseSlow"
+                            }
+                          },
+                          {
+                            "id": "timeline-empty-1",
+                            "type": "div",
+                            "props": {
+                              "className": "hidden md:block md:w-5/12 md:pl-8"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "timeline-item-2",
+                        "type": "div",
+                        "props": {
+                          "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                        },
+                        "children": [
+                          {
+                            "id": "timeline-empty-2",
+                            "type": "div",
+                            "props": {
+                              "className": "hidden md:block md:w-5/12 md:pr-8"
+                            }
+                          },
+                          {
+                            "id": "timeline-marker-2",
+                            "type": "div",
+                            "props": {
+                              "className": "absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-purple-500 rounded-full border-4 border-white shadow-lg z-10 hidden md:block animate-pulseSlow"
+                            }
+                          },
+                          {
+                            "id": "timeline-content-2",
+                            "type": "div",
+                            "props": {
+                              "className": "absolute right-2 w-full md:w-5/12 md:pl-8 mb-8 md:mb-0"
+                            },
+                            "children": [
+                              {
+                                "id": "timeline-step-2",
+                                "type": "div",
+                                "props": {
+                                  "className": "bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl hover-lift transition-all duration-300"
+                                },
+                                "children": [
+                                  {
+                                    "id": "step-2-title",
+                                    "type": "h3",
+                                    "props": {
+                                      "className": "text-xl md:text-2xl font-bold text-gray-900 mb-4"
+                                    },
+                                    "children": [
+                                      "The Journey"
+                                    ]
+                                  },
+                                  {
+                                    "id": "step-2-content",
+                                    "type": "p",
+                                    "props": {
+                                      "className": "text-gray-600 leading-relaxed"
+                                    },
+                                    "children": [
+                                      "{{content.story.solution || 'The path from idea to reality was filled with challenges and breakthroughs. We spent countless hours researching, prototyping, and refining our approach to create the perfect solution.'}}"
+                                    ],
+                                    "editable": {
+                                      "contentEditable": true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "timeline-item-3",
+                        "type": "div",
+                        "props": {
+                          "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                        },
+                        "children": [
+                          {
+                            "id": "timeline-content-3",
+                            "type": "div",
+                            "props": {
+                              "className": "w-full md:w-5/12 md:pr-8 md:text-right mb-8 md:mb-0"
+                            },
+                            "children": [
+                              {
+                                "id": "timeline-step-3",
+                                "type": "div",
+                                "props": {
+                                  "className": "bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl hover-lift transition-all duration-300"
+                                },
+                                "children": [
+                                  {
+                                    "id": "step-3-title",
+                                    "type": "h3",
+                                    "props": {
+                                      "className": "text-xl md:text-2xl font-bold text-gray-900 mb-4"
+                                    },
+                                    "children": [
+                                      "The Innovation"
+                                    ]
+                                  },
+                                  {
+                                    "id": "step-3-content",
+                                    "type": "p",
+                                    "props": {
+                                      "className": "text-gray-600 leading-relaxed"
+                                    },
+                                    "children": [
+                                      "{{content.story.unique || 'What makes our product special is our unique approach to solving problems. We\\'ve combined cutting-edge technology with user-centered design to create something truly remarkable.'}}"
+                                    ],
+                                    "editable": {
+                                      "contentEditable": true
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "timeline-marker-3",
+                            "type": "div",
+                            "props": {
+                              "className": "absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-500 rounded-full border-4 border-white shadow-lg z-10 hidden md:block animate-pulseSlow"
+                            }
+                          },
+                          {
+                            "id": "timeline-empty-3",
+                            "type": "div",
+                            "props": {
+                              "className": "hidden md:block md:w-5/12 md:pl-8"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "process-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-gradient-to-br from-blue-50 to-indigo-100"
+        },
+        "children": [
+          {
+            "id": "process-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "process-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-12 md:mb-16 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "process-badge",
+                    "type": "span",
+                    "props": {
+                      "className": "inline-block px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm font-medium mb-4"
+                    },
+                    "children": [
+                      "Our Process"
+                    ]
+                  },
+                  {
+                    "id": "process-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "Crafted with Precision"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "process-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start"
+                },
+                "children": [
+                  {
+                    "id": "process-content",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-4 md:space-y-6 scale-in"
+                    },
+                    "children": [
+                      {
+                        "id": "process-item-1",
+                        "type": "div",
+                        "props": {
+                          "className": "flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        },
+                        "children": [
+                          {
+                            "id": "process-icon-1",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center"
+                            },
+                            "children": [
+                              {
+                                "id": "icon-1",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-white font-bold text-sm"
+                                },
+                                "children": [
+                                  "1"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "process-text-1",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-1"
+                            },
+                            "children": [
+                              {
+                                "id": "process-title-1",
+                                "type": "h3",
+                                "props": {
+                                  "className": "text-base md:text-lg font-bold text-gray-900 mb-1"
+                                },
+                                "children": [
+                                  "Creation Process"
+                                ]
+                              },
+                              {
+                                "id": "process-desc-1",
+                                "type": "p",
+                                "props": {
+                                  "className": "text-sm text-gray-600 leading-relaxed"
+                                },
+                                "children": [
+                                  "{{content.process.creation || 'Our meticulous creation process ensures every detail is perfect. We combine traditional craftsmanship with modern technology to deliver exceptional quality.'}}"
+                                ],
+                                "editable": {
+                                  "contentEditable": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "process-item-2",
+                        "type": "div",
+                        "props": {
+                          "className": "flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        },
+                        "children": [
+                          {
+                            "id": "process-icon-2",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-shrink-0 w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center"
+                            },
+                            "children": [
+                              {
+                                "id": "icon-2",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-white font-bold text-sm"
+                                },
+                                "children": [
+                                  "2"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "process-text-2",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-1"
+                            },
+                            "children": [
+                              {
+                                "id": "process-title-2",
+                                "type": "h3",
+                                "props": {
+                                  "className": "text-base md:text-lg font-bold text-gray-900 mb-1"
+                                },
+                                "children": [
+                                  "Quality Materials"
+                                ]
+                              },
+                              {
+                                "id": "process-desc-2",
+                                "type": "p",
+                                "props": {
+                                  "className": "text-sm text-gray-600 leading-relaxed"
+                                },
+                                "children": [
+                                  "{{content.process.materials || 'We source only the finest materials and components. Every element is carefully selected to ensure durability, performance, and sustainability.'}}"
+                                ],
+                                "editable": {
+                                  "contentEditable": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "process-item-3",
+                        "type": "div",
+                        "props": {
+                          "className": "flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        },
+                        "children": [
+                          {
+                            "id": "process-icon-3",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-shrink-0 w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center"
+                            },
+                            "children": [
+                              {
+                                "id": "icon-3",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-white font-bold text-sm"
+                                },
+                                "children": [
+                                  "3"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "process-text-3",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-1"
+                            },
+                            "children": [
+                              {
+                                "id": "process-title-3",
+                                "type": "h3",
+                                "props": {
+                                  "className": "text-base md:text-lg font-bold text-gray-900 mb-1"
+                                },
+                                "children": [
+                                  "Time & Expertise"
+                                ]
+                              },
+                              {
+                                "id": "process-desc-3",
+                                "type": "p",
+                                "props": {
+                                  "className": "text-sm text-gray-600 leading-relaxed"
+                                },
+                                "children": [
+                                  "{{content.process.time || 'Every product requires significant time investment and specialized expertise. Our skilled craftspeople dedicate hours to perfecting each detail.'}}"
+                                ],
+                                "editable": {
+                                  "contentEditable": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "process-item-4",
+                        "type": "div",
+                        "props": {
+                          "className": "flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        },
+                        "children": [
+                          {
+                            "id": "process-icon-4",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-shrink-0 w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center"
+                            },
+                            "children": [
+                              {
+                                "id": "icon-4",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-white font-bold text-sm"
+                                },
+                                "children": [
+                                  "4"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "process-text-4",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-1"
+                            },
+                            "children": [
+                              {
+                                "id": "process-title-4",
+                                "type": "h3",
+                                "props": {
+                                  "className": "text-base md:text-lg font-bold text-gray-900 mb-1"
+                                },
+                                "children": [
+                                  "Quality Assurance"
+                                ]
+                              },
+                              {
+                                "id": "process-desc-4",
+                                "type": "p",
+                                "props": {
+                                  "className": "text-sm text-gray-600 leading-relaxed"
+                                },
+                                "children": [
+                                  "{{content.process.quality || 'Rigorous testing and quality control measures ensure that every product meets our high standards before reaching our customers.'}}"
+                                ],
+                                "editable": {
+                                  "contentEditable": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "process-item-5",
+                        "type": "div",
+                        "props": {
+                          "className": "flex items-start space-x-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                        },
+                        "children": [
+                          {
+                            "id": "process-icon-5",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-shrink-0 w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center"
+                            },
+                            "children": [
+                              {
+                                "id": "icon-5",
+                                "type": "span",
+                                "props": {
+                                  "className": "text-white font-bold text-sm"
+                                },
+                                "children": [
+                                  "5"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "id": "process-text-5",
+                            "type": "div",
+                            "props": {
+                              "className": "flex-1"
+                            },
+                            "children": [
+                              {
+                                "id": "process-title-5",
+                                "type": "h3",
+                                "props": {
+                                  "className": "text-base md:text-lg font-bold text-gray-900 mb-1"
+                                },
+                                "children": [
+                                  "Sustainable Practices"
+                                ]
+                              },
+                              {
+                                "id": "process-desc-5",
+                                "type": "p",
+                                "props": {
+                                  "className": "text-sm text-gray-600 leading-relaxed"
+                                },
+                                "children": [
+                                  "{{content.process.ethics || 'We are committed to sustainable and ethical practices throughout our entire production process, ensuring a positive impact on the environment and society.'}}"
+                                ],
+                                "editable": {
+                                  "contentEditable": true
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-visual",
+                    "type": "div",
+                    "props": {
+                      "className": "scale-in"
+                    },
+                    "children": [
+                      {
+                        "id": "process-gallery",
+                        "type": "div",
+                        "props": {
+                          "className": "process-gallery-component sticky top-8"
+                        },
+                        "children": "PROCESS_GALLERY"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "before-after-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-white"
+        },
+        "children": [
+          {
+            "id": "before-after-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "before-after-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-12 md:mb-16 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "before-after-badge",
+                    "type": "span",
+                    "props": {
+                      "className": "inline-block px-4 py-2 bg-orange-100 text-orange-600 rounded-full text-sm font-medium mb-4"
+                    },
+                    "children": [
+                      "Transformation"
+                    ]
+                  },
+                  {
+                    "id": "before-after-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "See the Difference"
+                    ]
+                  },
+                  {
+                    "id": "before-after-subtitle",
+                    "type": "p",
+                    "props": {
+                      "className": "text-lg text-gray-600 max-w-2xl mx-auto"
+                    },
+                    "children": [
+                      "Experience the transformation with our interactive before & after sliders"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "before-after-gallery",
+                "type": "div",
+                "props": {
+                  "className": "before-after-gallery-component"
+                },
+                "children": "BEFORE_AFTER_GALLERY"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "lifestyle-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-gradient-to-br from-purple-50 to-pink-50"
+        },
+        "children": [
+          {
+            "id": "lifestyle-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "lifestyle-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-12 md:mb-16 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "lifestyle-badge",
+                    "type": "span",
+                    "props": {
+                      "className": "inline-block px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-medium mb-4"
+                    },
+                    "children": [
+                      "In Action"
+                    ]
+                  },
+                  {
+                    "id": "lifestyle-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "Real Life, Real Results"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "lifestyle-gallery",
+                "type": "div",
+                "props": {
+                  "className": "lifestyle-gallery-component"
+                },
+                "children": "LIFESTYLE_GALLERY"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "impact-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-white"
+        },
+        "children": [
+          {
+            "id": "impact-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto px-4"
+            },
+            "children": [
+              {
+                "id": "impact-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-12 md:mb-16 fade-in-up"
+                },
+                "children": [
+                  {
+                    "id": "impact-badge",
+                    "type": "span",
+                    "props": {
+                      "className": "inline-block px-4 py-2 bg-yellow-100 text-yellow-600 rounded-full text-sm font-medium mb-4"
+                    },
+                    "children": [
+                      "Our Impact"
+                    ]
+                  },
+                  {
+                    "id": "impact-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+                    },
+                    "children": [
+                      "Real Results, Real Impact"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "metrics-section",
+                "type": "div",
+                "props": {
+                  "className": "mb-16"
+                },
+                "children": [
+                  {
+                    "id": "metrics-grid",
+                    "type": "div",
+                    "props": {
+                      "className": "flex flex-wrap justify-center gap-6 md:gap-8"
+                    },
+                    "children": "METRICS_ARRAY"
+                  }
+                ]
+              },
+              {
+                "id": "testimonials-section",
+                "type": "div",
+                "props": {
+                  "className": "mb-16"
+                },
+                "children": [
+                  {
+                    "id": "testimonials-grid",
+                    "type": "div",
+                    "props": {
+                      "className": "flex flex-wrap justify-center gap-6 md:gap-8"
+                    },
+                    "children": "TESTIMONIALS_ARRAY"
+                  }
+                ]
+              },
+              {
+                "id": "case-studies-section",
+                "type": "div",
+                "props": {
+                  "className": "mb-16"
+                },
+                "children": [
+                  {
+                    "id": "case-studies-header",
+                    "type": "h3",
+                    "props": {
+                      "className": "text-2xl font-bold text-gray-900 mb-8 text-center"
+                    },
+                    "children": [
+                      "Success Stories"
+                    ]
+                  },
+                  {
+                    "id": "case-studies-grid",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6"
+                    },
+                    "children": "CASE_STUDIES_ARRAY"
+                  }
+                ]
+              },
+              {
+                "id": "awards-section",
+                "type": "div",
+                "props": {
+                  "className": "text-center"
+                },
+                "children": [
+                  {
+                    "id": "awards-header",
+                    "type": "h3",
+                    "props": {
+                      "className": "text-2xl font-bold text-gray-900 mb-8"
+                    },
+                    "children": [
+                      "Recognition & Awards"
+                    ]
+                  },
+                  {
+                    "id": "awards-grid",
+                    "type": "div",
+                    "props": {
+                      "className": "flex flex-wrap justify-center gap-4"
+                    },
+                    "children": "AWARDS_ARRAY"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cta-section",
+        "type": "section",
+        "props": {
+          "className": "py-16 sm:py-20 md:py-24 bg-gradient-to-r from-blue-600 to-purple-700 text-white relative overflow-hidden"
+        },
+        "children": [
+          {
+            "id": "cta-particles",
+            "type": "div",
+            "props": {
+              "className": "absolute inset-0 opacity-30 pointer-events-none"
+            },
+            "children": [
+              {
+                "id": "cta-particle-1",
+                "type": "div",
+                "props": {
+                  "className": "absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-twinkle"
+                }
+              },
+              {
+                "id": "cta-particle-2",
+                "type": "div",
+                "props": {
+                  "className": "absolute bottom-1/3 right-1/4 w-3 h-3 bg-purple-200 rounded-full animate-floatSlow"
+                }
+              }
+            ]
+          },
+          {
+            "id": "cta-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-4xl mx-auto px-4 text-center fade-in-up relative z-10"
+            },
+            "children": [
+              {
+                "id": "cta-title",
+                "type": "h2",
+                "props": {
+                  "className": "text-3xl sm:text-4xl md:text-5xl font-bold mb-6"
+                },
+                "children": [
+                  "Ready to Start Your Journey?"
+                ]
+              },
+              {
+                "id": "cta-description",
+                "type": "p",
+                "props": {
+                  "className": "text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed"
+                },
+                "children": [
+                  "{{content.story.vision || 'Join thousands of satisfied customers who have transformed their lives with our innovative solution. Your journey to success starts here.'}}"
+                ],
+                "editable": {
+                  "contentEditable": true
+                }
+              },
+              {
+                "id": "cta-buttons",
+                "type": "div",
+                "props": {
+                  "className": "flex flex-col sm:flex-row gap-4 justify-center"
+                },
+                "children": [
+                  {
+                    "id": "cta-primary-btn",
+                    "type": "button",
+                    "props": {
+                      "className": "px-8 py-4 bg-white text-blue-600 font-semibold rounded-full hover:bg-blue-50 hover-scale transition-all duration-300 shadow-lg"
+                    },
+                    "children": [
+                      "Get Started Today"
+                    ]
+                  },
+                  {
+                    "id": "cta-secondary-btn",
+                    "type": "button",
+                    "props": {
+                      "className": "px-8 py-4 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-blue-600 transition-all duration-300"
+                    },
+                    "children": [
+                      "Learn More"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

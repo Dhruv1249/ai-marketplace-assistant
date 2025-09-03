@@ -7,16 +7,15 @@ import { Wand2, Zap, Users, TrendingUp, Star } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
-import { auth } from './login/firebase'; // path may vary, adjust if needed
+import { auth } from './login/firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
-import { Box } from "../components/animated icon/Box"; // adjust path if needed
-import { Rocket } from "../components/animated icon/Rocket"; // adjust path if needed
-import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; // adjust path if needed
-import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; // adjust path if needed
-import { Users as UsersComponent } from "../components/animated icon/Users"; // adjust path if needed
+import { Box } from "../components/animated icon/Box"; 
+import { Rocket } from "../components/animated icon/Rocket"; 
+import { SmartphoneNfc } from "../components/animated icon/SmartphoneNfc"; 
+import { ChartNoAxes } from "../components/animated icon/ChartNoAxes"; 
+import { Users as UsersComponent } from "../components/animated icon/Users";
 import ReadMoreButton from "../components/animated icon/ReadMoreButton";
 import Explore from '@/components/animated icon/Explore';
-
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,6 +114,33 @@ const TypingText = ({
   );
 };
 
+function HomePage() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return unsub;
+  }, []);
+
+  return (
+    <div className="flex items-center gap-4">
+      {/* Contact Button */}
+      <Link href="/contact">
+        <Button className="bg-blue-600 text-white">Contact</Button>
+      </Link>
+      {/* Dashboard Button - Only for signed in users */}
+      {user && (
+        <Link href="/dashboard">
+          <Button className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400">
+            Dashboard
+          </Button>
+        </Link>
+      )}
+    </div>
+  );
+}
 export default function Home() {
   const rootRef = useRef(null);
   const heroRef = useRef(null);

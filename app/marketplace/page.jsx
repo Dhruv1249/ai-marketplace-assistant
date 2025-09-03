@@ -9,7 +9,7 @@ import styled from 'styled-components';
 const BuyButton = ({ price }) => {
   return (
     <StyledWrapper>
-      <div data-tooltip={`Price: $${price}`} className="button">
+      <div data-tooltip={`Price: ${Number(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} className="button">
         <div className="button-wrapper">
           <div className="text">Buy Now</div>
           <span className="icon">
@@ -35,7 +35,7 @@ const StyledWrapper = styled.div`
     --width: 100px;
     --height: 35px;
     --tooltip-height: 35px;
-    --tooltip-width: 90px;
+    --tooltip-width: 110px;
     --gap-between-tooltip-to-button: 18px;
     --button-color: #222;
     --tooltip-color: #fff;
@@ -151,24 +151,29 @@ export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Load products from development directory
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch('/api/products/list');
         const result = await response.json();
-        
+
         if (result.success && result.products.length > 0) {
           // Convert products to marketplace format
           const formattedProducts = result.products.map(product => ({
             id: product.id,
             title: product.title,
             description: product.description,
-            price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
+            price:
+  product.pricing?.discount?.finalPrice !== undefined && product.pricing?.discount?.finalPrice !== null
+    ? product.pricing.discount.finalPrice
+    : (product.pricing?.basePrice !== undefined && product.pricing?.basePrice !== null
+      ? product.pricing.basePrice
+      : 0),
             currency: 'USD',
+            // Use static image path in /public/images/
             image: product.images?.thumbnail 
-              ? `/api/products/${product.id}/images/${product.images.thumbnail}`
-              : '/api/placeholder/300/200',
+              ? `/images/${product.images.thumbnail}`
+              : '/images/placeholder.jpg',
             rating: 4.8, // Default - implement rating system
             reviews: 124, // Default - implement review system
             seller: 'AI Marketplace Seller', // Default - implement seller system
@@ -186,7 +191,7 @@ export default function Marketplace() {
               description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
               price: 99.99,
               currency: 'USD',
-              image: '/api/placeholder/300/200',
+              image: '/images/placeholder.jpg',
               rating: 4.8,
               reviews: 0,
               seller: 'Sample Seller',
@@ -206,7 +211,7 @@ export default function Marketplace() {
             description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
             price: 99.99,
             currency: 'USD',
-            image: '/api/placeholder/300/200',
+            image: '/images/placeholder.jpg',
             rating: 4.8,
             reviews: 0,
             seller: 'Sample Seller',
@@ -309,7 +314,7 @@ export default function Marketplace() {
                 View
               </Button>
             </Link>
-            <BuyButton price={product.price.toFixed(2)} />
+            <BuyButton price={product.price} />
           </div>
         </div>
       </div>
@@ -343,13 +348,13 @@ export default function Marketplace() {
             </div>
             <div className="mt-4 md:mt-0">
              <Link href="/create">
-  <Button
-    className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400"
-  >
-    <Plus className="mr-2" size={16} />
-    Create Product
-  </Button>
-</Link>
+                <Button
+                  className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400"
+                >
+                  <Plus className="mr-2" size={16} />
+                  Create Product
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
