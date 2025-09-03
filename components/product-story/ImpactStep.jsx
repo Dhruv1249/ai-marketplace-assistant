@@ -26,13 +26,21 @@ export default function ImpactStep({
         </label>
         {productStoryData.impact.testimonials.map((testimonial, index) => (
           <div key={index} className="flex gap-2 mb-2">
-            <textarea
-              value={testimonial}
-              onChange={(e) => handleArrayInputChange('impact', 'testimonials', index, e.target.value)}
-              rows={2}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Customer testimonial or review..."
-            />
+            <div className="flex-1">
+              <textarea
+                value={testimonial}
+                onChange={(e) => {
+                  if (e.target.value.length <= 400) {
+                    handleArrayInputChange('impact', 'testimonials', index, e.target.value);
+                  }
+                }}
+                maxLength={400}
+                rows={2}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Customer testimonial or review..."
+              />
+              <div className="text-xs text-gray-500 mt-1">{testimonial.length}/400</div>
+            </div>
             <Button
               onClick={() => removeArrayItem('impact', 'testimonials', index)}
               variant="outline"
@@ -57,13 +65,21 @@ export default function ImpactStep({
         </label>
         {productStoryData.impact.cases.map((caseStudy, index) => (
           <div key={index} className="flex gap-2 mb-2">
-            <textarea
-              value={caseStudy}
-              onChange={(e) => handleArrayInputChange('impact', 'cases', index, e.target.value)}
-              rows={3}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Success story or case study..."
-            />
+            <div className="flex-1">
+              <textarea
+                value={caseStudy}
+                onChange={(e) => {
+                  if (e.target.value.length <= 400) {
+                    handleArrayInputChange('impact', 'cases', index, e.target.value);
+                  }
+                }}
+                maxLength={400}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Success story or case study..."
+              />
+              <div className="text-xs text-gray-500 mt-1">{caseStudy.length}/400</div>
+            </div>
             <Button
               onClick={() => removeArrayItem('impact', 'cases', index)}
               variant="outline"
@@ -88,13 +104,21 @@ export default function ImpactStep({
         </label>
         {productStoryData.impact.metrics.map((metric, index) => (
           <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={metric}
-              onChange={(e) => handleArrayInputChange('impact', 'metrics', index, e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., 10,000+ satisfied customers, 95% success rate"
-            />
+            <div className="flex-1">
+              <input
+                type="text"
+                value={metric}
+                onChange={(e) => {
+                  if (e.target.value.length <= 400) {
+                    handleArrayInputChange('impact', 'metrics', index, e.target.value);
+                  }
+                }}
+                maxLength={400}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., 10,000+ satisfied customers, 95% success rate"
+              />
+              <div className="text-xs text-gray-500 mt-1">{metric.length}/400</div>
+            </div>
             <Button
               onClick={() => removeArrayItem('impact', 'metrics', index)}
               variant="outline"
@@ -119,13 +143,21 @@ export default function ImpactStep({
         </label>
         {productStoryData.impact.awards.map((award, index) => (
           <div key={index} className="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={award}
-              onChange={(e) => handleArrayInputChange('impact', 'awards', index, e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Award, certification, or recognition received..."
-            />
+            <div className="flex-1">
+              <input
+                type="text"
+                value={award}
+                onChange={(e) => {
+                  if (e.target.value.length <= 400) {
+                    handleArrayInputChange('impact', 'awards', index, e.target.value);
+                  }
+                }}
+                maxLength={400}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Award, certification, or recognition received..."
+              />
+              <div className="text-xs text-gray-500 mt-1">{award.length}/400</div>
+            </div>
             <Button
               onClick={() => removeArrayItem('impact', 'awards', index)}
               variant="outline"

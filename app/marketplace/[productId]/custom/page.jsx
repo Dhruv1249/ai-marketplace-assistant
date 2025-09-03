@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { ArrowLeft, FileText, Loader2 } from 'lucide-react';
-import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
+import UniversalPreviewPage from '@/components/shared/UniversalPreviewPage';
 
 export default function CustomProductPage() {
   const params = useParams();
@@ -22,6 +22,16 @@ export default function CustomProductPage() {
         const result = await response.json();
 
         if (result.success && result.custom) {
+          // Store the custom data in localStorage for UniversalPreviewPage
+          const previewData = {
+            productStoryData: result.custom.productStoryData || result.custom.content,
+            templateType: result.custom.templateType || 'journey',
+            model: result.custom.model,
+            content: result.custom.content || result.custom.productStoryData,
+            images: []
+          };
+          
+          localStorage.setItem('productStoryPreviewData', JSON.stringify(previewData));
           setProductData(result);
         } else {
           setError('Custom page not found for this product');
@@ -75,25 +85,6 @@ export default function CustomProductPage() {
     );
   }
 
-  const customData = productData.custom;
-  const standardData = productData.standard;
-
-  // Create images array with actual image URLs
-  const images = [];
-  if (standardData?.images?.thumbnail) {
-    images.push(`/api/products/${productId}/images/${standardData.images.thumbnail}`);
-  }
-  if (standardData?.images?.additional) {
-    standardData.images.additional.forEach((imageName) => {
-      images.push(`/api/products/${productId}/images/${imageName}`);
-    });
-  }
-  
-  // Add fallback placeholder if no images
-  if (images.length === 0) {
-    images.push('/api/placeholder/600/400');
-  }
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation Header */}
@@ -106,7 +97,7 @@ export default function CustomProductPage() {
               </Link>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">
-                  {standardData?.title || 'Custom Product Page'}
+                  {productData.standard?.title || 'Custom Product Page'}
                 </h1>
                 <p className="text-sm text-gray-500">Enhanced custom layout</p>
               </div>
@@ -121,35 +112,16 @@ export default function CustomProductPage() {
         </div>
       </div>
 
-      {/* Custom Page Content */}
-      <div className="custom-product-page">
-        <EnhancedJSONModelRenderer
-          model={customData.model}
-          content={customData.content}
-          images={images}
-          isEditing={false}
-          debug={false}
-        />
-      </div>
-
-      {/* Footer Navigation */}
-      <div className="bg-gray-50 border-t mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/marketplace" className="text-gray-600 hover:text-gray-900">
-              ← Back to Marketplace
-            </Link>
-            <div className="flex gap-4">
-              <Link href={`/marketplace/${productId}`}>
-                <Button variant="outline" size="sm">
-                  <FileText className="mr-2" size={16} />
-                  Standard View
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Use UniversalPreviewPage for rendering */}
+      <UniversalPreviewPage
+        type="product-story"
+        backUrl={`/marketplace/${productId}`}
+        storageKey="productStoryPreviewData"
+        showHeader={false}
+        showEditingUI={false}
+        title=""
+        helpText=""
+      />
     </div>
   );
 }

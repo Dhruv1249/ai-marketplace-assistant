@@ -41,7 +41,9 @@ export default function UniversalPreviewPage({
   backUrl = '/create',
   storageKey = 'previewData',
   title = 'Template Preview',
-  helpText = 'Keep the creation tab open to view uploaded images in this preview.'
+  helpText = 'Keep the creation tab open to view uploaded images in this preview.',
+  showHeader = true,
+  showEditingUI = true
 }) {
   const [data, setData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -446,71 +448,75 @@ export default function UniversalPreviewPage({
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Top Navigation Bar */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href={backUrl} className="text-gray-600 hover:text-gray-900">
-              <ArrowLeft size={20} />
-            </Link>
-            <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                isEditing 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {isEditing ? (
-                <>
-                  <Eye size={16} />
-                  Preview Mode
-                </>
-              ) : (
-                <>
-                  <Edit3 size={16} />
-                  Edit Mode
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={() => setSourceCodeEditorOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
-            >
-              <Code size={16} />
-              Source Code
-            </button>
-
-            <button
-              onClick={() => setAiAssistantOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
-            >
-              <Bot size={16} />
-              AI Assistant
-            </button>
-            
-            <div className="text-xs text-gray-500">
-              {helpText}
+      {/* Top Navigation Bar - Only show if showHeader is true */}
+      {showHeader && (
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link href={backUrl} className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft size={20} />
+              </Link>
+              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
             </div>
+            
+            {showEditingUI && (
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    isEditing 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {isEditing ? (
+                    <>
+                      <Eye size={16} />
+                      Preview Mode
+                    </>
+                  ) : (
+                    <>
+                      <Edit3 size={16} />
+                      Edit Mode
+                    </>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setSourceCodeEditorOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+                >
+                  <Code size={16} />
+                  Source Code
+                </button>
+
+                <button
+                  onClick={() => setAiAssistantOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
+                >
+                  <Bot size={16} />
+                  AI Assistant
+                </button>
+                
+                <div className="text-xs text-gray-500">
+                  {helpText}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Template Info Bar */}
-      {getTemplateInfoBar()}
+      {/* Template Info Bar - Only show if showEditingUI is true */}
+      {showEditingUI && getTemplateInfoBar()}
 
       {/* Full Screen Preview */}
       <div className="w-full">
         {renderPreviewContent()}
       </div>
 
-      {/* Edit Mode Helper */}
-      {isEditing && (
+      {/* Edit Mode Helper - Only show if showEditingUI is true */}
+      {showEditingUI && isEditing && (
         <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
           <h3 className="font-semibold mb-2">Edit Mode Active (Enhanced)</h3>
           <ul className="text-sm space-y-1">
@@ -527,26 +533,30 @@ export default function UniversalPreviewPage({
         </div>
       )}
 
-      {/* Universal Editors */}
-      <UniversalSourceCodeEditor
-        isOpen={sourceCodeEditorOpen}
-        onClose={() => setSourceCodeEditorOpen(false)}
-        onSave={handleSourceCodeSave}
-        onReset={handleSourceCodeReset}
-        templateData={data}
-        templateName={getTemplateName()}
-        onTemplateUpdate={handleTemplateUpdate}
-        type={type}
-      />
+      {/* Universal Editors - Only show if showEditingUI is true */}
+      {showEditingUI && (
+        <>
+          <UniversalSourceCodeEditor
+            isOpen={sourceCodeEditorOpen}
+            onClose={() => setSourceCodeEditorOpen(false)}
+            onSave={handleSourceCodeSave}
+            onReset={handleSourceCodeReset}
+            templateData={data}
+            templateName={getTemplateName()}
+            onTemplateUpdate={handleTemplateUpdate}
+            type={type}
+          />
 
-      <UniversalAIAssistant
-        isOpen={aiAssistantOpen}
-        onClose={() => setAiAssistantOpen(false)}
-        onTemplateUpdate={handleAITemplateUpdate}
-        templateData={data}
-        templateName={getTemplateName()}
-        type={type}
-      />
+          <UniversalAIAssistant
+            isOpen={aiAssistantOpen}
+            onClose={() => setAiAssistantOpen(false)}
+            onTemplateUpdate={handleAITemplateUpdate}
+            templateData={data}
+            templateName={getTemplateName()}
+            type={type}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette } from 'lucide-react';
+import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette, Globe } from 'lucide-react';
 import { Button } from '@/components/ui';
 import SaveButton from '@/components/animated icon/SaveButton';
 
@@ -31,6 +31,7 @@ export default function ProductStoryPage() {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('journey');
+  const [productId, setProductId] = useState(null);
   
   const [productStoryData, setProductStoryData] = useState({
     basics: {
@@ -75,6 +76,31 @@ export default function ProductStoryPage() {
     beforeAfter: useRef(null)
   };
   const photoUrlsRef = useRef([]);
+
+  // Load product data from localStorage if coming from product creation
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem('productStoryData');
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        if (parsed.fromProductCreation && parsed.productStoryData) {
+          setProductStoryData(parsed.productStoryData);
+          setSelectedTemplate(parsed.templateType || 'journey');
+          setProductId(parsed.productStoryData.productId);
+          
+          // Clear the flag so it doesn't reload on refresh
+          const updatedData = { ...parsed, fromProductCreation: false };
+          localStorage.setItem('productStoryData', JSON.stringify(updatedData));
+        } else if (parsed.productStoryData) {
+          // Regular saved data
+          setProductStoryData(parsed.productStoryData);
+          setSelectedTemplate(parsed.templateType || 'journey');
+        }
+      }
+    } catch (error) {
+      console.error('Error loading saved product story data:', error);
+    }
+  }, []);
 
   // Cleanup object URLs on unmount
   useEffect(() => {
@@ -145,46 +171,46 @@ export default function ProductStoryPage() {
       
       switch (fieldType) {
         case 'category':
-          prompt = `Suggest a better category or product type for: "${currentValue}". Context: ${context}. Return only the improved category name, be specific and clear.`;
+          prompt = `Suggest a better category or product type for: "${currentValue}". Context: ${context}. Return only the improved category name, be specific and clear. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'problem':
-          prompt = `Improve this problem description to be more compelling: "${currentValue}". Context: ${context}. Make it clear what specific problem this product solves. 2-3 sentences.`;
+          prompt = `Improve this problem description to be more compelling: "${currentValue}". Context: ${context}. Make it clear what specific problem this product solves. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'audience':
-          prompt = `Refine this target audience description: "${currentValue}". Context: ${context}. Be more specific about who would benefit from this product. Return only the improved audience description.`;
+          prompt = `Refine this target audience description: "${currentValue}". Context: ${context}. Be more specific about who would benefit from this product. Return only the improved audience description. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'value':
-          prompt = `Write a compelling value proposition for this product: "${currentValue}". Context: ${context}. Explain why customers should choose this product and what unique value it provides. 2-3 sentences.`;
+          prompt = `Write a compelling value proposition for this product: "${currentValue}". Context: ${context}. Explain why customers should choose this product and what unique value it provides. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'origin':
-          prompt = `Write a compelling origin story for this product: "${currentValue}". Context: ${context}. Make it engaging and authentic, explaining how and why this product was created. 3-4 sentences.`;
+          prompt = `Write a compelling origin story for this product: "${currentValue}". Context: ${context}. Make it engaging and authentic, explaining how and why this product was created. 3-4 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'solution':
-          prompt = `Describe the solution journey for this product: "${currentValue}". Context: ${context}. Explain how this product solves the problem and the journey to create it. 3-4 sentences.`;
+          prompt = `Describe the solution journey for this product: "${currentValue}". Context: ${context}. Explain how this product solves the problem and the journey to create it. 3-4 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'unique':
-          prompt = `Explain what makes this product unique and special: "${currentValue}". Context: ${context}. Highlight the differentiators and special qualities. 2-3 sentences.`;
+          prompt = `Explain what makes this product unique and special: "${currentValue}". Context: ${context}. Highlight the differentiators and special qualities. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'vision':
-          prompt = `Write about the vision and mission behind this product: "${currentValue}". Context: ${context}. Explain the bigger purpose and impact. 2-3 sentences.`;
+          prompt = `Write about the vision and mission behind this product: "${currentValue}". Context: ${context}. Explain the bigger purpose and impact. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'creation':
-          prompt = `Describe the creation process and craftsmanship: "${currentValue}". Context: ${context}. Explain how it's made, the process, and attention to detail. 3-4 sentences.`;
+          prompt = `Describe the creation process and craftsmanship: "${currentValue}". Context: ${context}. Explain how it's made, the process, and attention to detail. 3-4 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'materials':
-          prompt = `Describe the materials, ingredients, or technology used: "${currentValue}". Context: ${context}. Explain what goes into making this product and why these materials were chosen. 2-3 sentences.`;
+          prompt = `Describe the materials, ingredients, or technology used: "${currentValue}". Context: ${context}. Explain what goes into making this product and why these materials were chosen. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'time':
-          prompt = `Describe the time investment and expertise required: "${currentValue}". Context: ${context}. Explain the skill level, time commitment, and expertise involved. Return a concise description.`;
+          prompt = `Describe the time investment and expertise required: "${currentValue}". Context: ${context}. Explain the skill level, time commitment, and expertise involved. Return a concise description. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'quality':
-          prompt = `Describe quality standards and certifications: "${currentValue}". Context: ${context}. Explain quality control measures, standards followed, and any certifications. 2-3 sentences.`;
+          prompt = `Describe quality standards and certifications: "${currentValue}". Context: ${context}. Explain quality control measures, standards followed, and any certifications. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         case 'ethics':
-          prompt = `Describe sustainability and ethical practices: "${currentValue}". Context: ${context}. Explain how this product is made sustainably or ethically. 2-3 sentences.`;
+          prompt = `Describe sustainability and ethical practices: "${currentValue}". Context: ${context}. Explain how this product is made sustainably or ethically. 2-3 sentences. IMPORTANT: Keep response under 400 characters.`;
           break;
         default:
-          prompt = `Improve and make this more compelling for a product story: "${currentValue}". Context: ${context}`;
+          prompt = `Improve and make this more compelling for a product story: "${currentValue}". Context: ${context}. IMPORTANT: Keep response under 400 characters.`;
       }
 
       const response = await fetch('/api/generate-content', {
@@ -308,6 +334,63 @@ export default function ProductStoryPage() {
     alert('Product story saved successfully!');
   };
 
+  const handlePublishCustomPage = async () => {
+    if (!productId) {
+      alert('No product ID found. Please create this story page from a published product.');
+      return;
+    }
+
+    try {
+      // Get the selected template model
+      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || journeyTemplate;
+      
+      // Prepare custom page data with proper model structure
+      const customPageData = {
+        productId: productId,
+        templateType: selectedTemplate,
+        model: selectedTemplateModel,
+        content: productStoryData,
+        productStoryData: productStoryData,
+        publishedAt: new Date().toISOString()
+      };
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('productId', productId);
+      formData.append('customData', JSON.stringify(customPageData));
+
+      // Add custom page images
+      let imageIndex = 0;
+      Object.values(productStoryData.visuals).forEach(visualArray => {
+        visualArray.forEach(visual => {
+          if (visual.file) {
+            formData.append(`customImage_${imageIndex}`, visual.file);
+            imageIndex++;
+          }
+        });
+      });
+
+      // Save custom page data
+      const response = await fetch('/api/products/save-custom', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Product story page published successfully!');
+        // Optionally redirect to the product page
+        window.open(`/marketplace/${productId}`, '_blank');
+      } else {
+        alert(`Failed to publish: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error publishing custom page:', error);
+      alert('An error occurred while publishing the story page.');
+    }
+  };
+
   const renderStepContent = () => {
     switch (step) {
       case 1:
@@ -365,6 +448,100 @@ export default function ProductStoryPage() {
             productStoryData={productStoryData}
           />
         );
+      case 7:
+        return (
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Globe className="text-purple-600" size={32} />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                Publish Product Story Page
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Your product story is ready to be published as a custom page for "{productStoryData.basics.name}"
+              </p>
+            </div>
+
+            {/* Story Summary */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-gray-900 mb-4">Story Summary</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-600">Product Name:</p>
+                  <p className="font-medium text-gray-900">{productStoryData.basics.name}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Category:</p>
+                  <p className="font-medium text-gray-900">{productStoryData.basics.category}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Template:</p>
+                  <p className="font-medium text-gray-900 capitalize">{selectedTemplate}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Images:</p>
+                  <p className="font-medium text-gray-900">{getAllImages().length} uploaded</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Preview Option */}
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h3 className="font-medium text-blue-900 mb-3">Final Preview</h3>
+              <p className="text-blue-800 text-sm mb-4">
+                Take one last look at your product story before publishing.
+              </p>
+              <Button
+                onClick={handlePreview}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Eye size={16} />
+                Preview Story Page
+              </Button>
+            </div>
+
+            {productId ? (
+              <div className="bg-green-50 rounded-lg p-4">
+                <h3 className="font-medium text-green-900 mb-3">Ready to Publish</h3>
+                <p className="text-green-800 text-sm mb-4">
+                  This story page will be linked to your product and saved as a custom page.
+                </p>
+                <Button
+                  onClick={handlePublishCustomPage}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                >
+                  <Globe className="mr-2" size={16} />
+                  Publish Product Story Page
+                </Button>
+              </div>
+            ) : (
+              <div className="bg-yellow-50 rounded-lg p-4">
+                <h3 className="font-medium text-yellow-900 mb-3">No Product Link Found</h3>
+                <p className="text-yellow-800 text-sm mb-4">
+                  This story page needs to be created from a published product to be linked properly.
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSave}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <Save className="mr-2" size={16} />
+                    Save Draft
+                  </Button>
+                  <Button
+                    onClick={() => window.location.href = '/create'}
+                    className="flex-1"
+                  >
+                    Create Product First
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -415,7 +592,8 @@ export default function ProductStoryPage() {
               { number: 3, title: 'Process', icon: User, completed: step > 3 },
               { number: 4, title: 'Impact', icon: Award, completed: step > 4 },
               { number: 5, title: 'Visuals', icon: ImageIcon, completed: step > 5 },
-              { number: 6, title: 'Template', icon: Palette, completed: step > 6 }
+              { number: 6, title: 'Template', icon: Palette, completed: step > 6 },
+              { number: 7, title: 'Publish', icon: Globe, completed: step > 7 }
             ].map((stepItem, index) => (
               <div key={stepItem.number} className="flex items-center">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
@@ -431,9 +609,8 @@ export default function ProductStoryPage() {
                   step === stepItem.number ? 'text-blue-600' : 'text-gray-500'
                 }`}>
                   {stepItem.title}
-                </span>
-                {index < 5 && (
-                  <div className={`w-12 h-0.5 mx-4 ${
+                </span>{index < 6 && (
+                  <div className={`w-8 h-0.5 mx-2 ${
                     stepItem.completed ? 'bg-green-600' : 'bg-gray-300'
                   }`} />
                 )}
@@ -460,9 +637,9 @@ export default function ProductStoryPage() {
             
             <Button
               onClick={() => setStep(step + 1)}
-              disabled={step === 6 || (step === 1 && (!productStoryData.basics.name || !productStoryData.basics.category))}
+              disabled={step === 7 || (step === 1 && (!productStoryData.basics.name || !productStoryData.basics.category))}
             >
-              {step === 6 ? 'Complete' : 'Next'}
+              {step === 7 ? 'Complete' : step === 6 ? 'Review & Publish' : 'Next'}
             </Button>
           </div>
         </div>
