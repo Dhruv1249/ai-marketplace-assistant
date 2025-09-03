@@ -9,16 +9,7 @@ import Image from "next/image";
 // NOTE: For realistic uploads, you would also import Firebase Storage like this:
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-// Full Screen Icon
-const FullScreenIcon = ({ fullScreen }) => (
-  <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-    {fullScreen ? (
-      <path d="M9 15H5v4m0-4l4 4M15 9h4V5m0 4-4-4" stroke="#4338CA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    ) : (
-      <path d="M9 5H5v4m0-4l4 4M15 19h4v-4m0 4-4-4" stroke="#4338CA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    )}
-  </svg>
-);
+// (Removed Full Screen Icon and logic)
 
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
@@ -27,7 +18,6 @@ async function getAISuggestion(reviewText) {
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [fullScreen, setFullScreen] = useState(false);
   const dashboardSectionRef = useRef(null);
   const dashboardRef = useRef(null);
   const [editing, setEditing] = useState(false);
@@ -221,31 +211,7 @@ export default function Dashboard() {
     setAISuggestions(prev => ({ ...prev, [reviewId]: resp }));
   };
 
-  // Full Screen handlers
-  useEffect(() => {
-    if (!dashboardSectionRef.current) return;
-    function handleFullScreenChange() {
-      const inFull = document.fullscreenElement === dashboardSectionRef.current;
-      setFullScreen(inFull);
-    }
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullScreenChange);
-    };
-  }, []);
-
-  const toggleFullScreen = () => {
-    if (!dashboardSectionRef.current) return;
-    if (!fullScreen) {
-      if (dashboardSectionRef.current.requestFullscreen) {
-        dashboardSectionRef.current.requestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-    }
-  };
+  // (Removed Full Screen handlers and state)
   if (!user) return null; // Hide dashboard if not logged in
 
   const photoURL = profile?.photoURL || user.photoURL || "";
@@ -253,35 +219,15 @@ export default function Dashboard() {
   return (
     <div
       ref={dashboardRef}
-      className={
-        "min-h-screen w-full bg-gradient-to-tr from-indigo-200 via-indigo-300 to-purple-300 flex flex-col items-center justify-center"
-      }
+      className="min-h-screen w-full flex flex-col items-center justify-center bg-white"
       style={{ minHeight: "100vh" }}
     >
       <section
         ref={dashboardSectionRef}
-        className={
-          `max-w-2xl mx-auto my-12 p-8 rounded-xl bg-white shadow-lg w-full transition-all duration-300 `+
-          (fullScreen ?
-            "!fixed !inset-0 !z-[9999] !w-full !h-full !max-w-none !my-0 !rounded-none flex flex-col justify-center items-center overflow-auto !p-10" :
-            ""
-          )
-        }
-        style={fullScreen ? { minHeight: '100vh' } : {}}
+        className="max-w-2xl mx-auto my-12 p-8 rounded-xl bg-white shadow-lg w-full transition-all duration-300"
       >
         <div className="flex justify-between items-center mb-4 w-full">
           <h2 className="text-2xl font-bold text-blue-700">Your Dashboard</h2>
-          <Button
-            variant="outline"
-            className="flex items-center gap-1 px-3 py-2 text-xs rounded-lg border border-indigo-200 hover:bg-indigo-50 transition"
-            onClick={toggleFullScreen}
-            aria-label={fullScreen ? "Exit Full Screen" : "Full Screen"}
-            type="button"
-            tabIndex={0}
-          >
-            <FullScreenIcon fullScreen={fullScreen} />
-            {fullScreen ? "Exit Full Screen" : "Full Screen"}
-          </Button>
         </div>
 
         {/* Profile Card */}
