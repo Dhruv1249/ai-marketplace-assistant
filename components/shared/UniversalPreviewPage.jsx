@@ -616,97 +616,102 @@ export default function UniversalPreviewPage({
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Top Navigation Bar - Only show if showHeader is true */}
+      {/* Preview Controls Bar - Positioned below global nav */}
       {showHeader && (
-        <div className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {backUrl === 'back' ? (
-                <button 
-                  onClick={() => window.history.back()} 
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  <ArrowLeft size={20} />
-                </button>
-              ) : (
-                <Link href={backUrl} className="text-gray-600 hover:text-gray-900">
-                  <ArrowLeft size={20} />
-                </Link>
-              )}
-              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
-            </div>
-            
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Publish Button for Product Stories */}
-              {type === 'product-story' && (
-                <button
-                  onClick={handlePublishProductStory}
-                  className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg transition-colors text-sm font-medium"
-                >
-                  <Globe size={14} />
-                  <span>Publish</span>
-                </button>
-              )}
-
-              {showEditingUI && (
-                <>
-                  <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
-                      isEditing 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
+        <div className="bg-gray-50 border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {backUrl === 'back' ? (
+                  <button 
+                    onClick={() => window.history.back()} 
+                    className="text-gray-600 hover:text-gray-900 flex items-center gap-2"
                   >
-                    {isEditing ? (
-                      <>
-                        <Eye size={14} />
-                        <span>Preview</span>
-                      </>
-                    ) : (
-                      <>
-                        <Edit3 size={14} />
-                        <span>Edit</span>
-                      </>
-                    )}
+                    <ArrowLeft size={18} />
+                    <span className="text-sm font-medium">Back</span>
                   </button>
-
-                  <button
-                    onClick={() => setSourceCodeEditorOpen(true)}
-                    className="flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm"
-                  >
-                    <Code size={14} />
-                    <span>Code</span>
-                  </button>
-
-                  <button
-                    onClick={() => setAiAssistantOpen(true)}
-                    className="flex items-center gap-1 px-3 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors text-sm"
-                  >
-                    <Bot size={14} />
-                    <span>AI</span>
-                  </button>
-
-                  <button
-                    onClick={handleManualSave}
-                    className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg transition-colors text-sm"
-                  >
-                    <Save size={14} />
-                    <span>Save</span>
-                  </button>
-
-                  <button
-                    onClick={handleManualReset}
-                    className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors text-sm"
-                  >
-                    <RotateCcw size={14} />
-                    <span>Reset</span>
-                  </button>
-                </>
-              )}
+                ) : (
+                  <Link href={backUrl} className="text-gray-600 hover:text-gray-900 flex items-center gap-2">
+                    <ArrowLeft size={18} />
+                    <span className="text-sm font-medium">Back</span>
+                  </Link>
+                )}
+                <div className="h-4 w-px bg-gray-300"></div>
+                <h1 className="text-lg font-semibold text-gray-900">{title}</h1>
+              </div>
               
-              <div className="text-xs text-gray-500 ml-2">
-                {helpText}
+              <div className="flex items-center gap-2">
+                {/* Publish Button for Product Stories */}
+                {type === 'product-story' && (
+                  <button
+                    onClick={handlePublishProductStory}
+                    className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <Globe size={14} />
+                    <span>Publish</span>
+                  </button>
+                )}
+
+                {showEditingUI && (
+                  <>
+                    <button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
+                        isEditing 
+                          ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border'
+                      }`}
+                    >
+                      {isEditing ? (
+                        <>
+                          <Eye size={14} />
+                          <span>Preview</span>
+                        </>
+                      ) : (
+                        <>
+                          <Edit3 size={14} />
+                          <span>Edit</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => setSourceCodeEditorOpen(true)}
+                      className="flex items-center gap-1 px-3 py-2 bg-white text-gray-700 hover:bg-gray-100 border rounded-lg transition-colors text-sm"
+                    >
+                      <Code size={14} />
+                      <span>Code</span>
+                    </button>
+
+                    <button
+                      onClick={() => setAiAssistantOpen(true)}
+                      className="flex items-center gap-1 px-3 py-2 bg-white text-purple-700 hover:bg-purple-50 border rounded-lg transition-colors text-sm"
+                    >
+                      <Bot size={14} />
+                      <span>AI</span>
+                    </button>
+
+                    <button
+                      onClick={handleManualSave}
+                      className="flex items-center gap-1 px-3 py-2 bg-white text-green-700 hover:bg-green-50 border rounded-lg transition-colors text-sm"
+                    >
+                      <Save size={14} />
+                      <span>Save</span>
+                    </button>
+
+                    <button
+                      onClick={handleManualReset}
+                      className="flex items-center gap-1 px-3 py-2 bg-white text-red-700 hover:bg-red-50 border rounded-lg transition-colors text-sm"
+                    >
+                      <RotateCcw size={14} />
+                      <span>Reset</span>
+                    </button>
+                  </>
+                )}
+                
+                <div className="text-xs text-gray-500 ml-2 hidden lg:block">
+                  {helpText}
+                </div>
               </div>
             </div>
           </div>
