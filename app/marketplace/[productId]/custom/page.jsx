@@ -134,28 +134,38 @@ export default function CustomProductPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation Header */}
+      {/* Breadcrumb */}
       <div className="bg-gray-50 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/marketplace" className="text-gray-600 hover:text-gray-900">
-                <ArrowLeft size={20} />
-              </Link>
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900">
-                  {productData.standard?.title || 'Custom Product Page'}
-                </h1>
-                <p className="text-sm text-gray-500">Enhanced custom layout</p>
-              </div>
-            </div>
-            <Link href={`/marketplace/${productId}`}>
-              <Button variant="outline" size="sm">
-                <FileText className="mr-2" size={16} />
-                View Standard Page
-              </Button>
+          <div className="flex items-center space-x-2 text-sm">
+            <Link href="/" className="text-gray-500 hover:text-gray-700">
+              Home
             </Link>
+            <span className="text-gray-400">/</span>
+            <Link href="/marketplace" className="text-gray-500 hover:text-gray-700">
+              Marketplace
+            </Link>
+            <span className="text-gray-400">/</span>
+            <span className="text-gray-900">Product</span>
+            <span className="text-gray-400">/</span>
+            <span className="text-gray-900 truncate">{productData.standard?.title || 'Custom Product Page'}</span>
           </div>
+        </div>
+      </div>
+
+      {/* Back Button and Standard Page Link */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between">
+          <Link href="/marketplace" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+            <ArrowLeft size={20} className="mr-2" />
+            Back to Marketplace
+          </Link>
+          <Link href={`/marketplace/${productId}`}>
+            <Button variant="outline" size="sm">
+              <FileText className="mr-2" size={16} />
+              View Standard Page
+            </Button>
+          </Link>
         </div>
       </div>
 
