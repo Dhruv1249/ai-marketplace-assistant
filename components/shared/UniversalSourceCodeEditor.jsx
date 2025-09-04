@@ -320,45 +320,7 @@ export default function UniversalSourceCodeEditor({
     }
   }, []);
 
-  // DEBUG: Save JSON to debug folder in project
-  const saveDebugJSON = useCallback(async (jsonContent, filename) => {
-    try {
-      console.log(`=== DEBUG: ${filename} ===`);
-      console.log(jsonContent);
-      console.log(`=== END DEBUG: ${filename} ===`);
-
-      // Try to save to debug folder using Node.js fs (if available in server environment)
-      try {
-        const response = await fetch('/api/debug/save-json', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            filename: `${filename}.json`,
-            content: jsonContent
-          })
-        });
-
-        if (response.ok) {
-          console.log(`✅ [DEBUG] File saved to debug folder: ${filename}.json`);
-        } else {
-          throw new Error('API not available');
-        }
-      } catch (apiError) {
-        // Fallback: Save to localStorage with debug prefix
-        const debugKey = `debug_${filename}_${Date.now()}`;
-        localStorage.setItem(debugKey, jsonContent);
-        console.log(`✅ [DEBUG] File saved to localStorage: ${debugKey}`);
-        
-        // Also log to console for immediate access
-        console.log(`📁 [DEBUG] ${filename} content:`, jsonContent);
-      }
-    } catch (error) {
-      console.error(`❌ [DEBUG] Failed to save ${filename}:`, error);
-    }
-  }, []);
-
+  
   // Get the original default template based on templateType
   const getOriginalTemplate = useCallback(() => {
     const templateType = templateData?.templateType || 'journey';
@@ -426,7 +388,7 @@ export default function UniversalSourceCodeEditor({
     setJsonCode(newJSON);
     setHasChanges(false);
     validateTemplate(newJSON);
-  }, [hasChanges, showProcessedData, generateJSON, templateData, validateTemplate, saveDebugJSON, type]);
+  }, [hasChanges, showProcessedData, generateJSON, templateData, validateTemplate, type]);
 
   // Handle code changes
   const handleCodeChange = useCallback((newCode) => {

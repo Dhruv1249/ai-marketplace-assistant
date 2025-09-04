@@ -136,24 +136,27 @@ export default function ProductStoryPage() {
       try {
         setLoading(true);
         
-        // Load product data to validate it exists
+        // Load standard product data from published JSON file
         const productResponse = await fetch(`/api/products/${productId}`);
         if (!productResponse.ok) {
           throw new Error('Product not found');
         }
-        const product = await productResponse.json();
+        const productData = await productResponse.json();
+        
+        // Extract the standard product data from the nested structure
+        const product = productData.standard;
         setProductData(product);
 
-        // Pre-populate basic fields from product data
+        // Pre-populate basic fields from standard published product data
         setProductStoryData(prev => ({
           ...prev,
           basics: {
             ...prev.basics,
-            name: product.name || '',
-            category: product.category || '',
+            name: product.title || product.name || '',
+            category: product.category || product.type || '',
             problem: product.description || '',
             audience: product.targetAudience || '',
-            value: product.valueProposition || ''
+            value: '' // Keep value proposition empty for user to fill
           }
         }));
 
