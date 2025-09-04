@@ -491,26 +491,25 @@ export default function ProductStoryPage() {
         );
       case 6:
         return (
-          <TemplateStep
-            selectedTemplate={selectedTemplate}
-            setSelectedTemplate={setSelectedTemplate}
-            productStoryData={productStoryData}
-          />
-        );
-      case 7:
-        return (
           <div className="space-y-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Globe className="text-purple-600" size={32} />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Palette className="text-blue-600" size={32} />
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                Publish Product Story Page
+                Choose Your Layout
               </h2>
               <p className="text-gray-600 mb-8">
-                Your product story is ready to be published as a custom page for "{productStoryData.basics.name}"
+                Select a template layout for your product story
               </p>
             </div>
+
+            {/* Template Selection */}
+            <TemplateStep
+              selectedTemplate={selectedTemplate}
+              setSelectedTemplate={setSelectedTemplate}
+              productStoryData={productStoryData}
+            />
 
             {/* Story Summary */}
             <div className="bg-gray-50 rounded-lg p-6">
@@ -535,60 +534,13 @@ export default function ProductStoryPage() {
               </div>
             </div>
 
-            {/* Preview Option */}
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h3 className="font-medium text-blue-900 mb-3">Final Preview</h3>
-              <p className="text-blue-800 text-sm mb-4">
-                Take one last look at your product story before publishing.
+            {/* Ready for Preview */}
+            <div className="bg-blue-50 rounded-lg p-6 text-center">
+              <h3 className="font-medium text-blue-900 mb-3">Ready for Preview</h3>
+              <p className="text-blue-800 text-sm mb-6">
+                Your layout is selected. Click "Preview" below to see how your product story will look, then publish directly from the preview.
               </p>
-              <Button
-                onClick={handlePreview}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Eye size={16} />
-                Preview Story Page
-              </Button>
             </div>
-
-            {productId ? (
-              <div className="bg-green-50 rounded-lg p-4">
-                <h3 className="font-medium text-green-900 mb-3">Ready to Publish</h3>
-                <p className="text-green-800 text-sm mb-4">
-                  This story page will be linked to your product and saved as a custom page.
-                </p>
-                <Button
-                  onClick={handlePublishCustomPage}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  <Globe className="mr-2" size={16} />
-                  Publish Product Story Page
-                </Button>
-              </div>
-            ) : (
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <h3 className="font-medium text-yellow-900 mb-3">No Product Link Found</h3>
-                <p className="text-yellow-800 text-sm mb-4">
-                  This story page needs to be created from a published product to be linked properly.
-                </p>
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleSave}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <Save className="mr-2" size={16} />
-                    Save Draft
-                  </Button>
-                  <Button
-                    onClick={() => window.location.href = '/create'}
-                    className="flex-1"
-                  >
-                    Create Product First
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
         );
       default:
@@ -609,16 +561,6 @@ export default function ProductStoryPage() {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button
-              onClick={handlePreview}
-              variant="outline"
-              className="flex items-center gap-2"
-              disabled={!productStoryData.basics.name || !productStoryData.basics.category}
-            >
-              <Eye size={16} />
-              Preview
-            </Button>
-            
             <SaveButton
               onClick={handleSave}
               className="flex items-center gap-2"
@@ -641,8 +583,7 @@ export default function ProductStoryPage() {
               { number: 3, title: 'Process', icon: User, completed: step > 3 },
               { number: 4, title: 'Impact', icon: Award, completed: step > 4 },
               { number: 5, title: 'Visuals', icon: ImageIcon, completed: step > 5 },
-              { number: 6, title: 'Template', icon: Palette, completed: step > 6 },
-              { number: 7, title: 'Publish', icon: Globe, completed: step > 7 }
+              { number: 6, title: 'Layout', icon: Palette, completed: step > 6 }
             ].map((stepItem, index) => (
               <div key={stepItem.number} className="flex items-center">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
@@ -685,10 +626,15 @@ export default function ProductStoryPage() {
             </Button>
             
             <Button
-              onClick={() => setStep(step + 1)}
-              disabled={step === 7 || !isCurrentStepValid()}
+              onClick={() => step === 6 ? handlePreview() : setStep(step + 1)}
+              disabled={step === 6 ? false : !isCurrentStepValid()}
             >
-              {step === 7 ? 'Complete' : step === 6 ? 'Review & Publish' : 'Next'}
+              {step === 6 ? (
+                <>
+                  <Eye className="mr-2" size={16} />
+                  Preview
+                </>
+              ) : 'Next'}
             </Button>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette, Save, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette, Save, RotateCcw, Globe } from 'lucide-react';
 import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
 import UniversalSourceCodeEditor from '@/components/shared/UniversalSourceCodeEditor';
 import UniversalAIAssistant from '@/components/shared/UniversalAIAssistant';
@@ -433,6 +433,95 @@ export default function UniversalPreviewPage({
     }
   }, [data, storageKey, type]);
 
+  // Handle product story publishing
+  const handlePublishProductStory = useCallback(async () => {
+    if (!data || type !== 'product-story') {
+      alert('No product story data to publish');
+      return;
+    }
+
+    try {
+      // Get the raw data from localStorage to access productId and other metadata
+      const rawData = localStorage.getItem(storageKey);
+      if (!rawData) {
+        alert('No product story data found. Please go back and create your story first.');
+        return;
+      }
+
+      const parsedData = JSON.parse(rawData);
+      
+      // Check if we have a productId (for product-specific stories)
+      const productId = parsedData.productStoryData?.productId || 
+                       parsedData.content?.productId || 
+                       parsedData.productId;
+
+      if (!productId) {
+        alert('No product ID found. Please create this story page from a published product.');
+        return;
+      }
+
+      // Get template type
+      const templateType = parsedData.templateType || 'journey';
+
+      // Prepare custom page data with proper model structure
+      const customPageData = {
+        productId: productId,
+        templateType: templateType,
+        model: data.model,
+        content: data.content,
+        productStoryData: data.content,
+        publishedAt: new Date().toISOString()
+      };
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('productId', productId);
+      formData.append('customData', JSON.stringify(customPageData));
+
+      // Add custom page images if they exist
+      let imageIndex = 0;
+      if (data.content.visuals) {
+        Object.values(data.content.visuals).forEach(visualArray => {
+          if (Array.isArray(visualArray)) {
+            visualArray.forEach(visual => {
+              if (visual.file) {
+                formData.append(`customImage_${imageIndex}`, visual.file);
+                imageIndex++;
+              }
+            });
+          }
+        });
+      }
+
+      console.log('🚀 [PUBLISH] Publishing product story:', {
+        productId,
+        templateType,
+        hasContent: !!data.content,
+        hasModel: !!data.model,
+        imageCount: imageIndex
+      });
+
+      // Save custom page data
+      const response = await fetch('/api/products/save-custom', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Product story page published successfully!');
+        // Navigate to the product page
+        window.location.href = `/marketplace/${productId}`;
+      } else {
+        alert(`Failed to publish: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('❌ [PUBLISH] Error publishing product story:', error);
+      alert('An error occurred while publishing the story page. Please try again.');
+    }
+  }, [data, type, storageKey]);
+
   const getTemplateName = () => {
     if (!data?.model?.metadata?.template) return 'Template';
     return data.model.metadata.template.split('-').map(word => 
@@ -547,66 +636,79 @@ export default function UniversalPreviewPage({
               <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
             </div>
             
-            {showEditingUI && (
-              <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Publish Button for Product Stories */}
+              {type === 'product-story' && (
                 <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
-                    isEditing 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  onClick={handlePublishProductStory}
+                  className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg transition-colors text-sm font-medium"
                 >
-                  {isEditing ? (
-                    <>
-                      <Eye size={14} />
-                      <span>Preview</span>
-                    </>
-                  ) : (
-                    <>
-                      <Edit3 size={14} />
-                      <span>Edit</span>
-                    </>
-                  )}
+                  <Globe size={14} />
+                  <span>Publish</span>
                 </button>
+              )}
 
-                <button
-                  onClick={() => setSourceCodeEditorOpen(true)}
-                  className="flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm"
-                >
-                  <Code size={14} />
-                  <span>Code</span>
-                </button>
+              {showEditingUI && (
+                <>
+                  <button
+                    onClick={() => setIsEditing(!isEditing)}
+                    className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
+                      isEditing 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {isEditing ? (
+                      <>
+                        <Eye size={14} />
+                        <span>Preview</span>
+                      </>
+                    ) : (
+                      <>
+                        <Edit3 size={14} />
+                        <span>Edit</span>
+                      </>
+                    )}
+                  </button>
 
-                <button
-                  onClick={() => setAiAssistantOpen(true)}
-                  className="flex items-center gap-1 px-3 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors text-sm"
-                >
-                  <Bot size={14} />
-                  <span>AI</span>
-                </button>
+                  <button
+                    onClick={() => setSourceCodeEditorOpen(true)}
+                    className="flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm"
+                  >
+                    <Code size={14} />
+                    <span>Code</span>
+                  </button>
 
-                <button
-                  onClick={handleManualSave}
-                  className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg transition-colors text-sm"
-                >
-                  <Save size={14} />
-                  <span>Save</span>
-                </button>
+                  <button
+                    onClick={() => setAiAssistantOpen(true)}
+                    className="flex items-center gap-1 px-3 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors text-sm"
+                  >
+                    <Bot size={14} />
+                    <span>AI</span>
+                  </button>
 
-                <button
-                  onClick={handleManualReset}
-                  className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors text-sm"
-                >
-                  <RotateCcw size={14} />
-                  <span>Reset</span>
-                </button>
-                
-                <div className="text-xs text-gray-500 ml-2">
-                  {helpText}
-                </div>
+                  <button
+                    onClick={handleManualSave}
+                    className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg transition-colors text-sm"
+                  >
+                    <Save size={14} />
+                    <span>Save</span>
+                  </button>
+
+                  <button
+                    onClick={handleManualReset}
+                    className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors text-sm"
+                  >
+                    <RotateCcw size={14} />
+                    <span>Reset</span>
+                  </button>
+                </>
+              )}
+              
+              <div className="text-xs text-gray-500 ml-2">
+                {helpText}
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}
