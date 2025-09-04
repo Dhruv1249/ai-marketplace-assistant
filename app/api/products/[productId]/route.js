@@ -1,67 +1,60 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 export async function GET(request, { params }) {
   try {
-    const { productId } = await params;
-
+    const { productId } = params;
+    
     if (!productId) {
-      return NextResponse.json(
-        { success: false, error: 'Product ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
     }
 
+    // Path to the product directory
     const productDir = path.join(process.cwd(), 'development', 'products', productId);
-    
-    // Check if product directory exists
-    try {
-      await fs.access(productDir);
-    } catch (error) {
-      return NextResponse.json(
-        { success: false, error: 'Product not found' },
-        { status: 404 }
-      );
+    const standardJsonPath = path.join(productDir, 'standard.json');
+
+    // Check if product exists
+    if (!fs.existsSync(standardJsonPath)) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    // Read standard product data
-    const standardPath = path.join(productDir, 'standard.json');
-    let standardData;
-    
-    try {
-      const standardContent = await fs.readFile(standardPath, 'utf-8');
-      standardData = JSON.parse(standardContent);
-    } catch (error) {
-      return NextResponse.json(
-        { success: false, error: 'Product data not found or invalid' },
-        { status: 404 }
-      );
-    }
+    // Read the standard product data
+    const standardData = JSON.parse(fs.readFileSync(standardJsonPath, 'utf8'));
 
-    // Check for custom data
-    const customPath = path.join(productDir, 'custom.json');
+    // Add additional metadata
+    const productData = {
+      ...standardData,
+      id: productId,
+      hasCustomPage: fs.existsSync(path.join(productDir, 'custom.json'))
+    };
+
+    // Check if custom data exists and include it
+    const customJsonPath = path.join(productDir, 'custom.json');
     let customData = null;
     
-    try {
-      const customContent = await fs.readFile(customPath, 'utf-8');
-      customData = JSON.parse(customContent);
-      standardData.hasCustomPage = true;
-    } catch (error) {
-      standardData.hasCustomPage = false;
+    if (fs.existsSync(customJsonPath)) {
+      try {
+        customData = JSON.parse(fs.readFileSync(customJsonPath, 'utf8'));
+      } catch (error) {
+        console.error('Error reading custom data:', error);
+      }
     }
 
-    return NextResponse.json({
+    // Return in the format expected by the product page
+    const response = {
       success: true,
-      standard: standardData,
-      custom: customData
-    });
+      standard: productData
+    };
 
+    // Include custom data if it exists
+    if (customData) {
+      response.custom = customData;
+    }
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('Error in get product API:', error);
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Error fetching product:', error);
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }

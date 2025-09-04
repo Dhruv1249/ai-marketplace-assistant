@@ -131,57 +131,8 @@ const PublishStep = ({
   };
 
   const handleCreateStoryPage = (productId) => {
-    // Store product data for the story page
-    const productStoryData = {
-      productId: productId,
-      productTitle: generatedContent.title,
-      productDescription: generatedContent.description,
-      productPricing: pricing,
-      basics: {
-        name: generatedContent.title,
-        category: generatedContent.category || 'Product',
-        problem: '',
-        audience: '',
-        value: generatedContent.description
-      },
-      story: {
-        origin: '',
-        solution: '',
-        unique: '',
-        vision: ''
-      },
-      process: {
-        creation: '',
-        materials: '',
-        time: '',
-        quality: '',
-        ethics: ''
-      },
-      impact: {
-        testimonials: [],
-        cases: [],
-        metrics: [],
-        awards: []
-      },
-      visuals: {
-        hero: [],
-        process: [],
-        beforeAfter: [],
-        lifestyle: [],
-        team: []
-      }
-    };
-
-    // Store in localStorage for the product story page
-    localStorage.setItem('productStoryData', JSON.stringify({
-      productStoryData,
-      templateType: 'journey',
-      savedAt: new Date().toISOString(),
-      fromProductCreation: true
-    }));
-
-    // Open product story page in new tab
-    window.open('/seller-info', '_blank', 'noopener,noreferrer');
+    // Navigate to product story page in same tab with productId
+    window.location.href = `/seller-info/${productId}`;
   };
 
   const isFormValid = () => {

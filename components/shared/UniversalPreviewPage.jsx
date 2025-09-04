@@ -453,9 +453,18 @@ export default function UniversalPreviewPage({
         <div className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link href={backUrl} className="text-gray-600 hover:text-gray-900">
-                <ArrowLeft size={20} />
-              </Link>
+              {backUrl === 'back' ? (
+                <button 
+                  onClick={() => window.history.back()} 
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+              ) : (
+                <Link href={backUrl} className="text-gray-600 hover:text-gray-900">
+                  <ArrowLeft size={20} />
+                </Link>
+              )}
               <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
             </div>
             

@@ -42,12 +42,39 @@ export default function CustomProductPage() {
             });
           }
           
+          // Convert saved images to the format expected by the renderer
+          const heroImages = [];
+          if (result.custom.savedImages && Array.isArray(result.custom.savedImages)) {
+            result.custom.savedImages.forEach((imageName, index) => {
+              heroImages.push({
+                id: Date.now() + index,
+                url: `/api/products/${productId}/images/${imageName}`,
+                type: 'saved',
+                name: imageName
+              });
+            });
+          }
+
+          // Get the content data and update it with properly formatted visuals
+          const contentData = result.custom.content || result.custom.productStoryData || {};
+          const updatedContentData = {
+            ...contentData,
+            visuals: {
+              ...contentData.visuals,
+              hero: heroImages,
+              process: contentData.visuals?.process || [],
+              beforeAfter: contentData.visuals?.beforeAfter || [],
+              lifestyle: contentData.visuals?.lifestyle || [],
+              team: contentData.visuals?.team || []
+            }
+          };
+
           // Store the custom data in localStorage for UniversalPreviewPage
           const previewData = {
-            productStoryData: result.custom.productStoryData || result.custom.content,
+            productStoryData: updatedContentData,
             templateType: result.custom.templateType || 'journey',
             model: result.custom.model,
-            content: result.custom.content || result.custom.productStoryData,
+            content: updatedContentData,
             images: customImages
           };
           
