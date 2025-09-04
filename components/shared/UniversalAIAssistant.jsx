@@ -19,6 +19,7 @@ export default function UniversalAIAssistant({
   const [history, setHistory] = useState([]);
   const [showPreview, setShowPreview] = useState(true);
   const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [useProcessedJSON, setUseProcessedJSON] = useState(false); // Toggle for raw vs processed JSON
   const messagesEndRef = useRef(null);
 
   // Generate processed JSON with actual form data filled in
@@ -110,6 +111,145 @@ export default function UniversalAIAssistant({
           }));
         }
         
+        if (result === 'TESTIMONIALS_ARRAY') {
+          const testimonials = actualData.content.impact?.testimonials || [];
+          return testimonials.slice(0, 5).map((testimonial, index) => ({
+            id: `testimonial-${index}`,
+            type: 'div',
+            props: { className: 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4' },
+            children: [
+              {
+                id: `testimonial-${index}-text`,
+                type: 'p',
+                props: { className: 'text-gray-700 italic mb-2' },
+                children: [`"${testimonial}"`]
+              },
+              {
+                id: `testimonial-${index}-author`,
+                type: 'p',
+                props: { className: 'text-sm text-gray-600 font-medium' },
+                children: ['— Customer']
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'METRICS_ARRAY') {
+          const metrics = actualData.content.impact?.metrics || [];
+          return metrics.slice(0, 3).map((metric, index) => ({
+            id: `metric-${index}`,
+            type: 'div',
+            props: { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4 text-center' },
+            children: [
+              {
+                id: `metric-${index}-value`,
+                type: 'div',
+                props: { className: 'text-2xl font-bold text-blue-600 mb-1' },
+                children: [metric.split(' ')[0] || '100+']
+              },
+              {
+                id: `metric-${index}-label`,
+                type: 'div',
+                props: { className: 'text-sm text-gray-600' },
+                children: [metric.split(' ').slice(1).join(' ') || 'Satisfied Customers']
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'CASE_STUDIES_ARRAY') {
+          const cases = actualData.content.impact?.cases || [];
+          return cases.slice(0, 3).map((caseStudy, index) => ({
+            id: `case-${index}`,
+            type: 'div',
+            props: { className: 'bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4' },
+            children: [
+              {
+                id: `case-${index}-title`,
+                type: 'h4',
+                props: { className: 'font-medium text-gray-900 mb-2' },
+                children: [`Case Study ${index + 1}`]
+              },
+              {
+                id: `case-${index}-content`,
+                type: 'p',
+                props: { className: 'text-sm text-gray-700' },
+                children: [caseStudy]
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'AWARDS_ARRAY') {
+          const awards = actualData.content.impact?.awards || [];
+          return awards.map((award, index) => ({
+            id: `award-${index}`,
+            type: 'div',
+            props: { className: 'bg-purple-50 text-purple-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2' },
+            children: [
+              {
+                id: `award-${index}-icon`,
+                type: 'span',
+                props: { className: 'text-yellow-500' },
+                children: ['🏆']
+              },
+              {
+                id: `award-${index}-text`,
+                type: 'span',
+                props: {},
+                children: [award]
+              }
+            ]
+          }));
+        }
+        
+        // Complex replacements for features and specs with actual data
+        if (result.includes('{{content.features') && result.includes('map')) {
+          const features = actualData.content.features || [];
+          return features.map((feature, index) => ({
+            id: `feature-${index}`,
+            type: 'div',
+            props: { className: 'border-l-4 border-blue-400 pl-4 mb-4' },
+            children: [
+              {
+                id: `feature-${index}-title`,
+                type: 'h4',
+                props: { className: 'font-medium mb-1' },
+                children: [feature]
+              },
+              {
+                id: `feature-${index}-explanation`,
+                type: 'p',
+                props: { className: 'text-sm leading-relaxed' },
+                children: [actualData.content.featureExplanations?.[feature] || '']
+              }
+            ]
+          }));
+        }
+        
+        if (result.includes('{{content.specifications') && result.includes('entries')) {
+          const specs = actualData.content.specifications || {};
+          return Object.entries(specs).map(([key, value], index) => ({
+            id: `spec-${index}`,
+            type: 'tr',
+            props: {},
+            children: [
+              {
+                id: `spec-${index}-key`,
+                type: 'td',
+                props: { className: 'px-4 py-2 bg-gray-50 font-medium w-1/3' },
+                children: [key]
+              },
+              {
+                id: `spec-${index}-value`,
+                type: 'td',
+                props: { className: 'px-4 py-2' },
+                children: [value]
+              }
+            ]
+          }));
+        }
+        
         return result;
       }
       
@@ -186,22 +326,20 @@ export default function UniversalAIAssistant({
     scrollToBottom();
   }, [history, result, error]);
 
-  // Generate AI response using Gemini API with processed JSON
+  // Generate AI response using Gemini API with raw or processed JSON
   const generateAIResponse = useCallback(async (prompt, template) => {
     try {
-      console.log('🤖 [AI ASSISTANT] Generating AI response with processed JSON');
+      const dataToSend = useProcessedJSON 
+        ? generateProcessedJSON(template) 
+        : template;
       
-      // Generate processed JSON for AI to work with
-      const processedTemplate = generateProcessedJSON(template);
+      console.log(`🤖 [AI ASSISTANT] Generating AI response with ${useProcessedJSON ? 'processed' : 'raw'} JSON`);
       
-      if (!processedTemplate) {
-        throw new Error('Failed to generate processed template');
-      }
-      
-      console.log('📊 [AI ASSISTANT] Sending processed data to AI:', {
-        hasProcessedModel: !!processedTemplate.model,
-        contentKeys: Object.keys(processedTemplate.content),
-        imageCount: processedTemplate.images.length
+      console.log('📊 [AI ASSISTANT] Sending template data to AI:', {
+        mode: useProcessedJSON ? 'processed' : 'raw',
+        hasModel: !!dataToSend.model,
+        contentKeys: Object.keys(dataToSend.content || {}),
+        imageCount: (dataToSend.images || []).length
       });
 
       const response = await fetch('/api/ai/modify-template', {
@@ -212,12 +350,12 @@ export default function UniversalAIAssistant({
         body: JSON.stringify({
           prompt,
           templateData: {
-            model: processedTemplate.model, // Send processed template with actual data filled in
-            content: processedTemplate.content, // Send actual form content
-            images: processedTemplate.images // Send actual uploaded images
+            model: dataToSend.model, // Send raw or processed template
+            content: dataToSend.content, // Send actual form content
+            images: dataToSend.images // Send actual uploaded images
           },
           type: type,
-          isProcessed: true // Flag to indicate this is processed JSON
+          isProcessed: useProcessedJSON // Flag to indicate data type
         }),
       });
 
@@ -242,7 +380,7 @@ export default function UniversalAIAssistant({
       console.error('Error calling AI API:', error);
       throw new Error('Failed to connect to AI service. Please try again.');
     }
-  }, [type]);
+  }, [type, useProcessedJSON, generateProcessedJSON]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -412,6 +550,30 @@ export default function UniversalAIAssistant({
           </div>
           
           <div className="flex items-center gap-3">
+            {/* JSON Mode Toggle */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setUseProcessedJSON(false)}
+                className={`px-3 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  !useProcessedJSON 
+                    ? 'bg-purple-600 text-white shadow-sm' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Raw
+              </button>
+              <button
+                onClick={() => setUseProcessedJSON(true)}
+                className={`px-3 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  useProcessedJSON 
+                    ? 'bg-purple-600 text-white shadow-sm' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Processed
+              </button>
+            </div>
+            
             <button
               onClick={() => setShowPreview(!showPreview)}
               className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200"

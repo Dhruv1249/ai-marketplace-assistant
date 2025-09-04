@@ -216,6 +216,98 @@ export default function UniversalSourceCodeEditor({
           }));
         }
         
+        if (result === 'TESTIMONIALS_ARRAY') {
+          const testimonials = actualData.content.impact?.testimonials || [];
+          return testimonials.slice(0, 5).map((testimonial, index) => ({
+            id: `testimonial-${index}`,
+            type: 'div',
+            props: { className: 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4' },
+            children: [
+              {
+                id: `testimonial-${index}-text`,
+                type: 'p',
+                props: { className: 'text-gray-700 italic mb-2' },
+                children: [`"${testimonial}"`]
+              },
+              {
+                id: `testimonial-${index}-author`,
+                type: 'p',
+                props: { className: 'text-sm text-gray-600 font-medium' },
+                children: ['— Customer']
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'METRICS_ARRAY') {
+          const metrics = actualData.content.impact?.metrics || [];
+          return metrics.slice(0, 3).map((metric, index) => ({
+            id: `metric-${index}`,
+            type: 'div',
+            props: { className: 'bg-blue-50 border border-blue-200 rounded-lg p-4 text-center' },
+            children: [
+              {
+                id: `metric-${index}-value`,
+                type: 'div',
+                props: { className: 'text-2xl font-bold text-blue-600 mb-1' },
+                children: [metric.split(' ')[0] || '100+']
+              },
+              {
+                id: `metric-${index}-label`,
+                type: 'div',
+                props: { className: 'text-sm text-gray-600' },
+                children: [metric.split(' ').slice(1).join(' ') || 'Satisfied Customers']
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'CASE_STUDIES_ARRAY') {
+          const cases = actualData.content.impact?.cases || [];
+          return cases.slice(0, 3).map((caseStudy, index) => ({
+            id: `case-${index}`,
+            type: 'div',
+            props: { className: 'bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4' },
+            children: [
+              {
+                id: `case-${index}-title`,
+                type: 'h4',
+                props: { className: 'font-medium text-gray-900 mb-2' },
+                children: [`Case Study ${index + 1}`]
+              },
+              {
+                id: `case-${index}-content`,
+                type: 'p',
+                props: { className: 'text-sm text-gray-700' },
+                children: [caseStudy]
+              }
+            ]
+          }));
+        }
+        
+        if (result === 'AWARDS_ARRAY') {
+          const awards = actualData.content.impact?.awards || [];
+          return awards.map((award, index) => ({
+            id: `award-${index}`,
+            type: 'div',
+            props: { className: 'bg-purple-50 text-purple-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2' },
+            children: [
+              {
+                id: `award-${index}-icon`,
+                type: 'span',
+                props: { className: 'text-yellow-500' },
+                children: ['🏆']
+              },
+              {
+                id: `award-${index}-text`,
+                type: 'span',
+                props: {},
+                children: [award]
+              }
+            ]
+          }));
+        }
+        
         // Complex replacements for features and specs with actual data
         if (result.includes('{{content.features') && result.includes('map')) {
           const features = actualData.content.features || [];
