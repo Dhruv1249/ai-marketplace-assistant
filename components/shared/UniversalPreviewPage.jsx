@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette } from 'lucide-react';
+import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette, Save, RotateCcw } from 'lucide-react';
 import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
 import UniversalSourceCodeEditor from '@/components/shared/UniversalSourceCodeEditor';
 import UniversalAIAssistant from '@/components/shared/UniversalAIAssistant';
@@ -354,6 +354,85 @@ export default function UniversalPreviewPage({
     setAiAssistantOpen(false);
   }, [handleTemplateUpdate]);
 
+  // Handle manual save - allows users to save current state anytime
+  const handleManualSave = useCallback(() => {
+    if (!data) {
+      alert('No data to save');
+      return;
+    }
+
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(data));
+      console.log('✅ [MANUAL SAVE] Data saved to localStorage');
+      
+      // Show success indicator
+      setHasUnsavedChanges(true);
+      setTimeout(() => setHasUnsavedChanges(false), 2000);
+      
+      alert('Template saved successfully!');
+    } catch (error) {
+      console.error('❌ [MANUAL SAVE] Failed to save:', error);
+      alert('Failed to save template. Please try again.');
+    }
+  }, [data, storageKey]);
+
+  // Handle manual reset - resets template to original default
+  const handleManualReset = useCallback(() => {
+    if (!window.confirm('Reset template to original default? All changes will be lost.')) {
+      return;
+    }
+
+    try {
+      // Get the original template based on type
+      let originalTemplate;
+      
+      if (type === 'seller-info') {
+        // For seller-info, try to get the original template type from current data
+        const templateType = data?.templateType || 'professional';
+        originalTemplate = SELLER_TEMPLATE_MAP[templateType] || professionalTemplate;
+      } else if (type === 'product-story') {
+        // For product-story, try to get the original template type from current data
+        const templateType = data?.templateType || 'journey';
+        originalTemplate = PRODUCT_STORY_TEMPLATE_MAP[templateType] || journeyTemplate;
+      } else {
+        // For product, we need to determine what the original template was
+        // This is a simplified approach - you might want to store the original template type
+        originalTemplate = data?.model || null;
+      }
+
+      if (!originalTemplate) {
+        alert('No original template available to reset to.');
+        return;
+      }
+
+      // Create reset data structure
+      const resetData = {
+        model: originalTemplate,
+        content: data?.content || {},
+        images: data?.images || []
+      };
+
+      // Save reset data to localStorage
+      localStorage.setItem(storageKey, JSON.stringify(resetData));
+      
+      // Update component state
+      setData(resetData);
+      setStyleVariables({});
+      setSelectedComponentId(null);
+      setIsEditing(false);
+      
+      // Force re-render
+      setRenderKey(prev => prev + 1);
+      
+      console.log('✅ [MANUAL RESET] Template reset to original');
+      alert('Template reset to original successfully!');
+      
+    } catch (error) {
+      console.error('❌ [MANUAL RESET] Failed to reset:', error);
+      alert('Failed to reset template. Please try again.');
+    }
+  }, [data, storageKey, type]);
+
   const getTemplateName = () => {
     if (!data?.model?.metadata?.template) return 'Template';
     return data.model.metadata.template.split('-').map(word => 
@@ -469,10 +548,10 @@ export default function UniversalPreviewPage({
             </div>
             
             {showEditingUI && (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-colors text-sm ${
                     isEditing 
                       ? 'bg-blue-600 text-white hover:bg-blue-700' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -480,34 +559,50 @@ export default function UniversalPreviewPage({
                 >
                   {isEditing ? (
                     <>
-                      <Eye size={16} />
-                      Preview Mode
+                      <Eye size={14} />
+                      <span>Preview</span>
                     </>
                   ) : (
                     <>
-                      <Edit3 size={16} />
-                      Edit Mode
+                      <Edit3 size={14} />
+                      <span>Edit</span>
                     </>
                   )}
                 </button>
 
                 <button
                   onClick={() => setSourceCodeEditorOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors text-sm"
                 >
-                  <Code size={16} />
-                  Source Code
+                  <Code size={14} />
+                  <span>Code</span>
                 </button>
 
                 <button
                   onClick={() => setAiAssistantOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors"
+                  className="flex items-center gap-1 px-3 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg transition-colors text-sm"
                 >
-                  <Bot size={16} />
-                  AI Assistant
+                  <Bot size={14} />
+                  <span>AI</span>
+                </button>
+
+                <button
+                  onClick={handleManualSave}
+                  className="flex items-center gap-1 px-3 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg transition-colors text-sm"
+                >
+                  <Save size={14} />
+                  <span>Save</span>
+                </button>
+
+                <button
+                  onClick={handleManualReset}
+                  className="flex items-center gap-1 px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg transition-colors text-sm"
+                >
+                  <RotateCcw size={14} />
+                  <span>Reset</span>
                 </button>
                 
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 ml-2">
                   {helpText}
                 </div>
               </div>

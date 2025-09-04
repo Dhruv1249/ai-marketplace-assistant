@@ -353,7 +353,7 @@ export default function ProductStoryPage() {
       console.log('==============================');
       
       localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
-      window.open('/seller-info/preview', '_blank');
+      window.open('/seller-info/preview', '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Failed to save preview data:', error);
       alert('Failed to open preview. Please try again.');

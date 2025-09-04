@@ -392,8 +392,8 @@ export default function ProductStoryPage() {
       };
       
       localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
-      // Open preview in same tab
-      router.push('/seller-info/preview');
+      // Open preview in new window
+      window.open('/seller-info/preview', '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('Failed to save preview data:', error);
       alert('Failed to open preview. Please try again.');

@@ -1,8 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, Save, RotateCcw, Eye, EyeOff, Code, Settings } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { X, Save, RotateCcw, Eye, EyeOff, Code, Settings, Upload, Download } from 'lucide-react';
 import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
+
+// Import default templates
+import journeyTemplate from '@/components/seller-info/templates/journey-template.json';
+import craftTemplate from '@/components/seller-info/templates/craft-template.json';
+import impactTemplate from '@/components/seller-info/templates/impact-template.json';
+import modernTemplate from '@/components/seller-info/templates/modern-template.json';
+
+const DEFAULT_TEMPLATES = {
+  'journey': journeyTemplate,
+  'craft': craftTemplate,
+  'impact': impactTemplate,
+  'modern': modernTemplate,
+};
 
 export default function UniversalSourceCodeEditor({ 
   isOpen, 
@@ -15,33 +28,39 @@ export default function UniversalSourceCodeEditor({
   type = 'product' // 'product' or 'seller-info'
 }) {
   const [jsonCode, setJsonCode] = useState('');
+  const [originalJsonCode, setOriginalJsonCode] = useState('');
+  const [rawJson, setRawJson] = useState("");
+  const [processedJson, setProcessedJson] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [validationResult, setValidationResult] = useState(null);
+  const [showProcessedData, setShowProcessedData] = useState(true); // Toggle between processed and raw
+  const fileInputRef = useRef(null);
 
-  // Use actual form data and uploaded images
-  const getActualData = () => ({
-    content: templateData?.content || {
-      title: "Product Title",
-      description: "Product description...",
-      features: ["Feature 1", "Feature 2", "Feature 3"],
-      featureExplanations: {},
-      specifications: {},
-      // Seller info defaults
-      name: "",
-      bio: "",
-      story: "",
-      experience: "",
-      specialties: [],
-      achievements: [],
-      contact: {},
-      businessInfo: {},
-      photos: []
-    },
-    images: templateData?.images || []
-  });
+  // Use actual form data and uploaded images from the renderer
+  const getActualData = () => {
+    console.log('🔍 [GET ACTUAL DATA] Template data:', templateData);
+    
+    // The templateData contains the unified structure: { model, content, images }
+    const actualContent = templateData?.content || {};
+    const actualImages = templateData?.images || [];
+    
+    console.log('📊 [GET ACTUAL DATA] Extracted:', {
+      contentKeys: Object.keys(actualContent),
+      imageCount: actualImages.length,
+      hasBasics: !!actualContent.basics,
+      hasStory: !!actualContent.story,
+      hasProcess: !!actualContent.process,
+      hasImpact: !!actualContent.impact
+    });
+    
+    return {
+      content: actualContent,
+      images: actualImages
+    };
+  };
 
-  // FIXED: Function to restore array placeholders for seller info
+  // Function to restore array placeholders for seller info
   const restoreArrayPlaceholders = useCallback((template) => {
     const restoreNode = (node) => {
       if (!node) return node;
@@ -55,18 +74,14 @@ export default function UniversalSourceCodeEditor({
         
         // Check if this is a specialties or achievements list that was expanded
         if (restored.id === 'specialties-list' && Array.isArray(restored.children)) {
-          // Check if children are expanded specialty components
           const firstChild = restored.children[0];
           if (firstChild && typeof firstChild === 'object' && firstChild.id && firstChild.id.startsWith('specialty-')) {
-            // Restore to placeholder
             restored.children = 'SPECIALTIES_ARRAY';
             console.log('Restored specialties-list to SPECIALTIES_ARRAY');
           }
         } else if (restored.id === 'achievements-list' && Array.isArray(restored.children)) {
-          // Check if children are expanded achievement components
           const firstChild = restored.children[0];
           if (firstChild && typeof firstChild === 'object' && firstChild.id && firstChild.id.startsWith('achievement-')) {
-            // Restore to placeholder
             restored.children = 'ACHIEVEMENTS_ARRAY';
             console.log('Restored achievements-list to ACHIEVEMENTS_ARRAY');
           }
@@ -104,16 +119,34 @@ export default function UniversalSourceCodeEditor({
     // Function to recursively process template placeholders with ACTUAL data
     const processNode = (node) => {
       if (typeof node === 'string') {
-        // Replace template placeholders with actual form data
         let result = node;
         
-        // PRODUCT REPLACEMENTS
+        // PRODUCT STORY REPLACEMENTS - Basics
+        result = result.replace(/\{\{content\.basics\.name \|\| 'Amazing Product'\}\}/g, actualData.content.basics?.name || 'Amazing Product');
+        result = result.replace(/\{\{content\.basics\.category \|\| 'Product'\}\}/g, actualData.content.basics?.category || 'Product');
+        result = result.replace(/\{\{content\.basics\.value \|\| 'Discover the story behind our innovative solution that transforms the way you work and live\.'\}\}/g, actualData.content.basics?.value || 'Discover the story behind our innovative solution that transforms the way you work and live.');
+        result = result.replace(/\{\{content\.basics\.audience \|\| 'everyone who values quality and innovation'\}\}/g, actualData.content.basics?.audience || 'everyone who values quality and innovation');
+        result = result.replace(/\{\{content\.basics\.problem \|\| 'Every day, millions of people face challenges that could be solved with the right solution\. Our product addresses these pain points with innovative technology and thoughtful design\.'\}\}/g, actualData.content.basics?.problem || 'Every day, millions of people face challenges that could be solved with the right solution. Our product addresses these pain points with innovative technology and thoughtful design.');
+        
+        // PRODUCT STORY REPLACEMENTS - Story
+        result = result.replace(/\{\{content\.story\.origin \|\| 'Every great product starts with a simple idea\. Our journey began when we recognized a gap in the market and decided to create something truly innovative that would make a difference in people\\'s lives\.'\}\}/g, actualData.content.story?.origin || 'Every great product starts with a simple idea. Our journey began when we recognized a gap in the market and decided to create something truly innovative that would make a difference in people\'s lives.');
+        result = result.replace(/\{\{content\.story\.solution \|\| 'The path from idea to reality was filled with challenges and breakthroughs\. We spent countless hours researching, prototyping, and refining our approach to create the perfect solution\.'\}\}/g, actualData.content.story?.solution || 'The path from idea to reality was filled with challenges and breakthroughs. We spent countless hours researching, prototyping, and refining our approach to create the perfect solution.');
+        result = result.replace(/\{\{content\.story\.unique \|\| 'What makes our product special is our unique approach to solving problems\. We\\'ve combined cutting-edge technology with user-centered design to create something truly remarkable\.'\}\}/g, actualData.content.story?.unique || 'What makes our product special is our unique approach to solving problems. We\'ve combined cutting-edge technology with user-centered design to create something truly remarkable.');
+        result = result.replace(/\{\{content\.story\.vision \|\| 'Join thousands of satisfied customers who have transformed their lives with our innovative solution\. Your journey to success starts here\.'\}\}/g, actualData.content.story?.vision || 'Join thousands of satisfied customers who have transformed their lives with our innovative solution. Your journey to success starts here.');
+        
+        // PRODUCT STORY REPLACEMENTS - Process
+        result = result.replace(/\{\{content\.process\.creation \|\| 'Our meticulous creation process ensures every detail is perfect\. We combine traditional craftsmanship with modern technology to deliver exceptional quality\.'\}\}/g, actualData.content.process?.creation || 'Our meticulous creation process ensures every detail is perfect. We combine traditional craftsmanship with modern technology to deliver exceptional quality.');
+        result = result.replace(/\{\{content\.process\.materials \|\| 'We source only the finest materials and components\. Every element is carefully selected to ensure durability, performance, and sustainability\.'\}\}/g, actualData.content.process?.materials || 'We source only the finest materials and components. Every element is carefully selected to ensure durability, performance, and sustainability.');
+        result = result.replace(/\{\{content\.process\.time \|\| 'Every product requires significant time investment and specialized expertise\. Our skilled craftspeople dedicate hours to perfecting each detail\.'\}\}/g, actualData.content.process?.time || 'Every product requires significant time investment and specialized expertise. Our skilled craftspeople dedicate hours to perfecting each detail.');
+        result = result.replace(/\{\{content\.process\.quality \|\| 'Rigorous testing and quality control measures ensure that every product meets our high standards before reaching our customers\.'\}\}/g, actualData.content.process?.quality || 'Rigorous testing and quality control measures ensure that every product meets our high standards before reaching our customers.');
+        result = result.replace(/\{\{content\.process\.ethics \|\| 'We are committed to sustainable and ethical practices throughout our entire production process, ensuring a positive impact on the environment and society\.'\}\}/g, actualData.content.process?.ethics || 'We are committed to sustainable and ethical practices throughout our entire production process, ensuring a positive impact on the environment and society.');
+        
+        // LEGACY PRODUCT REPLACEMENTS
         result = result.replace(/\{\{content\.title\}\}/g, actualData.content.title || 'Product Title');
         result = result.replace(/\{\{content\.description\}\}/g, actualData.content.description || 'Product description');
         result = result.replace(/\{\{content\.price\}\}/g, actualData.content.price || '$0.00');
         
         // SELLER INFO REPLACEMENTS
-        // Basic seller info
         result = result.replace(/\{\{content\.name\}\}/g, actualData.content.name || '');
         result = result.replace(/\{\{content\.bio\}\}/g, actualData.content.bio || '');
         result = result.replace(/\{\{content\.story\}\}/g, actualData.content.story || '');
@@ -162,7 +195,7 @@ export default function UniversalSourceCodeEditor({
         result = result.replace(/\{\{images\[2\]\}\}/g, actualData.images[2] || '');
         result = result.replace(/\{\{images\[3\]\}\}/g, actualData.images[3] || '');
         
-        // FIXED: Handle seller info arrays - expand them for editing
+        // Handle seller info arrays - expand them for editing
         if (result === 'SPECIALTIES_ARRAY') {
           const specialties = actualData.content.specialties || [];
           return specialties.map((specialty, index) => ({
@@ -185,7 +218,6 @@ export default function UniversalSourceCodeEditor({
         
         // Complex replacements for features and specs with actual data
         if (result.includes('{{content.features') && result.includes('map')) {
-          // Replace with actual feature components from form
           const features = actualData.content.features || [];
           return features.map((feature, index) => ({
             id: `feature-${index}`,
@@ -209,7 +241,6 @@ export default function UniversalSourceCodeEditor({
         }
         
         if (result.includes('{{content.specifications') && result.includes('entries')) {
-          // Replace with actual spec components from form
           const specs = actualData.content.specifications || {};
           return Object.entries(specs).map(([key, value], index) => ({
             id: `spec-${index}`,
@@ -289,31 +320,125 @@ export default function UniversalSourceCodeEditor({
     }
   }, []);
 
-  // Initialize codes when template data changes
+  // DEBUG: Save JSON to debug folder in project
+  const saveDebugJSON = useCallback(async (jsonContent, filename) => {
+    try {
+      console.log(`=== DEBUG: ${filename} ===`);
+      console.log(jsonContent);
+      console.log(`=== END DEBUG: ${filename} ===`);
+
+      // Try to save to debug folder using Node.js fs (if available in server environment)
+      try {
+        const response = await fetch('/api/debug/save-json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            filename: `${filename}.json`,
+            content: jsonContent
+          })
+        });
+
+        if (response.ok) {
+          console.log(`✅ [DEBUG] File saved to debug folder: ${filename}.json`);
+        } else {
+          throw new Error('API not available');
+        }
+      } catch (apiError) {
+        // Fallback: Save to localStorage with debug prefix
+        const debugKey = `debug_${filename}_${Date.now()}`;
+        localStorage.setItem(debugKey, jsonContent);
+        console.log(`✅ [DEBUG] File saved to localStorage: ${debugKey}`);
+        
+        // Also log to console for immediate access
+        console.log(`📁 [DEBUG] ${filename} content:`, jsonContent);
+      }
+    } catch (error) {
+      console.error(`❌ [DEBUG] Failed to save ${filename}:`, error);
+    }
+  }, []);
+
+  // Get the original default template based on templateType
+  const getOriginalTemplate = useCallback(() => {
+    const templateType = templateData?.templateType || 'journey';
+    const defaultTemplate = DEFAULT_TEMPLATES[templateType] || DEFAULT_TEMPLATES.journey;
+    return defaultTemplate;
+  }, [templateData]);
+
   useEffect(() => {
     if (isOpen && templateData) {
-      const json = generateJSON(templateData);
+      console.log('🔄 [SOURCE EDITOR] Opening with data:', {
+        hasModel: !!templateData.model,
+        hasContent: !!templateData.content,
+        hasImages: !!templateData.images,
+        showProcessedData
+      });
+
+      const raw = JSON.stringify(templateData.model, null, 2);
+      const processed = generateJSON(templateData);
+
+      console.log('📊 [SOURCE EDITOR] Generated JSONs:', {
+        rawLength: raw.length,
+        processedLength: processed.length,
+        showProcessedData,
+        willShow: showProcessedData ? 'processed' : 'raw'
+      });
+
+      setRawJson(raw);
+      setProcessedJson(processed);
+
+      const json = showProcessedData ? processed : raw;
       setJsonCode(json);
+      setOriginalJsonCode(raw);
       setHasChanges(false);
-      
-      // Validate initial template
-      if (json) {
-        validateTemplate(json);
+      validateTemplate(json);
+    }
+  }, [isOpen, templateData, showProcessedData, generateJSON, validateTemplate]);
+
+  // Handle toggle between processed and raw data
+  const handleToggleDataMode = useCallback(() => {
+    if (hasChanges) {
+      if (!window.confirm('You have unsaved changes. Switching modes will lose them. Continue?')) {
+        return;
       }
     }
-  }, [isOpen, templateData, generateJSON, validateTemplate]);
+    
+    const newMode = !showProcessedData;
+    const processedJSON = generateJSON(templateData);
+    const rawJSON = JSON.stringify(templateData.model, null, 2);
+    const newJSON = newMode ? processedJSON : rawJSON;
+    
+    // DEBUG: Save both JSONs for comparison
+    console.log('=== TOGGLE DEBUG ===');
+    console.log('Current mode:', showProcessedData ? 'Processed' : 'Raw');
+    console.log('Switching to:', newMode ? 'Processed' : 'Raw');
+    console.log('Template Data:', templateData);
+    console.log('Processed JSON length:', processedJSON.length);
+    console.log('Raw JSON length:', rawJSON.length);
+    console.log('====================');
+    
+    saveDebugJSON(processedJSON, `processed-${type}`);
+    saveDebugJSON(rawJSON, `raw-${type}`);
+    saveDebugJSON(newJSON, `selected-${newMode ? 'processed' : 'raw'}-${type}`);
+    
+    setShowProcessedData(newMode);
+    setJsonCode(newJSON);
+    setHasChanges(false);
+    validateTemplate(newJSON);
+  }, [hasChanges, showProcessedData, generateJSON, templateData, validateTemplate, saveDebugJSON, type]);
 
   // Handle code changes
   const handleCodeChange = useCallback((newCode) => {
     setJsonCode(newCode);
-    setHasChanges(newCode !== generateJSON(templateData));
+    setHasChanges(newCode !== originalJsonCode);
     
     // Debounced validation
     const timeoutId = setTimeout(() => validateTemplate(newCode), 500);
     return () => clearTimeout(timeoutId);
-  }, [templateData, generateJSON, validateTemplate]);
+  }, [originalJsonCode, validateTemplate]);
 
-  // FIXED: Handle save with proper array placeholder restoration
+  // Handle save with proper array placeholder restoration
   const handleSave = useCallback(async () => {
     const validation = await validateTemplate(jsonCode);
     if (!validation.valid) {
@@ -324,7 +449,7 @@ export default function UniversalSourceCodeEditor({
     try {
       let template = JSON.parse(jsonCode);
       
-      // FIXED: Restore array placeholders for seller info
+      // Restore array placeholders for seller info
       if (type === 'seller-info') {
         template = restoreArrayPlaceholders(template);
       }
@@ -338,7 +463,6 @@ export default function UniversalSourceCodeEditor({
       onTemplateUpdate?.(template);
       setHasChanges(false);
       
-      // Show success message
       alert('Template saved successfully!');
     } catch (error) {
       console.error('Save error:', error);
@@ -347,15 +471,97 @@ export default function UniversalSourceCodeEditor({
     }
   }, [jsonCode, onTemplateUpdate, validateTemplate, type, restoreArrayPlaceholders]);
 
-  // Handle reset
-  const handleReset = useCallback(() => {
-    if (window.confirm('Reset to default template? All changes will be lost.')) {
-      const json = generateJSON(templateData);
-      setJsonCode(json);
-      setHasChanges(false);
-      onReset?.();
+  // Handle export JSON
+  const handleExport = useCallback(() => {
+    try {
+      const dataToExport = {
+        templateName: templateName || 'template',
+        type: type,
+        timestamp: new Date().toISOString(),
+        template: JSON.parse(jsonCode)
+      };
+      
+      const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${templateName || 'template'}-${type}-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('Template exported successfully!');
+    } catch (error) {
+      alert('Error exporting template: Invalid JSON format');
     }
-  }, [templateData, generateJSON, onReset]);
+  }, [jsonCode, templateName, type]);
+
+  // Handle import JSON
+  const handleImport = useCallback(() => {
+    if (hasChanges) {
+      if (!window.confirm('You have unsaved changes. Import anyway? All changes will be lost.')) {
+        return;
+      }
+    }
+    fileInputRef.current?.click();
+  }, [hasChanges]);
+
+  // Handle file selection
+  const handleFileSelect = useCallback((event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target?.result);
+        
+        // Check if it's our export format
+        if (importedData.template && importedData.type) {
+          setJsonCode(JSON.stringify(importedData.template, null, 2));
+          setHasChanges(true);
+          validateTemplate(JSON.stringify(importedData.template, null, 2));
+          alert(`Template imported successfully! (Type: ${importedData.type})`);
+        } else {
+          // Assume it's a raw template JSON
+          setJsonCode(JSON.stringify(importedData, null, 2));
+          setHasChanges(true);
+          validateTemplate(JSON.stringify(importedData, null, 2));
+          alert('JSON imported successfully!');
+        }
+      } catch (error) {
+        alert('Error importing file: Invalid JSON format');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+  }, [validateTemplate]);
+
+  // Handle reset - Reset to original selected template from templates system
+  const handleReset = useCallback(() => {
+  if (window.confirm('Reset to original selected template? All changes will be lost.')) {
+    const original = getOriginalTemplate();
+    if (original) {
+      const rawTemplate = JSON.stringify(original, null, 2);
+      const processedTemplate = generateJSON({ model: original });
+
+      setRawJson(rawTemplate);
+      setProcessedJson(processedTemplate);
+      setJsonCode(rawTemplate);
+      setOriginalJsonCode(rawTemplate);
+      setShowProcessedData(false);
+      setHasChanges(false);
+      validateTemplate(rawTemplate);
+    } else {
+      alert('No original template available to reset to.');
+    }
+    onReset?.();
+  }
+}, [getOriginalTemplate, validateTemplate, onReset, generateJSON]);
+
 
   // Handle close
   const handleClose = useCallback(() => {
@@ -404,12 +610,61 @@ export default function UniversalSourceCodeEditor({
           </div>
           
           <div className="flex items-center gap-3">
+            {/* Data Mode Toggle */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => {
+                  if (!showProcessedData) {
+                    handleToggleDataMode();
+                  }
+                }}
+                className={`px-3 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  showProcessedData 
+                    ? 'bg-blue-600 text-white shadow-sm' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Processed
+              </button>
+              <button
+                onClick={() => {
+                  if (showProcessedData) {
+                    handleToggleDataMode();
+                  }
+                }}
+                className={`px-3 py-1 text-xs font-medium rounded transition-all duration-200 ${
+                  !showProcessedData 
+                    ? 'bg-blue-600 text-white shadow-sm' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Raw
+              </button>
+            </div>
+            
             <button
               onClick={() => setShowPreview(!showPreview)}
               className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200"
             >
               {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
               {showPreview ? 'Hide Preview' : 'Show Preview'}
+            </button>
+            
+            <button
+              onClick={handleImport}
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-all duration-200"
+            >
+              <Upload size={16} />
+              Import JSON
+            </button>
+            
+            <button
+              onClick={handleExport}
+              disabled={!validationResult?.valid}
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 disabled:bg-gray-300 disabled:cursor-not-allowed text-gray-700 rounded-lg transition-all duration-200"
+            >
+              <Download size={16} />
+              Export JSON
             </button>
             
             <button
@@ -422,11 +677,11 @@ export default function UniversalSourceCodeEditor({
             
             <button
               onClick={handleSave}
-              disabled={!hasChanges || !validationResult?.valid}
+              disabled={!validationResult?.valid}
               className="flex items-center gap-2 px-6 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-200 font-medium"
             >
               <Save size={16} />
-              Save Changes
+              Apply Changes
             </button>
             
             <button
@@ -438,6 +693,15 @@ export default function UniversalSourceCodeEditor({
           </div>
         </div>
 
+        {/* Hidden file input for import */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+        />
+
         {/* Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Code Editor */}
@@ -446,7 +710,7 @@ export default function UniversalSourceCodeEditor({
             <div className="flex border-b bg-gray-50">
               <div className="px-4 py-3 text-sm font-medium border-b-2 border-blue-500 text-blue-600 bg-white flex items-center gap-2">
                 <Settings size={16} />
-                JSON Template ({type === 'seller-info' ? 'Seller Data' : 'Product Data'})
+                JSON Template ({type === 'seller-info' ? 'Seller Data' : 'Product Data'}) • {showProcessedData ? 'Processed Data' : 'Raw Template'}
               </div>
             </div>
             
@@ -471,7 +735,7 @@ export default function UniversalSourceCodeEditor({
                 Lines: {jsonCode.split('\n').length} • Editable
               </div>
               
-              {/* FIXED: Better info for seller info */}
+              {/* Better info for seller info */}
               {type === 'seller-info' && (
                 <div className="absolute top-12 right-4 text-xs text-blue-400 bg-blue-900 px-2 py-1 rounded">
                   Arrays auto-restored on save
@@ -542,7 +806,12 @@ export default function UniversalSourceCodeEditor({
           <div className="flex items-center gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <Settings size={16} className="text-blue-500" />
-              <span>JSON Template Editor • Your actual {type === 'seller-info' ? 'seller' : 'product'} data filled in • Fully editable</span>
+              <span>
+                JSON Template Editor • {showProcessedData 
+                  ? `Your actual ${type === 'seller-info' ? 'seller' : 'product'} data filled in` 
+                  : 'Raw template with placeholders'
+                } • Fully editable
+              </span>
             </div>
             {type === 'seller-info' && (
               <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
@@ -560,7 +829,7 @@ export default function UniversalSourceCodeEditor({
             </button>
             <button
               onClick={handleSave}
-              disabled={!hasChanges || !validationResult?.valid}
+              disabled={!validationResult?.valid}
               className="px-6 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-all duration-200 font-medium"
             >
               Apply Changes
