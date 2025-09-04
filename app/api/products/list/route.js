@@ -26,22 +26,16 @@ export async function GET() {
         try {
           const productDir = path.join(productsDir, dir.name);
 
-          // Prefer product.json, fallback to standard.json
-          // const productPath = path.join(productDir, 'product.json');
+          // Read standard.json file
           const standardPath = path.join(productDir, 'standard.json');
           let fileToRead = null;
 
           try {
-            await fs.access(productPath);
-            fileToRead = productPath;
+            await fs.access(standardPath);
+            fileToRead = standardPath;
           } catch {
-            try {
-              await fs.access(standardPath);
-              fileToRead = standardPath;
-            } catch {
-              // Skip if neither json file exists
-              continue;
-            }
+            // Skip if standard.json doesn't exist
+            continue;
           }
 
           const productData = await fs.readFile(fileToRead, 'utf-8');

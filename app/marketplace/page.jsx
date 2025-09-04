@@ -170,10 +170,10 @@ export default function Marketplace() {
       ? product.pricing.basePrice
       : 0),
             currency: 'USD',
-            // Use static image path in /public/images/
+            // Use API route for product images
             image: product.images?.thumbnail 
-              ? `/images/${product.images.thumbnail}`
-              : '/images/placeholder.jpg',
+              ? `/api/products/${product.id}/images/${product.images.thumbnail}`
+              : '/images/placeholder.svg',
             rating: 4.8, // Default - implement rating system
             reviews: 124, // Default - implement review system
             seller: 'AI Marketplace Seller', // Default - implement seller system
@@ -191,7 +191,7 @@ export default function Marketplace() {
               description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
               price: 99.99,
               currency: 'USD',
-              image: '/images/placeholder.jpg',
+              image: '/images/placeholder.svg',
               rating: 4.8,
               reviews: 0,
               seller: 'Sample Seller',
@@ -211,7 +211,7 @@ export default function Marketplace() {
             description: 'This is a sample product. Use the "Create Product" button to add your first real product to the marketplace.',
             price: 99.99,
             currency: 'USD',
-            image: '/images/placeholder.jpg',
+            image: '/images/placeholder.svg',
             rating: 4.8,
             reviews: 0,
             seller: 'Sample Seller',

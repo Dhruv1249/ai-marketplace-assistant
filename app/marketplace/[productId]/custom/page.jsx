@@ -22,13 +22,33 @@ export default function CustomProductPage() {
         const result = await response.json();
 
         if (result.success && result.custom) {
+          // Prepare custom images array
+          const customImages = [];
+          
+          // Add saved custom images if they exist
+          if (result.custom.savedImages && Array.isArray(result.custom.savedImages)) {
+            result.custom.savedImages.forEach((imageName, index) => {
+              customImages.push(`/api/products/${productId}/images/${imageName}`);
+            });
+          }
+          
+          // Also add standard product images as fallback
+          if (result.standard?.images?.thumbnail) {
+            customImages.push(`/api/products/${productId}/images/${result.standard.images.thumbnail}`);
+          }
+          if (result.standard?.images?.additional) {
+            result.standard.images.additional.forEach(imageName => {
+              customImages.push(`/api/products/${productId}/images/${imageName}`);
+            });
+          }
+          
           // Store the custom data in localStorage for UniversalPreviewPage
           const previewData = {
             productStoryData: result.custom.productStoryData || result.custom.content,
             templateType: result.custom.templateType || 'journey',
             model: result.custom.model,
             content: result.custom.content || result.custom.productStoryData,
-            images: []
+            images: customImages
           };
           
           localStorage.setItem('productStoryPreviewData', JSON.stringify(previewData));
