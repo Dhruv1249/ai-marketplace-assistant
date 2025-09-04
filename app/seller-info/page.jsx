@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette, Globe } from 'lucide-react';
 import { Button } from '@/components/ui';
@@ -76,6 +76,51 @@ export default function ProductStoryPage() {
     beforeAfter: useRef(null)
   };
   const photoUrlsRef = useRef([]);
+
+  // State for validation instead of using window
+  const [validationState, setValidationState] = useState({
+    step1: false,
+    step2: false,
+    step3: true, // Process step is optional
+    step4: true  // Impact step is optional
+  });
+
+  // Initialize validation system
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.productStoryValidation = validationState;
+    }
+  }, [validationState]);
+
+  // Validation function to check if current step is valid
+  const isCurrentStepValid = () => {
+    switch (step) {
+      case 1:
+        return validationState.step1;
+      case 2:
+        return validationState.step2;
+      case 3:
+        return validationState.step3;
+      case 4:
+        return validationState.step4;
+      default:
+        return true; // Steps 5, 6, 7 don't have validation
+    }
+  };
+
+  // Function to update validation state - memoized to prevent infinite loops
+  const updateValidation = useCallback((stepKey, isValid) => {
+    setValidationState(prev => {
+      // Only update if the value has actually changed
+      if (prev[stepKey] !== isValid) {
+        return {
+          ...prev,
+          [stepKey]: isValid
+        };
+      }
+      return prev;
+    });
+  }, []);
 
   // Load product data from localStorage if coming from product creation
   useEffect(() => {
@@ -400,6 +445,7 @@ export default function ProductStoryPage() {
             handleInputChange={handleInputChange}
             generateFieldContent={generateFieldContent}
             isGenerating={isGenerating}
+            updateValidation={updateValidation}
           />
         );
       case 2:
@@ -409,6 +455,7 @@ export default function ProductStoryPage() {
             handleInputChange={handleInputChange}
             generateFieldContent={generateFieldContent}
             isGenerating={isGenerating}
+            updateValidation={updateValidation}
           />
         );
       case 3:
@@ -418,6 +465,7 @@ export default function ProductStoryPage() {
             handleInputChange={handleInputChange}
             generateFieldContent={generateFieldContent}
             isGenerating={isGenerating}
+            updateValidation={updateValidation}
           />
         );
       case 4:
@@ -429,6 +477,7 @@ export default function ProductStoryPage() {
             removeArrayItem={removeArrayItem}
             generateFieldContent={generateFieldContent}
             isGenerating={isGenerating}
+            updateValidation={updateValidation}
           />
         );
       case 5:
@@ -637,7 +686,7 @@ export default function ProductStoryPage() {
             
             <Button
               onClick={() => setStep(step + 1)}
-              disabled={step === 7 || (step === 1 && (!productStoryData.basics.name || !productStoryData.basics.category))}
+              disabled={step === 7 || !isCurrentStepValid()}
             >
               {step === 7 ? 'Complete' : step === 6 ? 'Review & Publish' : 'Next'}
             </Button>

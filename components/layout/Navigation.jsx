@@ -28,7 +28,6 @@ const Navigation = () => {
     { href: '/', label: 'Home', icon: Home },
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
     { href: '/create', label: 'Create Product', icon: Plus },
-    { href: '/seller-info', label: 'Seller Info', icon: User },
     { href: '/dashboard', label: 'Dashboard', icon: User2, requiresAuth: true },
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Mail },

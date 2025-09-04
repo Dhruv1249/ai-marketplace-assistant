@@ -8,8 +8,29 @@ export default function ProductBasicsStep({
   productStoryData, 
   handleInputChange, 
   generateFieldContent, 
-  isGenerating 
+  isGenerating,
+  updateValidation
 }) {
+  // Validation function to check if all mandatory fields are filled and within limits
+  const validateStep = () => {
+    const { name, category, problem, audience, value } = productStoryData.basics;
+    
+    // Check if mandatory fields are filled
+    const mandatoryFields = [name, category, problem, audience, value];
+    const hasEmptyFields = mandatoryFields.some(field => !field.trim());
+    
+    // Check if any field exceeds the limit
+    const hasExceededLimits = mandatoryFields.some(field => field.length > 600);
+    
+    return !hasEmptyFields && !hasExceededLimits;
+  };
+
+  // Add validation status to parent component
+  React.useEffect(() => {
+    if (updateValidation) {
+      updateValidation('step1', validateStep());
+    }
+  }, [productStoryData.basics, updateValidation]);
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -21,17 +42,17 @@ export default function ProductBasicsStep({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Product Name * ({productStoryData.basics.name.length}/400)
+            Product Name * ({productStoryData.basics.name.length}/600)
           </label>
           <input
             type="text"
             value={productStoryData.basics.name}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('basics', 'name', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Your amazing product name"
           />
@@ -39,18 +60,18 @@ export default function ProductBasicsStep({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Category/Type * ({productStoryData.basics.category.length}/400)
+            Category/Type * ({productStoryData.basics.category.length}/600)
           </label>
           <div className="flex items-center gap-2">
             <input
               type="text"
               value={productStoryData.basics.category}
               onChange={(e) => {
-                if (e.target.value.length <= 400) {
+                if (e.target.value.length <= 600) {
                   handleInputChange('basics', 'category', e.target.value);
                 }
               }}
-              maxLength={400}
+              maxLength={600}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., Electronics, Handmade, Software, Food"
             />
@@ -68,17 +89,17 @@ export default function ProductBasicsStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Main Problem It Solves * ({productStoryData.basics.problem.length}/400)
+          Main Problem It Solves * ({productStoryData.basics.problem.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.basics.problem}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('basics', 'problem', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={4}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What specific problem does your product solve? What pain point does it address?"
@@ -96,18 +117,18 @@ export default function ProductBasicsStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Target Audience * ({productStoryData.basics.audience.length}/400)
+          Target Audience * ({productStoryData.basics.audience.length}/600)
         </label>
         <div className="flex items-center gap-2">
           <input
             type="text"
             value={productStoryData.basics.audience}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('basics', 'audience', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Who is this product for? e.g., Busy professionals, Parents, Students"
           />
@@ -124,17 +145,17 @@ export default function ProductBasicsStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Value Proposition * ({productStoryData.basics.value.length}/400)
+          Value Proposition * ({productStoryData.basics.value.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.basics.value}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('basics', 'value', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={3}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What value does your product provide? Why should customers choose it?"

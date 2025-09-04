@@ -8,8 +8,30 @@ export default function ProductStoryStep({
   productStoryData, 
   handleInputChange, 
   generateFieldContent, 
-  isGenerating 
+  isGenerating,
+  updateValidation
 }) {
+  // Validation function to check if all mandatory fields are filled and within limits
+  const validateStep = () => {
+    const { origin, solution, unique } = productStoryData.story;
+    
+    // Check if mandatory fields are filled (vision is optional)
+    const mandatoryFields = [origin, solution, unique];
+    const hasEmptyFields = mandatoryFields.some(field => !field.trim());
+    
+    // Check if any field exceeds the limit
+    const allFields = [origin, solution, unique, productStoryData.story.vision];
+    const hasExceededLimits = allFields.some(field => field.length > 600);
+    
+    return !hasEmptyFields && !hasExceededLimits;
+  };
+
+  // Add validation status to parent component
+  React.useEffect(() => {
+    if (updateValidation) {
+      updateValidation('step2', validateStep());
+    }
+  }, [productStoryData.story, updateValidation]);
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -20,17 +42,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Origin Story * ({productStoryData.story.origin.length}/400)
+          Origin Story * ({productStoryData.story.origin.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.origin}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('story', 'origin', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={4}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="How and why was this product created? What inspired you to make it?"
@@ -48,17 +70,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Solution Journey * ({productStoryData.story.solution.length}/400)
+          Solution Journey * ({productStoryData.story.solution.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.solution}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('story', 'solution', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={4}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Describe the journey of creating this solution. What challenges did you overcome?"
@@ -76,17 +98,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          What Makes It Unique * ({productStoryData.story.unique.length}/400)
+          What Makes It Unique * ({productStoryData.story.unique.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.unique}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('story', 'unique', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={3}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What makes your product special and different from others?"
@@ -104,17 +126,17 @@ export default function ProductStoryStep({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Vision & Mission ({productStoryData.story.vision.length}/400)
+          Vision & Mission ({productStoryData.story.vision.length}/600)
         </label>
         <div className="flex items-start gap-2">
           <textarea
             value={productStoryData.story.vision}
             onChange={(e) => {
-              if (e.target.value.length <= 400) {
+              if (e.target.value.length <= 600) {
                 handleInputChange('story', 'vision', e.target.value);
               }
             }}
-            maxLength={400}
+            maxLength={600}
             rows={3}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="What's the bigger vision or mission behind this product?"
