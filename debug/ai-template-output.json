@@ -1,322 +1,1319 @@
 {
-  "timestamp": "2025-08-30T13:06:26.662Z",
-  "prompt": "black",
-  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#1f2937\",\n    \"textColor\": \"#e5e7eb\",\n    \"fontFamily\": \"'Inter', sans-serif\",\n    \"accentColor\": \"#93c5fc\"\n  },\n  \"metadata\": {\n    \"name\": \"Midnight Elegance\",\n    \"description\": \"A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability.\"\n  },\n  \"component\": {\n    \"id\": \"creative-seller-root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"relative overflow-hidden pt-24 pb-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse\"\n            }\n          },\n          {\n            \"id\": \"hero-content\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative px-8 py-16 text-center animate-fadeIn\"\n            },\n            \"children\": [\n              {\n                \"id\": \"profile-photo-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative inline-block mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"profile-photo\",\n                    \"type\": \"img\",\n                    \"if\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"src\": \"{{content.photos[0].url}}\",\n                      \"alt\": \"{{content.name}}\",\n                      \"className\": \"w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300\"\n                    }\n                  },\n                  {\n                    \"id\": \"profile-placeholder\",\n                    \"type\": \"div\",\n                    \"unless\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"className\": \"w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"placeholder-initial\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"text-white text-6xl font-bold\"\n                        },\n                        \"children\": \"{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"seller-name\",\n                \"type\": \"h1\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide\"\n                },\n                \"children\": \"{{content.name || 'Your Name'}}\"\n              },\n              {\n                \"id\": \"seller-title\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-2xl text-blue-300 font-semibold mb-6\"\n                },\n                \"children\": \"{{content.title || 'Your Creative Title'}}\"\n              },\n              {\n                \"id\": \"seller-bio\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed\"\n                },\n                \"children\": \"{{content.bio || 'Your creative bio will appear here...'}}\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"content-sections\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"px-8 py-12\"\n        },\n        \"children\": [\n          {\n            \"id\": \"content-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto space-y-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"story-section\",\n                \"type\": \"div\",\n                \"if\": \"content.story\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"story-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-6 text-center\"\n                    },\n                    \"children\": \"My Creative Journey\"\n                  },\n                  {\n                    \"id\": \"story-content\",\n                    \"type\": \"p\",\n                    \"editable\": {\n                      \"contentEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-gray-300 leading-relaxed text-lg\"\n                    },\n                    \"children\": \"{{content.story}}\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"skills-achievements-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 md:grid-cols-2 gap-8\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specialties-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.specialties && content.specialties.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specialties-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Creative Skills\"\n                      },\n                      {\n                        \"id\": \"specialties-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"SPECIALTIES_ARRAY\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"achievements-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.achievements && content.achievements.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"achievements-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Achievements\"\n                      },\n                      {\n                        \"id\": \"achievements-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"ACHIEVEMENTS_ARRAY\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"contact-social-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"connect-title\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": \"Let's Connect\"\n                  },\n                  {\n                    \"id\": \"contact-links\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"email-contact\",\n                        \"type\": \"div\",\n                        \"if\": \"content.contact && content.contact.email\",\n                        \"props\": {\n                          \"className\": \"flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"email-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block text-blue-400\"\n                            },\n                            \"children\": \"📧\"\n                          },\n                          {\n                            \"id\": \"email-text\",\n                            \"type\": \"span\",\n                            \"children\": \"{{content.contact.email}}\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"website-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.website\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.website}}\",\n                          \"className\": \"flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"website-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"🌐\"\n                          },\n                          {\n                            \"id\": \"website-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Portfolio\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"instagram-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.social && content.contact.social.instagram\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.social.instagram}}\",\n                          \"className\": \"flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"instagram-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"📷\"\n                          },\n                          {\n                            \"id\": \"instagram-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Instagram\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
-  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#3b82f6\",\n    \"secondaryColor\": \"#60a5fa\",\n    \"backgroundColor\": \"#1f2937\",\n    \"textColor\": \"#e5e7eb\",\n    \"fontFamily\": \"'Inter', sans-serif\",\n    \"accentColor\": \"#93c5fc\"\n  },\n  \"metadata\": {\n    \"name\": \"Midnight Elegance\",\n    \"description\": \"A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability.\"\n  },\n  \"component\": {\n    \"id\": \"creative-seller-root\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"relative overflow-hidden pt-24 pb-16\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse\"\n            }\n          },\n          {\n            \"id\": \"hero-content\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative px-8 py-16 text-center animate-fadeIn\"\n            },\n            \"children\": [\n              {\n                \"id\": \"profile-photo-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative inline-block mb-6\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"profile-photo\",\n                    \"type\": \"img\",\n                    \"if\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"src\": \"{{content.photos[0].url}}\",\n                      \"alt\": \"{{content.name}}\",\n                      \"className\": \"w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300\"\n                    }\n                  },\n                  {\n                    \"id\": \"profile-placeholder\",\n                    \"type\": \"div\",\n                    \"unless\": \"content.photos && content.photos.length > 0\",\n                    \"props\": {\n                      \"className\": \"w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"placeholder-initial\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"text-white text-6xl font-bold\"\n                        },\n                        \"children\": \"{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"seller-name\",\n                \"type\": \"h1\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide\"\n                },\n                \"children\": \"{{content.name || 'Your Name'}}\"\n              },\n              {\n                \"id\": \"seller-title\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-2xl text-blue-300 font-semibold mb-6\"\n                },\n                \"children\": \"{{content.title || 'Your Creative Title'}}\"\n              },\n              {\n                \"id\": \"seller-bio\",\n                \"type\": \"p\",\n                \"editable\": {\n                  \"contentEditable\": true\n                },\n                \"props\": {\n                  \"className\": \"text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed\"\n                },\n                \"children\": \"{{content.bio || 'Your creative bio will appear here...'}}\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"content-sections\",\n        \"type\": \"div\",\n        \"props\": {\n          \"className\": \"px-8 py-12\"\n        },\n        \"children\": [\n          {\n            \"id\": \"content-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto space-y-12\"\n            },\n            \"children\": [\n              {\n                \"id\": \"story-section\",\n                \"type\": \"div\",\n                \"if\": \"content.story\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"story-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-6 text-center\"\n                    },\n                    \"children\": \"My Creative Journey\"\n                  },\n                  {\n                    \"id\": \"story-content\",\n                    \"type\": \"p\",\n                    \"editable\": {\n                      \"contentEditable\": true\n                    },\n                    \"props\": {\n                      \"className\": \"text-gray-300 leading-relaxed text-lg\"\n                    },\n                    \"children\": \"{{content.story}}\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"skills-achievements-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 md:grid-cols-2 gap-8\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"specialties-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.specialties && content.specialties.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"specialties-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Creative Skills\"\n                      },\n                      {\n                        \"id\": \"specialties-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"SPECIALTIES_ARRAY\"\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"achievements-section\",\n                    \"type\": \"div\",\n                    \"if\": \"content.achievements && content.achievements.length > 0\",\n                    \"props\": {\n                      \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"achievements-title\",\n                        \"type\": \"h3\",\n                        \"props\": {\n                          \"className\": \"text-2xl font-bold text-gray-100 mb-4\"\n                        },\n                        \"children\": \"Achievements\"\n                      },\n                      {\n                        \"id\": \"achievements-list\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"space-y-3\"\n                        },\n                        \"children\": \"ACHIEVEMENTS_ARRAY\"\n                      }\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"contact-social-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"connect-title\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-2xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": \"Let's Connect\"\n                  },\n                  {\n                    \"id\": \"contact-links\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"email-contact\",\n                        \"type\": \"div\",\n                        \"if\": \"content.contact && content.contact.email\",\n                        \"props\": {\n                          \"className\": \"flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"email-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block text-blue-400\"\n                            },\n                            \"children\": \"📧\"\n                          },\n                          {\n                            \"id\": \"email-text\",\n                            \"type\": \"span\",\n                            \"children\": \"{{content.contact.email}}\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"website-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.website\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.website}}\",\n                          \"className\": \"flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"website-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"🌐\"\n                          },\n                          {\n                            \"id\": \"website-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Portfolio\"\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"instagram-contact\",\n                        \"type\": \"a\",\n                        \"if\": \"content.contact && content.contact.social && content.contact.social.instagram\",\n                        \"props\": {\n                          \"href\": \"{{content.contact.social.instagram}}\",\n                          \"className\": \"flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"instagram-icon\",\n                            \"type\": \"span\",\n                            \"props\": {\n                              \"className\": \"w-5 h-5 inline-block\"\n                            },\n                            \"children\": \"📷\"\n                          },\n                          {\n                            \"id\": \"instagram-text\",\n                            \"type\": \"span\",\n                            \"children\": \"Instagram\"\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
+  "timestamp": "2025-09-04T12:45:53.852Z",
+  "prompt": "sci fi theme and go ham with creativity",
+  "rawResponse": "```json\n{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template into a 'Cosmic Voyage' sci-fi theme. Updated style variables for a dark, ethereal aesthetic with neon accents. Introduced new celestial particle effects, advanced animations like 'warp-speed' and 'nebula-drift', and thematic content modifications across all sections to create an immersive interstellar experience. The hero section now evokes a spaceship cockpit, the journey timeline is visualized as a star map, and the process section hints at advanced technological development. Content placeholders were replaced with more thematic language.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#06b6d4\",\n    \"secondaryColor\": \"#64ffda\",\n    \"backgroundColor\": \"#020617\",\n    \"textColor\": \"#e2e8f0\",\n    \"accentColor\": \"#3b82f6\",\n    \"gradientStart\": \"#00f2fe\",\n    \"gradientEnd\": \"#00c8ff\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"borderRadius\": \"12px\",\n    \"shadowColor\": \"rgba(100, 255, 218, 0.4)\"\n  },\n  \"metadata\": {\n    \"name\": \"Cosmic Voyage Theme\",\n    \"description\": \"An immersive sci-fi theme that transports users on a cosmic journey, featuring celestial particles, neon glows, and advanced technological aesthetics.\",\n    \"template\": \"journey\",\n    \"version\": \"1.1\",\n    \"features\": [\n      \"sci-fi\",\n      \"particles\",\n      \"advanced-animations\",\n      \"gradients\",\n      \"neon-effects\",\n      \"thematic-content\"\n    ]\n  },\n  \"animations\": {\n    \"fadeInUp\": {\n      \"keyframes\": {\n        \"0%\": { \"opacity\": \"0\", \"transform\": \"translateY(50px)\" },\n        \"100%\": { \"opacity\": \"1\", \"transform\": \"translateY(0)\" }\n      },\n      \"duration\": \"1.2s\",\n      \"easing\": \"cubic-bezier(0.25, 0.8, 0.25, 1)\"\n    },\n    \"warp-speed\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"translateX(-100%) rotate(0deg) scale(1)\", \"opacity\": \"0\" },\n        \"50%\": { \"transform\": \"translateX(0) rotate(180deg) scale(1.2)\", \"opacity\": \"0.8\" },\n        \"100%\": { \"transform\": \"translateX(100%) rotate(360deg) scale(1)\", \"opacity\": \"0\" }\n      },\n      \"duration\": \"5s\",\n      \"easing\": \"linear\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"nebula-drift\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"translate(0px, 0px) rotate(0deg)\", \"opacity\": \"0.5\" },\n        \"50%\": { \"transform\": \"translate(20px, -30px) rotate(90deg)\", \"opacity\": \"0.8\" },\n        \"100%\": { \"transform\": \"translate(0px, 0px) rotate(180deg)\", \"opacity\": \"0.5\" }\n      },\n      \"duration\": \"8s\",\n      \"easing\": \"ease-in-out\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"star-twinkle\": {\n      \"keyframes\": {\n        \"0%, 100%\": { \"opacity\": \"0.6\", \"transform\": \"scale(1)\" },\n        \"50%\": { \"opacity\": \"1\", \"transform\": \"scale(1.2)\" }\n      },\n      \"duration\": \"1.5s\",\n      \"easing\": \"ease-in-out\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"orbital-path\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"rotate(0deg) translate(-50px, 0px) rotate(0deg)\" },\n        \"50%\": { \"transform\": \"rotate(180deg) translate(-50px, 0px) rotate(-180deg)\" },\n        \"100%\": { \"transform\": \"rotate(360deg) translate(-50px, 0px) rotate(-360deg)\" }\n      },\n      \"duration\": \"10s\",\n      \"easing\": \"linear\",\n      \"iterationCount\": \"infinite\"\n    }\n  },\n  \"component\": {\n    \"id\": \"cosmic-voyage-template\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gray-900 text-gray-100 font-orbitron\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"relative min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-500 via-blue-600 to-gray-900 text-white overflow-hidden p-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background-nebula\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-black/50\"\n            }\n          },\n          {\n            \"id\": \"hero-celestial-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-70 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"celestial-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/4 left-1/4 w-3 h-3 bg-cyan-300 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-3/4 right-1/3 w-2 h-2 bg-blue-300 rounded-full animate-nebula-drift\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-3\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/2 right-1/4 w-4 h-4 bg-cyan-400 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-4\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/3 left-3/4 w-1 h-1 bg-white rounded-full animate-warp-speed\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-5\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-1/4 left-1/2 w-2 h-2 bg-blue-400 rounded-full animate-nebula-drift\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-6\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/6 right-1/6 w-3 h-3 border-2 border-cyan-400 rounded-full animate-orbital-path\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"hero-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative z-10 max-w-6xl mx-auto px-4 text-center\"\n            },\n            \"children\": [\n              {\n                \"id\": \"hero-badge\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fadeInUp\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"badge-icon\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulseSlow\"\n                    }\n                  },\n                  \"Galactic Exploration Initiative\"\n                ]\n              },\n              {\n                \"id\": \"hero-title\",\n                \"type\": \"h1\",\n                \"props\": {\n                  \"className\": \"text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-fadeInUp text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-white\"\n                },\n                \"children\": [\n                  \"Embark on a Cosmic Voyage\"\n                ]\n              },\n              {\n                \"id\": \"hero-subtitle\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-lg sm:text-xl md:text-2xl text-cyan-100 mb-8 max-w-4xl mx-auto leading-relaxed animate-fadeInUp\"\n                },\n                \"children\": [\n                  \"Chart your course through uncharted nebulae and discover the future of interstellar travel and innovation.\"\n                ]\n              },\n              {\n                \"id\": \"hero-audience\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-base text-blue-200 mb-8 animate-fadeInUp\"\n                },\n                \"children\": [\n                  \"For pioneers, dreamers, and architects of tomorrow.\"\n                ]\n              },\n              {\n                \"id\": \"hero-cta\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"flex flex-col sm:flex-row gap-6 justify-center items-center animate-fadeInUp\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"cta-primary\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 bg-gradient-to-br from-cyan-400 to-blue-500 text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50\"\n                    },\n                    \"children\": [\n                      \"Launch Mission\"\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-secondary\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 border-2 border-cyan-400 text-cyan-400 font-bold rounded-full hover:bg-cyan-400 hover:text-gray-900 transition-all duration-300\"\n                    },\n                    \"children\": [\n                      \"Explore Star Chart\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"scroll-indicator\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-nebula-drift\"\n            },\n            \"children\": [\n              {\n                \"id\": \"scroll-arrow\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"w-8 h-12 border-2 border-cyan-400 rounded-full flex justify-center p-1\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"scroll-dot\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"w-2 h-4 bg-cyan-400 rounded-full animate-star-twinkle\"\n                    }\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"mission-overview-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-900 to-gray-800\"\n        },\n        \"children\": [\n          {\n            \"id\": \"mission-overview-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"mission-overview-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"mission-overview-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-blue-700 text-cyan-300 rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Mission Briefing\"\n                    ]\n                  },\n                  {\n                    \"id\": \"mission-overview-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6\"\n                    },\n                    \"children\": [\n                      \"The Genesis of Our Galaxy\"\n                    ]\n                  },\n                  {\n                    \"id\": \"mission-overview-description\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg sm:text-xl text-blue-200 max-w-4xl mx-auto leading-relaxed\"\n                    },\n                    \"children\": [\n                      \"In the vast expanse of the cosmos, a new frontier beckons. We harness advanced propulsion and interdimensional navigation to unlock humanity's potential amongst the stars.\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"mission-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mission-gallery-component\"\n                },\n                \"children\": \"HERO_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"sector-analysis-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"sector-analysis-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-6xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"sector-analysis-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-20 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"sector-analysis-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-cyan-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Sector Analysis\"\n                    ]\n                  },\n                  {\n                    \"id\": \"sector-analysis-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-6\"\n                    },\n                    \"children\": [\n                      \"Navigating the Void\"\n                    ]\n                  },\n                  {\n                    \"id\": \"sector-analysis-description\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed\"\n                    },\n                    \"children\": [\n                      \"We identify and analyze critical cosmic sectors, pinpointing anomalies and opportunities for resource acquisition and scientific discovery.\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"timeline-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900 relative overflow-hidden\"\n        },\n        \"children\": [\n          {\n            \"id\": \"timeline-celestial-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-30 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"timeline-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-20 right-20 w-3 h-3 bg-blue-400 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"timeline-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-40 left-40 w-4 h-4 bg-cyan-400 rounded-full animate-nebula-drift\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"timeline-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4 relative z-10\"\n            },\n            \"children\": [\n              {\n                \"id\": \"timeline-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-24\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"timeline-badge-wrapper\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex justify-center items-center mb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"timeline-spacer\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"w-32 border-t border-blue-600\"\n                        }\n                      },\n                      {\n                        \"id\": \"timeline-badge\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"inline-block px-5 py-2 bg-blue-800 text-cyan-300 rounded-full text-sm font-bold\"\n                        },\n                        \"children\": [\n                          \"Chronological Trajectory\"\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-spacer-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"w-32 border-t border-cyan-600\"\n                        }\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"timeline-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6\"\n                    },\n                    \"children\": [\n                      \"Voyage Log: Key Milestones\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"timeline-wrapper\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"timeline-line\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full hidden md:block\"\n                    }\n                  },\n                  {\n                    \"id\": \"timeline-items\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-16 md:space-y-20\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"timeline-item-1\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-content-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-1\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-cyan-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-1-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-cyan-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"Quantum Entanglement Ignition\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-1-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Initiation of quantum entanglement protocols, establishing faster-than-light communication relays across nebulae.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"timeline-marker-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-cyan-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-empty-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pl-12\"\n                            }\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-item-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-empty-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pr-12\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-marker-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-nebula-drift\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-content-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute right-2 w-full md:w-5/12 md:pl-12 mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-2\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-blue-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-2-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-blue-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"Exoplanetary Survey Deployment\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-2-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Advanced sensor arrays deployed to map potential Class-M planets and assess atmospheric compositions.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-item-3\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-content-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-3\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-green-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-3-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-green-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"AI-Driven Navigation Systems\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-3-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Implementation of sentient AI for optimal route calculation, avoiding cosmic hazards and temporal anomalies.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"timeline-marker-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-empty-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pl-12\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"propulsion-tech-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"propulsion-tech-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"propulsion-tech-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"propulsion-tech-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Propulsion Systems\"\n                    ]\n                  },\n                  {\n                    \"id\": \"propulsion-tech-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Engineered for the Cosmos\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"propulsion-tech-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-12 items-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"propulsion-tech-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-6 scale-in\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"propulsion-item-1\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-cyan-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-1\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"FTL\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-1\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-cyan-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Warp Core Technology\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-1\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Harnessing exotic matter to create stable warp fields for faster-than-light travel.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"propulsion-item-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-blue-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-2\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"ION\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-2\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-blue-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Antimatter Drive\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-2\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Ion thrusters for precise maneuvering and sustainable interstellar cruises.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"propulsion-item-3\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-purple-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-3\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"GRAV\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-3\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-purple-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Gravitational Sling\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-3\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Utilizing planetary gravity wells for efficient velocity augmentation.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"propulsion-visual\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"scale-in\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"propulsion-gallery\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"propulsion-gallery-component sticky top-8\"\n                        },\n                        \"children\": \"PROCESS_GALLERY\"\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"discovery-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"discovery-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"discovery-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"discovery-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-orange-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"First Contact\"\n                    ]\n                  },\n                  {\n                    \"id\": \"discovery-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Alien Worlds Encountered\"\n                    ]\n                  },\n                  {\n                    \"id\": \"discovery-subtitle\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg text-gray-300 max-w-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      \"Explore the stunning visual data from our expeditions – interactive sliders reveal breathtaking alien landscapes.\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"discovery-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"discovery-gallery-component\"\n                },\n                \"children\": \"BEFORE_AFTER_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"crew-log-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"crew-log-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"crew-log-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"crew-log-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-purple-700 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Log Entries\"\n                    ]\n                  },\n                  {\n                    \"id\": \"crew-log-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Chronicles of the Void\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"crew-log-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"crew-log-gallery-component\"\n                },\n                \"children\": \"LIFESTYLE_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"impact-analysis-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"impact-analysis-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-6xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"impact-analysis-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"impact-analysis-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-yellow-700 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Cosmic Resonance\"\n                    ]\n                  },\n                  {\n                    \"id\": \"impact-analysis-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Galactic Impact Metrics\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"metrics-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"metrics-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-8 md:gap-10\"\n                    },\n                    \"children\": \"METRICS_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"testimonials-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"testimonials-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-8 md:gap-10\"\n                    },\n                    \"children\": \"TESTIMONIALS_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"case-studies-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"case-studies-header\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-8 text-center\"\n                    },\n                    \"children\": [\n                      \"Beacon Systems: Case Studies\"\n                    ]\n                  },\n                  {\n                    \"id\": \"case-studies-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-8\"\n                    },\n                    \"children\": \"CASE_STUDIES_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"awards-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"awards-header\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-8\"\n                    },\n                    \"children\": [\n                      \"Galactic Accolades\"\n                    ]\n                  },\n                  {\n                    \"id\": \"awards-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": \"AWARDS_ARRAY\"\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"command-center-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-r from-cyan-500 to-blue-600 text-white relative overflow-hidden\"\n        },\n        \"children\": [\n          {\n            \"id\": \"command-center-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-40 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"command-center-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/4 left-1/4 w-3 h-3 bg-white rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"command-center-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-1/3 right-1/4 w-4 h-4 bg-blue-300 rounded-full animate-nebula-drift\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"command-center-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto px-4 text-center fade-in-up relative z-10\"\n            },\n            \"children\": [\n              {\n                \"id\": \"command-center-title\",\n                \"type\": \"h2\",\n                \"props\": {\n                  \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold mb-6\"\n                },\n                \"children\": [\n                  \"Ready to Join the Fleet?\"\n                ]\n              },\n              {\n                \"id\": \"command-center-description\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-lg sm:text-xl text-cyan-100 mb-8 max-w-2xl mx-auto leading-relaxed\"\n                },\n                \"children\": [\n                  \"Signal your intent. Initiate contact with our deep space command center to begin your assimilation into the fleet.\"\n                ]\n              },\n              {\n                \"id\": \"command-center-buttons\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"flex flex-col sm:flex-row gap-6 justify-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"command-center-primary-btn\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 bg-white text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50\"\n                    },\n                    \"children\": [\n                      \"Initiate Transmission\"\n                    ]\n                  },\n                  {\n                    \"id\": \"command-center-secondary-btn\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300\"\n                    },\n                    \"children\": [\n                      \"View Starfleet Academy\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}\n```",
+  "cleanedResponse": "{\n  \"hasChanges\": true,\n  \"explanation\": \"Transformed the template into a 'Cosmic Voyage' sci-fi theme. Updated style variables for a dark, ethereal aesthetic with neon accents. Introduced new celestial particle effects, advanced animations like 'warp-speed' and 'nebula-drift', and thematic content modifications across all sections to create an immersive interstellar experience. The hero section now evokes a spaceship cockpit, the journey timeline is visualized as a star map, and the process section hints at advanced technological development. Content placeholders were replaced with more thematic language.\",\n  \"styleVariables\": {\n    \"primaryColor\": \"#06b6d4\",\n    \"secondaryColor\": \"#64ffda\",\n    \"backgroundColor\": \"#020617\",\n    \"textColor\": \"#e2e8f0\",\n    \"accentColor\": \"#3b82f6\",\n    \"gradientStart\": \"#00f2fe\",\n    \"gradientEnd\": \"#00c8ff\",\n    \"fontFamily\": \"'Orbitron', sans-serif\",\n    \"borderRadius\": \"12px\",\n    \"shadowColor\": \"rgba(100, 255, 218, 0.4)\"\n  },\n  \"metadata\": {\n    \"name\": \"Cosmic Voyage Theme\",\n    \"description\": \"An immersive sci-fi theme that transports users on a cosmic journey, featuring celestial particles, neon glows, and advanced technological aesthetics.\",\n    \"template\": \"journey\",\n    \"version\": \"1.1\",\n    \"features\": [\n      \"sci-fi\",\n      \"particles\",\n      \"advanced-animations\",\n      \"gradients\",\n      \"neon-effects\",\n      \"thematic-content\"\n    ]\n  },\n  \"animations\": {\n    \"fadeInUp\": {\n      \"keyframes\": {\n        \"0%\": { \"opacity\": \"0\", \"transform\": \"translateY(50px)\" },\n        \"100%\": { \"opacity\": \"1\", \"transform\": \"translateY(0)\" }\n      },\n      \"duration\": \"1.2s\",\n      \"easing\": \"cubic-bezier(0.25, 0.8, 0.25, 1)\"\n    },\n    \"warp-speed\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"translateX(-100%) rotate(0deg) scale(1)\", \"opacity\": \"0\" },\n        \"50%\": { \"transform\": \"translateX(0) rotate(180deg) scale(1.2)\", \"opacity\": \"0.8\" },\n        \"100%\": { \"transform\": \"translateX(100%) rotate(360deg) scale(1)\", \"opacity\": \"0\" }\n      },\n      \"duration\": \"5s\",\n      \"easing\": \"linear\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"nebula-drift\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"translate(0px, 0px) rotate(0deg)\", \"opacity\": \"0.5\" },\n        \"50%\": { \"transform\": \"translate(20px, -30px) rotate(90deg)\", \"opacity\": \"0.8\" },\n        \"100%\": { \"transform\": \"translate(0px, 0px) rotate(180deg)\", \"opacity\": \"0.5\" }\n      },\n      \"duration\": \"8s\",\n      \"easing\": \"ease-in-out\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"star-twinkle\": {\n      \"keyframes\": {\n        \"0%, 100%\": { \"opacity\": \"0.6\", \"transform\": \"scale(1)\" },\n        \"50%\": { \"opacity\": \"1\", \"transform\": \"scale(1.2)\" }\n      },\n      \"duration\": \"1.5s\",\n      \"easing\": \"ease-in-out\",\n      \"iterationCount\": \"infinite\"\n    },\n    \"orbital-path\": {\n      \"keyframes\": {\n        \"0%\": { \"transform\": \"rotate(0deg) translate(-50px, 0px) rotate(0deg)\" },\n        \"50%\": { \"transform\": \"rotate(180deg) translate(-50px, 0px) rotate(-180deg)\" },\n        \"100%\": { \"transform\": \"rotate(360deg) translate(-50px, 0px) rotate(-360deg)\" }\n      },\n      \"duration\": \"10s\",\n      \"easing\": \"linear\",\n      \"iterationCount\": \"infinite\"\n    }\n  },\n  \"component\": {\n    \"id\": \"cosmic-voyage-template\",\n    \"type\": \"div\",\n    \"props\": {\n      \"className\": \"min-h-screen bg-gray-900 text-gray-100 font-orbitron\"\n    },\n    \"children\": [\n      {\n        \"id\": \"hero-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"relative min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-500 via-blue-600 to-gray-900 text-white overflow-hidden p-8\"\n        },\n        \"children\": [\n          {\n            \"id\": \"hero-background-nebula\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 bg-black/50\"\n            }\n          },\n          {\n            \"id\": \"hero-celestial-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-70 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"celestial-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/4 left-1/4 w-3 h-3 bg-cyan-300 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-3/4 right-1/3 w-2 h-2 bg-blue-300 rounded-full animate-nebula-drift\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-3\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/2 right-1/4 w-4 h-4 bg-cyan-400 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-4\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/3 left-3/4 w-1 h-1 bg-white rounded-full animate-warp-speed\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-5\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-1/4 left-1/2 w-2 h-2 bg-blue-400 rounded-full animate-nebula-drift\"\n                }\n              },\n              {\n                \"id\": \"celestial-particle-6\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/6 right-1/6 w-3 h-3 border-2 border-cyan-400 rounded-full animate-orbital-path\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"hero-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"relative z-10 max-w-6xl mx-auto px-4 text-center\"\n            },\n            \"children\": [\n              {\n                \"id\": \"hero-badge\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fadeInUp\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"badge-icon\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulseSlow\"\n                    }\n                  },\n                  \"Galactic Exploration Initiative\"\n                ]\n              },\n              {\n                \"id\": \"hero-title\",\n                \"type\": \"h1\",\n                \"props\": {\n                  \"className\": \"text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-fadeInUp text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-white\"\n                },\n                \"children\": [\n                  \"Embark on a Cosmic Voyage\"\n                ]\n              },\n              {\n                \"id\": \"hero-subtitle\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-lg sm:text-xl md:text-2xl text-cyan-100 mb-8 max-w-4xl mx-auto leading-relaxed animate-fadeInUp\"\n                },\n                \"children\": [\n                  \"Chart your course through uncharted nebulae and discover the future of interstellar travel and innovation.\"\n                ]\n              },\n              {\n                \"id\": \"hero-audience\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-base text-blue-200 mb-8 animate-fadeInUp\"\n                },\n                \"children\": [\n                  \"For pioneers, dreamers, and architects of tomorrow.\"\n                ]\n              },\n              {\n                \"id\": \"hero-cta\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"flex flex-col sm:flex-row gap-6 justify-center items-center animate-fadeInUp\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"cta-primary\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 bg-gradient-to-br from-cyan-400 to-blue-500 text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50\"\n                    },\n                    \"children\": [\n                      \"Launch Mission\"\n                    ]\n                  },\n                  {\n                    \"id\": \"cta-secondary\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 border-2 border-cyan-400 text-cyan-400 font-bold rounded-full hover:bg-cyan-400 hover:text-gray-900 transition-all duration-300\"\n                    },\n                    \"children\": [\n                      \"Explore Star Chart\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          },\n          {\n            \"id\": \"scroll-indicator\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-nebula-drift\"\n            },\n            \"children\": [\n              {\n                \"id\": \"scroll-arrow\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"w-8 h-12 border-2 border-cyan-400 rounded-full flex justify-center p-1\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"scroll-dot\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"w-2 h-4 bg-cyan-400 rounded-full animate-star-twinkle\"\n                    }\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"mission-overview-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-900 to-gray-800\"\n        },\n        \"children\": [\n          {\n            \"id\": \"mission-overview-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"mission-overview-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"mission-overview-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-blue-700 text-cyan-300 rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Mission Briefing\"\n                    ]\n                  },\n                  {\n                    \"id\": \"mission-overview-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6\"\n                    },\n                    \"children\": [\n                      \"The Genesis of Our Galaxy\"\n                    ]\n                  },\n                  {\n                    \"id\": \"mission-overview-description\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg sm:text-xl text-blue-200 max-w-4xl mx-auto leading-relaxed\"\n                    },\n                    \"children\": [\n                      \"In the vast expanse of the cosmos, a new frontier beckons. We harness advanced propulsion and interdimensional navigation to unlock humanity's potential amongst the stars.\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"mission-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mission-gallery-component\"\n                },\n                \"children\": \"HERO_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"sector-analysis-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"sector-analysis-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-6xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"sector-analysis-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-20 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"sector-analysis-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-cyan-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Sector Analysis\"\n                    ]\n                  },\n                  {\n                    \"id\": \"sector-analysis-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-6\"\n                    },\n                    \"children\": [\n                      \"Navigating the Void\"\n                    ]\n                  },\n                  {\n                    \"id\": \"sector-analysis-description\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed\"\n                    },\n                    \"children\": [\n                      \"We identify and analyze critical cosmic sectors, pinpointing anomalies and opportunities for resource acquisition and scientific discovery.\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"timeline-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900 relative overflow-hidden\"\n        },\n        \"children\": [\n          {\n            \"id\": \"timeline-celestial-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-30 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"timeline-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-20 right-20 w-3 h-3 bg-blue-400 rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"timeline-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-40 left-40 w-4 h-4 bg-cyan-400 rounded-full animate-nebula-drift\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"timeline-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4 relative z-10\"\n            },\n            \"children\": [\n              {\n                \"id\": \"timeline-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-24\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"timeline-badge-wrapper\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex justify-center items-center mb-4\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"timeline-spacer\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"w-32 border-t border-blue-600\"\n                        }\n                      },\n                      {\n                        \"id\": \"timeline-badge\",\n                        \"type\": \"span\",\n                        \"props\": {\n                          \"className\": \"inline-block px-5 py-2 bg-blue-800 text-cyan-300 rounded-full text-sm font-bold\"\n                        },\n                        \"children\": [\n                          \"Chronological Trajectory\"\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-spacer-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"w-32 border-t border-cyan-600\"\n                        }\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"timeline-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6\"\n                    },\n                    \"children\": [\n                      \"Voyage Log: Key Milestones\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"timeline-wrapper\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"relative\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"timeline-line\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full hidden md:block\"\n                    }\n                  },\n                  {\n                    \"id\": \"timeline-items\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-16 md:space-y-20\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"timeline-item-1\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-content-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-1\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-cyan-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-1-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-cyan-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"Quantum Entanglement Ignition\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-1-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Initiation of quantum entanglement protocols, establishing faster-than-light communication relays across nebulae.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"timeline-marker-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-cyan-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-empty-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pl-12\"\n                            }\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-item-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-empty-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pr-12\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-marker-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-nebula-drift\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-content-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute right-2 w-full md:w-5/12 md:pl-12 mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-2\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-blue-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-2-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-blue-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"Exoplanetary Survey Deployment\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-2-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Advanced sensor arrays deployed to map potential Class-M planets and assess atmospheric compositions.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"timeline-item-3\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"relative flex flex-col md:flex-row items-center slide-in-left\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"timeline-content-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"timeline-step-3\",\n                                \"type\": \"div\",\n                                \"props\": {\n                                  \"className\": \"bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-green-600/30 backdrop-blur-sm\"\n                                },\n                                \"children\": [\n                                  {\n                                    \"id\": \"step-3-title\",\n                                    \"type\": \"h3\",\n                                    \"props\": {\n                                      \"className\": \"text-2xl md:text-3xl font-bold text-green-300 mb-4\"\n                                    },\n                                    \"children\": [\n                                      \"AI-Driven Navigation Systems\"\n                                    ]\n                                  },\n                                  {\n                                    \"id\": \"step-3-content\",\n                                    \"type\": \"p\",\n                                    \"props\": {\n                                      \"className\": \"text-gray-300 leading-relaxed\"\n                                    },\n                                    \"children\": [\n                                      \"Implementation of sentient AI for optimal route calculation, avoiding cosmic hazards and temporal anomalies.\"\n                                    ]\n                                  }\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"timeline-marker-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle\"\n                            }\n                          },\n                          {\n                            \"id\": \"timeline-empty-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"hidden md:block md:w-5/12 md:pl-12\"\n                            }\n                          }\n                        ]\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"propulsion-tech-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"propulsion-tech-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"propulsion-tech-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"propulsion-tech-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Propulsion Systems\"\n                    ]\n                  },\n                  {\n                    \"id\": \"propulsion-tech-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Engineered for the Cosmos\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"propulsion-tech-grid\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"grid grid-cols-1 lg:grid-cols-2 gap-12 items-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"propulsion-tech-content\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-6 scale-in\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"propulsion-item-1\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-cyan-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-1\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"FTL\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-1\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-1\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-cyan-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Warp Core Technology\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-1\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Harnessing exotic matter to create stable warp fields for faster-than-light travel.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"propulsion-item-2\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-blue-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-2\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"ION\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-2\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-2\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-blue-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Antimatter Drive\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-2\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Ion thrusters for precise maneuvering and sustainable interstellar cruises.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      },\n                      {\n                        \"id\": \"propulsion-item-3\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-purple-600/30 backdrop-blur-sm\"\n                        },\n                        \"children\": [\n                          {\n                            \"id\": \"propulsion-icon-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-shrink-0 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/50\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"icon-3\",\n                                \"type\": \"span\",\n                                \"props\": {\n                                  \"className\": \"text-white font-bold text-lg\"\n                                },\n                                \"children\": [\n                                  \"GRAV\"\n                                ]\n                              }\n                            ]\n                          },\n                          {\n                            \"id\": \"propulsion-text-3\",\n                            \"type\": \"div\",\n                            \"props\": {\n                              \"className\": \"flex-1\"\n                            },\n                            \"children\": [\n                              {\n                                \"id\": \"propulsion-title-3\",\n                                \"type\": \"h3\",\n                                \"props\": {\n                                  \"className\": \"text-xl md:text-2xl font-bold text-purple-300 mb-2\"\n                                },\n                                \"children\": [\n                                  \"Gravitational Sling\"\n                                ]\n                              },\n                              {\n                                \"id\": \"propulsion-desc-3\",\n                                \"type\": \"p\",\n                                \"props\": {\n                                  \"className\": \"text-sm text-gray-300 leading-relaxed\"\n                                },\n                                \"children\": [\n                                  \"Utilizing planetary gravity wells for efficient velocity augmentation.\"\n                                ]\n                              }\n                            ]\n                          }\n                        ]\n                      }\n                    ]\n                  },\n                  {\n                    \"id\": \"propulsion-visual\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"scale-in\"\n                    },\n                    \"children\": [\n                      {\n                        \"id\": \"propulsion-gallery\",\n                        \"type\": \"div\",\n                        \"props\": {\n                          \"className\": \"propulsion-gallery-component sticky top-8\"\n                        },\n                        \"children\": \"PROCESS_GALLERY\"\n                      }\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"discovery-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"discovery-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"discovery-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"discovery-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-orange-600 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"First Contact\"\n                    ]\n                  },\n                  {\n                    \"id\": \"discovery-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Alien Worlds Encountered\"\n                    ]\n                  },\n                  {\n                    \"id\": \"discovery-subtitle\",\n                    \"type\": \"p\",\n                    \"props\": {\n                      \"className\": \"text-lg text-gray-300 max-w-2xl mx-auto\"\n                    },\n                    \"children\": [\n                      \"Explore the stunning visual data from our expeditions – interactive sliders reveal breathtaking alien landscapes.\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"discovery-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"discovery-gallery-component\"\n                },\n                \"children\": \"BEFORE_AFTER_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"crew-log-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-br from-gray-800 to-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"crew-log-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-7xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"crew-log-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"crew-log-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-purple-700 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Log Entries\"\n                    ]\n                  },\n                  {\n                    \"id\": \"crew-log-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Chronicles of the Void\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"crew-log-gallery\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"crew-log-gallery-component\"\n                },\n                \"children\": \"LIFESTYLE_GALLERY\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"impact-analysis-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gray-900\"\n        },\n        \"children\": [\n          {\n            \"id\": \"impact-analysis-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-6xl mx-auto px-4\"\n            },\n            \"children\": [\n              {\n                \"id\": \"impact-analysis-header\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center mb-16 fade-in-up\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"impact-analysis-badge\",\n                    \"type\": \"span\",\n                    \"props\": {\n                      \"className\": \"inline-block px-5 py-2 bg-yellow-700 text-white rounded-full text-sm font-bold mb-4\"\n                    },\n                    \"children\": [\n                      \"Cosmic Resonance\"\n                    ]\n                  },\n                  {\n                    \"id\": \"impact-analysis-title\",\n                    \"type\": \"h2\",\n                    \"props\": {\n                      \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6\"\n                    },\n                    \"children\": [\n                      \"Galactic Impact Metrics\"\n                    ]\n                  }\n                ]\n              },\n              {\n                \"id\": \"metrics-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"metrics-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-8 md:gap-10\"\n                    },\n                    \"children\": \"METRICS_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"testimonials-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"testimonials-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-8 md:gap-10\"\n                    },\n                    \"children\": \"TESTIMONIALS_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"case-studies-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"mb-16\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"case-studies-header\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-8 text-center\"\n                    },\n                    \"children\": [\n                      \"Beacon Systems: Case Studies\"\n                    ]\n                  },\n                  {\n                    \"id\": \"case-studies-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"space-y-8\"\n                    },\n                    \"children\": \"CASE_STUDIES_ARRAY\"\n                  }\n                ]\n              },\n              {\n                \"id\": \"awards-section\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"text-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"awards-header\",\n                    \"type\": \"h3\",\n                    \"props\": {\n                      \"className\": \"text-3xl font-bold text-gray-100 mb-8\"\n                    },\n                    \"children\": [\n                      \"Galactic Accolades\"\n                    ]\n                  },\n                  {\n                    \"id\": \"awards-grid\",\n                    \"type\": \"div\",\n                    \"props\": {\n                      \"className\": \"flex flex-wrap justify-center gap-6\"\n                    },\n                    \"children\": \"AWARDS_ARRAY\"\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"id\": \"command-center-section\",\n        \"type\": \"section\",\n        \"props\": {\n          \"className\": \"py-24 bg-gradient-to-r from-cyan-500 to-blue-600 text-white relative overflow-hidden\"\n        },\n        \"children\": [\n          {\n            \"id\": \"command-center-particles\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"absolute inset-0 opacity-40 pointer-events-none\"\n            },\n            \"children\": [\n              {\n                \"id\": \"command-center-particle-1\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute top-1/4 left-1/4 w-3 h-3 bg-white rounded-full animate-star-twinkle\"\n                }\n              },\n              {\n                \"id\": \"command-center-particle-2\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"absolute bottom-1/3 right-1/4 w-4 h-4 bg-blue-300 rounded-full animate-nebula-drift\"\n                }\n              }\n            ]\n          },\n          {\n            \"id\": \"command-center-container\",\n            \"type\": \"div\",\n            \"props\": {\n              \"className\": \"max-w-4xl mx-auto px-4 text-center fade-in-up relative z-10\"\n            },\n            \"children\": [\n              {\n                \"id\": \"command-center-title\",\n                \"type\": \"h2\",\n                \"props\": {\n                  \"className\": \"text-4xl sm:text-5xl md:text-6xl font-bold mb-6\"\n                },\n                \"children\": [\n                  \"Ready to Join the Fleet?\"\n                ]\n              },\n              {\n                \"id\": \"command-center-description\",\n                \"type\": \"p\",\n                \"props\": {\n                  \"className\": \"text-lg sm:text-xl text-cyan-100 mb-8 max-w-2xl mx-auto leading-relaxed\"\n                },\n                \"children\": [\n                  \"Signal your intent. Initiate contact with our deep space command center to begin your assimilation into the fleet.\"\n                ]\n              },\n              {\n                \"id\": \"command-center-buttons\",\n                \"type\": \"div\",\n                \"props\": {\n                  \"className\": \"flex flex-col sm:flex-row gap-6 justify-center\"\n                },\n                \"children\": [\n                  {\n                    \"id\": \"command-center-primary-btn\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 bg-white text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50\"\n                    },\n                    \"children\": [\n                      \"Initiate Transmission\"\n                    ]\n                  },\n                  {\n                    \"id\": \"command-center-secondary-btn\",\n                    \"type\": \"button\",\n                    \"props\": {\n                      \"className\": \"px-10 py-5 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300\"\n                    },\n                    \"children\": [\n                      \"View Starfleet Academy\"\n                    ]\n                  }\n                ]\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  }\n}",
   "parsedResult": {
     "hasChanges": true,
-    "explanation": "Transformed the template to a sleek 'Midnight Elegance' theme, inspired by the user's request for 'black'. This involved updating style variables to a dark color palette, enhancing the hero section with subtle gradients and animations, and refining the overall look with deep blues and grays for a sophisticated and modern feel. Interactivity was added through hover effects on key elements and improved readability with a darker text color.",
+    "explanation": "Transformed the template into a 'Cosmic Voyage' sci-fi theme. Updated style variables for a dark, ethereal aesthetic with neon accents. Introduced new celestial particle effects, advanced animations like 'warp-speed' and 'nebula-drift', and thematic content modifications across all sections to create an immersive interstellar experience. The hero section now evokes a spaceship cockpit, the journey timeline is visualized as a star map, and the process section hints at advanced technological development. Content placeholders were replaced with more thematic language.",
     "styleVariables": {
-      "primaryColor": "#3b82f6",
-      "secondaryColor": "#60a5fa",
-      "backgroundColor": "#1f2937",
-      "textColor": "#e5e7eb",
-      "fontFamily": "'Inter', sans-serif",
-      "accentColor": "#93c5fc"
+      "primaryColor": "#06b6d4",
+      "secondaryColor": "#64ffda",
+      "backgroundColor": "#020617",
+      "textColor": "#e2e8f0",
+      "accentColor": "#3b82f6",
+      "gradientStart": "#00f2fe",
+      "gradientEnd": "#00c8ff",
+      "fontFamily": "'Orbitron', sans-serif",
+      "borderRadius": "12px",
+      "shadowColor": "rgba(100, 255, 218, 0.4)"
     },
     "metadata": {
-      "name": "Midnight Elegance",
-      "description": "A sophisticated dark theme with subtle blue and gray accents, featuring smooth animations and enhanced readability."
+      "name": "Cosmic Voyage Theme",
+      "description": "An immersive sci-fi theme that transports users on a cosmic journey, featuring celestial particles, neon glows, and advanced technological aesthetics.",
+      "template": "journey",
+      "version": "1.1",
+      "features": [
+        "sci-fi",
+        "particles",
+        "advanced-animations",
+        "gradients",
+        "neon-effects",
+        "thematic-content"
+      ]
+    },
+    "animations": {
+      "fadeInUp": {
+        "keyframes": {
+          "0%": {
+            "opacity": "0",
+            "transform": "translateY(50px)"
+          },
+          "100%": {
+            "opacity": "1",
+            "transform": "translateY(0)"
+          }
+        },
+        "duration": "1.2s",
+        "easing": "cubic-bezier(0.25, 0.8, 0.25, 1)"
+      },
+      "warp-speed": {
+        "keyframes": {
+          "0%": {
+            "transform": "translateX(-100%) rotate(0deg) scale(1)",
+            "opacity": "0"
+          },
+          "50%": {
+            "transform": "translateX(0) rotate(180deg) scale(1.2)",
+            "opacity": "0.8"
+          },
+          "100%": {
+            "transform": "translateX(100%) rotate(360deg) scale(1)",
+            "opacity": "0"
+          }
+        },
+        "duration": "5s",
+        "easing": "linear",
+        "iterationCount": "infinite"
+      },
+      "nebula-drift": {
+        "keyframes": {
+          "0%": {
+            "transform": "translate(0px, 0px) rotate(0deg)",
+            "opacity": "0.5"
+          },
+          "50%": {
+            "transform": "translate(20px, -30px) rotate(90deg)",
+            "opacity": "0.8"
+          },
+          "100%": {
+            "transform": "translate(0px, 0px) rotate(180deg)",
+            "opacity": "0.5"
+          }
+        },
+        "duration": "8s",
+        "easing": "ease-in-out",
+        "iterationCount": "infinite"
+      },
+      "star-twinkle": {
+        "keyframes": {
+          "0%, 100%": {
+            "opacity": "0.6",
+            "transform": "scale(1)"
+          },
+          "50%": {
+            "opacity": "1",
+            "transform": "scale(1.2)"
+          }
+        },
+        "duration": "1.5s",
+        "easing": "ease-in-out",
+        "iterationCount": "infinite"
+      },
+      "orbital-path": {
+        "keyframes": {
+          "0%": {
+            "transform": "rotate(0deg) translate(-50px, 0px) rotate(0deg)"
+          },
+          "50%": {
+            "transform": "rotate(180deg) translate(-50px, 0px) rotate(-180deg)"
+          },
+          "100%": {
+            "transform": "rotate(360deg) translate(-50px, 0px) rotate(-360deg)"
+          }
+        },
+        "duration": "10s",
+        "easing": "linear",
+        "iterationCount": "infinite"
+      }
     },
     "component": {
-      "id": "creative-seller-root",
+      "id": "cosmic-voyage-template",
       "type": "div",
       "props": {
-        "className": "max-w-6xl mx-auto bg-gradient-to-br from-gray-800 via-gray-900 to-black min-h-screen text-white"
+        "className": "min-h-screen bg-gray-900 text-gray-100 font-orbitron"
       },
       "children": [
         {
           "id": "hero-section",
-          "type": "div",
+          "type": "section",
           "props": {
-            "className": "relative overflow-hidden pt-24 pb-16"
+            "className": "relative min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-500 via-blue-600 to-gray-900 text-white overflow-hidden p-8"
           },
           "children": [
             {
-              "id": "hero-background",
+              "id": "hero-background-nebula",
               "type": "div",
               "props": {
-                "className": "absolute inset-0 bg-gradient-to-r from-blue-900/30 to-purple-900/30 animate-pulse"
+                "className": "absolute inset-0 bg-black/50"
               }
             },
             {
-              "id": "hero-content",
+              "id": "hero-celestial-particles",
               "type": "div",
               "props": {
-                "className": "relative px-8 py-16 text-center animate-fadeIn"
+                "className": "absolute inset-0 opacity-70 pointer-events-none"
               },
               "children": [
                 {
-                  "id": "profile-photo-section",
+                  "id": "celestial-particle-1",
                   "type": "div",
                   "props": {
-                    "className": "relative inline-block mb-6"
+                    "className": "absolute top-1/4 left-1/4 w-3 h-3 bg-cyan-300 rounded-full animate-star-twinkle"
+                  }
+                },
+                {
+                  "id": "celestial-particle-2",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-3/4 right-1/3 w-2 h-2 bg-blue-300 rounded-full animate-nebula-drift"
+                  }
+                },
+                {
+                  "id": "celestial-particle-3",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-1/2 right-1/4 w-4 h-4 bg-cyan-400 rounded-full animate-star-twinkle"
+                  }
+                },
+                {
+                  "id": "celestial-particle-4",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-1/3 left-3/4 w-1 h-1 bg-white rounded-full animate-warp-speed"
+                  }
+                },
+                {
+                  "id": "celestial-particle-5",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute bottom-1/4 left-1/2 w-2 h-2 bg-blue-400 rounded-full animate-nebula-drift"
+                  }
+                },
+                {
+                  "id": "celestial-particle-6",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-1/6 right-1/6 w-3 h-3 border-2 border-cyan-400 rounded-full animate-orbital-path"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "hero-container",
+              "type": "div",
+              "props": {
+                "className": "relative z-10 max-w-6xl mx-auto px-4 text-center"
+              },
+              "children": [
+                {
+                  "id": "hero-badge",
+                  "type": "div",
+                  "props": {
+                    "className": "inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fadeInUp"
                   },
                   "children": [
                     {
-                      "id": "profile-photo",
-                      "type": "img",
-                      "if": "content.photos && content.photos.length > 0",
+                      "id": "badge-icon",
+                      "type": "span",
                       "props": {
-                        "src": "{{content.photos[0].url}}",
-                        "alt": "{{content.name}}",
-                        "className": "w-40 h-40 rounded-full object-cover border-4 border-gray-700 shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                        "className": "w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulseSlow"
                       }
                     },
-                    {
-                      "id": "profile-placeholder",
-                      "type": "div",
-                      "unless": "content.photos && content.photos.length > 0",
-                      "props": {
-                        "className": "w-40 h-40 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center border-4 border-gray-700 shadow-2xl mx-auto"
-                      },
-                      "children": [
-                        {
-                          "id": "placeholder-initial",
-                          "type": "span",
-                          "props": {
-                            "className": "text-white text-6xl font-bold"
-                          },
-                          "children": "{{content.name ? content.name.charAt(0).toUpperCase() : 'U'}}"
-                        }
-                      ]
-                    }
+                    "Galactic Exploration Initiative"
                   ]
                 },
                 {
-                  "id": "seller-name",
+                  "id": "hero-title",
                   "type": "h1",
-                  "editable": {
-                    "contentEditable": true
-                  },
                   "props": {
-                    "className": "text-4xl md:text-5xl font-extrabold text-gray-100 mb-4 tracking-wide"
+                    "className": "text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-fadeInUp text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-white"
                   },
-                  "children": "{{content.name || 'Your Name'}}"
+                  "children": [
+                    "Embark on a Cosmic Voyage"
+                  ]
                 },
                 {
-                  "id": "seller-title",
+                  "id": "hero-subtitle",
                   "type": "p",
-                  "editable": {
-                    "contentEditable": true
-                  },
                   "props": {
-                    "className": "text-2xl text-blue-300 font-semibold mb-6"
+                    "className": "text-lg sm:text-xl md:text-2xl text-cyan-100 mb-8 max-w-4xl mx-auto leading-relaxed animate-fadeInUp"
                   },
-                  "children": "{{content.title || 'Your Creative Title'}}"
+                  "children": [
+                    "Chart your course through uncharted nebulae and discover the future of interstellar travel and innovation."
+                  ]
                 },
                 {
-                  "id": "seller-bio",
+                  "id": "hero-audience",
                   "type": "p",
-                  "editable": {
-                    "contentEditable": true
-                  },
                   "props": {
-                    "className": "text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed"
+                    "className": "text-base text-blue-200 mb-8 animate-fadeInUp"
                   },
-                  "children": "{{content.bio || 'Your creative bio will appear here...'}}"
+                  "children": [
+                    "For pioneers, dreamers, and architects of tomorrow."
+                  ]
+                },
+                {
+                  "id": "hero-cta",
+                  "type": "div",
+                  "props": {
+                    "className": "flex flex-col sm:flex-row gap-6 justify-center items-center animate-fadeInUp"
+                  },
+                  "children": [
+                    {
+                      "id": "cta-primary",
+                      "type": "button",
+                      "props": {
+                        "className": "px-10 py-5 bg-gradient-to-br from-cyan-400 to-blue-500 text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50"
+                      },
+                      "children": [
+                        "Launch Mission"
+                      ]
+                    },
+                    {
+                      "id": "cta-secondary",
+                      "type": "button",
+                      "props": {
+                        "className": "px-10 py-5 border-2 border-cyan-400 text-cyan-400 font-bold rounded-full hover:bg-cyan-400 hover:text-gray-900 transition-all duration-300"
+                      },
+                      "children": [
+                        "Explore Star Chart"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "scroll-indicator",
+              "type": "div",
+              "props": {
+                "className": "absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-nebula-drift"
+              },
+              "children": [
+                {
+                  "id": "scroll-arrow",
+                  "type": "div",
+                  "props": {
+                    "className": "w-8 h-12 border-2 border-cyan-400 rounded-full flex justify-center p-1"
+                  },
+                  "children": [
+                    {
+                      "id": "scroll-dot",
+                      "type": "div",
+                      "props": {
+                        "className": "w-2 h-4 bg-cyan-400 rounded-full animate-star-twinkle"
+                      }
+                    }
+                  ]
                 }
               ]
             }
           ]
         },
         {
-          "id": "content-sections",
-          "type": "div",
+          "id": "mission-overview-section",
+          "type": "section",
           "props": {
-            "className": "px-8 py-12"
+            "className": "py-24 bg-gradient-to-br from-gray-900 to-gray-800"
           },
           "children": [
             {
-              "id": "content-container",
+              "id": "mission-overview-container",
               "type": "div",
               "props": {
-                "className": "max-w-4xl mx-auto space-y-12"
+                "className": "max-w-7xl mx-auto px-4"
               },
               "children": [
                 {
-                  "id": "story-section",
+                  "id": "mission-overview-header",
                   "type": "div",
-                  "if": "content.story",
                   "props": {
-                    "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-gray-700"
+                    "className": "text-center mb-16 fade-in-up"
                   },
                   "children": [
                     {
-                      "id": "story-title",
+                      "id": "mission-overview-badge",
+                      "type": "span",
+                      "props": {
+                        "className": "inline-block px-5 py-2 bg-blue-700 text-cyan-300 rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "Mission Briefing"
+                      ]
+                    },
+                    {
+                      "id": "mission-overview-title",
                       "type": "h2",
                       "props": {
-                        "className": "text-3xl font-bold text-gray-100 mb-6 text-center"
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
                       },
-                      "children": "My Creative Journey"
+                      "children": [
+                        "The Genesis of Our Galaxy"
+                      ]
                     },
                     {
-                      "id": "story-content",
+                      "id": "mission-overview-description",
                       "type": "p",
-                      "editable": {
-                        "contentEditable": true
-                      },
                       "props": {
-                        "className": "text-gray-300 leading-relaxed text-lg"
+                        "className": "text-lg sm:text-xl text-blue-200 max-w-4xl mx-auto leading-relaxed"
                       },
-                      "children": "{{content.story}}"
+                      "children": [
+                        "In the vast expanse of the cosmos, a new frontier beckons. We harness advanced propulsion and interdimensional navigation to unlock humanity's potential amongst the stars."
+                      ]
                     }
                   ]
                 },
                 {
-                  "id": "skills-achievements-grid",
+                  "id": "mission-gallery",
                   "type": "div",
                   "props": {
-                    "className": "grid grid-cols-1 md:grid-cols-2 gap-8"
+                    "className": "mission-gallery-component"
+                  },
+                  "children": "HERO_GALLERY"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sector-analysis-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gradient-to-br from-gray-800 to-gray-900"
+          },
+          "children": [
+            {
+              "id": "sector-analysis-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-6xl mx-auto px-4"
+              },
+              "children": [
+                {
+                  "id": "sector-analysis-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-20 fade-in-up"
                   },
                   "children": [
                     {
-                      "id": "specialties-section",
-                      "type": "div",
-                      "if": "content.specialties && content.specialties.length > 0",
+                      "id": "sector-analysis-badge",
+                      "type": "span",
                       "props": {
-                        "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700"
+                        "className": "inline-block px-5 py-2 bg-cyan-600 text-white rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "Sector Analysis"
+                      ]
+                    },
+                    {
+                      "id": "sector-analysis-title",
+                      "type": "h2",
+                      "props": {
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-cyan-400 mb-6"
+                      },
+                      "children": [
+                        "Navigating the Void"
+                      ]
+                    },
+                    {
+                      "id": "sector-analysis-description",
+                      "type": "p",
+                      "props": {
+                        "className": "text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed"
+                      },
+                      "children": [
+                        "We identify and analyze critical cosmic sectors, pinpointing anomalies and opportunities for resource acquisition and scientific discovery."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "timeline-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gray-900 relative overflow-hidden"
+          },
+          "children": [
+            {
+              "id": "timeline-celestial-particles",
+              "type": "div",
+              "props": {
+                "className": "absolute inset-0 opacity-30 pointer-events-none"
+              },
+              "children": [
+                {
+                  "id": "timeline-particle-1",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-20 right-20 w-3 h-3 bg-blue-400 rounded-full animate-star-twinkle"
+                  }
+                },
+                {
+                  "id": "timeline-particle-2",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute bottom-40 left-40 w-4 h-4 bg-cyan-400 rounded-full animate-nebula-drift"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "timeline-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-7xl mx-auto px-4 relative z-10"
+              },
+              "children": [
+                {
+                  "id": "timeline-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-24"
+                  },
+                  "children": [
+                    {
+                      "id": "timeline-badge-wrapper",
+                      "type": "div",
+                      "props": {
+                        "className": "flex justify-center items-center mb-4"
                       },
                       "children": [
                         {
-                          "id": "specialties-title",
-                          "type": "h3",
-                          "props": {
-                            "className": "text-2xl font-bold text-gray-100 mb-4"
-                          },
-                          "children": "Creative Skills"
-                        },
-                        {
-                          "id": "specialties-list",
+                          "id": "timeline-spacer",
                           "type": "div",
                           "props": {
-                            "className": "space-y-3"
+                            "className": "w-32 border-t border-blue-600"
+                          }
+                        },
+                        {
+                          "id": "timeline-badge",
+                          "type": "span",
+                          "props": {
+                            "className": "inline-block px-5 py-2 bg-blue-800 text-cyan-300 rounded-full text-sm font-bold"
                           },
-                          "children": "SPECIALTIES_ARRAY"
+                          "children": [
+                            "Chronological Trajectory"
+                          ]
+                        },
+                        {
+                          "id": "timeline-spacer-2",
+                          "type": "div",
+                          "props": {
+                            "className": "w-32 border-t border-cyan-600"
+                          }
                         }
                       ]
                     },
                     {
-                      "id": "achievements-section",
-                      "type": "div",
-                      "if": "content.achievements && content.achievements.length > 0",
+                      "id": "timeline-title",
+                      "type": "h2",
                       "props": {
-                        "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-gray-700"
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
                       },
                       "children": [
-                        {
-                          "id": "achievements-title",
-                          "type": "h3",
-                          "props": {
-                            "className": "text-2xl font-bold text-gray-100 mb-4"
-                          },
-                          "children": "Achievements"
-                        },
-                        {
-                          "id": "achievements-list",
-                          "type": "div",
-                          "props": {
-                            "className": "space-y-3"
-                          },
-                          "children": "ACHIEVEMENTS_ARRAY"
-                        }
+                        "Voyage Log: Key Milestones"
                       ]
                     }
                   ]
                 },
                 {
-                  "id": "contact-social-section",
+                  "id": "timeline-wrapper",
                   "type": "div",
                   "props": {
-                    "className": "bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-xl text-center border border-gray-700"
+                    "className": "relative"
                   },
                   "children": [
                     {
-                      "id": "connect-title",
+                      "id": "timeline-line",
+                      "type": "div",
+                      "props": {
+                        "className": "absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full hidden md:block"
+                      }
+                    },
+                    {
+                      "id": "timeline-items",
+                      "type": "div",
+                      "props": {
+                        "className": "space-y-16 md:space-y-20"
+                      },
+                      "children": [
+                        {
+                          "id": "timeline-item-1",
+                          "type": "div",
+                          "props": {
+                            "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                          },
+                          "children": [
+                            {
+                              "id": "timeline-content-1",
+                              "type": "div",
+                              "props": {
+                                "className": "w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0"
+                              },
+                              "children": [
+                                {
+                                  "id": "timeline-step-1",
+                                  "type": "div",
+                                  "props": {
+                                    "className": "bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-cyan-600/30 backdrop-blur-sm"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "step-1-title",
+                                      "type": "h3",
+                                      "props": {
+                                        "className": "text-2xl md:text-3xl font-bold text-cyan-300 mb-4"
+                                      },
+                                      "children": [
+                                        "Quantum Entanglement Ignition"
+                                      ]
+                                    },
+                                    {
+                                      "id": "step-1-content",
+                                      "type": "p",
+                                      "props": {
+                                        "className": "text-gray-300 leading-relaxed"
+                                      },
+                                      "children": [
+                                        "Initiation of quantum entanglement protocols, establishing faster-than-light communication relays across nebulae."
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "timeline-marker-1",
+                              "type": "div",
+                              "props": {
+                                "className": "absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-cyan-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle"
+                              }
+                            },
+                            {
+                              "id": "timeline-empty-1",
+                              "type": "div",
+                              "props": {
+                                "className": "hidden md:block md:w-5/12 md:pl-12"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "timeline-item-2",
+                          "type": "div",
+                          "props": {
+                            "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                          },
+                          "children": [
+                            {
+                              "id": "timeline-empty-2",
+                              "type": "div",
+                              "props": {
+                                "className": "hidden md:block md:w-5/12 md:pr-12"
+                              }
+                            },
+                            {
+                              "id": "timeline-marker-2",
+                              "type": "div",
+                              "props": {
+                                "className": "absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-nebula-drift"
+                              }
+                            },
+                            {
+                              "id": "timeline-content-2",
+                              "type": "div",
+                              "props": {
+                                "className": "absolute right-2 w-full md:w-5/12 md:pl-12 mb-8 md:mb-0"
+                              },
+                              "children": [
+                                {
+                                  "id": "timeline-step-2",
+                                  "type": "div",
+                                  "props": {
+                                    "className": "bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-blue-600/30 backdrop-blur-sm"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "step-2-title",
+                                      "type": "h3",
+                                      "props": {
+                                        "className": "text-2xl md:text-3xl font-bold text-blue-300 mb-4"
+                                      },
+                                      "children": [
+                                        "Exoplanetary Survey Deployment"
+                                      ]
+                                    },
+                                    {
+                                      "id": "step-2-content",
+                                      "type": "p",
+                                      "props": {
+                                        "className": "text-gray-300 leading-relaxed"
+                                      },
+                                      "children": [
+                                        "Advanced sensor arrays deployed to map potential Class-M planets and assess atmospheric compositions."
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "timeline-item-3",
+                          "type": "div",
+                          "props": {
+                            "className": "relative flex flex-col md:flex-row items-center slide-in-left"
+                          },
+                          "children": [
+                            {
+                              "id": "timeline-content-3",
+                              "type": "div",
+                              "props": {
+                                "className": "w-full md:w-5/12 md:pr-12 md:text-right mb-8 md:mb-0"
+                              },
+                              "children": [
+                                {
+                                  "id": "timeline-step-3",
+                                  "type": "div",
+                                  "props": {
+                                    "className": "bg-gray-800/50 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-green-600/30 backdrop-blur-sm"
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "step-3-title",
+                                      "type": "h3",
+                                      "props": {
+                                        "className": "text-2xl md:text-3xl font-bold text-green-300 mb-4"
+                                      },
+                                      "children": [
+                                        "AI-Driven Navigation Systems"
+                                      ]
+                                    },
+                                    {
+                                      "id": "step-3-content",
+                                      "type": "p",
+                                      "props": {
+                                        "className": "text-gray-300 leading-relaxed"
+                                      },
+                                      "children": [
+                                        "Implementation of sentient AI for optimal route calculation, avoiding cosmic hazards and temporal anomalies."
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "timeline-marker-3",
+                              "type": "div",
+                              "props": {
+                                "className": "absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-500 rounded-full border-4 border-gray-900 shadow-lg z-10 hidden md:block animate-star-twinkle"
+                              }
+                            },
+                            {
+                              "id": "timeline-empty-3",
+                              "type": "div",
+                              "props": {
+                                "className": "hidden md:block md:w-5/12 md:pl-12"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "propulsion-tech-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gradient-to-br from-gray-800 to-gray-900"
+          },
+          "children": [
+            {
+              "id": "propulsion-tech-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-7xl mx-auto px-4"
+              },
+              "children": [
+                {
+                  "id": "propulsion-tech-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-16 fade-in-up"
+                  },
+                  "children": [
+                    {
+                      "id": "propulsion-tech-badge",
+                      "type": "span",
+                      "props": {
+                        "className": "inline-block px-5 py-2 bg-green-600 text-white rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "Propulsion Systems"
+                      ]
+                    },
+                    {
+                      "id": "propulsion-tech-title",
+                      "type": "h2",
+                      "props": {
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6"
+                      },
+                      "children": [
+                        "Engineered for the Cosmos"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "propulsion-tech-grid",
+                  "type": "div",
+                  "props": {
+                    "className": "grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                  },
+                  "children": [
+                    {
+                      "id": "propulsion-tech-content",
+                      "type": "div",
+                      "props": {
+                        "className": "space-y-6 scale-in"
+                      },
+                      "children": [
+                        {
+                          "id": "propulsion-item-1",
+                          "type": "div",
+                          "props": {
+                            "className": "flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-cyan-600/30 backdrop-blur-sm"
+                          },
+                          "children": [
+                            {
+                              "id": "propulsion-icon-1",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-shrink-0 w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/50"
+                              },
+                              "children": [
+                                {
+                                  "id": "icon-1",
+                                  "type": "span",
+                                  "props": {
+                                    "className": "text-white font-bold text-lg"
+                                  },
+                                  "children": [
+                                    "FTL"
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "propulsion-text-1",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-1"
+                              },
+                              "children": [
+                                {
+                                  "id": "propulsion-title-1",
+                                  "type": "h3",
+                                  "props": {
+                                    "className": "text-xl md:text-2xl font-bold text-cyan-300 mb-2"
+                                  },
+                                  "children": [
+                                    "Warp Core Technology"
+                                  ]
+                                },
+                                {
+                                  "id": "propulsion-desc-1",
+                                  "type": "p",
+                                  "props": {
+                                    "className": "text-sm text-gray-300 leading-relaxed"
+                                  },
+                                  "children": [
+                                    "Harnessing exotic matter to create stable warp fields for faster-than-light travel."
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "propulsion-item-2",
+                          "type": "div",
+                          "props": {
+                            "className": "flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-blue-600/30 backdrop-blur-sm"
+                          },
+                          "children": [
+                            {
+                              "id": "propulsion-icon-2",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/50"
+                              },
+                              "children": [
+                                {
+                                  "id": "icon-2",
+                                  "type": "span",
+                                  "props": {
+                                    "className": "text-white font-bold text-lg"
+                                  },
+                                  "children": [
+                                    "ION"
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "propulsion-text-2",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-1"
+                              },
+                              "children": [
+                                {
+                                  "id": "propulsion-title-2",
+                                  "type": "h3",
+                                  "props": {
+                                    "className": "text-xl md:text-2xl font-bold text-blue-300 mb-2"
+                                  },
+                                  "children": [
+                                    "Antimatter Drive"
+                                  ]
+                                },
+                                {
+                                  "id": "propulsion-desc-2",
+                                  "type": "p",
+                                  "props": {
+                                    "className": "text-sm text-gray-300 leading-relaxed"
+                                  },
+                                  "children": [
+                                    "Ion thrusters for precise maneuvering and sustainable interstellar cruises."
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "id": "propulsion-item-3",
+                          "type": "div",
+                          "props": {
+                            "className": "flex items-start space-x-6 p-6 bg-gray-800/50 rounded-xl shadow-xl transition-shadow border-2 border-purple-600/30 backdrop-blur-sm"
+                          },
+                          "children": [
+                            {
+                              "id": "propulsion-icon-3",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-shrink-0 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/50"
+                              },
+                              "children": [
+                                {
+                                  "id": "icon-3",
+                                  "type": "span",
+                                  "props": {
+                                    "className": "text-white font-bold text-lg"
+                                  },
+                                  "children": [
+                                    "GRAV"
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "id": "propulsion-text-3",
+                              "type": "div",
+                              "props": {
+                                "className": "flex-1"
+                              },
+                              "children": [
+                                {
+                                  "id": "propulsion-title-3",
+                                  "type": "h3",
+                                  "props": {
+                                    "className": "text-xl md:text-2xl font-bold text-purple-300 mb-2"
+                                  },
+                                  "children": [
+                                    "Gravitational Sling"
+                                  ]
+                                },
+                                {
+                                  "id": "propulsion-desc-3",
+                                  "type": "p",
+                                  "props": {
+                                    "className": "text-sm text-gray-300 leading-relaxed"
+                                  },
+                                  "children": [
+                                    "Utilizing planetary gravity wells for efficient velocity augmentation."
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "propulsion-visual",
+                      "type": "div",
+                      "props": {
+                        "className": "scale-in"
+                      },
+                      "children": [
+                        {
+                          "id": "propulsion-gallery",
+                          "type": "div",
+                          "props": {
+                            "className": "propulsion-gallery-component sticky top-8"
+                          },
+                          "children": "PROCESS_GALLERY"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "discovery-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gray-900"
+          },
+          "children": [
+            {
+              "id": "discovery-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-7xl mx-auto px-4"
+              },
+              "children": [
+                {
+                  "id": "discovery-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-16 fade-in-up"
+                  },
+                  "children": [
+                    {
+                      "id": "discovery-badge",
+                      "type": "span",
+                      "props": {
+                        "className": "inline-block px-5 py-2 bg-orange-600 text-white rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "First Contact"
+                      ]
+                    },
+                    {
+                      "id": "discovery-title",
+                      "type": "h2",
+                      "props": {
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6"
+                      },
+                      "children": [
+                        "Alien Worlds Encountered"
+                      ]
+                    },
+                    {
+                      "id": "discovery-subtitle",
+                      "type": "p",
+                      "props": {
+                        "className": "text-lg text-gray-300 max-w-2xl mx-auto"
+                      },
+                      "children": [
+                        "Explore the stunning visual data from our expeditions – interactive sliders reveal breathtaking alien landscapes."
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "discovery-gallery",
+                  "type": "div",
+                  "props": {
+                    "className": "discovery-gallery-component"
+                  },
+                  "children": "BEFORE_AFTER_GALLERY"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "crew-log-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gradient-to-br from-gray-800 to-gray-900"
+          },
+          "children": [
+            {
+              "id": "crew-log-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-7xl mx-auto px-4"
+              },
+              "children": [
+                {
+                  "id": "crew-log-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-16 fade-in-up"
+                  },
+                  "children": [
+                    {
+                      "id": "crew-log-badge",
+                      "type": "span",
+                      "props": {
+                        "className": "inline-block px-5 py-2 bg-purple-700 text-white rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "Log Entries"
+                      ]
+                    },
+                    {
+                      "id": "crew-log-title",
+                      "type": "h2",
+                      "props": {
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6"
+                      },
+                      "children": [
+                        "Chronicles of the Void"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "crew-log-gallery",
+                  "type": "div",
+                  "props": {
+                    "className": "crew-log-gallery-component"
+                  },
+                  "children": "LIFESTYLE_GALLERY"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "impact-analysis-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gray-900"
+          },
+          "children": [
+            {
+              "id": "impact-analysis-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-6xl mx-auto px-4"
+              },
+              "children": [
+                {
+                  "id": "impact-analysis-header",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center mb-16 fade-in-up"
+                  },
+                  "children": [
+                    {
+                      "id": "impact-analysis-badge",
+                      "type": "span",
+                      "props": {
+                        "className": "inline-block px-5 py-2 bg-yellow-700 text-white rounded-full text-sm font-bold mb-4"
+                      },
+                      "children": [
+                        "Cosmic Resonance"
+                      ]
+                    },
+                    {
+                      "id": "impact-analysis-title",
+                      "type": "h2",
+                      "props": {
+                        "className": "text-4xl sm:text-5xl md:text-6xl font-bold text-gray-100 mb-6"
+                      },
+                      "children": [
+                        "Galactic Impact Metrics"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "metrics-section",
+                  "type": "div",
+                  "props": {
+                    "className": "mb-16"
+                  },
+                  "children": [
+                    {
+                      "id": "metrics-grid",
+                      "type": "div",
+                      "props": {
+                        "className": "flex flex-wrap justify-center gap-8 md:gap-10"
+                      },
+                      "children": "METRICS_ARRAY"
+                    }
+                  ]
+                },
+                {
+                  "id": "testimonials-section",
+                  "type": "div",
+                  "props": {
+                    "className": "mb-16"
+                  },
+                  "children": [
+                    {
+                      "id": "testimonials-grid",
+                      "type": "div",
+                      "props": {
+                        "className": "flex flex-wrap justify-center gap-8 md:gap-10"
+                      },
+                      "children": "TESTIMONIALS_ARRAY"
+                    }
+                  ]
+                },
+                {
+                  "id": "case-studies-section",
+                  "type": "div",
+                  "props": {
+                    "className": "mb-16"
+                  },
+                  "children": [
+                    {
+                      "id": "case-studies-header",
                       "type": "h3",
                       "props": {
-                        "className": "text-2xl font-bold text-gray-100 mb-6"
+                        "className": "text-3xl font-bold text-gray-100 mb-8 text-center"
                       },
-                      "children": "Let's Connect"
+                      "children": [
+                        "Beacon Systems: Case Studies"
+                      ]
                     },
                     {
-                      "id": "contact-links",
+                      "id": "case-studies-grid",
+                      "type": "div",
+                      "props": {
+                        "className": "space-y-8"
+                      },
+                      "children": "CASE_STUDIES_ARRAY"
+                    }
+                  ]
+                },
+                {
+                  "id": "awards-section",
+                  "type": "div",
+                  "props": {
+                    "className": "text-center"
+                  },
+                  "children": [
+                    {
+                      "id": "awards-header",
+                      "type": "h3",
+                      "props": {
+                        "className": "text-3xl font-bold text-gray-100 mb-8"
+                      },
+                      "children": [
+                        "Galactic Accolades"
+                      ]
+                    },
+                    {
+                      "id": "awards-grid",
                       "type": "div",
                       "props": {
                         "className": "flex flex-wrap justify-center gap-6"
                       },
+                      "children": "AWARDS_ARRAY"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "command-center-section",
+          "type": "section",
+          "props": {
+            "className": "py-24 bg-gradient-to-r from-cyan-500 to-blue-600 text-white relative overflow-hidden"
+          },
+          "children": [
+            {
+              "id": "command-center-particles",
+              "type": "div",
+              "props": {
+                "className": "absolute inset-0 opacity-40 pointer-events-none"
+              },
+              "children": [
+                {
+                  "id": "command-center-particle-1",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute top-1/4 left-1/4 w-3 h-3 bg-white rounded-full animate-star-twinkle"
+                  }
+                },
+                {
+                  "id": "command-center-particle-2",
+                  "type": "div",
+                  "props": {
+                    "className": "absolute bottom-1/3 right-1/4 w-4 h-4 bg-blue-300 rounded-full animate-nebula-drift"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "command-center-container",
+              "type": "div",
+              "props": {
+                "className": "max-w-4xl mx-auto px-4 text-center fade-in-up relative z-10"
+              },
+              "children": [
+                {
+                  "id": "command-center-title",
+                  "type": "h2",
+                  "props": {
+                    "className": "text-4xl sm:text-5xl md:text-6xl font-bold mb-6"
+                  },
+                  "children": [
+                    "Ready to Join the Fleet?"
+                  ]
+                },
+                {
+                  "id": "command-center-description",
+                  "type": "p",
+                  "props": {
+                    "className": "text-lg sm:text-xl text-cyan-100 mb-8 max-w-2xl mx-auto leading-relaxed"
+                  },
+                  "children": [
+                    "Signal your intent. Initiate contact with our deep space command center to begin your assimilation into the fleet."
+                  ]
+                },
+                {
+                  "id": "command-center-buttons",
+                  "type": "div",
+                  "props": {
+                    "className": "flex flex-col sm:flex-row gap-6 justify-center"
+                  },
+                  "children": [
+                    {
+                      "id": "command-center-primary-btn",
+                      "type": "button",
+                      "props": {
+                        "className": "px-10 py-5 bg-white text-gray-900 font-bold rounded-full hover:scale-105 transition-all duration-300 shadow-lg shadow-cyan-500/50"
+                      },
                       "children": [
-                        {
-                          "id": "email-contact",
-                          "type": "div",
-                          "if": "content.contact && content.contact.email",
-                          "props": {
-                            "className": "flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors duration-200"
-                          },
-                          "children": [
-                            {
-                              "id": "email-icon",
-                              "type": "span",
-                              "props": {
-                                "className": "w-5 h-5 inline-block text-blue-400"
-                              },
-                              "children": "📧"
-                            },
-                            {
-                              "id": "email-text",
-                              "type": "span",
-                              "children": "{{content.contact.email}}"
-                            }
-                          ]
-                        },
-                        {
-                          "id": "website-contact",
-                          "type": "a",
-                          "if": "content.contact && content.contact.website",
-                          "props": {
-                            "href": "{{content.contact.website}}",
-                            "className": "flex items-center gap-2 text-blue-400 hover:text-blue-200 transition-colors duration-200"
-                          },
-                          "children": [
-                            {
-                              "id": "website-icon",
-                              "type": "span",
-                              "props": {
-                                "className": "w-5 h-5 inline-block"
-                              },
-                              "children": "🌐"
-                            },
-                            {
-                              "id": "website-text",
-                              "type": "span",
-                              "children": "Portfolio"
-                            }
-                          ]
-                        },
-                        {
-                          "id": "instagram-contact",
-                          "type": "a",
-                          "if": "content.contact && content.contact.social && content.contact.social.instagram",
-                          "props": {
-                            "href": "{{content.contact.social.instagram}}",
-                            "className": "flex items-center gap-2 text-pink-400 hover:text-pink-200 transition-colors duration-200"
-                          },
-                          "children": [
-                            {
-                              "id": "instagram-icon",
-                              "type": "span",
-                              "props": {
-                                "className": "w-5 h-5 inline-block"
-                              },
-                              "children": "📷"
-                            },
-                            {
-                              "id": "instagram-text",
-                              "type": "span",
-                              "children": "Instagram"
-                            }
-                          ]
-                        }
+                        "Initiate Transmission"
+                      ]
+                    },
+                    {
+                      "id": "command-center-secondary-btn",
+                      "type": "button",
+                      "props": {
+                        "className": "px-10 py-5 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-gray-900 transition-all duration-300"
+                      },
+                      "children": [
+                        "View Starfleet Academy"
                       ]
                     }
                   ]

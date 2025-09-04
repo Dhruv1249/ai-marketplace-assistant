@@ -72,11 +72,11 @@ async function generateTemplateModifications(prompt: string, templateData: any) 
       role: 'user',
       parts: [
         {
-          text: `You are an advanced template modification AI with comprehensive feature support. Transform templates based on user requests with full creative freedom.
+          text: `You are an advanced JSON template modification AI with comprehensive feature support based on the Enhanced JSON Model Renderer. Transform templates based on user requests with full creative freedom.
 
 User Request: "${prompt}"
 
-Current Template:
+Current Template (with actual user data filled in):
 ${JSON.stringify(currentTemplate, null, 2)}
 
 User's Actual Content:
@@ -85,189 +85,220 @@ ${JSON.stringify(actualContent, null, 2)}
 User's Images:
 ${JSON.stringify(actualImages, null, 2)}
 
-🚀 COMPREHENSIVE FEATURE SUPPORT:
+🚀 ENHANCED JSON MODEL RENDERER CAPABILITIES:
 
-📊 STATE MANAGEMENT:
-- Use "if": "state.componentId_active" for conditional rendering
-- Access state with {{state.buttonName_active}} in template strings
-- Buttons with onClick: "handleToggle" automatically manage state
-- Dynamic styling based on state: {{state.active ? 'bg-green-500' : 'bg-gray-500'}}
-
-📝 FORM HANDLING:
-- Form elements with name="fieldName" automatically bind to formData
-- Access form data with {{formData.fieldName}} 
-- Forms with onSubmit automatically validate and show success states
-- Error handling and validation built-in
-- Real-time form data display: {{formData.name || 'Enter name'}}
-
-🎭 ANIMATIONS & EFFECTS:
-- Tailwind animations: animate-pulse, animate-bounce, animate-spin
-- Custom animations: animate-fadeInUp, animate-fadeInLeft, animate-fadeInRight, animate-slideIn, animate-glow
-- Hover effects: hover:scale-105, hover:rotate-1, hover:-translate-y-1
-- Transitions: transition-all duration-300, transition-colors duration-200
-- Transform effects: transform hover:scale-110
-
-🎨 STYLING SYSTEM:
-- Full Tailwind CSS support: bg-blue-500, text-white, p-4, m-2, etc.
-- Gradients: bg-gradient-to-r from-blue-500 to-purple-600
-- Shadows: shadow-lg, shadow-xl, shadow-blue-500/50 (colored shadows)
-- Backdrop effects: backdrop-blur-sm, backdrop-filter
-- Custom colors via styleVariables: {"primaryColor": "#8b5cf6"}
-- Responsive design: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
-
-🧠 TEMPLATE EXPRESSIONS:
-- Content access: {{content.title}}, {{content.description}}
-- Image access: {{images[0]}}, {{images[1]}}
-- State access: {{state.componentId_active}}
-- Form data: {{formData.fieldName}}
-- Conditionals: {{state.active ? '🟢 ON' : '🔴 OFF'}}
-- Fallbacks: {{formData.name || 'Enter name above'}}
-
-🎪 INTERACTIVE FEATURES:
-- onClick: "handleToggle" - toggles component state
-- onClick: "handleClick" - handles click events
-- Conditional rendering with "if": "state.condition"
-- Dynamic styling based on state
-- Form validation and error display
-- Hover animations and effects
-
-📱 LAYOUT & COMPONENTS:
-- Responsive grids: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
-- Flexbox layouts: flex, justify-between, items-center
-- Custom components: ImageGallery for image sections
-- Table structures: table, tbody, tr, td (auto-detects context)
-- Proper HTML nesting (no hydration errors)
-- Card layouts with hover effects
-
-🎯 ADVANCED FEATURES:
-- Dynamic content generation: {{content.features.map}} for feature lists
-- Specifications tables: {{content.specifications.entries}}
-- Gallery integration: automatic image gallery rendering
-- Text editing in edit mode (contentEditable support)
-- Event handling with proper propagation
-
-⚡ SYNTAX EXAMPLES:
-
-Interactive Button with State:
+📋 BASIC STRUCTURE:
+Every template must follow this structure:
 {
-  "id": "toggle-button",
-  "type": "button",
-  "props": {
-    "className": "px-4 py-2 bg-blue-500 hover:bg-blue-600 hover:scale-105 text-white rounded-lg transition-all duration-200 transform",
-    "onClick": "handleToggle"
+  "metadata": {
+    "name": "Template Name",
+    "description": "Template description", 
+    "template": "template-type",
+    "version": "1.0",
+    "features": ["feature1", "feature2"]
   },
-  "children": ["Toggle State"]
+  "styleVariables": {
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#1e40af",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#60a5fa",
+    "gradientStart": "#3b82f6",
+    "gradientEnd": "#1d4ed8",
+    "fontFamily": "'Inter', sans-serif",
+    "borderRadius": "8px",
+    "shadowColor": "rgba(0, 0, 0, 0.1)"
+  },
+  "animations": {
+    "fadeInUp": {
+      "keyframes": {
+        "0%": { "opacity": "0", "transform": "translateY(30px)" },
+        "100%": { "opacity": "1", "transform": "translateY(0)" }
+      },
+      "duration": "0.8s",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  },
+  "component": { /* component tree */ }
 }
 
-Conditional Content:
-{
-  "id": "conditional-message",
-  "type": "div",
-  "if": "state.toggle-button_active",
-  "props": {
-    "className": "p-4 bg-green-100 border border-green-500 rounded-lg animate-fadeInUp"
-  },
-  "children": ["✅ State is active! Conditional rendering works!"]
-}
+🎨 STYLE VARIABLES & CUSTOM ANIMATIONS:
+- Define CSS custom properties in styleVariables
+- Create custom animations with keyframes, duration, easing
+- Use animations with animate-{animationName} classes
+- Support for complex animations: float, rotate, pulse, twinkle
 
-Form with Real-time Display:
-{
-  "id": "name-input",
-  "type": "input",
-  "props": {
-    "type": "text",
-    "name": "name",
-    "placeholder": "Enter your name",
-    "className": "w-full px-3 py-2 border rounded-lg focus:border-blue-500 hover:border-gray-400 transition-colors"
-  }
-},
-{
-  "id": "live-display",
-  "type": "p",
-  "props": {
-    "className": "text-gray-600"
-  },
-  "children": ["Hello {{formData.name || 'Anonymous'}}!"]
-}
+🧩 COMPONENT TYPES:
+- All HTML elements: div, section, h1-h6, p, span, a, img, button, input, form, etc.
+- Special components: BeforeAfterSlider
+- Properties: id, type, props, children, editable, if, unless, show
 
-Animated Hover Card:
+🔄 DYNAMIC CONTENT & TEMPLATES:
+Template expressions with double curly braces:
+- Basic: {{content.name}}
+- Fallback: {{content.name || 'Default Name'}}
+- Ternary: {{content.isActive ? 'Active' : 'Inactive'}}
+- String methods: {{content.name.charAt(0).toUpperCase()}}
+- Array access: {{content.photos[0].url}}
+- Complex: {{(content.firstName || content.name) + ' - ' + content.title}}
+
+Content paths available:
+- content.basics.name, content.basics.category, content.basics.value
+- content.story.origin, content.story.solution, content.story.unique
+- content.process.creation, content.process.materials, content.process.time
+- content.impact.metrics, content.impact.testimonials
+- content.contact.email, content.contact.phone
+- images[0], images[1], images[2], images[3]
+- state.componentActive, formData.email
+
+⚡ CONDITIONAL RENDERING:
+- "if": "content.showSection" - shows only if true
+- "unless": "content.hideSection" - shows only if false  
+- "show": "content.isVisible && content.hasData" - complex visibility logic
+
+🎮 INTERACTIVE COMPONENTS:
+Event handlers:
+- "onClick": "{handleClick}"
+- "onSubmit": "{handleFormSubmit}"
+- "onChange": "{handleInputChange}"
+- "onToggle": "{handleToggle}"
+
+State management:
+- Components maintain state through renderer
+- Access with {{state.menuOpen ? 'menu-open' : 'menu-closed'}}
+
+✨ PARTICLES & EFFECTS:
+Create particle systems with positioned divs:
 {
-  "id": "feature-card",
-  "type": "div",
+  "id": "hero-particles",
+  "type": "div", 
   "props": {
-    "className": "p-6 bg-white rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 hover:scale-105 transition-all duration-300 cursor-pointer"
+    "className": "absolute inset-0 opacity-30"
   },
   "children": [
     {
-      "id": "card-title",
-      "type": "h3",
+      "id": "particle-1",
+      "type": "div",
       "props": {
-        "className": "text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
-      },
-      "children": ["Hover Me!"]
+        "className": "absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"
+      }
     }
   ]
 }
 
-🎨 CREATIVE THEMES YOU CAN IMPLEMENT:
+Built-in animation classes:
+- animate-float, animate-pulse-slow, animate-bounce-slow
+- hover-lift, hover-scale
+- fade-in-up, slide-in-left, scale-in
+
+🖼️ GALLERY COMPONENTS:
+Special gallery tokens that auto-generate image galleries:
+- "children": "HERO_GALLERY" - Hero image gallery
+- "children": "PROCESS_GALLERY" - Process step gallery  
+- "children": "BEFORE_AFTER_GALLERY" - Before/after sliders
+- "children": "LIFESTYLE_GALLERY" - Lifestyle images
+- "children": "SPECIALTIES_ARRAY" - Specialty items
+- "children": "ACHIEVEMENTS_ARRAY" - Achievement items
+- "children": "TESTIMONIALS_ARRAY" - Testimonial cards
+- "children": "METRICS_ARRAY" - Metric cards
+
+📝 FORM HANDLING:
+The renderer automatically handles:
+- Email validation, required field validation
+- Error display, form state management
+- Real-time form data binding
+
+Example form:
+{
+  "id": "contact-form",
+  "type": "form",
+  "props": {
+    "className": "space-y-4",
+    "onSubmit": "{handleFormSubmit}"
+  },
+  "children": [
+    {
+      "id": "name-input",
+      "type": "input",
+      "props": {
+        "type": "text",
+        "name": "name", 
+        "placeholder": "Your Name",
+        "className": "w-full px-4 py-2 border rounded-lg",
+        "onChange": "{handleInputChange}"
+      }
+    }
+  ]
+}
+
+🎯 BEST PRACTICES:
+1. Use semantic HTML elements
+2. Apply responsive design: text-sm md:text-base lg:text-lg
+3. Include accessibility: alt attributes, proper labels
+4. Use consistent naming conventions
+5. Group related components logically
+
+🎨 ADVANCED STYLING:
+- Full Tailwind CSS support
+- Gradients: bg-gradient-to-r from-blue-500 to-purple-600
+- Shadows: shadow-lg, shadow-xl, shadow-blue-500/50
+- Backdrop effects: backdrop-blur-sm
+- Responsive: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+- Hover effects: hover:scale-105, hover:rotate-1
+- Transitions: transition-all duration-300
+
+🚀 CREATIVE THEMES:
 
 Sci-fi Theme:
 - Colors: {"primaryColor": "#06b6d4", "backgroundColor": "#0f172a", "accentColor": "#64ffda"}
-- Effects: Neon glows, dark backgrounds, futuristic fonts
-- Animations: Glow effects, pulse animations
-- Styling: backdrop-blur, shadow-cyan-500/50, animate-glow
+- Effects: Neon glows, dark backgrounds, particles
+- Animations: Glow, pulse, twinkle effects
+- Classes: backdrop-blur, shadow-cyan-500/50
 
-Elegant Theme:
+Elegant Theme:  
 - Colors: {"primaryColor": "#d97706", "backgroundColor": "#fefbf3", "accentColor": "#f59e0b"}
 - Effects: Gold accents, serif fonts, subtle shadows
-- Animations: Smooth transitions, gentle hover effects
-- Styling: shadow-amber-500/30, font-serif, tracking-wide
+- Animations: Smooth transitions, gentle hover
+- Classes: shadow-amber-500/30, font-serif
 
 Modern Minimal:
-- Colors: {"primaryColor": "#3b82f6", "backgroundColor": "#ffffff", "accentColor": "#6b7280"}
-- Effects: Clean lines, subtle shadows, lots of whitespace
+- Colors: {"primaryColor": "#3b82f6", "backgroundColor": "#ffffff", "accentColor": "#6b7280"}  
+- Effects: Clean lines, subtle shadows, whitespace
 - Animations: Scale effects, smooth transitions
-- Styling: shadow-lg, rounded-xl, space-y-8
+- Classes: shadow-lg, rounded-xl, space-y-8
 
-Playful Theme:
-- Colors: {"primaryColor": "#ec4899", "backgroundColor": "#fdf2f8", "accentColor": "#f472b6"}
-- Effects: Bright colors, rounded corners, fun animations
-- Animations: Bounce, spin, scale effects
-- Styling: animate-bounce, rounded-full, bg-gradient-to-r
-
-🔧 TECHNICAL RULES:
-1. Keep template expressions simple: {{content.title}}, {{state.active}}, {{formData.name}}
-2. Use proper HTML structure (no <div> in <tbody>)
+🔧 TECHNICAL REQUIREMENTS:
+1. Always include unique "id" for each component
+2. Use proper HTML structure (no div in tbody)
 3. Use Tailwind classes in className props
-4. Use hex values in styleVariables: {"primaryColor": "#8b5cf6"}
-5. Add animations with animate-* classes and hover: prefixes
-6. Include transition classes for smooth effects
+4. Use hex values in styleVariables
+5. Include animations with animate-* classes
+6. Add transition classes for smooth effects
 7. Use conditional rendering with "if" property
-8. Make buttons interactive with onClick: "handleToggle"
+8. Make interactive elements with event handlers
 
 RESPONSE FORMAT:
 {
   "hasChanges": true/false,
-  "explanation": "Detailed explanation of creative changes and features used",
+  "explanation": "Detailed explanation of changes and features used",
   "styleVariables": {
     "primaryColor": "#8b5cf6",
-    "backgroundColor": "#111827",
+    "backgroundColor": "#111827", 
     "fontFamily": "'Inter', sans-serif"
   },
   "metadata": {
     "name": "Creative Theme Name",
-    "description": "Theme description with features used"
+    "description": "Theme description with features"
   },
   "component": {
-    // Use multiple features: state management, animations, forms, conditionals
-    // Create rich, interactive templates with hover effects and animations
-    // Include buttons with onClick: "handleToggle" for interactivity
-    // Add conditional content with "if": "state.condition"
-    // Use form inputs with real-time data display
+    // Rich interactive template using multiple renderer features
+    // Include particles, animations, galleries, forms, conditionals
+    // Use actual user content and images from the provided data
+    // Create engaging, responsive, accessible designs
   }
 }
 
-Be CREATIVE and combine multiple features for rich, interactive templates!`,
+Be CREATIVE and leverage the full power of the Enhanced JSON Model Renderer!`,
         },
       ],
     },
