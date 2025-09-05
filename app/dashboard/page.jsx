@@ -307,17 +307,6 @@ export default function Dashboard() {
                 </button>
                 <div className="px-7 py-8">
                   <div className={`mb-6 font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Settings</div>
-                  <div className="mb-2 font-medium text-sm">Change Theme</div>
-                  <div className="flex flex-col gap-4 mb-8 mt-1">
-                    <label className={`inline-flex items-center gap-2 text-base ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}> 
-                      <input type="radio" className="accent-blue-600" checked={theme === 'light'} onChange={() => setTheme('light')} />
-                      Default Theme
-                    </label>
-                    <label className={`inline-flex items-center gap-2 text-base ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}> 
-                      <input type="radio" className="accent-blue-600" checked={theme === 'dark'} onChange={() => setTheme('dark')} />
-                      Dark Theme
-                    </label>
-                  </div>
                   {/* Actions Section */}
                   <div className="flex flex-col gap-3">
                     <Button
