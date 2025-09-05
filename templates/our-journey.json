@@ -77,7 +77,7 @@
               "className": "text-xl text-[var(--brand-green)] max-w-3xl mx-auto mb-10 animate-fadeInUp"
             },
             "children": [
-              "Crafted with Precision, every piece we create is a testament to the dedication and artistry that defines our journey. From the initial spark of an idea to the final, polished creation, we pour our hearts and souls into our work, ensuring that each item is not just an object, but a story waiting to be told."
+              "{{content.basics.value || 'Discover the story behind our innovative solution that transforms the way you work and live.'}}"
             ],
             "editable": { "contentEditable": true }
           },
@@ -102,7 +102,7 @@
                   "href": "#",
                   "className": "bg-transparent border-2 border-[var(--brand-terracotta)] text-[var(--brand-terracotta)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brand-terracotta)] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-md"
                 },
-                "children": ["Learn More"]
+                "children": ["Buy Now"]
               }
             ]
           }
@@ -181,7 +181,7 @@
                     "id": "t1-text",
                     "type": "p",
                     "props": { "className": "text-base leading-snug tracking-wide text-[var(--brand-green)] mt-2" },
-                    "children": ["Where ideas are born from passion and sketches take their first breath."]
+                    "children": "{{content.story.origin || 'Every great product starts with a simple idea. Our journey began when we recognized a gap in the market and decided to create something truly innovative that would make a difference in people\\'s lives.'}}"
                   }
                 ]
               }

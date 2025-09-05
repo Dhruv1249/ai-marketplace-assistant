@@ -1,0 +1,386 @@
+{
+  "metadata": {
+    "name": "Artisan Journey Page Redesign",
+    "description": "Converted from HTML into repository JSON template format with dynamic placeholders and brand variables.",
+    "template": "artisan-journey-redesign",
+    "version": "1.0.0",
+    "features": ["responsive", "animations", "dynamic", "brand-variables"]
+  },
+  "styleVariables": {
+    "brand-primary": "#008080",
+    "brand-secondary": "#FFD700",
+    "brand-accent": "#E67E22",
+    "brand-text-primary": "#2c3e50",
+    "brand-text-secondary": "#34495e",
+    "brand-background": "#fdf6e3",
+    "brand-highlight": "#D35400",
+    "brand-terracotta": "#E74C3C"
+  },
+  "animations": {
+    "fadeInUp": {
+      "keyframes": {
+        "0%": { "opacity": "0", "transform": "translateY(30px)" },
+        "100%": { "opacity": "1", "transform": "translateY(0)" }
+      },
+      "duration": "0.8s",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "fillMode": "both"
+    },
+    "bounceSlow": {
+      "keyframes": {
+        "0%, 100%": { "transform": "translateY(-10%)", "animationTimingFunction": "cubic-bezier(0.8,0,1,1)" },
+        "50%": { "transform": "translateY(0)", "animationTimingFunction": "cubic-bezier(0,0,0.2,1)" }
+      },
+      "duration": "2s",
+      "iterations": "infinite"
+    }
+  },
+  "component": {
+    "id": "artisan-journey-redesign",
+    "type": "div",
+    "props": {
+      "className": "antialiased",
+      "style": {
+        "backgroundColor": "var(--brand-background)",
+        "color": "var(--brand-text-primary)",
+        "fontFamily": "'Lora', serif"
+      }
+    },
+    "children": [
+      {
+        "id": "hero",
+        "type": "section",
+        "props": {
+          "className": "relative h-screen flex items-center justify-center text-center text-white p-4"
+        },
+        "children": [
+          { "id": "hero-overlay", "type": "div", "props": { "className": "absolute inset-0 bg-black/50 z-10" } },
+          {
+            "id": "hero-bg",
+            "type": "img",
+            "props": {
+              "src": "{{content.images.hero || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}",
+              "alt": "{{content.alt.hero || 'Artisan's hands at work'}}",
+              "className": "absolute inset-0 w-full h-full object-cover"
+            }
+          },
+          {
+            "id": "hero-content",
+            "type": "div",
+            "props": { "className": "relative z-20 max-w-4xl mx-auto" },
+            "children": [
+              {
+                "id": "hero-title",
+                "type": "h1",
+                "props": {
+                  "className": "text-6xl md:text-8xl lg:text-9xl font-playfair-black leading-tight"
+                },
+                "children": ["{{content.hero.title || 'Layered Artistry'}}"],
+                "editable": { "contentEditable": true }
+              },
+              {
+                "id": "hero-subtitle",
+                "type": "p",
+                "props": { "className": "mt-4 text-xl md:text-2xl font-light" },
+                "children": ["{{content.hero.subtitle || 'The Immersive Journey of Craft'}}"],
+                "editable": { "contentEditable": true }
+              }
+            ]
+          },
+          {
+            "id": "hero-scroll",
+            "type": "div",
+            "props": { "className": "absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white" },
+            "children": [
+              { "id": "scroll-icon", "type": "span", "props": { "className": "material-icons animate-bounce" }, "children": ["arrow_downward"] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "intro-section",
+        "type": "section",
+        "props": { "className": "relative py-24 px-4 md:px-8" },
+        "children": [
+          {
+            "id": "intro-grid",
+            "type": "div",
+            "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center" },
+            "children": [
+              {
+                "id": "intro-left",
+                "type": "div",
+                "props": { "className": "md:col-span-7 lg:col-span-8 relative" },
+                "children": [
+                  {
+                    "id": "intro-card",
+                    "type": "div",
+                    "props": { "className": "bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-lg shadow-lg relative z-10" },
+                    "children": [
+                      {
+                        "id": "intro-title",
+                        "type": "h2",
+                        "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" },
+                        "children": ["{{content.intro.title || 'The Artisan's Path'}}"]
+                      },
+                      {
+                        "id": "intro-text",
+                        "type": "p",
+                        "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] leading-relaxed" },
+                        "children": ["{{content.intro.text || 'This is a story of dedication, a narrative woven with threads of tradition and innovation. From the first flicker of an idea to the final, polished creation, we invite you to explore the depth and soul behind each piece. It's a journey not just of making, but of becoming.'}}"],
+                        "editable": { "contentEditable": true }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "intro-accent",
+                    "type": "div",
+                    "props": { "className": "absolute -top-12 -left-12 w-64 h-64 bg-[var(--brand-secondary)]/20 rounded-full blur-3xl -z-0" }
+                  }
+                ]
+              },
+              {
+                "id": "intro-right",
+                "type": "div",
+                "props": { "className": "md:col-span-5 lg:col-span-4 h-96 relative" },
+                "children": [
+                  {
+                    "id": "intro-image",
+                    "type": "img",
+                    "props": {
+                      "src": "{{content.images.intro || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}",
+                      "alt": "{{content.alt.intro || 'Artisan weaving a textile'}}",
+                      "className": "w-full h-full object-cover rounded-lg shadow-2xl absolute top-0 left-0"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "divider-process",
+        "type": "div",
+        "props": { "className": "py-12 bg-transparent" },
+        "children": [
+          {
+            "id": "divider-text",
+            "type": "h2",
+            "props": { "className": "text-5xl md:text-7xl font-playfair-black text-center text-[var(--brand-primary)] opacity-20 whitespace-nowrap overflow-hidden" },
+            "children": ["{{content.dividers.process || 'THE PROCESS • THE PROCESS • THE PROCESS'}}"]
+          }
+        ]
+      },
+      {
+        "id": "process-section",
+        "type": "section",
+        "props": { "className": "relative py-24 px-4 md:px-8 overflow-hidden" },
+        "children": [
+          {
+            "id": "process-bg",
+            "type": "img",
+            "props": {
+              "src": "{{content.images.processTexture || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOMV-TPykbA3XbabP62Ljs6WwDcuD9dugATi7hSFLWxE_VbKiGRRHPHHAIBsXJ4LR_q45F0PePUe3Lgn36t5Wgc50FBEZ3NlBup9SZ9ONUHnSChYWhsSfCXd-ptTNtm7e7Mz5C4pETuOoAJnKWYCfUTgObw9rm_Rfnb8myKTp2pOl0P3zvs-mA3sF9N-0Io1Yz-3uoSr2HaTTScqmxO773KDYxGU4nf5OFamJg8jN9gxTqkciYxzBbG8ZCWWgAzpeUnOJxZjkS3sk'}}",
+              "alt": "{{content.alt.processTexture || 'Workshop texture'}}",
+              "className": "absolute inset-0 w-full h-full object-cover opacity-10"
+            }
+          },
+          {
+            "id": "process-wrap",
+            "type": "div",
+            "props": { "className": "max-w-7xl mx-auto relative z-10" },
+            "children": [
+              {
+                "id": "process-grid",
+                "type": "div",
+                "props": { "className": "grid grid-cols-1 lg:grid-cols-3 gap-16 items-start" },
+                "children": [
+                  {
+                    "id": "process-card-1",
+                    "type": "div",
+                    "props": { "className": "lg:col-span-1 space-y-8 relative" },
+                    "children": [
+                      {
+                        "id": "pc1",
+                        "type": "div",
+                        "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-l-8 border-[var(--brand-accent)]" },
+                        "children": [
+                          { "id": "pc1-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[0].title || 'The Spark & Sourcing'}}"] },
+                          { "id": "pc1-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.cards[0].text || 'Every journey begins with a spark of inspiration... followed by a meticulous search for materials that match our vision and ethics.'}}"] }
+                        ]
+                      },
+                      {
+                        "id": "pc1-image",
+                        "type": "img",
+                        "props": {
+                          "src": "{{content.images.processCard1 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzSXQWfD74ZLiLh68y-OfmjFWhEWd2nM5vx5Hm7R8QSq97L2gZ-kRq3SFeH45WI1oQPtXLdbGd7VIfB0Lbi4oqx73A30r4JIgojEKr9z2LaxhkOzEJa890O7GAwjT7IvA16S2n8oDpbV1VtW_WFp0QsUv3n2BdTFVepQEr-1ZQUIY0hwwKDDg2zPvWYdFUvz1bj1hv9RaOlRQ6D5vEdDb6ZxIV41Ux1tRJAmpWmoEmpd3e_qiOl6PKtZqF9vcH4B2MyjxxX5B4UFs'}}",
+                          "alt": "{{content.alt.processCard1 || 'Finished ceramic ware'}}",
+                          "className": "w-full h-auto object-cover rounded-lg shadow-xl transform rotate-3"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-card-2",
+                    "type": "div",
+                    "props": { "className": "lg:col-span-1 space-y-8 relative lg:mt-24" },
+                    "children": [
+                      {
+                        "id": "pc2",
+                        "type": "div",
+                        "props": { "className": "bg-[var(--brand-primary)] text-white p-8 rounded-lg shadow-2xl transform lg:-translate-y-16" },
+                        "children": [
+                          { "id": "pc2-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.process.cards[1].title || 'The Heart of Creation'}}"] },
+                          { "id": "pc2-text", "type": "p", "props": { "className": "mt-4 opacity-90" }, "children": ["{{content.process.cards[1].text || 'This is where the magic happens... precision, patience, and passion.'}}"] }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-card-3",
+                    "type": "div",
+                    "props": { "className": "lg:col-span-1 space-y-8 lg:mt-48" },
+                    "children": [
+                      {
+                        "id": "pc3",
+                        "type": "div",
+                        "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-r-8 border-[var(--brand-terracotta)]" },
+                        "children": [
+                          { "id": "pc3-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[2].title || 'Perfection & Assurance'}}"] },
+                          { "id": "pc3-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.cards[2].text || 'Each creation is meticulously inspected to meet exacting standards.'}}"] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "divider-craft",
+        "type": "div",
+        "props": { "className": "py-12 bg-transparent" },
+        "children": [
+          {
+            "id": "divider-craft-text",
+            "type": "h2",
+            "props": { "className": "text-5xl md:text-7xl font-playfair-black text-center text-[var(--brand-primary)] opacity-20 whitespace-nowrap overflow-hidden" },
+            "children": ["{{content.dividers.craft || 'CRAFTSMANSHIP • CRAFTSMANSHIP'}}"]
+          }
+        ]
+      },
+      {
+        "id": "quote-section",
+        "type": "section",
+        "props": { "className": "py-24 px-4 md:px-8 bg-white/50" },
+        "children": [
+          {
+            "id": "quote-grid",
+            "type": "div",
+            "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 items-center" },
+            "children": [
+              {
+                "id": "quote-images",
+                "type": "div",
+                "props": { "className": "md:col-span-3 relative h-[600px]" },
+                "children": [
+                  { "id": "qi1", "type": "img", "props": { "src": "{{content.images.quote1 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}", "alt": "{{content.alt.quote1 || 'Artisan detail 1'}}", "className": "absolute top-0 left-0 w-3/5 h-3/5 object-cover rounded-lg shadow-2xl" } },
+                  { "id": "qi2", "type": "img", "props": { "src": "{{content.images.quote2 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}", "alt": "{{content.alt.quote2 || 'Artisan detail 2'}}", "className": "absolute bottom-0 right-0 w-1/2 h-1/2 object-cover rounded-lg shadow-2xl z-10 border-8 border-[var(--brand-background)]" } }
+                ]
+              },
+              {
+                "id": "quote-content",
+                "type": "div",
+                "props": { "className": "md:col-span-2 relative z-20" },
+                "children": [
+                  {
+                    "id": "quote-card",
+                    "type": "div",
+                    "props": { "className": "bg-[var(--brand-background)] p-8 md:p-12 rounded-lg shadow-xl relative md:-ml-16" },
+                    "children": [
+                      {
+                        "id": "blockquote",
+                        "type": "blockquote",
+                        "props": { "className": "text-2xl md:text-3xl italic text-[var(--brand-highlight)] border-l-4 border-[var(--brand-accent)] pl-6" },
+                        "children": ["{{content.quote.text || 'To create, one must first connect: with the material, with the history, with the soul of the craft.'}}"]
+                      },
+                      {
+                        "id": "quote-author",
+                        "type": "p",
+                        "props": { "className": "mt-6 text-right font-semibold text-lg text-[var(--brand-primary)]" },
+                        "children": ["{{content.quote.author || '— Our Master Artisan'}}"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sustainability-section",
+        "type": "section",
+        "props": { "className": "relative py-24 px-4 md:px-8" },
+        "children": [
+          { "id": "sustain-overlay", "type": "div", "props": { "className": "absolute inset-0 w-full h-full bg-[var(--brand-primary)]/80" } },
+           "id", "sustain-bg", "type" ,"div", "props" ,{ "className": "absolute inset-0 bg-cover bg-center opacity-10", "style": { "backgroundImage": "url('{{content.images.sustainBG || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOMV-TPykbA3XbabP62Ljs6WwDcuD9dugATi7hSFLWxE_VbKiGRRHPHHAIBsXJ4LR_q45F0PePUe3Lgn36t5Wgc50FBEZ3NlBup9SZ9ONUHnSChYWhsSfCXd-ptTNtm7e7Mz5C4pETuOoAJnKWYCfUTgObw9rm_Rfnb8myKTp2pOl0P3zvs-mA3sF9N-0Io1Yz-3uoSr2HaTTScqmxO773KDYxGU4nf5OFamJg8jN9gxTqkciYxzBbG8ZCWWgAzpeUnOJxZjkS3sk'}}')" } },
+          {
+            "id": "sustain-content",
+            "type": "div",
+            "props": { "className": "relative max-w-4xl mx-auto text-center text-white z-10" },
+            "children": [
+              { "id": "sustain-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.sustain.title || 'A Sustainable Soul'}}"] },
+              { "id": "sustain-text", "type": "p", "props": { "className": "mt-6 text-lg md:text-xl leading-relaxed opacity-90" }, "children": ["{{content.sustain.text || 'Our craft is a tribute to the earth that provides our materials... a beautiful and responsible tomorrow.'}}"] },
+              { "id": "sustain-button", "type": "a", "props": { "href": "#", "className": "mt-8 inline-block font-semibold py-3 px-8 rounded-md bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-highlight)] transition-colors duration-300 shadow-lg" }, "children": ["{{content.sustain.cta || 'Discover Our Impact'}}"] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cta-section",
+        "type": "section",
+        "props": { "className": "py-24 px-4 md:px-8" },
+        "children": [
+          {
+            "id": "cta-container",
+            "type": "div",
+            "props": { "className": "max-w-5xl mx-auto text-center" },
+            "children": [
+              { "id": "cta-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.cta.title || 'Begin Your Own Journey'}}"] },
+              { "id": "cta-text", "type": "p", "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] max-w-2xl mx-auto" }, "children": ["{{content.cta.text || 'Whether you seek a bespoke piece infused with your own story or wish to find a creation that speaks to you, your journey starts here.'}}"] },
+              {
+                "id": "cta-buttons",
+                "type": "div",
+                "props": { "className": "mt-10 flex flex-col sm:flex-row gap-4 justify-center" },
+                "children": [
+                  { "id": "cta-primary", "type": "button", "props": { "className": "bg-[var(--brand-accent)] text-white font-semibold py-3 px-8 rounded-md shadow-md hover:bg-opacity-90 transition-all duration-300" }, "children": ["{{content.cta.primary || 'Commission a Piece'}}"] },
+                  { "id": "cta-secondary", "type": "button", "props": { "className": "bg-transparent border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brand-primary)] hover:text-white transition-all duration-300" }, "children": ["{{content.cta.secondary || 'Explore The Collection'}}"] }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "footer",
+        "type": "footer",
+        "props": { "className": "bg-[var(--brand-text-primary)] text-white py-8 px-4 md:px-8" },
+        "children": [
+          {
+            "id": "footer-inner",
+            "type": "div",
+            "props": { "className": "max-w-7xl mx-auto text-center text-sm opacity-70" },
+            "children": [
+              { "id": "footer-line-1", "type": "p", "children": ["{{content.footer.line1 || '© 2024 Layered Artistry. All Rights Reserved.'}}"] },
+              { "id": "footer-line-2", "type": "p", "props": { "className": "mt-2" }, "children": ["{{content.footer.line2 || 'A celebration of global craft and timeless design.'}}"] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

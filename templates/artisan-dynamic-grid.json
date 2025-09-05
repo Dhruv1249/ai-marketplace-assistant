@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "name": "Artisan Journey Page Redesign - Dynamic Grid Play",
+    "description": "Converted from HTML dynamic grid layout into repository JSON template with brand variables and dynamic placeholders.",
+    "template": "artisan-dynamic-grid",
+    "version": "1.0.0",
+    "features": ["responsive", "dynamic", "brand-variables"]
+  },
+  "styleVariables": {
+    "brand-primary": "#008080",
+    "brand-secondary": "#FFD700",
+    "brand-accent": "#E67E22",
+    "brand-text-primary": "#2c3e50",
+    "brand-text-secondary": "#34495e",
+    "brand-background": "#fdf6e3",
+    "brand-highlight": "#D35400",
+    "brand-terracotta": "#E74C3C"
+  },
+  "component": {
+    "id": "artisan-dynamic-grid-root",
+    "type": "div",
+    "props": {
+      "className": "min-h-screen overflow-x-hidden",
+      "style": {
+        "backgroundColor": "var(--brand-background)",
+        "color": "var(--brand-text-primary)",
+        "fontFamily": "'Lora', serif"
+      }
+    },
+    "children": [
+      {
+        "id": "main",
+        "type": "main",
+        "props": { "className": "p-4 sm:p-8 md:p-12 lg:p-16" },
+        "children": [
+          {
+            "id": "grid",
+            "type": "div",
+            "props": { "className": "grid grid-cols-12 gap-4 md:gap-8" },
+            "children": [
+              {
+                "id": "hero-copy",
+                "type": "div",
+                "props": { "className": "col-span-12 md:col-span-7 lg:col-span-8 p-8 md:p-12" },
+                "children": [
+                  { "id": "hero-title", "type": "h1", "props": { "className": "text-5xl md:text-7xl lg:text-8xl font-playfair-black text-[var(--brand-primary)]" }, "children": ["{{content.hero.title || 'The Weaver's Hand'}}"] },
+                  { "id": "hero-subtitle", "type": "p", "props": { "className": "mt-4 text-xl md:text-2xl text-[var(--brand-text-secondary)] max-w-2xl" }, "children": ["{{content.hero.subtitle || 'A journey through the threads of tradition and contemporary craft, told by the hands that shape it.'}}"] }
+                ]
+              },
+              {
+                "id": "hero-image",
+                "type": "div",
+                "props": { "className": "col-span-8 col-start-3 md:col-span-4 md:col-start-9 lg:col-start-9 lg:col-span-3 self-center -mt-8 md:mt-0" },
+                "children": [
+                  { "id": "hero-img", "type": "img", "props": { "src": "{{content.images.heroRight || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}", "alt": "{{content.alt.heroRight || 'Detailed shot of hands weaving'}}", "className": "w-full h-auto object-cover rounded-lg shadow-xl transform -rotate-3" } }
+                ]
+              },
+              {
+                "id": "intro-card",
+                "type": "div",
+                "props": { "className": "col-span-12 md:col-span-8 lg:col-span-7 mt-8 md:mt-16 bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg" },
+                "children": [
+                  { "id": "intro-title", "type": "h2", "props": { "className": "text-3xl md:text-4xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.intro.title || 'From Humble Beginnings'}}"] },
+                  { "id": "intro-text", "type": "p", "props": { "className": "mt-4 text-lg text-[var(--brand-text-secondary)] leading-relaxed" }, "children": ["{{content.intro.text || 'Our story doesn't begin in a grand studio, but with a single spool of thread and a generation-old loom. It's a tale of passion passed down, of techniques learned through observation and practice. Each creation is a chapter in this ongoing narrative, a testament to the enduring power of craft.'}}"] }
+                ]
+              },
+              {
+                "id": "pull-quote",
+                "type": "div",
+                "props": { "className": "col-span-12 md:col-span-4 md:col-start-9 lg:col-span-3 lg:col-start-8 self-center mt-8 md:mt-0 md:-ml-12 lg:ml-0 z-10" },
+                "children": [
+                  { "id": "quote-box", "type": "blockquote", "props": { "className": "text-2xl italic text-[var(--brand-highlight)] border-l-8 border-[var(--brand-accent)] pl-6 py-4 bg-[var(--brand-background)] rounded-r-lg shadow-2xl" }, "children": ["{{content.quote.short || '\"Every knot tells a story.\"'}}"] }
+                ]
+              },
+              {
+                "id": "banner-image",
+                "type": "div",
+                "props": { "className": "col-span-12 md:col-span-10 md:col-start-2 lg:col-span-8 lg:col-start-3 my-16 md:my-24" },
+                "children": [
+                  { "id": "banner-img", "type": "img", "props": { "src": "{{content.images.banner || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}", "alt": "{{content.alt.banner || 'A vibrant, handcrafted textile'}}", "className": "w-full h-auto object-cover rounded-lg shadow-2xl" } }
+                ]
+              },
+              {
+                "id": "materials-process",
+                "type": "div",
+                "props": { "className": "col-span-12 lg:col-span-10 lg:col-start-2 grid grid-cols-1 md:grid-cols-5 gap-8" },
+                "children": [
+                  {
+                    "id": "materials-card",
+                    "type": "div",
+                    "props": { "className": "md:col-span-3 p-8 bg-[var(--brand-primary)] text-white rounded-lg shadow-xl" },
+                    "children": [
+                      { "id": "materials-title", "type": "h3", "props": { "className": "text-2xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.materials.title || 'The Materials'}}"] },
+                      { "id": "materials-text", "type": "p", "props": { "className": "mt-4 opacity-90" }, "children": ["{{content.materials.text || 'We traverse the globe, not as tourists, but as pilgrims seeking the finest natural fibers. From the softest Andean wool to the most vibrant Indian silks, our materials are sourced with an unwavering commitment to ethical practices and sustainable futures. We believe the soul of the material is the foundation of the art.'}}"] }
+                    ]
+                  },
+                  {
+                    "id": "process-card",
+                    "type": "div",
+                    "props": { "className": "md:col-span-2 p-8 bg-white/70 backdrop-blur-sm border-l-4 border-[var(--brand-terracotta)] rounded-lg shadow-lg" },
+                    "children": [
+                      { "id": "process-title", "type": "h3", "props": { "className": "text-2xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.title || 'The Process'}}"] },
+                      { "id": "process-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.text || 'Patience is our most-used tool. The dye pots simmer, the shuttles fly, and patterns emerge slowly, deliberately. There are no shortcuts in the pursuit of beauty. It's a slow, meditative dance between artisan and material.'}}"] }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "stat-badge",
+                "type": "div",
+                "props": { "className": "col-span-10 col-start-2 md:col-span-4 md:col-start-2 lg:col-start-8 my-12 md:my-16 text-center p-8 bg-[var(--brand-secondary)]/50 rounded-full flex flex-col justify-center items-center aspect-square shadow-lg" },
+                "children": [
+                  { "id": "stat-value", "type": "p", "props": { "className": "text-6xl font-playfair-black text-[var(--brand-highlight)]" }, "children": ["{{content.stat.value || '200+'}}"] },
+                  { "id": "stat-label", "type": "p", "props": { "className": "mt-2 text-lg font-semibold text-[var(--brand-text-primary)]" }, "children": ["{{content.stat.label || 'Hours of work in every masterpiece.'}}"] }
+                ]
+              },
+              {
+                "id": "split-image",
+                "type": "div",
+                "props": { "className": "col-span-12 grid grid-cols-12 gap-8 items-center -mt-16 md:-mt-24" },
+                "children": [
+                  { "id": "split-left", "type": "div", "props": { "className": "col-span-12 md:col-span-6 lg:col-span-5" }, "children": [ { "id": "split-img", "type": "img", "props": { "src": "{{content.images.splitLeft || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzSXQWfD74ZLiLh68y-OfmjFWhEWd2nM5vx5Hm7R8QSq97L2gZ-kRq3SFeH45WI1oQPtXLdbGd7VIfB0Lbi4oqx73A30r4JIgojEKr9z2LaxhkOzEJa890O7GAwjT7IvA16S2n8oDpbV1VtW_WFp0QsUv3n2BdTFVepQEr-1ZQUIY0hwwKDDg2zPvWYdFUvz1bj1hv9RaOlRQ6D5vEdDb6ZxIV41Ux1tRJAmpWmoEmpd3e_qiOl6PKtZqF9vcH4B2MyjxxX5B4UFs'}}", "alt": "{{content.alt.splitLeft || 'Finished ceramic ware'}}", "className": "w-full h-auto object-cover rounded-lg shadow-xl transform rotate-2" } } ] },
+                  { "id": "split-right", "type": "div", "props": { "className": "col-span-12 md:col-span-6 lg:col-span-7 p-8 md:p-12 bg-white/70 backdrop-blur-sm rounded-lg shadow-xl md:-ml-12 z-10" }, "children": [ { "id": "global-title", "type": "h2", "props": { "className": "text-3xl md:text-4xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.global.title || 'A Global Palette'}}"] }, { "id": "global-text", "type": "p", "props": { "className": "mt-4 text-lg text-[var(--brand-text-secondary)] leading-relaxed" }, "children": ["{{content.global.text || 'Our inspiration is drawn from the rich tapestry of global cultures. The geometric patterns of Berber carpets, the vivid hues of a bustling Moroccan souk, the serene minimalism of Japanese design—they all find a voice in our work. We create pieces that are not just beautiful objects, but bridges between worlds.'}}"] }, { "id": "global-cta", "type": "a", "props": { "href": "#", "className": "mt-6 inline-block font-semibold py-2 px-6 rounded-md bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-highlight)] transition-colors duration-300 shadow-lg" }, "children": ["{{content.global.cta || 'Explore The Collection'}}"] } ] }
+                ]
+              },
+              {
+                "id": "join-section",
+                "type": "div",
+                "props": { "className": "col-span-12 mt-24 text-center" },
+                "children": [
+                  { "id": "join-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.cta2.title || 'Join the Journey'}}"] },
+                  { "id": "join-text", "type": "p", "props": { "className": "mt-4 text-lg text-[var(--brand-text-secondary)] max-w-2xl mx-auto" }, "children": ["{{content.cta2.text || 'Connect with the craft. Commission a piece that tells your story, or find a treasure that speaks to your soul.'}}"] },
+                  { "id": "join-buttons", "type": "div", "props": { "className": "mt-8 flex flex-col sm:flex-row gap-4 justify-center" }, "children": [ { "id": "join-primary", "type": "button", "props": { "className": "bg-[var(--brand-primary)] text-white font-semibold py-3 px-8 rounded-md shadow-md hover:bg-opacity-90 transition-all duration-300" }, "children": ["{{content.cta2.primary || 'Start a Commission'}}"] }, { "id": "join-secondary", "type": "button", "props": { "className": "bg-transparent border-2 border-[var(--brand-accent)] text-[var(--brand-accent)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brand-accent)] hover:text-white transition-all duration-300" }, "children": ["{{content.cta2.secondary || 'Shop Ready-Made'}}"] } ] }
+                ]
+              },
+              {
+                "id": "footer",
+                "type": "footer",
+                "props": { "className": "col-span-12 mt-16 text-center text-sm text-[var(--brand-text-secondary)] opacity-70" },
+                "children": [
+                  { "id": "footer-line-1", "type": "p", "children": ["{{content.footer.line1 || '© 2024 The Weaver's Hand. All Rights Reserved.'}}"] },
+                  { "id": "footer-line-2", "type": "p", "props": { "className": "mt-1" }, "children": ["{{content.footer.line2 || 'Celebrating global craft and timeless design.'}}"] }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
