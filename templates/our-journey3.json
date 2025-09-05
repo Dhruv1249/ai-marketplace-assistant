@@ -1,0 +1,273 @@
+{
+  "metadata": {
+    "name": "Our Journey",
+    "description": "An artisan brand story page with hero, process timeline, before/after showcase, testimonials, awards, and a call-to-action.",
+    "template": "story-journey",
+    "version": "1.0",
+    "features": ["animations", "interactive", "special-components"]
+  },
+  "fonts": {
+    "primary": "Roboto, sans-serif",
+    "headings": "Roboto Condensed, sans-serif",
+    "icons": ["Material Icons", "Material Symbols Outlined"]
+  },
+  "colors": {
+    "brand": {
+      "primary": "#333333",
+      "secondary": "#B87333",
+      "accent": "#FF4500",
+      "highlight": "#007BFF",
+      "bronze": "#CD7F32",
+      "textPrimary": "#E0E0E0",
+      "textSecondary": "#CCCCCC",
+      "background": "#4A4A4A"
+    },
+    "sectionBackgrounds": {
+      "industrialTexture": "#333333",
+      "concreteTexture": "#555555",
+      "metalTexture": "#4A4A4A",
+      "cardBackground": "#3E3E3E"
+    },
+    "text": {
+      "white": "#ffffff",
+      "gray300": "#d1d5db",
+      "gray600": "#4b5563"
+    }
+  },
+  "animations": {
+    "fadeInUp": {
+      "keyframes": {"0%": { "opacity": "0", "transform": "translateY(30px)" }, "100%": { "opacity": "1", "transform": "translateY(0)" }},
+      "duration": "0.8s", "easing": "cubic-bezier(0.4, 0, 0.2, 1)", "fillMode": "both"
+    },
+    "slideInLeft": {
+      "keyframes": {"0%": { "opacity": "0", "transform": "translateX(-50px)" }, "100%": { "opacity": "1", "transform": "translateX(0)" }},
+      "duration": "0.6s", "easing": "ease-out", "fillMode": "both"
+    },
+    "slideInRight": {
+      "keyframes": {"0%": { "opacity": "0", "transform": "translateX(50px)" }, "100%": { "opacity": "1", "transform": "translateX(0)" }},
+      "duration": "0.6s", "easing": "ease-out", "fillMode": "both"
+    }
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "container mx-auto px-4 py-16 antialiased",
+      "style": { "backgroundColor": "#4A4A4A", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif" }
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "section",
+        "props": { "className": "text-center mb-24 industrialTexture rounded-lg py-20 px-6", "style": { "backgroundColor": "#333333" } },
+        "children": [
+          {
+            "id": "hero-title", "type": "h1",
+            "props": { "className": "text-5xl md:text-6xl font-bold mb-4 animate-fadeInUp", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } },
+            "children": ["Our Journey"], "editable": { "contentEditable": true }
+          },
+          {
+            "id": "hero-subtitle", "type": "p",
+            "props": { "className": "text-xl max-w-3xl mx-auto mb-10 animate-fadeInUp", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } },
+            "children": ["Crafted with Precision, every piece we create is a testament to the dedication and artistry that defines our journey. From the initial spark of an idea to the final, polished creation, we pour our hearts and souls into our work, ensuring that each item is not just an object, but a story waiting to be told."],
+            "editable": { "contentEditable": true }
+          },
+          {
+            "id": "hero-ctas", "type": "div", "props": { "className": "flex justify-center gap-4 animate-fadeInUp" },
+            "children": [
+              { "id": "cta-discover", "type": "a", "props": { "href": "#", "className": "text-white font-semibold py-3 px-8 rounded-md shadow-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105", "style": { "backgroundColor": "#FF4500" } }, "children": ["Discover Our Process"] },
+              { "id": "cta-learn", "type": "a", "props": { "href": "#", "className": "bg-transparent border-2 font-semibold py-3 px-8 rounded-md hover:bg-[#FF4500] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-md", "style": { "color": "#FF4500", "borderColor": "#FF4500" } }, "children": ["Learn More"] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "process-header",
+        "type": "header",
+        "props": { "className": "text-center mb-16 animate-fadeInUp" },
+        "children": [
+          { "id": "process-kicker", "type": "span", "props": { "className": "inline-block bg-opacity-20 text-sm font-semibold px-4 py-2 rounded-full mb-4 tracking-wider", "style": { "backgroundColor": "#B87333", "color": "#B87333" } }, "children": ["Our Process"] },
+          { "id": "process-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["From Idea to Innovation"] }
+        ]
+      },
+      {
+        "id": "timeline",
+        "type": "div",
+        "props": { "className": "relative max-w-4xl mx-auto" },
+        "children": [
+          { "id": "timeline-line", "type": "div", "props": { "className": "absolute left-1/2 -ml-0.5 w-1 bg-[#B87333] bg-opacity-30 h-full" } },
+          {
+            "id": "timeline-item-1", "type": "div", "props": { "className": "mb-12 flex justify-between items-center w-full" },
+            "children": [
+              { "id": "t1-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t1-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#333333] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t1-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["1"] } ] },
+              { "id": "t1-card", "type": "div", "props": { "className": "order-1 shadow-xl w-5/12 px-6 py-4 animate-slideInRight", "style": { "backgroundColor": "#3E3E3E", "borderLeft": "4px solid #FF4500", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+                "children": [
+                  { "id": "t1-title", "type": "h3", "props": { "className": "font-bold text-[#B87333] text-xl", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Urban Inspiration Discovery"] },
+                  { "id": "t1-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#CCCCCC] mt-2", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["Design concepts emerge from the lines of city skylines, aged steel, and the geometric rhythm of urban spaces."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-2", "type": "div", "props": { "className": "mb-12 flex justify-between flex-row-reverse items-center w-full" },
+            "children": [
+              { "id": "t2-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t2-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#333333] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t2-number", "type": "h1", "props": { "className": "mx-auto text-white font-semibold text-2xl" }, "children": ["2"] } ] },
+              { "id": "t2-card", "type": "div", "props": { "className": "order-1 shadow-xl w-5/12 px-6 py-4 animate-slideInLeft", "style": { "backgroundColor": "#3E3E3E", "borderRight": "4px solid #FF4500", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+                "children": [
+                  { "id": "t2-title", "type": "h3", "props": { "className": "font-bold text-[#B87333] text-xl", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Precision Planning & Drafting"] },
+                  { "id": "t2-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#CCCCCC] mt-2", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["CAD drawings, grid sketches, and 3D mockups bring each industrial vision into tangible blueprints."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-3", "type": "div", "props": { "className": "mb-12 flex justify-between items-center w-full" },
+            "children": [
+              { "id": "t3-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t3-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#333333] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t3-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["3"] } ] },
+              { "id": "t3-card", "type": "div", "props": { "className": "order-1 shadow-xl w-5/12 px-6 py-4 animate-slideInRight", "style": { "backgroundColor": "#3E3E3E", "borderLeft": "4px solid #FF4500", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+                "children": [
+                  { "id": "t3-title", "type": "h3", "props": { "className": "font-bold text-[#B87333] text-xl", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Material Fusion & Fabrication"] },
+                  { "id": "t3-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#CCCCCC] mt-2", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["Steel welded to wood, copper riveted, concrete shaped—our makers blend elements using advanced methods and traditional handwork."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-4", "type": "div", "props": { "className": "mb-12 flex justify-between flex-row-reverse items-center w-full" },
+            "children": [
+              { "id": "t4-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t4-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#333333] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t4-number", "type": "h1", "props": { "className": "mx-auto text-white font-semibold text-2xl" }, "children": ["4"] } ] },
+              { "id": "t4-card", "type": "div", "props": { "className": "order-1 shadow-xl w-5/12 px-6 py-4 animate-slideInLeft", "style": { "backgroundColor": "#3E3E3E", "borderRight": "4px solid #FF4500", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+                "children": [
+                  { "id": "t4-title", "type": "h3", "props": { "className": "font-bold text-[#B87333] text-xl", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Signature Detailing"] },
+                  { "id": "t4-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#CCCCCC] mt-2", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["Welds are ground smooth, edges softened, patinas applied, and our signature badge fitted—personalized for every request."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-5", "type": "div", "props": { "className": "flex justify-between items-center w-full" },
+            "children": [
+              { "id": "t5-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t5-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#333333] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t5-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["5"] } ] },
+              { "id": "t5-card", "type": "div", "props": { "className": "order-1 shadow-xl w-5/12 px-6 py-4 animate-slideInRight", "style": { "backgroundColor": "#3E3E3E", "borderLeft": "4px solid #FF4500", "color": "#E0E0E0", "fontFamily": "Roboto, sans-serif", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+                "children": [
+                  { "id": "t5-title", "type": "h3", "props": { "className": "font-bold text-[#B87333] text-xl", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Quality Check & Urban Delivery"] },
+                  { "id": "t5-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#CCCCCC] mt-2", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["Every piece is checked, wrapped in heavy kraft, and shipped out with a hand-signed authenticity card."] }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "before-after",
+        "type": "section",
+        "props": { "className": "mt-24 mb-24", "style": { "backgroundColor": "#4A4A4A" } },
+        "children": [
+          {
+            "id": "before-after-header", "type": "header", "props": { "className": "text-center mb-12 animate-fadeInUp" },
+            "children": [
+              { "id": "before-after-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[#B87333]", "style": { "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Before & After: The Industrial Chest"] },
+              { "id": "before-after-subtitle", "type": "p", "props": { "className": "text-xl mt-2 text-[#CCCCCC]", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["From Raw Steel and Timber to Centerpiece"] },
+              { "id": "before-after-desc", "type": "p", "props": { "className": "text-base opacity-80 mt-4 max-w-2xl mx-auto text-[#CCCCCC]", "style": { "fontFamily": "Roboto, sans-serif" } }, "children": ["Watch as raw, weathered steel beams and reclaimed oak boards transform into a sleek, durable chest. Grinding, welding, oiling, and fitting every element by hand, we turn the ordinary into a showpiece of urban utility and design."] }
+            ]
+          },
+          {
+            "id": "before-after-body", "type": "div",
+            "props": { "className": "max-w-4xl mx-auto p-8", "style": { "backgroundColor": "#3E3E3E", "borderTop": "4px solid #B87333", "borderRadius": "0.5rem", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+            "children": [
+              { "id": "before-after-slider", "type": "BeforeAfterSlider", "props": { "beforeImage": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", "afterImage": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80", "className": "w-full max-w-4xl mx-auto h-[360px] md:h-[500px] border-4 border-[#B87333] rounded-lg overflow-hidden shadow-lg", "style": { "width": "100%", "maxWidth": "1024px", "height": "420px" } } }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "success-section",
+        "type": "section",
+        "props": { "className": "mt-24 text-center", "style": { "backgroundColor": "#333333" } },
+        "children": [
+          { "id": "success-header", "type": "header", "props": { "className": "mb-12 animate-fadeInUp" }, "children": [
+            { "id": "success-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["What Our Clients Say"] },
+            { "id": "success-subtitle", "type": "p", "props": { "className": "text-xl mt-2", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Real voices—lasting impressions"] }
+          ]},
+          { "id": "success-grid", "type": "div", "props": { "className": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" }, "children": [
+            { "id": "card-1", "type": "div", "props": { "className": "rounded-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 animate-fadeInUp", "style": { "backgroundColor": "#3E3E3E", "borderTop": "4px solid #FF4500", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } }, "children": [
+              { "id": "card-1-img", "type": "img", "props": { "src": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80", "alt": "Industrial chest in loft", "className": "w-full h-56 object-cover object-center" } },
+              { "id": "card-1-body", "type": "div", "props": { "className": "p-6 text-left" }, "children": [
+                { "id": "card-1-quote", "type": "p", "props": { "className": "italic mb-4", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["‘The chest blends perfectly into my loft—sleek, resilient, and built like a piece of architecture.’"] },
+                { "id": "card-1-author", "type": "h3", "props": { "className": "font-semibold text-lg", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["– Jamie R."] },
+                { "id": "card-1-meta", "type": "p", "props": { "className": "opacity-80 mt-1", "style": { "color": "#B87333" } }, "children": ["Commission: Custom Industrial Chest"] }
+              ]}
+            ]},
+            { "id": "card-2", "type": "div", "props": { "className": "rounded-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 animate-fadeInUp", "style": { "backgroundColor": "#3E3E3E", "borderTop": "4px solid #B87333", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } }, "children": [
+              { "id": "card-2-img", "type": "img", "props": { "src": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=600&q=80", "alt": "Industrial table in studio", "className": "w-full h-56 object-cover object-center" } },
+              { "id": "card-2-body", "type": "div", "props": { "className": "p-6 text-left" }, "children": [
+                { "id": "card-2-quote", "type": "p", "props": { "className": "italic mb-4", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["‘This table is the heart of my studio. The steel detailing and joinery are conversation starters.’"] },
+                { "id": "card-2-author", "type": "h3", "props": { "className": "font-semibold text-lg", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["– Morgan T."] },
+                { "id": "card-2-meta", "type": "p", "props": { "className": "opacity-80 mt-1", "style": { "color": "#B87333" } }, "children": ["Atelier: Steel & Oak Table"] }
+              ]}
+            ]},
+            { "id": "card-3", "type": "div", "props": { "className": "rounded-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 animate-fadeInUp", "style": { "backgroundColor": "#3E3E3E", "borderTop": "4px solid #FF4500", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } }, "children": [
+              { "id": "card-3-img", "type": "img", "props": { "src": "https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=600&q=80", "alt": "Steel & wood bench", "className": "w-full h-56 object-cover object-center" } },
+              { "id": "card-3-body", "type": "div", "props": { "className": "p-6 text-left" }, "children": [
+                { "id": "card-3-quote", "type": "p", "props": { "className": "italic mb-4", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["‘Rugged yet elegant—the welds and grain are flawless. It’s the best industrial piece we own.’"] },
+                { "id": "card-3-author", "type": "h3", "props": { "className": "font-semibold text-lg", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["– Eric & Lynn"] },
+                { "id": "card-3-meta", "type": "p", "props": { "className": "opacity-80 mt-1", "style": { "color": "#B87333" } }, "children": ["Home: Steel & Oak Entry Bench"] }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        "id": "awards-section",
+        "type": "section",
+        "props": { "className": "mt-24 p-12 rounded-lg", "style": { "backgroundColor": "#3E3E3E", "borderTop": "4px solid #B87333", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+        "children": [
+          { "id": "awards-header", "type": "header", "props": { "className": "text-center mb-12 animate-fadeInUp" }, "children": [
+            { "id": "awards-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Recognition & Awards"] },
+            { "id": "awards-subtitle", "type": "p", "props": { "className": "text-xl mt-2", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Industrial Artistry, Noticed"] }
+          ]},
+          { "id": "awards-list", "type": "div", "props": { "className": "max-w-4xl mx-auto divide-y", "style": { "borderColor": "rgba(184,115,51,0.3)", "borderWidth": "0px" } }, "children": [
+            { "id": "award-1", "type": "div", "props": { "className": "flex items-center py-6 animate-fadeInUp" }, "children": [
+              { "id": "award-1-icon-wrap", "type": "div", "props": { "className": "flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center mr-6", "style": { "backgroundColor": "rgba(184,115,51,0.1)" } }, "children": [ { "id": "award-1-icon", "type": "span", "props": { "className": "material-icons", "style": { "fontSize": "2.5rem", "color": "#B87333" } } } ] },
+              { "id": "award-1-text", "type": "div", "props": { "className": "flex-grow" }, "children": [ { "id": "award-1-title", "type": "h3", "props": { "className": "text-xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Best Modern Craft"] }, { "id": "award-1-org", "type": "p", "props": { "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Urban Makers Guild"] } ] },
+              { "id": "award-1-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-1-year-text", "type": "p", "props": { "className": "text-lg font-semibold", "style": { "color": "#FF4500" } }, "children": ["2023"] } ] }
+            ]},
+            { "id": "award-2", "type": "div", "props": { "className": "flex items-center py-6 animate-fadeInUp" }, "children": [
+              { "id": "award-2-icon-wrap", "type": "div", "props": { "className": "flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center mr-6", "style": { "backgroundColor": "rgba(184,115,51,0.1)" } }, "children": [ { "id": "award-2-icon", "type": "span", "props": { "className": "material-icons", "style": { "fontSize": "2.5rem", "color": "#B87333" } } } ] },
+              { "id": "award-2-text", "type": "div", "props": { "className": "flex-grow" }, "children": [ { "id": "award-2-title", "type": "h3", "props": { "className": "text-xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Sustainable Design Award"] }, { "id": "award-2-org", "type": "p", "props": { "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Steel City Collective"] } ] },
+              { "id": "award-2-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-2-year-text", "type": "p", "props": { "className": "text-lg font-semibold", "style": { "color": "#FF4500" } }, "children": ["2022"] } ] }
+            ]},
+            { "id": "award-3", "type": "div", "props": { "className": "flex items-center py-6 animate-fadeInUp" }, "children": [
+              { "id": "award-3-icon-wrap", "type": "div", "props": { "className": "flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center mr-6", "style": { "backgroundColor": "rgba(184,115,51,0.1)" } }, "children": [ { "id": "award-3-icon", "type": "span", "props": { "className": "material-icons", "style": { "fontSize": "2.5rem", "color": "#B87333" } } } ] },
+              { "id": "award-3-text", "type": "div", "props": { "className": "flex-grow" }, "children": [ { "id": "award-3-title", "type": "h3", "props": { "className": "text-xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["City Artisan Honor"] }, { "id": "award-3-org", "type": "p", "props": { "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Downtown Makers Fest"] } ] },
+              { "id": "award-3-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-3-year-text", "type": "p", "props": { "className": "text-lg font-semibold", "style": { "color": "#FF4500" } }, "children": ["2021"] } ] }
+            ]},
+            { "id": "award-4", "type": "div", "props": { "className": "flex items-center py-6 animate-fadeInUp" }, "children": [
+              { "id": "award-4-icon-wrap", "type": "div", "props": { "className": "flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center mr-6", "style": { "backgroundColor": "rgba(184,115,51,0.1)" } }, "children": [ { "id": "award-4-icon", "type": "span", "props": { "className": "material-icons", "style": { "fontSize": "2.5rem", "color": "#B87333" } } } ] },
+              { "id": "award-4-text", "type": "div", "props": { "className": "flex-grow" }, "children": [ { "id": "award-4-title", "type": "h3", "props": { "className": "text-xl font-bold", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Urban Legacy Recognition"] }, { "id": "award-4-org", "type": "p", "props": { "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Modern Craft Alliance"] } ] },
+              { "id": "award-4-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-4-year-text", "type": "p", "props": { "className": "text-lg font-semibold", "style": { "color": "#FF4500" } }, "children": ["2020"] } ] }
+            ]}
+          ]}
+        ]
+      },
+      {
+        "id": "cta-section",
+        "type": "section",
+        "props": { "className": "mt-24 text-center p-12 rounded-lg", "style": { "backgroundColor": "#333333", "boxShadow": "0 6px 32px 0 rgba(0,0,0,0.07)" } },
+        "children": [
+          { "id": "cta-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold mb-4 animate-fadeInUp", "style": { "color": "#B87333", "fontFamily": "Roboto Condensed, sans-serif" } }, "children": ["Start Your Industrial Story"] },
+          { "id": "cta-text", "type": "p", "props": { "className": "mt-4 max-w-2xl mx-auto text-lg opacity-90 animate-fadeInUp", "style": { "color": "#CCCCCC", "fontFamily": "Roboto, sans-serif" } }, "children": ["Commission a custom project or explore our collection of resilient, modern designs."] },
+          { "id": "cta-buttons", "type": "div", "props": { "className": "mt-8 flex justify-center gap-4 animate-fadeInUp" }, "children": [
+            { "id": "cta-commission", "type": "a", "props": { "href": "#commission", "className": "font-semibold py-3 px-8 rounded-md shadow-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg", "style": { "backgroundColor": "#FF4500", "color": "#ffffff", "fontFamily": "Roboto, sans-serif" } }, "children": ["Commission My Project"] },
+            { "id": "cta-explore", "type": "a", "props": { "href": "#shop", "className": "font-semibold py-3 px-8 rounded-md border-2 transition-all duration-300 transform hover:scale-105 hover:shadow-md", "style": { "borderColor": "#B87333", "color": "#B87333", "fontFamily": "Roboto, sans-serif", "backgroundColor": "transparent" } }, "children": ["Browse the Collection"] }
+          ]}
+        ]
+      }
+    ]
+  }
+}

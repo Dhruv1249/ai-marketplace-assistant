@@ -1,0 +1,439 @@
+{
+  "metadata": {
+    "name": "Our Journey",
+    "description": "An artisan brand story page with hero, process timeline, before/after showcase, testimonials, awards, and a call-to-action.",
+    "template": "story-journey",
+    "version": "1.0",
+    "features": ["animations", "interactive", "special-components"]
+  },
+  "fonts": {
+    "primary": "Lora, serif",
+    "headings": "Playfair Display, serif",
+    "icons": [
+      "Material Icons",
+      "Material Symbols Outlined"
+    ]
+  },
+  "colors": {
+    "brand": {
+      "primary": "#008080",
+      "secondary": "#FFD700",
+      "accent": "#E67E22",
+      "highlight": "#D35400",
+      "terracotta": "#E74C3C",
+      "saffron": "#F4B400",
+      "indigo": "#4B0082",
+      "textPrimary": "#2c3e50",
+      "textSecondary": "#34495e",
+      "background": "#fdf6e3"
+    },
+    "sectionBackgrounds": {
+      "handcraftedTexture": "#fdf6e3",
+      "paperTexture": "#f5deb3",
+      "linenTexture": "#fdf6e3",
+      "woodTexture": "#fdf6e3",
+      "recognitionAwards": "#fbe9e7"
+    },
+    "text": {
+      "white": "#ffffff",
+      "gray200": "#e5e7eb",
+      "black": "#000000",
+      "gray300": "#d1d5db",
+      "gray500": "#6b7280",
+      "graySecondaryBorder": "#e5e7eb"
+    }
+  },
+  "animations": {
+    "fadeInUp": {
+      "keyframes": {
+        "0%": { "opacity": "0", "transform": "translateY(30px)" },
+        "100%": { "opacity": "1", "transform": "translateY(0)" }
+      },
+      "duration": "0.8s",
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "fillMode": "both"
+    },
+    "slideInLeft": {
+      "keyframes": {
+        "0%": { "opacity": "0", "transform": "translateX(-50px)" },
+        "100%": { "opacity": "1", "transform": "translateX(0)" }
+      },
+      "duration": "0.6s",
+      "easing": "ease-out",
+      "fillMode": "both"
+    },
+    "slideInRight": {
+      "keyframes": {
+        "0%": { "opacity": "0", "transform": "translateX(50px)" },
+        "100%": { "opacity": "1", "transform": "translateX(0)" }
+      },
+      "duration": "0.6s",
+      "easing": "ease-out",
+      "fillMode": "both"
+    }
+  },
+  "component": {
+    "id": "root",
+    "type": "div",
+    "props": {
+      "className": "container mx-auto px-4 py-16 antialiased",
+      "style": {
+        "backgroundColor": "#fdf6e3",
+        "color": "#2c3e50",
+        "fontFamily": "Lora, serif"
+      }
+    },
+    "children": [
+      {
+        "id": "hero-section",
+        "type": "section",
+        "props": {
+          "className": "text-center mb-24 handcrafted-texture rounded-lg py-20 px-6",
+          "style": { "backgroundColor": "#fdf6e3" }
+        },
+        "children": [
+          {
+            "id": "hero-title",
+            "type": "h1",
+            "props": {
+              "className": "text-5xl md:text-6xl font-bold mb-4 animate-fadeInUp",
+              "style": { "color": "#008080", "fontFamily": "Playfair Display, serif" }
+            },
+            "children": ["Our Journey"],
+            "editable": { "contentEditable": true }
+          },
+          {
+            "id": "hero-subtitle",
+            "type": "p",
+            "props": {
+              "className": "text-xl max-w-3xl mx-auto mb-10 animate-fadeInUp",
+              "style": { "color": "#4B0082" }
+            },
+            "children": [
+              "Crafted with Precision, every piece we create is a testament to the dedication and artistry that defines our journey. From the initial spark of an idea to the final, polished creation, we pour our hearts and souls into our work, ensuring that each item is not just an object, but a story waiting to be told."
+            ],
+            "editable": { "contentEditable": true }
+          },
+          {
+            "id": "hero-ctas",
+            "type": "div",
+            "props": { "className": "flex justify-center gap-4 animate-fadeInUp" },
+            "children": [
+              {
+                "id": "cta-discover",
+                "type": "a",
+                "props": {
+                  "href": "#",
+                  "className": "text-white font-semibold py-3 px-8 rounded-md shadow-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105",
+                  "style": { "backgroundColor": "#E74C3C" }
+                },
+                "children": ["Discover Our Process"]
+              },
+              {
+                "id": "cta-learn",
+                "type": "a",
+                "props": {
+                  "href": "#",
+                  "className": "bg-transparent border-2 font-semibold py-3 px-8 rounded-md hover:bg-[#E74C3C] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-md",
+                  "style": { "color": "#E74C3C", "borderColor": "#E74C3C" }
+                },
+                "children": ["Learn More"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "process-header",
+        "type": "header",
+        "props": { "className": "text-center mb-16 animate-fadeInUp" },
+        "children": [
+          {
+            "id": "process-kicker",
+            "type": "span",
+            "props": {
+              "className": "inline-block bg-opacity-20 text-sm font-semibold px-4 py-2 rounded-full mb-4 tracking-wider",
+              "style": { "backgroundColor": "#FFD700", "color": "#FFD700" }
+            },
+            "children": ["Our Process"]
+          },
+          {
+            "id": "process-title",
+            "type": "h2",
+            "props": {
+              "className": "text-4xl md:text-5xl font-bold",
+              "style": { "color": "#008080", "fontFamily": "Playfair Display, serif" }
+            },
+            "children": ["From Idea to Innovation"]
+          }
+        ]
+      },
+      {
+        "id": "timeline",
+        "type": "div",
+        "props": { "className": "relative max-w-4xl mx-auto" },
+        "children": [
+          { "id": "timeline-line", "type": "div", "props": { "className": "absolute left-1/2 -ml-0.5 w-1 bg-[#FFD700] bg-opacity-30 h-full" } },
+          {
+            "id": "timeline-item-1",
+            "type": "div",
+            "props": { "className": "mb-12 flex justify-between items-center w-full" },
+            "children": [
+              { "id": "t1-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              {
+                "id": "t1-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#008080] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t1-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["1"] } ] },
+              {
+                "id": "t1-card",
+                "type": "div",
+                "props": { "className": "order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-l-4 border-[#E74C3C] animate-slideInRight" },
+                "children": [
+                  { "id": "t1-title", "type": "h3", "props": { "className": "font-bold text-[#008080] text-xl","style": {"fontFamily": "Playfair Display, serif"}}, "children": ["Inspiration Hunt"] },
+                  { "id": "t1-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#34495e] mt-2", "style": { "fontFamily": "Lora, serif" } }, "children": ["Every collection begins with exploration—seeking patterns, poetry, and colors in nature, architecture, and history that inspire our next unique piece."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-2",
+            "type": "div",
+            "props": { "className": "mb-12 flex justify-between flex-row-reverse items-center w-full" },
+            "children": [
+              { "id": "t2-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              {
+                "id": "t2-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#008080] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t2-number", "type": "h1", "props": { "className": "mx-auto text-white font-semibold text-2xl" }, "children": ["2"] } ] },
+              {
+                "id": "t2-card",
+                "type": "div",
+                "props": { "className": "order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-r-4 border-[#E74C3C] animate-slideInLeft" },
+                "children": [
+                  { "id": "t2-title", "type": "h3", "props": { "className": "font-bold text-[#008080] text-xl","style": {"fontFamily": "Playfair Display, serif"}}, "children": ["Material Selection"] },
+                  { "id": "t2-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#34495e] mt-2", "style": { "fontFamily": "Lora, serif" } }, "children": ["Careful hands and trained eyes select sustainable, character-rich materials—each one telling its own story, whether locally-sourced olivewood or vintage yarn."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-3","type": "div","props": { "className": "mb-12 flex justify-between items-center w-full" },"children": [
+              { "id": "t3-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t3-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#008080] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t3-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["3"] } ] },
+              { "id": "t3-card","type": "div","props": {"className": "order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-l-4 border-[#E74C3C] animate-slideInRight"},
+                "children": [
+                  { "id": "t3-title", "type": "h3", "props": { "className": "font-bold text-[#008080] text-xl","style": {"fontFamily": "Playfair Display, serif"}}, "children": ["Handcrafting"] },
+                  { "id": "t3-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#34495e] mt-2", "style": { "fontFamily": "Lora, serif" } }, "children": ["Our artisans transform raw materials through carving, weaving, and painting. Each groove and pattern is thoughtfully shaped, embodying our passion and expertise."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-4","type": "div","props": { "className": "mb-12 flex justify-between flex-row-reverse items-center w-full" },"children": [
+              { "id": "t4-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t4-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#008080] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t4-number", "type": "h1", "props": { "className": "mx-auto text-white font-semibold text-2xl" }, "children": ["4"] } ] },
+              { "id": "t4-card","type": "div","props": {"className": "order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-r-4 border-[#E74C3C] animate-slideInLeft"},
+                "children": [
+                  { "id": "t4-title", "type": "h3", "props": { "className": "font-bold text-[#008080] text-xl","style": {"fontFamily": "Playfair Display, serif"}}, "children": ["Finishing Touches"] },
+                  { "id": "t4-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#34495e] mt-2", "style": { "fontFamily": "Lora, serif" } }, "children": ["Every item is sanded, polished, and checked for both function and joy factor. The final detail may be a delicate engraving or a touch of gold leaf."] }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "timeline-item-5","type": "div","props": { "className": "flex justify-between items-center w-full" },"children": [
+              { "id": "t5-spacer", "type": "div", "props": { "className": "order-1 w-5/12" } },
+              { "id": "t5-badge", "type": "div", "props": { "className": "z-10 flex items-center order-1 bg-[#008080] shadow-xl w-14 h-14 rounded-full" }, "children": [ { "id": "t5-number", "type": "h1", "props": { "className": "mx-auto font-semibold text-2xl text-white" }, "children": ["5"] } ] },
+              { "id": "t5-card","type": "div","props": {"className": "order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 border-l-4 border-[#E74C3C] animate-slideInRight"},
+                "children": [
+                  { "id": "t5-title", "type": "h3", "props": { "className": "font-bold text-[#008080] text-xl","style": {"fontFamily": "Playfair Display, serif"}}, "children": ["Delivery & Story Sharing"] },
+                  { "id": "t5-text", "type": "p", "props": { "className": "text-base leading-snug tracking-wide text-[#34495e] mt-2", "style": { "fontFamily": "Lora, serif" } }, "children": ["Finished pieces are wrapped with care and accompanied by a note of provenance, connecting you directly to its journey and our atelier."] }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "action-section",
+        "type": "section",
+        "props": { "className": "mt-24", "style": { "backgroundColor": "#fdf6e3" } },
+        "children": [
+          {
+            "id": "action-header",
+            "type": "header",
+            "props": { "className": "text-center mb-12 animate-fadeInUp" },
+            "children": [
+              {"id": "action-title","type": "h2","props": {"className": "text-4xl md:text-5xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Before & After: The Olivewood Keepsake"] },
+              {"id": "action-subtitle","type": "p","props": {"className": "text-xl mt-2 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["A Transformation Rooted in Nature"] },
+              {"id": "action-description","type": "p","props": {"className": "text-base opacity-80 mt-4 max-w-2xl mx-auto text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["Watch as a rugged block of olivewood, marked by time and elements, is hand-carved, smoothed, and finished into a personalized keepsake box—a story of transformation, skill, and artistry."] }
+            ]
+          },
+          {
+            "id": "action-body",
+            "type": "div",
+            "props": { "className": "max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-xl border-t-4 border-[#FFD700] animate-fadeInUp" },
+            "children": [
+              { "id": "before-after-slider", "type": "BeforeAfterSlider",
+                "props": {
+                  "beforeImage": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+                  "afterImage": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=80",
+                  "className": "w-full max-w-4xl mx-auto h-[360px] md:h-[500px] border-4 border-[#FFD700] rounded-lg overflow-hidden shadow-lg",
+                  "style": { "width": "100%", "maxWidth": "1024px", "height": "420px" }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "success-section",
+        "type": "section",
+        "props": { "className": "mt-24 text-center", "style": {"backgroundColor": "#fdf6e3"}},
+        "children": [
+          {
+            "id": "success-header",
+            "type": "header",
+            "props": { "className": "mb-12 animate-fadeInUp" },
+            "children": [
+              {"id": "success-title","type": "h2","props": {"className": "text-4xl md:text-5xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["What Our Clients Say"] },
+              {"id": "success-subtitle","type": "p","props": {"className": "text-xl mt-2 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["Real voices—lasting impressions"] }
+            ]
+          },
+          {
+            "id": "success-grid","type": "div","props": {"className": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" },"children": [
+              {
+                "id": "card-1","type":"div","props": {"className": "bg-white rounded-lg shadow-xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 handcrafted-texture animate-fadeInUp"},
+                "children": [
+                  {"id": "card-1-img","type":"img","props": {"src": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80","alt": "Box testimonial","className": "w-full h-56 object-cover object-center"} },
+                  {"id": "card-1-body","type":"div","props":{"className": "p-6 text-left border-t-4 border-[#E74C3C]" },
+                    "children": [
+                      {"id": "card-1-quote","type": "p","props": {"className": "italic mb-4 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["‘When I opened the package and saw the keepsake box, I was speechless. The wood’s unique swirls and the engraved inscription made my mother's birthday unforgettable.’"]},
+                      {"id": "card-1-author","type": "h3","props": {"className":"font-semibold text-lg text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children":["– Priya S."]},
+                      {"id": "card-1-meta","type": "p","props": {"className": "text-[#008080] opacity-80 mt-1"},"children": ["Gift: Custom Olivewood Keepsake"]}
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "card-2","type": "div","props": {"className": "bg-white rounded-lg shadow-xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 handcrafted-texture animate-fadeInUp"},
+                "children": [
+                  {"id": "card-2-img","type":"img","props": {"src": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=600&q=80","alt": "Vase testimonial","className": "w-full h-56 object-cover object-center"} },
+                  {"id": "card-2-body","type":"div","props": {"className": "p-6 text-left border-t-4 border-[#FFD700]" },
+                    "children": [
+                      {"id": "card-2-quote","type": "p","props": {"className":"italic mb-4 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["‘The ceramic vase transformed our entryway. Everyone who visits asks about it, and I love sharing the story of its creation!’"]},
+                      {"id": "card-2-author","type": "h3","props": {"className":"font-semibold text-lg text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children":["– Marco P."]},
+                      {"id": "card-2-meta","type": "p","props": {"className": "text-[#008080] opacity-80 mt-1"},"children": ["Home: Commissioned Ceramic Vase"]}
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "card-3","type": "div","props": {"className": "bg-white rounded-lg shadow-xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 handcrafted-texture animate-fadeInUp"},
+                "children": [
+                  {"id": "card-3-img","type":"img","props": {"src": "https://images.unsplash.com/photo-1482062364825-616fd23b8fc1?auto=format&fit=crop&w=600&q=80","alt": "Textile testimonial","className": "w-full h-56 object-cover object-center"} },
+                  {"id": "card-3-body","type": "div","props": {"className": "p-6 text-left border-t-4 border-[#E74C3C]" },
+                    "children": [
+                      {"id": "card-3-quote","type": "p","props": {"className":"italic mb-4 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["‘I never imagined a handwoven blanket could become so meaningful. It’s brought warmth to our living room in ways beyond comfort.’"]},
+                      {"id": "card-3-author","type": "h3","props": {"className":"font-semibold text-lg text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children":["– Rebecca & Jodi"]},
+                      {"id": "card-3-meta","type": "p","props": {"className": "text-[#008080] opacity-80 mt-1"},"children": ["Home: Handwoven Blanket"]}
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "awards-section",
+        "type": "section",
+        "props": { "className": "mt-24 p-12 rounded-lg shadow-xl handcrafted-texture border-t-4 border-[#FFD700]", "style": { "backgroundColor": "#fbe9e7" } },
+        "children": [
+          {
+            "id": "awards-header",
+            "type": "header",
+            "props": { "className": "text-center mb-12 animate-fadeInUp" },
+            "children": [
+              {"id": "awards-title","type": "h2","props": {"className": "text-4xl md:text-5xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Recognition & Awards"] },
+              {"id": "awards-subtitle","type": "p","props": {"className": "text-xl mt-2 text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["Celebrated Achievements in Craft"] }
+            ]
+          },
+          {
+            "id": "awards-list","type": "div","props": {"className": "max-w-4xl mx-auto divide-y divide-[#FFD700] divide-opacity-30" },"children": [
+              {
+                "id": "award-1","type": "div","props": {"className": "flex items-center py-6 animate-fadeInUp" },
+                "children": [
+                  {"id": "award-1-icon-wrap","type": "div","props": {"className": "flex-shrink-0 w-14 h-14 bg-[#FFD700] bg-opacity-10 rounded-full flex items-center justify-center mr-6" },"children": [ {"id": "award-1-icon","type": "span","props": {"className": "material-icons text-[#FFD700]","style": {"fontSize": "2.5rem"}},"children": [] }] },
+                  {"id": "award-1-text","type": "div","props": {"className": "flex-grow" },"children": [ {"id": "award-1-title", "type": "h3", "props": {"className": "text-xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Artisan Mastery Prize"] }, {"id": "award-1-org", "type": "p", "props": {"className": "text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["International Handcraft Festival"] } ] },
+                  { "id": "award-1-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-1-year-text", "type": "p", "props": { "className": "text-lg font-semibold text-[#E74C3C]" }, "children": ["2023"] } ] }
+                ]
+              },
+              {
+                "id": "award-2","type": "div","props": {"className": "flex items-center py-6 animate-fadeInUp" },
+                "children": [
+                  {"id": "award-2-icon-wrap","type": "div","props": {"className": "flex-shrink-0 w-14 h-14 bg-[#FFD700] bg-opacity-10 rounded-full flex items-center justify-center mr-6" },"children": [ {"id": "award-2-icon","type": "span","props": {"className": "material-icons text-[#FFD700]","style": {"fontSize": "2.5rem"}},"children": [] }] },
+                  {"id": "award-2-text","type": "div","props": {"className": "flex-grow" },"children": [ {"id": "award-2-title", "type": "h3", "props": {"className": "text-xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Eco-Innovation Award"] }, {"id": "award-2-org", "type": "p", "props": {"className": "text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["EarthWise Guild"] } ] },
+                  { "id": "award-2-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-2-year-text", "type": "p", "props": { "className": "text-lg font-semibold text-[#E74C3C]" }, "children": ["2022"] } ] }
+                ]
+              },
+              {
+                "id": "award-3","type": "div","props": {"className": "flex items-center py-6 animate-fadeInUp" },
+                "children": [
+                  {"id": "award-3-icon-wrap","type": "div","props": {"className": "flex-shrink-0 w-14 h-14 bg-[#FFD700] bg-opacity-10 rounded-full flex items-center justify-center mr-6" },"children": [ {"id": "award-3-icon","type": "span","props": {"className": "material-icons text-[#FFD700]","style": {"fontSize": "2.5rem"}},"children": [] }] },
+                  {"id": "award-3-text","type": "div","props": {"className": "flex-grow" },"children": [ {"id": "award-3-title", "type": "h3", "props": {"className": "text-xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Local Hero – Community Choice"] }, {"id": "award-3-org", "type": "p", "props": {"className": "text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["River Valley Showcase"] } ] },
+                  { "id": "award-3-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-3-year-text", "type": "p", "props": { "className": "text-lg font-semibold text-[#E74C3C]" }, "children": ["2021"] } ] }
+                ]
+              },
+              {
+                "id": "award-4","type": "div","props": {"className": "flex items-center py-6 animate-fadeInUp" },
+                "children": [
+                  {"id": "award-4-icon-wrap","type": "div","props": {"className": "flex-shrink-0 w-14 h-14 bg-[#FFD700] bg-opacity-10 rounded-full flex items-center justify-center mr-6" },"children": [ {"id": "award-4-icon","type": "span","props": {"className": "material-icons text-[#FFD700]","style": {"fontSize": "2.5rem"}},"children": [] }] },
+                  {"id": "award-4-text","type": "div","props": {"className": "flex-grow" },"children": [ {"id": "award-4-title", "type": "h3", "props": {"className": "text-xl font-bold text-[#008080]","style": {"fontFamily": "Playfair Display, serif"}},"children": ["Design & Tradition Honor"] }, {"id": "award-4-org", "type": "p", "props": {"className": "text-[#34495e]","style": {"fontFamily": "Lora, serif"}},"children": ["National Arts Foundation"] } ] },
+                  { "id": "award-4-year", "type": "div", "props": { "className": "text-right" }, "children": [ { "id": "award-4-year-text", "type": "p", "props": { "className": "text-lg font-semibold text-[#E74C3C]" }, "children": ["2020"] } ] }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cta-section",
+        "type": "section",
+        "props": {
+          "className": "mt-24 text-center p-12 rounded-lg handcrafted-texture bg-[#fdf6e3]",
+          "style": { "backgroundColor": "#fdf6e3" }
+        },
+        "children": [
+          {
+            "id": "cta-title",
+            "type": "h2",
+            "props": { "className": "text-4xl md:text-5xl font-bold text-[#008080] mb-4 animate-fadeInUp", "style": { "fontFamily": "Playfair Display, serif" } },
+            "children": ["Begin Your Own Story"]
+          },
+          {
+            "id": "cta-text",
+            "type": "p",
+            "props": { "className": "mt-4 max-w-2xl mx-auto text-lg opacity-90 text-[#34495e] animate-fadeInUp", "style": { "fontFamily": "Lora, serif" } },
+            "children": ["Commission a unique piece or explore our one-of-a-kind creations."]
+          },
+          {
+            "id": "cta-buttons",
+            "type": "div",
+            "props": { "className": "mt-8 flex justify-center gap-4 animate-fadeInUp" },
+            "children": [
+              {
+                "id": "cta-commission",
+                "type": "a",
+                "props": { "href": "#commission", "className": "bg-[#008080] text-white font-semibold py-3 px-8 rounded-md shadow-md hover:bg-[#FFD700] hover:text-[#008080] transition-all duration-300 transform hover:scale-105 hover:shadow-lg", "style": { "fontFamily": "Lora, serif" } },
+                "children": ["Commission My Piece"]
+              },
+              {
+                "id": "cta-explore",
+                "type": "a",
+                "props": { "href": "#shop", "className": "bg-transparent border-2 border-[#008080] text-[#008080] font-semibold py-3 px-8 rounded-md hover:bg-white hover:text-[#008080] transition-all duration-300 transform hover:scale-105 hover:shadow-md", "style": { "fontFamily": "Lora, serif" } },
+                "children": ["Browse the Shop"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
