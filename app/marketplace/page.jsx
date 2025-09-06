@@ -317,7 +317,9 @@ export default function Marketplace() {
                 View
               </Button>
             </Link>
-            <BuyButton price={product.price} />
+            <Link href={`/marketplace/${product.id}`}>
+              <BuyButton price={product.price} />
+            </Link>
           </div>
         </div>
       </div>
