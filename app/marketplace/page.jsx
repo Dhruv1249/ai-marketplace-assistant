@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Search, Filter, Star, Eye, Plus, Loader2 } from 'lucide-react';
+import { Search, Filter, Star, Eye, Plus } from 'lucide-react';
 import styled from 'styled-components';
 import GameOne from '@/components/animated icon/GameOn';
+import Loading from '@/app/loading';
 
 // ✅ Custom Buy Button with Tooltip
 const BuyButton = ({ price }) => {
@@ -323,14 +324,7 @@ export default function Marketplace() {
   );
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading marketplace...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

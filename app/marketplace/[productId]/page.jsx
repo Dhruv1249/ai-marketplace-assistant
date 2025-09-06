@@ -15,11 +15,11 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
-  Globe,
-  Loader2
+  Globe
 } from 'lucide-react';
 import HeartButton from '@/components/animated icon/HeartButton';
 import AddToCartButton from '@/components/animated icon/AddToCartButton';
+import Loading from '@/app/loading';
 
 export default function ProductPage() {
   const params = useParams();
@@ -188,14 +188,7 @@ export default function ProductPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading product...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Error state

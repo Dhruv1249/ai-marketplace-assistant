@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { ArrowLeft, FileText, Loader2 } from 'lucide-react';
+import { ArrowLeft, FileText } from 'lucide-react';
 import UniversalPreviewPage from '@/components/shared/UniversalPreviewPage';
+import Loading from '@/app/loading';
 
 export default function CustomProductPage() {
   const params = useParams();
@@ -97,14 +98,7 @@ export default function CustomProductPage() {
   }, [productId]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading custom page...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error || !productData?.custom) {

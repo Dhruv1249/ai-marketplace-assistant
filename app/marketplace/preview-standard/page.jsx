@@ -14,11 +14,11 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
-  Globe,
-  Loader2
+  Globe
 } from 'lucide-react';
 import HeartButton from '@/components/animated icon/HeartButton';
 import AddToCartButton from '@/components/animated icon/AddToCartButton';
+import Loading from '@/app/loading';
 
 export default function StandardPreviewPage() {
   // All hooks must be at the top
@@ -190,14 +190,7 @@ export default function StandardPreviewPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Loading preview...</p>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!productData) {
