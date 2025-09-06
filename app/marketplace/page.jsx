@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { Search, Filter, Star, Eye, Plus, Loader2 } from 'lucide-react';
 import styled from 'styled-components';
+import GameOne from '@/components/animated icon/GameOn';
 
 // ✅ Custom Buy Button with Tooltip
 const BuyButton = ({ price }) => {
@@ -346,16 +347,11 @@ export default function Marketplace() {
                 Discover amazing products created with AI assistance
               </p>
             </div>
-            <div className="mt-4 md:mt-0">
-             <Link href="/create">
-                <Button
-                  className="bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 border-0 shadow-none hover:from-indigo-300 hover:to-purple-400"
-                >
-                  <Plus className="mr-2" size={16} />
+                <GameOne>
                   Create Product
-                </Button>
-              </Link>
-            </div>
+                </GameOne>
+              
+            
           </div>
         </div>
       </div>
