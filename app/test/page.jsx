@@ -896,7 +896,7 @@ export default function SellerInfoTestPage() {
           storageKey="sellerInfoTestPreviewData"
           title="Test Preview"
           helpText="This is a test preview with sample data. Use controls above to modify fields."
-          showHeader={!showControls}
+          showHeader={showControls}
           showEditingUI={true}
         />
       </div>
