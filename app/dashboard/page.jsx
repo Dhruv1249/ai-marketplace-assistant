@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { Button } from "@/components/ui";
 import Image from "next/image";
+import Input from '@/components/animated icon/Search';
 
 // NOTE: For realistic uploads, you would also import Firebase Storage like this:
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -378,11 +379,8 @@ export default function Dashboard() {
         <div className={`sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
           <div className={`md:hidden font-semibold ${theme === 'dark' ? 'text-white' : ''}`}>Dashboard</div>
           <div className="flex-1 max-w-xl hidden md:block">
-            <div className="w-full">
-              <input
-                placeholder="Search…"
-                className={`w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400 ${theme === 'dark' ? 'bg-gray-900 border-gray-700 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
-              />
+            <div className="w-full ml-4 md:ml-33">
+              <Input />
             </div>
           </div>
           <div className="flex items-center gap-3">

@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Button = () => {
+const Button = ({ width = 240, height = 56, fontSize = 14, href = '/create', children = 'Create Product' }) => {
   return (
     <StyledWrapper>
       <div className="container">
-        <a href="/create" className="button type--C">
+        <a href={href} style={{ width: `${width}px`, height: `${height}px`, fontSize: `${fontSize}px` }} className="button type--C">
           <div className="button__line" />
           <div className="button__line" />
-          <span className="button__text">Create Product</span>
+          <span className="button__text">{children}</span>
           <div className="button__drow1" />
           <div className="button__drow2" />
         </a>
