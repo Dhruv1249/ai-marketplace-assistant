@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Button, Input } from '@/components/ui';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
 import TryOutPlatform from '@/components/animated icon/TryOutPlatform';
+import SocalsIcons from '@/components/animated icon/SocalsIcons';
 
 export default function Contact() {
   const contactMethods = [
@@ -287,6 +288,13 @@ export default function Contact() {
                     → Learn About Us
                   </Link>
                 </div>
+              </div>
+              {/* Socials */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Socials
+                </h3>
+                <SocalsIcons />
               </div>
             </div>
           </div>
