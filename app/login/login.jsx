@@ -1,5 +1,6 @@
   "use client";
   import React, { useRef, useEffect, useState } from 'react';
+  import Script from 'next/script';
   import { gsap } from 'gsap';
   import { motion, useAnimation } from "framer-motion";
   import { usePathname } from "next/navigation";
@@ -17,24 +18,7 @@
   } from "firebase/auth";
   // ------------------------------
 
-  const livelyBlobs = [
-    {
-      style:
-        'absolute z-0 top-0 left-0 w-44 h-44 bg-gradient-to-tr from-indigo-300 to-blue-200 rounded-full filter blur-2xl opacity-60 rotate-12',
-      gsap: { x: 40, y: 80, duration: 7, repeat: -1, yoyo: true, ease: 'sine.inOut' },
-    },
-    {
-      style:
-        'absolute z-0 bottom-0 right-0 w-52 h-52 bg-gradient-to-tr from-purple-200 to-pink-200 rounded-full filter blur-2xl opacity-70 rotate-6',
-      gsap: { x: -40, y: -60, duration: 9, repeat: -1, yoyo: true, ease: 'sine.inOut' },
-    },
-    {
-      style:
-        'absolute z-0 top-1/2 left-0 w-24 h-24 bg-gradient-to-tr from-amber-100 to-red-100 rounded-full filter blur-xl opacity-50 rotate-2',
-      gsap: { x: 40, y: -30, rotation: 18, duration: 11, repeat: -1, yoyo: true, ease: 'sine.inOut' },
-    },
-  ];
-
+  
   // Cable Animated Icon
   const DURATION = 0.25;
   const calculateDelay = (i) => (i === 0 ? 0.1 : i * DURATION + 0.1);
@@ -180,8 +164,7 @@
     const loginBtnRef = useRef(null);
     const socialBtnsRef = useRef([]);
     const footerLinksRef = useRef([]);
-    const bgBlobsRef = useRef([]);
-
+    
     // --- Auth state (added) ---
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -226,14 +209,17 @@ const handleLogout = async () => {
 
     // ---------------------------
 
-    // Background blob animations
+    
+    // Disable page scrolling while on the login page
     useEffect(() => {
-      livelyBlobs.forEach((blob, i) => {
-        const element = bgBlobsRef.current[i];
-        if (element) {
-          gsap.to(element, blob.gsap);
-        }
-      });
+      const previousHtmlOverflow = document.documentElement.style.overflow;
+      const previousBodyOverflow = document.body.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.documentElement.style.overflow = previousHtmlOverflow || '';
+        document.body.style.overflow = previousBodyOverflow || '';
+      };
     }, []);
 
     // Button scale on hover/tap
@@ -265,25 +251,7 @@ const handleLogout = async () => {
       };
     }, []);
 
-    // Card wiggle on hover
-    useEffect(() => {
-      if (cardRef.current) {
-        const card = cardRef.current;
-        let tl;
-        const onEnter = () => {
-          tl = gsap.timeline();
-          tl.to(card, {
-            rotate: 1.5,
-            duration: 0.12,
-            yoyo: true,
-            repeat: 1
-          }).to(card, { rotate: -2.5, duration: 0.10, yoyo: true, repeat: 1 }).to(card, { rotate: 0, duration: 0.2 });
-        };
-        card.addEventListener('pointerenter', onEnter);
-        return () => card.removeEventListener('pointerenter', onEnter);
-      }
-    }, []);
-
+    
     // Input focus glow
     useEffect(() => {
       const addGlow = e => gsap.to(e.target, { boxShadow: '0 0 0 4px #a5b4fc55', duration: 0.2 });
@@ -436,127 +404,133 @@ useEffect(() => {
     // ------------------------------
 
     return (
-      <div className="flex min-h-screen bg-gradient-to-r from-indigo-200 to-purple-200 font-primarylw relative" style={{overflow:'hidden'}}>
-        {livelyBlobs.map((blob, i) => (
-          <div
-            key={i}
-            ref={el => (bgBlobsRef.current[i] = el)}
-            className={blob.style}
-            style={{ pointerEvents: 'none' }}
-          />
-        ))}
-        {/* LOGIN CARD */}
-        <div key={pathname} ref={cardRef} className="z-10 w-full max-w-md m-auto bg-white rounded p-8 md:p-12 relative border border-gray-200 rounded-xl shadow-sm">
-          <div className="w-full flex items-center justify-center py-4">
-            <div ref={titleRef} className="text-center -mt-4 mb-2">
-              <h2 className="text-gray-900 text-2xl font-semibold">Login Here</h2>
-              {noticeMsg && <p className="text-sm text-emerald-600 mt-2">{noticeMsg}</p>}
-              {/* Show auth error if any (added) */}
-              {errorMsg && <p className="text-sm text-red-500 mt-2">{errorMsg}</p>}
-            </div>
+      <div className="flex h-screen bg-white font-primarylw relative overflow-hidden">
+        <Script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module" strategy="afterInteractive" />
+                <div className="z-10 flex w-full">
+          <div className="hidden md:flex w-1/2 items-center justify-center p-6">
+            <dotlottie-wc
+              src="https://lottie.host/a3c06cd4-e5d4-4da8-bb7c-a2cb74e6c66b/sSky3a3mo9.lottie"
+              style={{ width: 520, height: 520 }}
+              speed="1"
+              autoplay
+              loop
+            ></dotlottie-wc>
           </div>
-          {/* wire form submit to handleLogin */}
-          <form autoComplete="off" onSubmit={handleLogin}>
-            <div ref={userFieldRef}>
-              <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-                <User width={22} height={22} stroke="#60a5fa" strokeWidth={2} />
-                <label className="text-gray-700 text-sm" htmlFor="username">Username</label>
+          <div className="w-full md:w-1/2 flex items-center justify-center p-6">
+            {/* LOGIN CARD */}
+            <div key={pathname} ref={cardRef} className="z-10 w-full max-w-md bg-white rounded p-8 md:p-12 relative border border-gray-200 rounded-xl shadow-sm">
+              <div className="w-full flex items-center justify-center py-4">
+                <div ref={titleRef} className="text-center -mt-4 mb-2">
+                  <h2 className="text-gray-900 text-2xl font-semibold">Login Here</h2>
+                  {noticeMsg && <p className="text-sm text-emerald-600 mt-2">{noticeMsg}</p>}
+                  {/* Show auth error if any (added) */}
+                  {errorMsg && <p className="text-sm text-red-500 mt-2">{errorMsg}</p>}
+                </div>
               </div>
-              <input
-                className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-                type="text"
-                name="username"
-                id="username"
-                ref={emailInputRef}
-                autoComplete="off"
-                // --- bind to email state (added) ---
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div ref={passFieldRef}>
-              <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-                <Check width={22} height={22} stroke="#60d394" strokeWidth={2} />
-                <label className="text-gray-700" htmlFor="password">Password</label>
-              </div>
-              <input
-                className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-                type="password"
-                name="password"
-                id="password"
-                autoComplete="off"
-                // --- bind to password state (added) ---
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="relative" ref={loginBtnRef}>
-              {welcomeName && (
+              {/* wire form submit to handleLogin */}
+              <form autoComplete="off" onSubmit={handleLogin}>
+                <div ref={userFieldRef}>
+                  <div className="flex flex-row items-center ml-1 mb-1 gap-1">
+                    <User width={22} height={22} stroke="#60a5fa" strokeWidth={2} />
+                    <label className="text-gray-700 text-sm" htmlFor="username">Username</label>
+                  </div>
+                  <input
+                    className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+                    type="text"
+                    name="username"
+                    id="username"
+                    ref={emailInputRef}
+                    autoComplete="off"
+                    // --- bind to email state (added) ---
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div ref={passFieldRef}>
+                  <div className="flex flex-row items-center ml-1 mb-1 gap-1">
+                    <Check width={22} height={22} stroke="#60d394" strokeWidth={2} />
+                    <label className="text-gray-700" htmlFor="password">Password</label>
+                  </div>
+                  <input
+                    className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+                    type="password"
+                    name="password"
+                    id="password"
+                    autoComplete="off"
+                    // --- bind to password state (added) ---
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+                <div className="relative" ref={loginBtnRef}>
+                  {welcomeName && (
   <div className="font-semibold text-blue-800 text-10xl mb-3 text-center">
     Welcome, {welcomeName}!
   </div>
 )}
-              <button
-                ref={loginBtnRef}
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-400 to-purple-300 hover:from-indigo-700 hover:to-indigo-200 text-white font-semibold text-base md:text-lg py-3 px-5 mb-6 mt-4 cursor-pointer rounded-full shadow-md hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-200/60 transition-all duration-200"
-                style={{ letterSpacing: '0.04em', boxShadow: '0 4px 24px 0 rgba(53,39,145,0.10)' }}
-              >
-                <Cable width={22} height={22} stroke="#fff" strokeWidth={1.7} />
-                {loading ? "Please wait..." : "Sign in"}
-              </button>
-            </div>
-            <div className="flex gap-1">
-              <button
-                ref={el => (socialBtnsRef.current[0] = el)}
-                type="button"
-                onClick={handleGoogle} // wired Google sign-in (added)
-                className="w-full border border-blue-700 hover:bg-blue-700 hover:text-white text-gray-700 text-sm py-2 px-4 mb-6 cursor-pointer rounded-full flex items-center justify-center gap-1 transition-transform"
-              >
-                <svg className="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 48 48" version="1.1">
-                  <g id="Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                    <g id="Color-" transform="translate(-401.000000, -860.000000)">
-                      <g id="Google" transform="translate(401.000000, 860.000000)">
-                        <path d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24" id="Fill-1" fill="#FBBC05"></path>
-                        <path d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333" id="Fill-2" fill="#EB4335"></path>
-                        <path d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323182,37.8666667 23.7136364,37.8666667" id="Fill-3" fill="#34A853"></path>
-                        <path d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24" id="Fill-4" fill="#4285F4"></path>
+                  <button
+                    ref={loginBtnRef}
+                    type="submit"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-400 to-purple-300 hover:from-indigo-700 hover:to-indigo-200 text-white font-semibold text-base md:text-lg py-3 px-5 mb-6 mt-4 cursor-pointer rounded-full shadow-md hover:shadow-xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-200/60 transition-all duration-200"
+                    style={{ letterSpacing: '0.04em', boxShadow: '0 4px 24px 0 rgba(53,39,145,0.10)' }}
+                  >
+                    <Cable width={22} height={22} stroke="#fff" strokeWidth={1.7} />
+                    {loading ? "Please wait..." : "Sign in"}
+                  </button>
+                </div>
+                <div className="flex gap-1">
+                  <button
+                    ref={el => (socialBtnsRef.current[0] = el)}
+                    type="button"
+                    onClick={handleGoogle} // wired Google sign-in (added)
+                    className="w-full border border-blue-700 hover:bg-blue-700 hover:text-white text-gray-700 text-sm py-2 px-4 mb-6 cursor-pointer rounded-full flex items-center justify-center gap-1 transition-transform"
+                  >
+                    <svg className="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 48 48" version="1.1">
+                      <g id="Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                        <g id="Color-" transform="translate(-401.000000, -860.000000)">
+                          <g id="Google" transform="translate(401.000000, 860.000000)">
+                            <path d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24" id="Fill-1" fill="#FBBC05"></path>
+                            <path d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333" id="Fill-2" fill="#EB4335"></path>
+                            <path d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323182,37.8666667 23.7136364,37.8666667" id="Fill-3" fill="#34A853"></path>
+                            <path d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24" id="Fill-4" fill="#4285F4"></path>
+                          </g>
+                        </g>
                       </g>
-                    </g>
-                  </g>
-                </svg>
-                <span className="hidden md:flex">Google</span>
-              </button>
-              <button
-                ref={el => (socialBtnsRef.current[1] = el)}
-                type="button"
-                onClick={handleGithub}
-                // GitHub left unconnected intentionally — you can wire OAuth if desired
+                    </svg>
+                    <span className="hidden md:flex">Google</span>
+                  </button>
+                  <button
+                    ref={el => (socialBtnsRef.current[1] = el)}
+                    type="button"
+                    onClick={handleGithub}
+                    // GitHub left unconnected intentionally — you can wire OAuth if desired
                className="w-full bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 text-sm px-4 mb-6 py-1 cursor-pointer rounded-full flex items-center justify-center gap-1 transition-transform"
 >
-                {/* GitHub icon SVG - white */}
-                <svg className="size-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.091.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.621.069-.609.069-.609 1.004.07 1.533 1.031 1.533 1.031.892 1.532 2.341 1.09 2.91.834.09-.646.35-1.09.636-1.34-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.104-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.54 9.54 0 0 1 2.504.338c1.909-1.296 2.748-1.026 2.748-1.026.545 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.565 4.945.359.31.678.92.678 1.855 0 1.338-.012 2.419-.012 2.748 0 .267.18.577.688.479C19.138 20.2 22 16.448 22 12.02 22 6.484 17.523 2 12 2Z"
-                    fill="#18181b"
-                  />
-                </svg>
-                <span className="hidden md:flex">GitHub</span>
-              </button>
-            </div>
-          </form>
-          <footer className="flex justify-between">
-            <a ref={el => (footerLinksRef.current[0] = el)} className="text-blue-600 hover:text-blue-800 text-xs md:text-sm float-left" href="#">Forgot Password?</a>
-           <button
+                    {/* GitHub icon SVG - white */}
+                    <svg className="size-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.185 6.839 9.504.5.091.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.621.069-.609.069-.609 1.004.07 1.533 1.031 1.533 1.031.892 1.532 2.341 1.09 2.91.834.09-.646.35-1.09.636-1.34-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.104-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.54 9.54 0 0 1 2.504.338c1.909-1.296 2.748-1.026 2.748-1.026.545 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.847-2.337 4.695-4.565 4.945.359.31.678.92.678 1.855 0 1.338-.012 2.419-.012 2.748 0 .267.18.577.688.479C19.138 20.2 22 16.448 22 12.02 22 6.484 17.523 2 12 2Z"
+                        fill="#18181b"
+                      />
+                    </svg>
+                    <span className="hidden md:flex">GitHub</span>
+                  </button>
+                </div>
+              </form>
+              <footer className="flex justify-between">
+                <a ref={el => (footerLinksRef.current[0] = el)} className="text-blue-600 hover:text-blue-800 text-xs md:text-sm float-left" href="#">Forgot Password?</a>
+               <button
   ref={el => (footerLinksRef.current[1] = el)}
   onClick={openSignup} 
   className="text-blue-600 hover:text-blue-800 text-xs md:text-sm float-right bg-transparent border-0 p-0"
 >
   Create Account
 </button>
-          </footer>
+              </footer>
+            </div>
+          </div>
         </div>
         {showSignup && (
   <div className="fixed inset-0 z-20 flex items-center justify-center">
