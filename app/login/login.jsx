@@ -2,6 +2,7 @@
   import React, { useRef, useEffect, useState } from 'react';
   import Script from 'next/script';
   import { gsap } from 'gsap';
+  import LoginInput from "../../components/animated icon/LoginInputs";
   import { motion, useAnimation } from "framer-motion";
   import { usePathname } from "next/navigation";
   // --- Firebase imports (added) ---
@@ -429,37 +430,27 @@ useEffect(() => {
               </div>
               {/* wire form submit to handleLogin */}
               <form autoComplete="off" onSubmit={handleLogin}>
-                <div ref={userFieldRef}>
-                  <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-                    <User width={22} height={22} stroke="#60a5fa" strokeWidth={2} />
-                    <label className="text-gray-700 text-sm" htmlFor="username">Username</label>
-                  </div>
-                  <input
-                    className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-                    type="text"
+                <div ref={userFieldRef} className="mb-6">
+                  <LoginInput
+                    inputRef={emailInputRef}
                     name="username"
                     id="username"
-                    ref={emailInputRef}
-                    autoComplete="off"
-                    // --- bind to email state (added) ---
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Username"
+                    autoComplete="off"
                   />
                 </div>
                 <div ref={passFieldRef}>
-                  <div className="flex flex-row items-center ml-1 mb-1 gap-1">
-                    <Check width={22} height={22} stroke="#60d394" strokeWidth={2} />
-                    <label className="text-gray-700" htmlFor="password">Password</label>
-                  </div>
-                  <input
-                    className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
+
+                  <LoginInput
                     type="password"
                     name="password"
                     id="password"
-                    autoComplete="off"
-                    // --- bind to password state (added) ---
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    autoComplete="off"
                   />
                 </div>
                 <div className="relative" ref={loginBtnRef}>
