@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button } from '@/components/ui';
+import StartCreatingButton from '@/components/animated icon/StartCreating';
 import { Wand2, Target, Users, Lightbulb, ArrowRight } from 'lucide-react';
 import dynamic from "next/dynamic";
 
@@ -289,10 +290,9 @@ export default function About() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/create">
-              <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                <Wand2 className="mr-2" size={20} />
+              <StartCreatingButton className="w-full sm:w-auto">
                 Start Creating
-              </Button>
+              </StartCreatingButton>
             </Link>
             <Link href="/contact">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600">
