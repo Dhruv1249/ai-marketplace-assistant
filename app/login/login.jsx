@@ -422,7 +422,7 @@ useEffect(() => {
             <div key={pathname} ref={cardRef} className="z-10 w-full max-w-md bg-white rounded p-8 md:p-12 relative border border-gray-200 rounded-xl shadow-sm">
               <div className="w-full flex items-center justify-center py-4">
                 <div ref={titleRef} className="text-center -mt-4 mb-2">
-                  <h2 className="text-gray-900 text-2xl font-semibold">Login Here</h2>
+                  <h2 className="text-gray-900 text-2xl ">Sign in</h2>
                   {noticeMsg && <p className="text-sm text-emerald-600 mt-2">{noticeMsg}</p>}
                   {/* Show auth error if any (added) */}
                   {errorMsg && <p className="text-sm text-red-500 mt-2">{errorMsg}</p>}
