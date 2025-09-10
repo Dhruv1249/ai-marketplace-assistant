@@ -441,7 +441,7 @@ useEffect(() => {
                     autoComplete="off"
                   />
                 </div>
-                <div ref={passFieldRef}>
+                <div ref={passFieldRef} className="mb-6">
 
                   <LoginInput
                     type="password"
@@ -540,59 +540,47 @@ useEffect(() => {
   {signupError && (
     <p className="text-sm text-red-600 mb-3">{signupError}</p>
   )}
-  <div className="mb-1">
-    <label htmlFor="su-username" className="block text-sm text-gray-700 mb-1">
-      Username
-    </label>
-    <input
+  <div className="mb-4">
+    <LoginInput
       id="su-username"
+      name="su-username"
       type="text"
       value={signupUsername}
       onChange={(e) => setSignupUsername(e.target.value)}
-      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-      placeholder="Your username"
+      placeholder="Username"
       autoComplete="off"
     />
   </div>
-  <div className="mb-1">
-    <label htmlFor="su-email" className="block text-sm text-gray-700 mb-1">
-      Email
-    </label>
-    <input
+  <div className="mb-4">
+    <LoginInput
       id="su-email"
+      name="su-email"
       type="email"
       value={signupEmail}
       onChange={(e) => setSignupEmail(e.target.value)}
-      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-      placeholder="you@example.com"
+      placeholder="Email"
       autoComplete="off"
     />
   </div>
-  <div className="mb-1">
-    <label htmlFor="su-password" className="block text-sm text-gray-700 mb-1">
-      Password
-    </label>
-    <input
+  <div className="mb-4">
+    <LoginInput
       id="su-password"
+      name="su-password"
       type="password"
       value={signupPassword}
       onChange={(e) => setSignupPassword(e.target.value)}
-      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-      placeholder="••••••••"
+      placeholder="Password"
       autoComplete="new-password"
     />
   </div>
-  <div className="mb-5">
-    <label htmlFor="su-confirmpassword" className="block text-sm text-gray-700 mb-1">
-      Confirm Password
-    </label>
-    <input
+  <div className="mb-4">
+    <LoginInput
       id="su-confirmpassword"
+      name="su-confirmpassword"
       type="password"
       value={signupConfirmPassword}
       onChange={(e) => setSignupConfirmPassword(e.target.value)}
-      className="w-full p-2 pl-3 mb-4 text-gray-900 border-b-2 border-gray-300 bg-white outline-none focus:border-blue-500 rounded-full transition-shadow"
-      placeholder="Re-enter password"
+      placeholder="Confirm Password"
       autoComplete="new-password"
     />
   </div>
