@@ -5,6 +5,7 @@ import { Button, Input } from '../ui';
 import { Wand2, Loader2 } from 'lucide-react';
 import LaunchButton from '../animated icon/LaunchButton';
 import BackButton from '../animated icon/BackButton';
+import GenerateButton from '../animated icon/GenerateButton';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
@@ -402,10 +403,10 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
               <BackButton variant="outline" onClick={handleCancelGenerate}>
                 Cancel
               </BackButton>
-              <Button onClick={handleConfirmGenerate}>
+              <GenerateButton onClick={handleConfirmGenerate}>
                 <Wand2 className="mr-2" size={16} />
                 {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}
-              </Button>
+              </GenerateButton>
             </div>
           </div>
         </div>
