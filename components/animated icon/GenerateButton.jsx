@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const GenerateButton = ({ onClick, children, ...props }) => {
+const Button = () => {
   return (
     <StyledWrapper>
-      <button onClick={onClick} {...props}>
+      <button>
         <span className="circle1" />
         <span className="circle2" />
         <span className="circle3" />
         <span className="circle4" />
         <span className="circle5" />
-        <span className="text">{children}</span>
+        <span className="text">Generate Content</span>
       </button>
     </StyledWrapper>
   );
@@ -22,7 +22,7 @@ const StyledWrapper = styled.div`
     font-weight: bold;
     color: white;
     background-color: #171717;
-    padding: 0.8em 1.6em;
+    padding: 0.65em 2em;
     border: none;
     border-radius: .6rem;
     position: relative;
@@ -35,21 +35,15 @@ const StyledWrapper = styled.div`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    height: 26px;
-    width: 26px;
+    height: 30px;
+    width: 30px;
     background-color: #0c66ed;
     border-radius: 50%;
-    transition: transform 1.2s ease;
-    z-index: 0;
-    will-change: transform;
+    transition: .6s ease;
   }
 
   button span:nth-child(6) {
     position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
   button span:nth-child(1) {
@@ -73,8 +67,8 @@ const StyledWrapper = styled.div`
   }
 
   button:hover span:not(:nth-child(6)) {
-    transform: translate(-50%, -50%) scale(12);
-    transition: transform 1.2s ease;
+    transform: translate(-50%, -50%) scale(4);
+    transition: 1.5s ease;
   }`;
 
-export default GenerateButton;
+export default Button;
