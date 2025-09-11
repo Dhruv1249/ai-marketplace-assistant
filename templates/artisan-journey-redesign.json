@@ -75,14 +75,14 @@
                 "props": {
                   "className": "text-6xl md:text-8xl lg:text-9xl font-playfair-black leading-tight"
                 },
-                "children": ["{{content.hero.title || 'Layered Artistry'}}"],
+                "children": ["{{content.basics.name || 'Layered Artistry'}}"],
                 "editable": { "contentEditable": true }
               },
               {
                 "id": "hero-subtitle",
                 "type": "p",
                 "props": { "className": "mt-4 text-xl md:text-2xl font-light" },
-                "children": ["{{content.hero.subtitle || 'The Immersive Journey of Craft'}}"],
+                "children": ["{{content.basics.value || 'The Immersive Journey of Craft'}}"],
                 "editable": { "contentEditable": true }
               }
             ]
@@ -127,7 +127,7 @@
                         "id": "intro-text",
                         "type": "p",
                         "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] leading-relaxed" },
-                        "children": ["{{content.intro.text || 'This is a story of dedication, a narrative woven with threads of tradition and innovation. From the first flicker of an idea to the final, polished creation, we invite you to explore the depth and soul behind each piece. It's a journey not just of making, but of becoming.'}}"],
+                        "children": ["{{content.story.origin || 'This is a story of dedication, a narrative woven with threads of tradition and innovation. From the first flicker of an idea to the final, polished creation, we invite you to explore the depth and soul behind each piece. It's a journey not just of making, but of becoming.'}}"],
                         "editable": { "contentEditable": true }
                       }
                     ]
@@ -207,7 +207,7 @@
                         "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-l-8 border-[var(--brand-accent)]" },
                         "children": [
                           { "id": "pc1-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[0].title || 'The Spark & Sourcing'}}"] },
-                          { "id": "pc1-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.cards[0].text || 'Every journey begins with a spark of inspiration... followed by a meticulous search for materials that match our vision and ethics.'}}"] }
+                          { "id": "pc1-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.creation || 'Every journey begins with a spark of inspiration... followed by a meticulous search for materials that match our vision and ethics.'}}"] }
                         ]
                       },
                       {
@@ -232,7 +232,7 @@
                         "props": { "className": "bg-[var(--brand-primary)] text-white p-8 rounded-lg shadow-2xl transform lg:-translate-y-16" },
                         "children": [
                           { "id": "pc2-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.process.cards[1].title || 'The Heart of Creation'}}"] },
-                          { "id": "pc2-text", "type": "p", "props": { "className": "mt-4 opacity-90" }, "children": ["{{content.process.cards[1].text || 'This is where the magic happens... precision, patience, and passion.'}}"] }
+                          { "id": "pc2-text", "type": "p", "props": { "className": "mt-4 opacity-90" }, "children": ["{{content.process.materials || 'This is where the magic happens... precision, patience, and passion.'}}"] }
                         ]
                       }
                     ]
@@ -248,7 +248,7 @@
                         "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-r-8 border-[var(--brand-terracotta)]" },
                         "children": [
                           { "id": "pc3-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[2].title || 'Perfection & Assurance'}}"] },
-                          { "id": "pc3-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.cards[2].text || 'Each creation is meticulously inspected to meet exacting standards.'}}"] }
+                          { "id": "pc3-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.quality || 'Each creation is meticulously inspected to meet exacting standards.'}}"] }
                         ]
                       }
                     ]
@@ -305,7 +305,7 @@
                         "id": "blockquote",
                         "type": "blockquote",
                         "props": { "className": "text-2xl md:text-3xl italic text-[var(--brand-highlight)] border-l-4 border-[var(--brand-accent)] pl-6" },
-                        "children": ["{{content.quote.text || 'To create, one must first connect: with the material, with the history, with the soul of the craft.'}}"]
+                        "children": ["{{content.story.unique || 'To create, one must first connect: with the material, with the history, with the soul of the craft.'}}"]
                       },
                       {
                         "id": "quote-author",
@@ -334,7 +334,7 @@
             "props": { "className": "relative max-w-4xl mx-auto text-center text-white z-10" },
             "children": [
               { "id": "sustain-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.sustain.title || 'A Sustainable Soul'}}"] },
-              { "id": "sustain-text", "type": "p", "props": { "className": "mt-6 text-lg md:text-xl leading-relaxed opacity-90" }, "children": ["{{content.sustain.text || 'Our craft is a tribute to the earth that provides our materials... a beautiful and responsible tomorrow.'}}"] },
+              { "id": "sustain-text", "type": "p", "props": { "className": "mt-6 text-lg md:text-xl leading-relaxed opacity-90" }, "children": ["{{content.process.ethics || 'Our craft is a tribute to the earth that provides our materials... a beautiful and responsible tomorrow.'}}"] },
               { "id": "sustain-button", "type": "a", "props": { "href": "#", "className": "mt-8 inline-block font-semibold py-3 px-8 rounded-md bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-highlight)] transition-colors duration-300 shadow-lg" }, "children": ["{{content.sustain.cta || 'Discover Our Impact'}}"] }
             ]
           }
@@ -351,7 +351,7 @@
             "props": { "className": "max-w-5xl mx-auto text-center" },
             "children": [
               { "id": "cta-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.cta.title || 'Begin Your Own Journey'}}"] },
-              { "id": "cta-text", "type": "p", "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] max-w-2xl mx-auto" }, "children": ["{{content.cta.text || 'Whether you seek a bespoke piece infused with your own story or wish to find a creation that speaks to you, your journey starts here.'}}"] },
+              { "id": "cta-text", "type": "p", "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] max-w-2xl mx-auto" }, "children": ["{{content.story.vision || 'Whether you seek a bespoke piece infused with your own story or wish to find a creation that speaks to you, your journey starts here.'}}"] },
               {
                 "id": "cta-buttons",
                 "type": "div",
