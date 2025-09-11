@@ -404,7 +404,6 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
                 Cancel
               </BackButton>
               <GenerateButton onClick={handleConfirmGenerate}>
-                <Wand2 className="mr-2" size={16} />
                 {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}
               </GenerateButton>
             </div>
