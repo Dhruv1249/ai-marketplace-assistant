@@ -55,6 +55,7 @@ export default function Dashboard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [openProductMenuId, setOpenProductMenuId] = useState(null);
   const [deletingProductId, setDeletingProductId] = useState(null);
+  const [expandedDesc, setExpandedDesc] = useState({});
 
   // full-screen was removed but JSX referenced it – keep false to avoid errors
   const fullScreen = false;
@@ -687,7 +688,22 @@ export default function Dashboard() {
                 </div>
                 {prod.description && (
                   <div className={theme === 'dark' ? 'text-gray-300 text-sm' : 'text-gray-700 text-sm'}>
-                    {prod.description}
+                    {(
+                      expandedDesc[prod.id] || String(prod.description).length <= 160
+                    )
+                      ? String(prod.description)
+                      : String(prod.description).slice(0, 160) + '...'}
+                    {String(prod.description).length > 160 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedDesc((prev) => ({ ...prev, [prod.id]: !prev[prod.id] }))
+                        }
+                        className={`${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} ml-1 hover:underline text-xs`}
+                      >
+                        {expandedDesc[prod.id] ? 'Read less' : 'Read more'}
+                      </button>
+                    )}
                   </div>
                 )}
                 {typeof prod.price !== 'undefined' && (
@@ -1184,7 +1200,26 @@ export default function Dashboard() {
                       )}
                       {prod.imageUrl && (<img src={prod.imageUrl} alt={prod.name || "Product image"} className="w-full h-40 object-cover rounded-lg mb-1" />)}
                       <div className={`font-semibold text-base truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{prod.name || prod.title || "(Unnamed Product)"}</div>
-                      {prod.description && (<div className={theme === 'dark' ? 'text-gray-300 text-sm' : 'text-gray-700 text-sm'}>{prod.description}</div>)}
+                      {prod.description && (
+                        <div className={theme === 'dark' ? 'text-gray-300 text-sm' : 'text-gray-700 text-sm'}>
+                          {(
+                            expandedDesc[prod.id] || String(prod.description).length <= 160
+                          )
+                            ? String(prod.description)
+                            : String(prod.description).slice(0, 160) + '...'}
+                          {String(prod.description).length > 160 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedDesc((prev) => ({ ...prev, [prod.id]: !prev[prod.id] }))
+                              }
+                              className={`${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} ml-1 hover:underline text-xs`}
+                            >
+                              {expandedDesc[prod.id] ? 'Read less' : 'Read more'}
+                            </button>
+                          )}
+                        </div>
+                      )}
                       {typeof prod.price !== "undefined" && (<div className="font-semibold text-green-400 dark:text-green-400 text-green-600">Price: ₹{prod.price}</div>)}
                       {prod.createdAt && (<div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Created: {prod.createdAt.toDate?.().toLocaleString?.() || String(prod.createdAt)}</div>)}
                     </div>
