@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { Button } from "@/components/ui";
 import Image from "next/image";
-import { MoreVertical, Trash2, Pencil } from 'lucide-react';
+import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -428,7 +428,10 @@ export default function Dashboard() {
     }}
     style={{ display: 'flex', justifyContent: 'flex-start' }}
   >
-    <LogoutAnimated />
+    <Button variant="outline" size="sm" className="flex items-center gap-2">
+      <LogOut size={16} />
+      Logout
+    </Button>
   </div>
   <div
     onClick={async () => {
@@ -456,7 +459,10 @@ export default function Dashboard() {
     }}
     style={{ display: 'flex', justifyContent: 'flex-end' }}
   >
-    <DeleteAccountAnimated />
+    <Button variant="outline" size="sm" className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50">
+      <Trash2 size={16} />
+      Delete Account
+    </Button>
   </div>
 </div>
                   </div>
