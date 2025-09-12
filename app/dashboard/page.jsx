@@ -252,7 +252,7 @@ export default function Dashboard() {
     setAvatarError(null);
     setAvatarLoading(true);
     try {
-      await updateDoc(doc(db, "users", user.uid), { photoURL: "" });
+      await setDoc(doc(db, "users", user.uid), { photoURL: "" }, { merge: true });
       await fetchDashboardData(user);
       setAvatarMenuOpen(false);
     } catch (err) {
@@ -279,7 +279,7 @@ export default function Dashboard() {
     setAvatarLoading(true);
     const fakeUrl = URL.createObjectURL(file);
     try {
-      await updateDoc(doc(db, "users", user.uid), { photoURL: fakeUrl });
+      await setDoc(doc(db, "users", user.uid), { photoURL: fakeUrl }, { merge: true });
       await fetchDashboardData(user);
       setAvatarMenuOpen(false);
     } catch (err) {
@@ -653,7 +653,7 @@ export default function Dashboard() {
                 className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
                 aria-label="Product actions"
               >
-                <MoreVertical size={18} />
+                <MoreVertical size={18} color="#ffffff" />
               </button>
               {openProductMenuId === prod.id && (
                 <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
@@ -1161,7 +1161,7 @@ export default function Dashboard() {
                         className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
                         aria-label="Product actions"
                       >
-                        <MoreVertical size={18} />
+                        <MoreVertical size={18} color="#000000" />
                       </button>
                       {openProductMenuId === prod.id && (
                         <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
