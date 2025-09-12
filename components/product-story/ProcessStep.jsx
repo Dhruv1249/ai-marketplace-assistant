@@ -9,25 +9,198 @@ export default function ProcessStep({
   handleInputChange, 
   generateFieldContent, 
   isGenerating,
-  updateValidation
+  updateValidation,
+  selectedTemplate
 }) {
-  // Validation function - all fields are optional in this step
+  
+  // Get template configuration
+  const getTemplateConfig = () => {
+    if (selectedTemplate === 'our-journey') {
+      return {
+        fields: ['creation', 'materials', 'time', 'quality', 'ethics'],
+        limits: {
+          creation: { max: 30, type: 'words' },
+          materials: { max: 30, type: 'words' },
+          time: { max: 30, type: 'words' },
+          quality: { max: 30, type: 'words' },
+          ethics: { max: 30, type: 'words' }
+        },
+        required: true // All fields are required for Our Journey
+      };
+    } else if (selectedTemplate === 'artisan-journey') {
+      return {
+        fields: ['creation', 'materials', 'quality', 'ethics'],
+        limits: {
+          creation: { max: 30, type: 'words' },
+          materials: { max: 40, type: 'words' },
+          quality: { max: 40, type: 'words' },
+          ethics: { max: 30, type: 'words' }
+        },
+        required: true // All fields are required for Artisan Journey
+      };
+    }
+    // Default - all fields optional
+    return {
+      fields: ['creation', 'materials', 'time', 'quality', 'ethics'],
+      limits: {
+        creation: { max: 600, type: 'chars' },
+        materials: { max: 600, type: 'chars' },
+        time: { max: 600, type: 'chars' },
+        quality: { max: 600, type: 'chars' },
+        ethics: { max: 600, type: 'chars' }
+      },
+      required: false // Optional for default templates
+    };
+  };
+
+  const config = getTemplateConfig();
+
+  // Count words in a string
+  const countWords = (text) => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
+
+  // Validate field based on template requirements
+  const validateField = (fieldName, value) => {
+    const limits = config.limits[fieldName];
+    if (!limits) return true;
+
+    if (limits.type === 'words') {
+      const wordCount = countWords(value);
+      return wordCount <= limits.max;
+    } else {
+      return value.length <= limits.max;
+    }
+  };
+
+  // Get current count display
+  const getCountDisplay = (fieldName, value) => {
+    const limits = config.limits[fieldName];
+    if (!limits) return `${value.length}/600`;
+
+    if (limits.type === 'words') {
+      const wordCount = countWords(value);
+      return `${wordCount}/${limits.max} words`;
+    } else {
+      return `${value.length}/${limits.max}`;
+    }
+  };
+  // Validation function
   const validateStep = () => {
-    const { creation, materials, time, quality, ethics } = productStoryData.process;
+    // Check only the fields required by the template
+    const requiredFields = config.fields;
     
-    // Check if any field exceeds the limit
-    const allFields = [creation, materials, time, quality, ethics];
-    const hasExceededLimits = allFields.some(field => field.length > 600);
+    if (config.required) {
+      // Check if required fields are filled
+      const hasEmptyFields = requiredFields.some(fieldName => {
+        const fieldValue = productStoryData.process[fieldName];
+        return !fieldValue || !fieldValue.trim();
+      });
+      
+      if (hasEmptyFields) return false;
+    }
     
-    return !hasExceededLimits;
+    // Check template-specific validation
+    const hasInvalidFields = requiredFields.some(fieldName => {
+      const fieldValue = productStoryData.process[fieldName];
+      return !validateField(fieldName, fieldValue);
+    });
+    
+    return !hasInvalidFields;
+  };
+
+  // Render field based on template requirements
+  const renderField = (fieldName) => {
+    if (!config.fields.includes(fieldName)) return null;
+
+    const fieldConfig = {
+      creation: {
+        label: 'Creation Process & Craftsmanship',
+        placeholder: "How is your product made? What's the process and craftsmanship involved?",
+        type: 'textarea',
+        rows: 4
+      },
+      materials: {
+        label: 'Materials/Ingredients/Technology',
+        placeholder: 'What materials, ingredients, or technology are used in your product?',
+        type: 'textarea',
+        rows: 3
+      },
+      time: {
+        label: 'Time Investment & Expertise',
+        placeholder: 'How much time and expertise goes into making this product?',
+        type: 'input'
+      },
+      quality: {
+        label: 'Quality Standards & Certifications',
+        placeholder: 'What quality standards do you follow? Any certifications or guarantees?',
+        type: 'textarea',
+        rows: 3
+      },
+      ethics: {
+        label: 'Sustainability & Ethics',
+        placeholder: 'How is your product sustainable or ethically made?',
+        type: 'textarea',
+        rows: 3
+      }
+    };
+
+    const field = fieldConfig[fieldName];
+    if (!field) return null;
+
+    return (
+      <div key={fieldName}>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {field.label} {config.required && '*'} ({getCountDisplay(fieldName, productStoryData.process[fieldName])})
+        </label>
+        <div className="flex items-start gap-2">
+          {field.type === 'textarea' ? (
+            <textarea
+              value={productStoryData.process[fieldName]}
+              onChange={(e) => {
+                if (e.target.value.length <= 600) {
+                  handleInputChange('process', fieldName, e.target.value);
+                }
+              }}
+              maxLength={600}
+              rows={field.rows}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={field.placeholder}
+            />
+          ) : (
+            <input
+              type="text"
+              value={productStoryData.process[fieldName]}
+              onChange={(e) => {
+                if (e.target.value.length <= 600) {
+                  handleInputChange('process', fieldName, e.target.value);
+                }
+              }}
+              maxLength={600}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder={field.placeholder}
+            />
+          )}
+          <Button
+            onClick={() => generateFieldContent('process', fieldName, productStoryData.process[fieldName])}
+            size="sm"
+            className="bg-purple-600 hover:bg-purple-700 mt-2"
+            disabled={isGenerating || !productStoryData.process[fieldName].trim()}
+          >
+            <Sparkles size={14} />
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   // Add validation status to parent component
   React.useEffect(() => {
     if (updateValidation) {
-      updateValidation('step3', validateStep());
+      updateValidation('step4', validateStep());
     }
   }, [productStoryData.process, updateValidation]);
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -36,144 +209,8 @@ export default function ProcessStep({
         <p className="text-gray-600">Show the craftsmanship and process behind your product</p>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Creation Process & Craftsmanship ({productStoryData.process.creation.length}/600)
-        </label>
-        <div className="flex items-start gap-2">
-          <textarea
-            value={productStoryData.process.creation}
-            onChange={(e) => {
-              if (e.target.value.length <= 600) {
-                handleInputChange('process', 'creation', e.target.value);
-              }
-            }}
-            maxLength={600}
-            rows={4}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="How is your product made? What's the process and craftsmanship involved?"
-          />
-          <Button
-            onClick={() => generateFieldContent('process', 'creation', productStoryData.process.creation)}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.process.creation.trim()}
-          >
-            <Sparkles size={14} />
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Materials/Ingredients/Technology ({productStoryData.process.materials.length}/600)
-        </label>
-        <div className="flex items-start gap-2">
-          <textarea
-            value={productStoryData.process.materials}
-            onChange={(e) => {
-              if (e.target.value.length <= 600) {
-                handleInputChange('process', 'materials', e.target.value);
-              }
-            }}
-            maxLength={600}
-            rows={3}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="What materials, ingredients, or technology are used in your product?"
-          />
-          <Button
-            onClick={() => generateFieldContent('process', 'materials', productStoryData.process.materials)}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.process.materials.trim()}
-          >
-            <Sparkles size={14} />
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Time Investment & Expertise ({productStoryData.process.time.length}/600)
-        </label>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={productStoryData.process.time}
-            onChange={(e) => {
-              if (e.target.value.length <= 600) {
-                handleInputChange('process', 'time', e.target.value);
-              }
-            }}
-            maxLength={600}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="How much time and expertise goes into making this product?"
-          />
-          <Button
-            onClick={() => generateFieldContent('process', 'time', productStoryData.process.time)}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700"
-            disabled={isGenerating || !productStoryData.process.time.trim()}
-          >
-            <Sparkles size={14} />
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quality Standards & Certifications ({productStoryData.process.quality.length}/600)
-        </label>
-        <div className="flex items-start gap-2">
-          <textarea
-            value={productStoryData.process.quality}
-            onChange={(e) => {
-              if (e.target.value.length <= 600) {
-                handleInputChange('process', 'quality', e.target.value);
-              }
-            }}
-            maxLength={600}
-            rows={3}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="What quality standards do you follow? Any certifications or guarantees?"
-          />
-          <Button
-            onClick={() => generateFieldContent('process', 'quality', productStoryData.process.quality)}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.process.quality.trim()}
-          >
-            <Sparkles size={14} />
-          </Button>
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Sustainability & Ethics ({productStoryData.process.ethics.length}/600)
-        </label>
-        <div className="flex items-start gap-2">
-          <textarea
-            value={productStoryData.process.ethics}
-            onChange={(e) => {
-              if (e.target.value.length <= 600) {
-                handleInputChange('process', 'ethics', e.target.value);
-              }
-            }}
-            maxLength={600}
-            rows={3}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="How is your product sustainable or ethically made?"
-          />
-          <Button
-            onClick={() => generateFieldContent('process', 'ethics', productStoryData.process.ethics)}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.process.ethics.trim()}
-          >
-            <Sparkles size={14} />
-          </Button>
-        </div>
+      <div className="space-y-6">
+        {config.fields.map(fieldName => renderField(fieldName))}
       </div>
     </div>
   );

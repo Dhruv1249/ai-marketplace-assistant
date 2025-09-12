@@ -17,16 +17,12 @@ import VisualsStep from '@/components/product-story/VisualsStep';
 import TemplateStep from '@/components/product-story/TemplateStep';
 
 // Import templates
-import journeyTemplate from '@/components/seller-info/templates/journey-template.json';
-import craftTemplate from '@/components/seller-info/templates/craft-template.json';
-import impactTemplate from '@/components/seller-info/templates/impact-template.json';
-import modernTemplate from '@/components/seller-info/templates/modern-template.json';
+import ourJourneyTemplate from '@/templates/our-journey1.json';
+import artisanJourneyTemplate from '@/templates/artisan-journey-redesign.json';
 
 const TEMPLATE_MAP = {
-  'journey': journeyTemplate,
-  'craft': craftTemplate,
-  'impact': impactTemplate,
-  'modern': modernTemplate,
+  'our-journey': ourJourneyTemplate,
+  'artisan-journey': artisanJourneyTemplate,
 };
 
 export default function ProductStoryPage() {
@@ -36,7 +32,7 @@ export default function ProductStoryPage() {
 
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState('journey');
+  const [selectedTemplate, setSelectedTemplate] = useState('our-journey');
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -86,10 +82,13 @@ export default function ProductStoryPage() {
 
   // State for validation instead of using window
   const [validationState, setValidationState] = useState({
-    step1: false,
-    step2: false,
-    step3: true, // Process step is optional
-    step4: true  // Impact step is optional
+    step1: true,  // Template selection - always valid once selected
+    step2: false, // Product basics
+    step3: false, // Product story
+    step4: false, // Process step - now required for templates
+    step5: true,  // Impact step is optional
+    step6: true,  // Visuals step is optional
+    step7: true   // Review step is always valid
   });
 
   // Initialize validation system
@@ -101,18 +100,176 @@ export default function ProductStoryPage() {
 
   // Validation function to check if current step is valid
   const isCurrentStepValid = () => {
-    switch (step) {
-      case 1:
-        return validationState.step1;
-      case 2:
-        return validationState.step2;
-      case 3:
-        return validationState.step3;
-      case 4:
-        return validationState.step4;
+    const currentStepKey = getCurrentStepKey();
+    
+    switch (currentStepKey) {
+      case 'template':
+        return validationState.step1; // Template selection
+      case 'basics':
+        return validationState.step2; // Product basics
+      case 'story':
+        return validationState.step3; // Product story
+      case 'process':
+        return validationState.step4; // Process
+      case 'impact':
+        return validationState.step5; // Impact
+      case 'visuals':
+        return validationState.step6; // Visuals
+      case 'review':
+        return validationState.step7; // Review
       default:
-        return true; // Steps 5, 6, 7 don't have validation
+        return true;
     }
+  };
+
+  // Function to get missing fields for error message
+  const getMissingFields = () => {
+    const missingFields = [];
+    const currentStepKey = getCurrentStepKey();
+    
+    switch (currentStepKey) {
+      case 'basics': // Product basics
+        // Get template-specific required fields
+        const basicsFields = selectedTemplate === 'our-journey' || selectedTemplate === 'artisan-journey' 
+          ? ['name', 'value'] 
+          : ['name', 'category', 'problem', 'audience', 'value'];
+        
+        basicsFields.forEach(fieldName => {
+          const fieldValue = productStoryData.basics[fieldName];
+          if (!fieldValue || !fieldValue.trim()) {
+            const fieldLabels = {
+              name: 'Product Name',
+              value: 'Value Proposition',
+              category: 'Category/Type',
+              problem: 'Main Problem',
+              audience: 'Target Audience'
+            };
+            missingFields.push(fieldLabels[fieldName]);
+          }
+        });
+        break;
+        
+      case 'story': // Product story
+        // Get template-specific required fields
+        let storyFields = [];
+        if (selectedTemplate === 'artisan-journey') {
+          storyFields = ['origin', 'unique', 'vision'];
+        } else if (selectedTemplate !== 'our-journey') {
+          storyFields = ['origin', 'solution', 'unique'];
+        }
+        
+        storyFields.forEach(fieldName => {
+          const fieldValue = productStoryData.story[fieldName];
+          if (!fieldValue || !fieldValue.trim()) {
+            const fieldLabels = {
+              origin: 'Origin Story',
+              solution: 'Solution Journey',
+              unique: 'What Makes It Unique',
+              vision: 'Vision & Mission'
+            };
+            missingFields.push(fieldLabels[fieldName]);
+          }
+        });
+        break;
+
+      case 'process': // Process step
+        // Get template-specific required fields
+        let processFields = [];
+        if (selectedTemplate === 'our-journey') {
+          processFields = ['creation', 'materials', 'time', 'quality', 'ethics'];
+        } else if (selectedTemplate === 'artisan-journey') {
+          processFields = ['creation', 'materials', 'quality', 'ethics'];
+        }
+        
+        processFields.forEach(fieldName => {
+          const fieldValue = productStoryData.process[fieldName];
+          if (!fieldValue || !fieldValue.trim()) {
+            const fieldLabels = {
+              creation: 'Creation Process & Craftsmanship',
+              materials: 'Materials/Ingredients/Technology',
+              time: 'Time Investment & Expertise',
+              quality: 'Quality Standards & Certifications',
+              ethics: 'Sustainability & Ethics'
+            };
+            missingFields.push(fieldLabels[fieldName]);
+          }
+        });
+        break;
+
+      case 'visuals': // Visuals step
+        // Check template-specific image requirements
+        if (selectedTemplate === 'our-journey') {
+          const beforeAfterCount = productStoryData.visuals.beforeAfter?.length || 0;
+          if (beforeAfterCount !== 2) {
+            missingFields.push('Exactly 2 Before & After images required');
+          }
+        }
+        break;
+    }
+    
+    return missingFields;
+  };
+
+  // Get template-specific step configuration
+  const getTemplateSteps = () => {
+    if (selectedTemplate === 'our-journey') {
+      return [
+        { number: 1, title: 'Template', icon: Palette, key: 'template' },
+        { number: 2, title: 'Basics', icon: Package, key: 'basics' },
+        { number: 3, title: 'Process', icon: User, key: 'process' },
+        { number: 4, title: 'Impact', icon: Award, key: 'impact' },
+        { number: 5, title: 'Visuals', icon: ImageIcon, key: 'visuals' },
+        { number: 6, title: 'Review', icon: Globe, key: 'review' }
+      ];
+    } else if (selectedTemplate === 'artisan-journey') {
+      return [
+        { number: 1, title: 'Template', icon: Palette, key: 'template' },
+        { number: 2, title: 'Basics', icon: Package, key: 'basics' },
+        { number: 3, title: 'Story', icon: Lightbulb, key: 'story' },
+        { number: 4, title: 'Process', icon: User, key: 'process' },
+        { number: 5, title: 'Impact', icon: Award, key: 'impact' },
+        { number: 6, title: 'Visuals', icon: ImageIcon, key: 'visuals' },
+        { number: 7, title: 'Review', icon: Globe, key: 'review' }
+      ];
+    }
+    // Default - all steps
+    return [
+      { number: 1, title: 'Template', icon: Palette, key: 'template' },
+      { number: 2, title: 'Basics', icon: Package, key: 'basics' },
+      { number: 3, title: 'Story', icon: Lightbulb, key: 'story' },
+      { number: 4, title: 'Process', icon: User, key: 'process' },
+      { number: 5, title: 'Impact', icon: Award, key: 'impact' },
+      { number: 6, title: 'Visuals', icon: ImageIcon, key: 'visuals' },
+      { number: 7, title: 'Review', icon: Globe, key: 'review' }
+    ];
+  };
+
+  const templateSteps = getTemplateSteps();
+  const maxStep = templateSteps.length;
+
+  // Get the actual step key for the current step number
+  const getCurrentStepKey = () => {
+    return templateSteps[step - 1]?.key || 'template';
+  };
+
+  // Handle next button click with validation
+  const handleNextClick = () => {
+    if (step === maxStep) {
+      handlePreview();
+      return;
+    }
+
+    if (!isCurrentStepValid()) {
+      const missingFields = getMissingFields();
+      if (missingFields.length > 0) {
+        alert(`Please fill in the following required fields:\n\n• ${missingFields.join('\n• ')}`);
+      } else {
+        alert('Please ensure all fields meet the template requirements.');
+      }
+      return;
+    }
+
+    setStep(step + 1);
   };
 
   // Function to update validation state - memoized to prevent infinite loops
@@ -168,7 +325,7 @@ export default function ProductStoryPage() {
             const customData = await customResponse.json();
             if (customData.content) {
               setProductStoryData(customData.content);
-              setSelectedTemplate(customData.templateType || 'journey');
+              setSelectedTemplate(customData.templateType || 'our-journey');
             }
           }
         } catch (error) {
@@ -182,7 +339,7 @@ export default function ProductStoryPage() {
             const parsed = JSON.parse(savedData);
             if (parsed.productStoryData) {
               setProductStoryData(parsed.productStoryData);
-              setSelectedTemplate(parsed.templateType || 'journey');
+              setSelectedTemplate(parsed.templateType || 'our-journey');
             }
           }
         } catch (error) {
@@ -395,7 +552,7 @@ export default function ProductStoryPage() {
 
   const handlePreview = () => {
     try {
-      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || journeyTemplate;
+      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || ourJourneyTemplate;
       
       // Include productId in the product story data
       const productStoryDataWithId = {
@@ -440,7 +597,7 @@ export default function ProductStoryPage() {
   const handlePublishCustomPage = async () => {
     try {
       // Get the selected template model
-      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || journeyTemplate;
+      const selectedTemplateModel = TEMPLATE_MAP[selectedTemplate] || ourJourneyTemplate;
       
       // Prepare custom page data with proper model structure
       const customPageData = {
@@ -490,59 +647,10 @@ export default function ProductStoryPage() {
   };
 
   const renderStepContent = () => {
-    switch (step) {
-      case 1:
-        return (
-          <ProductBasicsStep
-            productStoryData={productStoryData}
-            handleInputChange={handleInputChange}
-            generateFieldContent={generateFieldContent}
-            isGenerating={isGenerating}
-            updateValidation={updateValidation}
-          />
-        );
-      case 2:
-        return (
-          <ProductStoryStep
-            productStoryData={productStoryData}
-            handleInputChange={handleInputChange}
-            generateFieldContent={generateFieldContent}
-            isGenerating={isGenerating}
-            updateValidation={updateValidation}
-          />
-        );
-      case 3:
-        return (
-          <ProcessStep
-            productStoryData={productStoryData}
-            handleInputChange={handleInputChange}
-            generateFieldContent={generateFieldContent}
-            isGenerating={isGenerating}
-            updateValidation={updateValidation}
-          />
-        );
-      case 4:
-        return (
-          <ImpactStep
-            productStoryData={productStoryData}
-            handleArrayInputChange={handleArrayInputChange}
-            addArrayItem={addArrayItem}
-            removeArrayItem={removeArrayItem}
-            generateFieldContent={generateFieldContent}
-            isGenerating={isGenerating}
-            updateValidation={updateValidation}
-          />
-        );
-      case 5:
-        return (
-          <VisualsStep
-            productStoryData={productStoryData}
-            handlePhotoUpload={handlePhotoUpload}
-            removePhoto={removePhoto}
-            fileInputRefs={fileInputRefs}
-          />
-        );
-      case 6:
+    const currentStepKey = getCurrentStepKey();
+    
+    switch (currentStepKey) {
+      case 'template':
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -550,10 +658,10 @@ export default function ProductStoryPage() {
                 <Palette className="text-blue-600" size={32} />
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                Choose Your Layout
+                Choose Your Template
               </h2>
               <p className="text-gray-600 mb-8">
-                Select a template layout for your product story
+                Select a template layout for your product story. This will determine the form fields and requirements.
               </p>
             </div>
 
@@ -563,11 +671,88 @@ export default function ProductStoryPage() {
               setSelectedTemplate={setSelectedTemplate}
               productStoryData={productStoryData}
             />
+          </div>
+        );
+      case 'basics':
+        return (
+          <ProductBasicsStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+            updateValidation={updateValidation}
+            selectedTemplate={selectedTemplate}
+          />
+        );
+      case 'story':
+        return (
+          <ProductStoryStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+            updateValidation={updateValidation}
+            selectedTemplate={selectedTemplate}
+          />
+        );
+      case 'process':
+        return (
+          <ProcessStep
+            productStoryData={productStoryData}
+            handleInputChange={handleInputChange}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+            updateValidation={updateValidation}
+            selectedTemplate={selectedTemplate}
+          />
+        );
+      case 'impact':
+        return (
+          <ImpactStep
+            productStoryData={productStoryData}
+            handleArrayInputChange={handleArrayInputChange}
+            addArrayItem={addArrayItem}
+            removeArrayItem={removeArrayItem}
+            generateFieldContent={generateFieldContent}
+            isGenerating={isGenerating}
+            updateValidation={updateValidation}
+            selectedTemplate={selectedTemplate}
+          />
+        );
+      case 'visuals':
+        return (
+          <VisualsStep
+            productStoryData={productStoryData}
+            handlePhotoUpload={handlePhotoUpload}
+            removePhoto={removePhoto}
+            fileInputRefs={fileInputRefs}
+            selectedTemplate={selectedTemplate}
+            updateValidation={updateValidation}
+          />
+        );
+      case 'review':
+        return (
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="text-green-600" size={32} />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                Review & Preview
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Review your product story and preview the final result
+              </p>
+            </div>
 
             {/* Story Summary */}
             <div className="bg-gray-50 rounded-lg p-6">
               <h3 className="font-medium text-gray-900 mb-4">Story Summary</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-600">Template:</p>
+                  <p className="font-medium text-gray-900 capitalize">{selectedTemplate.replace('-', ' ')}</p>
+                </div>
                 <div>
                   <p className="text-gray-600">Product Name:</p>
                   <p className="font-medium text-gray-900">{productStoryData.basics.name}</p>
@@ -575,10 +760,6 @@ export default function ProductStoryPage() {
                 <div>
                   <p className="text-gray-600">Category:</p>
                   <p className="font-medium text-gray-900">{productStoryData.basics.category}</p>
-                </div>
-                <div>
-                  <p className="text-gray-600">Template:</p>
-                  <p className="font-medium text-gray-900 capitalize">{selectedTemplate}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Images:</p>
@@ -591,7 +772,7 @@ export default function ProductStoryPage() {
             <div className="bg-blue-50 rounded-lg p-6 text-center">
               <h3 className="font-medium text-blue-900 mb-3">Ready for Preview</h3>
               <p className="text-blue-800 text-sm mb-6">
-                Your layout is selected. Click "Preview" below to see how your product story will look, then publish directly from the preview.
+                Your product story is complete. Click "Preview" below to see how it will look, then publish directly from the preview.
               </p>
             </div>
           </div>
@@ -637,31 +818,24 @@ export default function ProductStoryPage() {
       <div className="bg-white border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            {[
-              { number: 1, title: 'Basics', icon: Package, completed: step > 1 },
-              { number: 2, title: 'Story', icon: Lightbulb, completed: step > 2 },
-              { number: 3, title: 'Process', icon: User, completed: step > 3 },
-              { number: 4, title: 'Impact', icon: Award, completed: step > 4 },
-              { number: 5, title: 'Visuals', icon: ImageIcon, completed: step > 5 },
-              { number: 6, title: 'Layout', icon: Palette, completed: step > 6 }
-            ].map((stepItem, index) => (
+            {templateSteps.map((stepItem, index) => (
               <div key={stepItem.number} className="flex items-center">
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                   step === stepItem.number
                     ? 'border-blue-600 bg-blue-600 text-white'
-                    : stepItem.completed
+                    : step > stepItem.number
                     ? 'border-green-600 bg-green-600 text-white'
                     : 'border-gray-300 text-gray-500'
                 }`}>
-                  {stepItem.completed ? '✓' : <stepItem.icon size={16} />}
+                  {step > stepItem.number ? '✓' : <stepItem.icon size={16} />}
                 </div>
                 <span className={`ml-2 text-sm font-medium ${
                   step === stepItem.number ? 'text-blue-600' : 'text-gray-500'
                 }`}>
                   {stepItem.title}
-                </span>{index < 5 && (
+                </span>{index < templateSteps.length - 1 && (
                   <div className={`w-8 h-0.5 mx-2 ${
-                    stepItem.completed ? 'bg-green-600' : 'bg-gray-300'
+                    step > stepItem.number ? 'bg-green-600' : 'bg-gray-300'
                   }`} />
                 )}
               </div>
@@ -686,10 +860,9 @@ export default function ProductStoryPage() {
             </Button>
             
             <Button
-              onClick={() => step === 6 ? handlePreview() : setStep(step + 1)}
-              disabled={step === 6 ? false : !isCurrentStepValid()}
+              onClick={handleNextClick}
             >
-              {step === 6 ? (
+              {step === 7 ? (
                 <>
                   <Eye className="mr-2" size={16} />
                   Preview

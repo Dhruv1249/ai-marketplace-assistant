@@ -11,32 +11,39 @@ export default function TemplateStep({
 }) {
   const templates = [
     {
-      id: 'journey',
-      name: 'Journey Story',
-      description: 'Timeline-based storytelling with step-by-step process visualization',
-      color: 'from-blue-600 to-blue-800',
-      features: ['Timeline layout', 'Process steps', 'Before/after sections', 'Progress indicators']
+      id: 'our-journey',
+      name: 'Our Journey',
+      description: 'An artisan brand story page with hero, process timeline, before/after showcase, testimonials, awards, and a call-to-action.',
+      color: 'from-gray-900 to-pink-700',
+      features: ['Timeline layout', 'Process steps', 'Before/after sections', 'Testimonials', 'Awards showcase'],
+      requirements: {
+        'basics.name': 'max 8 words',
+        'basics.value': 'max 80 words',
+        'basics.category': 'max 100 chars',
+        'basics.problem': 'max 300 chars',
+        'basics.audience': 'max 150 chars',
+        'impact.cases': 'before/after images',
+        'impact.testimonials': 'multiple cards',
+        'impact.awards': 'multiple awards'
+      }
     },
     {
-      id: 'craft',
-      name: 'Artisan Craft',
-      description: 'Focus on craftsmanship, quality, and traditional methods',
-      color: 'from-amber-600 to-orange-700',
-      features: ['Warm colors', 'Craft emphasis', 'Quality focus', 'Traditional feel']
-    },
-    {
-      id: 'impact',
-      name: 'Impact Story',
-      description: 'Social impact, sustainability, and mission-driven narrative',
-      color: 'from-green-600 to-emerald-700',
-      features: ['Impact metrics', 'Sustainability focus', 'Mission-driven', 'Social proof']
-    },
-    {
-      id: 'modern',
-      name: 'Modern Minimal',
-      description: 'Clean, minimal design with focus on innovation and technology',
-      color: 'from-gray-800 to-gray-900',
-      features: ['Clean design', 'Modern layout', 'Tech focus', 'Minimal style']
+      id: 'artisan-journey',
+      name: 'Artisan Journey',
+      description: 'Converted from HTML into repository JSON template format with dynamic placeholders and brand variables.',
+      color: 'from-teal-600 to-orange-600',
+      features: ['Hero section', 'Process showcase', 'Quote sections', 'Sustainability focus', 'Responsive design'],
+      requirements: {
+        'basics.name': 'max 10 words',
+        'basics.value': 'max 50 words',
+        'basics.category': 'max 100 chars',
+        'basics.problem': 'max 300 chars',
+        'basics.audience': 'max 150 chars',
+        'story.origin': 'max 200 chars',
+        'story.unique': 'max 200 chars',
+        'story.vision': 'max 250 chars',
+        'process fields': 'max 200 chars each'
+      }
     }
   ];
 
@@ -100,10 +107,10 @@ export default function TemplateStep({
         ))}
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Selected Template: {templates.find(t => t.id === selectedTemplate)?.name}</h4>
-        <p className="text-sm text-blue-800">
-          {templates.find(t => t.id === selectedTemplate)?.description}
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+        <h4 className="font-medium text-green-900 mb-2">✓ Template Selected: {templates.find(t => t.id === selectedTemplate)?.name}</h4>
+        <p className="text-sm text-green-800">
+          Your form fields will be customized based on this template's requirements.
         </p>
       </div>
     </div>
