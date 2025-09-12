@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui';
 import { Eye, Upload, X, Image as ImageIcon, FileText } from 'lucide-react';
 import DeleteButton from '../animated icon/DeleteButton';
+import BackButton from '../animated icon/BackButton';
 
 const ImagesLayoutStep = ({
   generatedContent,
@@ -214,13 +215,12 @@ const ImagesLayoutStep = ({
 
           {additionalImages.length === 0 && (
             <div className="text-center py-4">
-              <Button
-                variant="outline"
+              <div
                 onClick={() => additionalInputRef.current?.click()}
+                className="relative inline-block h-[42px] w-[120px]"
               >
-                <Upload className="mr-2" size={16} />
-                Upload Additional Images
-              </Button>
+                
+              </div>
             </div>
           )}
         </div>
@@ -248,9 +248,7 @@ const ImagesLayoutStep = ({
 
         {/* Navigation */}
         <div className="flex gap-3 pt-4">
-          <Button variant="outline" onClick={onBack}>
-            Back
-          </Button>
+          <BackButton onClick={onBack} />
           <Button
             variant="outline"
             onClick={onPreview}
