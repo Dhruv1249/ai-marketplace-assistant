@@ -390,7 +390,7 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
             </div>
           </div>
           {/* Pop-out white card */}
-          <div className="relative bg-white rounded-lg p-6 max-w-md w-full shadow-2xl flex flex-col justify-center mr-45 mt-10 mb-6 z-30 h-auto border-2 border-black">
+          <div className="relative bg-white rounded-lg p-6 max-w-md w-full shadow-2xl flex flex-col justify-center mr-85 mt-10 mb-6 z-30 h-auto border-2 border-black">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               {hasSelectedOptions ? 'Generate AI Content?' : 'Create Basic Content?'}
             </h3>
