@@ -11,9 +11,11 @@ import {
   where,
   getDocs,
   setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { Button } from "@/components/ui";
 import Image from "next/image";
+import { MoreVertical, Trash2, Pencil } from 'lucide-react';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -51,6 +53,8 @@ export default function Dashboard() {
 
   // Settings panel state
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [openProductMenuId, setOpenProductMenuId] = useState(null);
+  const [deletingProductId, setDeletingProductId] = useState(null);
 
   // full-screen was removed but JSX referenced it – keep false to avoid errors
   const fullScreen = false;
@@ -288,6 +292,49 @@ export default function Dashboard() {
     setAISuggestions((prev) => ({ ...prev, [reviewId]: "Generating..." }));
     const resp = await getAISuggestion(reviewText);
     setAISuggestions((prev) => ({ ...prev, [reviewId]: resp }));
+  };
+
+  // New: open edit modal for a product
+  const openEditProduct = (prod) => {
+    setEditingProductId(prod.id);
+    setProductEditData({
+      name: prod.name || prod.title || '',
+      title: prod.title || prod.name || '',
+      description: prod.description || '',
+      metaDescription: prod.metaDescription || '',
+      price: prod.price ?? '',
+      imageUrl: prod.imageUrl || '',
+      images: Array.isArray(prod.images) ? prod.images : (prod.images || ''),
+      category: prod.category || '',
+      tags: Array.isArray(prod.tags) ? prod.tags : (prod.tags || ''),
+      benefits: prod.benefits || '',
+      features: Array.isArray(prod.features) ? prod.features : (prod.features || ''),
+      featureExplanations: prod.featureExplanations || {},
+      specifications: prod.specifications ? (typeof prod.specifications === 'string' ? prod.specifications : JSON.stringify(prod.specifications, null, 2)) : '{}',
+    });
+    setProductModalOpen(true);
+  };
+
+  // New: delete product handler (Firestore + file-based assets)
+  const handleDeleteProduct = async (productId) => {
+    const confirmDelete = window.confirm('Delete this product permanently? This will remove it from your dashboard and marketplace.');
+    if (!confirmDelete) return;
+    try {
+      setDeletingProductId(productId);
+      // Delete from Firestore (main doc)
+      await deleteDoc(doc(db, 'products', productId));
+      // Best-effort: delete marketplace mirror if it exists
+      try { await deleteDoc(doc(db, 'marketplace', productId)); } catch {}
+      // Delete file-based assets via API (best-effort)
+      try { await fetch(`/api/products/${productId}`, { method: 'DELETE' }); } catch {}
+      // Refresh dashboard data
+      await fetchDashboardData(user);
+      setOpenProductMenuId(null);
+    } catch (err) {
+      alert('Failed to delete product: ' + (err?.message || JSON.stringify(err)));
+    } finally {
+      setDeletingProductId(null);
+    }
   };
 
   // ----- render -----
@@ -593,7 +640,34 @@ export default function Dashboard() {
         )}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {createdProducts.map((prod) => (
-            <div key={prod.id} className={`rounded-xl border transition shadow-sm flex flex-col gap-2 p-4 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
+            <div key={prod.id} className={`relative rounded-xl border transition shadow-sm flex flex-col gap-2 p-4 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
+              <button
+                type="button"
+                onClick={() => setOpenProductMenuId((prev) => prev === prod.id ? null : prod.id)}
+                className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
+                aria-label="Product actions"
+              >
+                <MoreVertical size={18} />
+              </button>
+              {openProductMenuId === prod.id && (
+                <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
+                  <button
+                    type="button"
+                    onClick={() => { setOpenProductMenuId(null); openEditProduct(prod); }}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm ${theme === 'dark' ? 'hover:bg-gray-800 text-gray-200' : 'hover:bg-gray-50 text-gray-800'}`}
+                  >
+                    <Pencil size={14} /> Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteProduct(prod.id)}
+                    disabled={deletingProductId === prod.id}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm ${theme === 'dark' ? 'hover:bg-gray-800 text-red-400' : 'hover:bg-gray-50 text-red-600'}`}
+                  >
+                    <Trash2 size={14} /> {deletingProductId === prod.id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </div>
+              )}
               <>
                 {prod.imageUrl && (
                   <img
@@ -1074,7 +1148,34 @@ export default function Dashboard() {
                 )}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {createdProducts.map((prod) => (
-                    <div key={prod.id} className={`rounded-xl border transition shadow-sm flex flex-col gap-2 p-4 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
+                    <div key={prod.id} className={`relative rounded-xl border transition shadow-sm flex flex-col gap-2 p-4 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenProductMenuId((prev) => prev === prod.id ? null : prod.id)}
+                        className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
+                        aria-label="Product actions"
+                      >
+                        <MoreVertical size={18} />
+                      </button>
+                      {openProductMenuId === prod.id && (
+                        <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
+                          <button
+                            type="button"
+                            onClick={() => { setOpenProductMenuId(null); openEditProduct(prod); }}
+                            className={`w-full flex items-center gap-2 px-3 py-2 text-sm ${theme === 'dark' ? 'hover:bg-gray-800 text-gray-200' : 'hover:bg-gray-50 text-gray-800'}`}
+                          >
+                            <Pencil size={14} /> Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProduct(prod.id)}
+                            disabled={deletingProductId === prod.id}
+                            className={`w-full flex items-center gap-2 px-3 py-2 text-sm ${theme === 'dark' ? 'hover:bg-gray-800 text-red-400' : 'hover:bg-gray-50 text-red-600'}`}
+                          >
+                            <Trash2 size={14} /> {deletingProductId === prod.id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      )}
                       {prod.imageUrl && (<img src={prod.imageUrl} alt={prod.name || "Product image"} className="w-full h-40 object-cover rounded-lg mb-1" />)}
                       <div className={`font-semibold text-base truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{prod.name || prod.title || "(Unnamed Product)"}</div>
                       {prod.description && (<div className={theme === 'dark' ? 'text-gray-300 text-sm' : 'text-gray-700 text-sm'}>{prod.description}</div>)}
