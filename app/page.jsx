@@ -148,18 +148,7 @@ export default function Home() {
   const featuresRef = useRef(null);
   const ctaRef = useRef(null);
   const testimonialsRef = useRef(null);
-const [welcomeName, setWelcomeName] = useState("");
 
-useEffect(() => {
-  const unsub = onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setWelcomeName(user.displayName || user.email || "User");
-    } else {
-      setWelcomeName("");
-    }
-  });
-  return () => unsub();
-}, []);
   const features = [
     {
       icon: Rocket, // use Rocket icon here
@@ -384,12 +373,7 @@ useEffect(() => {
   
   
 </div>
-      {welcomeName && (
-  <div className="pt-10 text-3xl font-semibold text-blue-800 mb-4 text-center">
-    Welcome, {welcomeName}!
-  </div>
-)}
-      {/* Hero Section */}
+            {/* Hero Section */}
       <div ref={heroRef} className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className="hero-orb hero-orb-1 absolute -top-10 -left-10 w-64 h-64 rounded-full bg-gradient-to-br from-blue-200 to-indigo-200 blur-3xl opacity-60"></div>
