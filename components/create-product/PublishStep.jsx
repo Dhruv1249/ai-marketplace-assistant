@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
+import { db, auth } from '@/app/login/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const PublishStep = ({
   generatedContent,
@@ -75,6 +77,44 @@ const PublishStep = ({
       const result = await response.json();
       
       if (result.success) {
+        // Sync minimal product info to Firestore for dashboard visibility
+        try {
+          const savedImages = result.savedImages || { thumbnail: null, additional: [] };
+          const thumbUrl = savedImages.thumbnail ? `/api/products/${productId}/images/${savedImages.thumbnail}` : '';
+          const additionalUrls = Array.isArray(savedImages.additional)
+            ? savedImages.additional.map((name) => `/api/products/${productId}/images/${name}`)
+            : [];
+          const finalPrice = (pricing?.discount?.enabled && pricing?.discount?.finalPrice != null)
+            ? pricing.discount.finalPrice
+            : (pricing?.basePrice || 0);
+
+          await setDoc(
+            doc(db, 'products', productId),
+            {
+              ownerId: auth.currentUser?.uid || '',
+              name: generatedContent.title,
+              title: generatedContent.title,
+              description: generatedContent.description,
+              metaDescription: generatedContent.metaDescription || '',
+              price: finalPrice,
+              discount: pricing?.discount || {},
+              imageUrl: thumbUrl,
+              images: additionalUrls,
+              features: generatedContent.features || [],
+              featureExplanations: featureExplanations || {},
+              specifications: generatedContent.specifications || {},
+              seoKeywords: generatedContent.seoKeywords || [],
+              hasCustomPage: false,
+              marketplaceId: productId,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+        } catch (err) {
+          console.error('Failed to sync product to Firestore:', err);
+        }
+
         setPublishStatus({
           type: 'success',
           message: 'Product published successfully!',
