@@ -22,6 +22,8 @@ import AddToCartButton from '@/components/animated icon/AddToCartButton';
 
 
 import Loading from '@/app/loading';
+import { db } from '@/app/login/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 
 export default function ProductPage() {

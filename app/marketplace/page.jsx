@@ -7,8 +7,9 @@ import styled from 'styled-components';
 import GameOne from '@/components/animated icon/GameOn';
 import Loading from '@/app/loading';
 import Input from '@/components/animated icon/Search';
-import { db } from '@/app/login/firebase';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { db, auth } from '@/app/login/firebase';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 // ✅ Custom Buy Button with Tooltip
 const BuyButton = ({ price }) => {
@@ -245,49 +246,85 @@ export default function Marketplace() {
     'Accessories',
     'Home & Garden',
   ];
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "products"),
-      (snapshot) => {
-        const mapped = snapshot.docs.map((doc) => {
-          const d = doc.data() || {};
-          const firstImage =
-            Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : undefined;
-          const priceCandidate =
-            d.price ??
-            d.pricing?.discount?.finalPrice ??
-            d.pricing?.basePrice ??
-            0;
+   useEffect(() => {
+    let unsubscribe = null;
 
-          return {
-            id: doc.id,
-            title: d.title || d.name || "Untitled Product",
-            description: d.description || d.metaDescription || "",
-            price: Number(priceCandidate) || 0,
-            currency: d.currency || "USD",
-            image: d.image || d.imageUrl || firstImage || "/images/placeholder.svg",
-            rating: typeof d.rating === "number" ? d.rating : 4.8,
-            reviews: typeof d.reviews === "number" ? d.reviews : 0,
-            seller: d.seller || d.sellerName || "Marketplace Seller",
-            category: d.category || "Product",
-            featured: !!d.featured,
-            hasCustomPage: !!d.hasCustomPage,
-          };
-        });
+    const mergeSnapshotIntoProducts = (snapshot) => {
+      const mapped = snapshot.docs.map((doc) => {
+        const d = doc.data() || {};
+        const firstImage = Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : undefined;
+        const priceCandidate =
+          d.price ??
+          d.pricing?.discount?.finalPrice ??
+          d.pricing?.basePrice ??
+          0;
 
-        // Merge Firestore updates into whatever is already displayed (API results included)
-        setProducts((prev) => {
-          const byId = new Map(prev.map((p) => [p.id, p]));
-          for (const p of mapped) byId.set(p.id, p); // Firestore overrides by id
-          return Array.from(byId.values());
-        });
-      },
-      (err) => {
-        console.error("Firestore subscription error:", err);
+        return {
+          id: doc.id,
+          title: d.title || d.name || "Untitled Product",
+          description: d.description || d.metaDescription || "",
+          price: Number(priceCandidate) || 0,
+          currency: d.currency || "USD",
+          image: d.image || d.imageUrl || firstImage || "/images/placeholder.svg",
+          rating: typeof d.rating === "number" ? d.rating : 4.8,
+          reviews: typeof d.reviews === "number" ? d.reviews : 0,
+          seller: d.seller || d.sellerName || "Marketplace Seller",
+          category: d.category || "Product",
+          featured: !!d.featured,
+          hasCustomPage: !!d.hasCustomPage,
+        };
+      });
+
+      setProducts((prev) => {
+        const byId = new Map(prev.map((p) => [p.id, p]));
+        for (const p of mapped) byId.set(p.id, p); // Firestore overrides by id
+        return Array.from(byId.values());
+      });
+    };
+
+    const startListener = (q) => {
+      unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          mergeSnapshotIntoProducts(snapshot);
+        },
+        (err) => {
+          // Suppress noisy errors in production; warn in dev and keep API data
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("Firestore subscription blocked/failed. Using API-only data.", err?.code || err);
+          }
+        }
+      );
+    };
+
+    const stopListener = () => {
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
       }
-    );
+    };
 
-    return () => unsubscribe();
+    // React to auth changes: when signed in, listen to all products;
+    // when signed out, attempt published-only (if your rules allow it). Otherwise keep API-only data.
+    const off = onAuthStateChanged(auth, (u) => {
+      stopListener();
+      if (u) {
+        // Signed-in: listen to all products
+        startListener(collection(db, "products"));
+      } else {
+        // Signed-out: try published-only view; if rules disallow, the error is handled above
+        try {
+          startListener(query(collection(db, "products"), where("published", "==", true)));
+        } catch {
+          // If query construction fails for any reason, just stay with API data
+        }
+      }
+    });
+
+    return () => {
+      stopListener();
+      off();
+    };
   }, []);
 
   const ProductCard = ({ product }) => (
