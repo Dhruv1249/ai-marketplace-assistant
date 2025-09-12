@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
+import BackButton from '../animated icon/BackButton';
 
 const PublishStep = ({
   generatedContent,
@@ -321,9 +322,9 @@ const PublishStep = ({
 
           {/* Navigation */}
           <div className="flex gap-4 pt-4">
-            <Button variant="outline" onClick={onBack} disabled={isPublishing}>
-              Back
-            </Button>
+            <div className={`${isPublishing ? 'pointer-events-none opacity-50' : ''}`}>
+              <BackButton onClick={isPublishing ? undefined : onBack} />
+            </div>
             <Button 
               onClick={handlePublishClick}
               disabled={!isFormValid() || isPublishing}
