@@ -487,13 +487,13 @@ export default function Dashboard() {
             {avatarMenuOpen && (
               <div
                 ref={avatarMenuRef}
-                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 z-30 bg-[#1a1a1a] rounded-lg shadow-xl border border-[#262626] py-2 flex flex-col items-stretch"
+                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 z-30 bg-[#fff7f7] rounded-lg shadow-xl border border-[#262626] py-2 flex flex-col items-stretch"
                 tabIndex={-1}
               >
                 <button
                   onClick={handleRemoveAvatar}
                   disabled={avatarLoading}
-                  className="w-full px-4 py-2 text-left text-red-400 hover:bg-[#221818] text-sm font-medium transition disabled:opacity-60"
+                  className="w-full px-4 py-2 text-left text-red-400 hover:bg-[#d4cdcd] text-sm font-medium transition disabled:opacity-60"
                   type="button"
                 >
                   Remove Profile
@@ -501,14 +501,14 @@ export default function Dashboard() {
                 <button
                   onClick={handleChangeAvatar}
                   disabled={avatarLoading}
-                  className="w-full px-4 py-2 text-left text-blue-300 hover:bg-[#1e2636] text-sm font-medium transition"
+                  className="w-full px-4 py-2 text-left text-blue-300 hover:bg-[#dbdbdb] text-sm font-medium transition"
                   type="button"
                 >
                   Change Profile
                 </button>
                 <button
                   onClick={() => setAvatarMenuOpen(false)}
-                  className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#232323] text-sm font-medium transition"
+                  className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#f0f0f0] text-sm font-medium transition"
                   type="button"
                 >
                   Cancel
@@ -1014,12 +1014,12 @@ export default function Dashboard() {
                     {avatarMenuOpen && (
                       <div
                         ref={avatarMenuRef}
-                        className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 z-30 bg-[#1a1a1a] rounded-lg shadow-xl border border-[#262626] py-2 flex flex-col items-stretch"
+                        className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 z-30 bg-[#ffffff] rounded-lg shadow-xl border border-[#e4e4e4] py-2 flex flex-col items-stretch"
                         tabIndex={-1}
                       >
                         <button onClick={handleRemoveAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-red-400 hover:bg-[#221818] text-sm font-medium transition disabled:opacity-60" type="button">Remove Profile</button>
-                        <button onClick={handleChangeAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-blue-300 hover:bg-[#1e2636] text-sm font-medium transition" type="button">Change Profile</button>
-                        <button onClick={() => setAvatarMenuOpen(false)} className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#232323] text-sm font-medium transition" type="button">Cancel</button>
+                        <button onClick={handleChangeAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-white-300 hover:bg-[#1e2636] text-sm font-medium transition" type="button">Change Profile</button>
+                        <button onClick={() => setAvatarMenuOpen(false)} className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#ffffff] text-sm font-medium transition" type="button">Cancel</button>
                         <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleAvatarChange} disabled={avatarLoading} />
                         {avatarError && (<div className="text-xs text-red-400 mt-2 px-2 text-center">{avatarError}</div>)}
                       </div>
