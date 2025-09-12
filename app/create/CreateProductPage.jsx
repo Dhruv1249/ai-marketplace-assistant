@@ -16,6 +16,7 @@ import DeleteButton from '@/components/animated icon/DeleteButton';
 import DiscardButton from '@/components/animated icon/Discard';
 import { db, auth } from '@/app/login/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
 
 
 const CreateProductPage = () => {
@@ -538,15 +539,17 @@ const CreateProductPage = () => {
 
       {/* Loading Overlay */}
       {isGeneratingExplanations && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40">
+        <div className="fixed inset-0 bg-white bg-opacity-30 flex items-center justify-center z-40">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Generating Feature Explanations
-            </h3>
-            <p className="text-gray-600 text-sm">
-              AI is creating detailed explanations for your features. This may take a moment...
-            </p>
+            <div className="flex flex-col items-center -mt-15">
+              <GeneratingLoding />
+              <h3 className="text-lg font-semibold text-gray-900 -mt-18 mb-4">
+                Generating Feature Explanations
+              </h3>
+              <p className="text-gray-600 text-sm -mt-2">
+                AI is creating detailed explanations for your features. This may take a moment...
+              </p>
+            </div>
           </div>
         </div>
       )}
