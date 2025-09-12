@@ -17,6 +17,7 @@ import DiscardButton from '@/components/animated icon/Discard';
 import { db, auth } from '@/app/login/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 
 const CreateProductPage = () => {
@@ -516,10 +517,20 @@ const CreateProductPage = () => {
 
       {/* Warning Modal */}
       {showBackWarning && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
+          {/* Lottie animation on the left side */}
+          <div className="absolute left-12 bottom-20 h-full w-1/3 flex items-center justify-center pointer-events-none z-10 ml-16">
+            <DotLottieReact
+              src="https://lottie.host/540b131c-5ae6-4e5c-bf0a-16c17a3e47cf/hPw7pDfWXd.json"
+              loop
+              autoplay
+              style={{ width: '100%', height: '100%' }}
+            />
+          </div>
+          {/* Modal content on right with pop and border */}
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4 border-2 border-black shadow-2xl relative z-20 ml-72">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Discard Changes?
+              Discard Changes? 
             </h3>
             <p className="text-gray-600 mb-6">
               Going back will discard all your changes and any AI generation in progress will be cancelled. 
@@ -530,8 +541,6 @@ const CreateProductPage = () => {
                 Cancel
               </BackButton>
               <DiscardButton onClick={confirmStepChange} />
-
-              
             </div>
           </div>
         </div>
