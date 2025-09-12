@@ -6,6 +6,7 @@ import { Wand2, Loader2 } from 'lucide-react';
 import LaunchButton from '../animated icon/LaunchButton';
 import BackButton from '../animated icon/BackButton';
 import GenerateButton from '../animated icon/GenerateButton';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
@@ -374,8 +375,22 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
 
       {/* Confirmation Dialog */}
       {showConfirmDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-end">
+          {/* Dark overlay for the dialog */}
+          <div className="absolute inset-0 bg-white bg-opacity-40 transition-opacity z-10"></div>
+          {/* Lottie animation strictly on the left-hand side, inside the popup */}
+          <div className="absolute left-24 bottom-18 h-full max-w-md w-full z-20 pointer-events-none flex items-center justify-center">
+            <div className="w-full h-full">
+              <DotLottieReact
+                src="https://lottie.host/5dda8153-8ef1-449f-98ca-40287341e2d0/LhXpZODQiW.json"
+                loop
+                autoplay
+                style={{ width: '130%', height: '130%', opacity: 0.85 }}
+              />
+            </div>
+          </div>
+          {/* Pop-out white card */}
+          <div className="relative bg-white rounded-lg p-6 max-w-md w-full shadow-2xl flex flex-col justify-center mr-45 mt-10 mb-6 z-30 h-auto border-2 border-black">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               {hasSelectedOptions ? 'Generate AI Content?' : 'Create Basic Content?'}
             </h3>
