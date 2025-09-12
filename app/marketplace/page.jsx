@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import GameOne from '@/components/animated icon/GameOn';
 import Loading from '@/app/loading';
 import Input from '@/components/animated icon/Search';
+import { db } from '@/app/login/firebase';
+import { collection, query, onSnapshot } from 'firebase/firestore';
 
 // ✅ Custom Buy Button with Tooltip
 const BuyButton = ({ price }) => {
@@ -154,6 +156,9 @@ export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [fsProducts, setFsProducts] = useState([]);
+  const [fileProducts, setFileProducts] = useState([]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -240,6 +245,50 @@ export default function Marketplace() {
     'Accessories',
     'Home & Garden',
   ];
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "products"),
+      (snapshot) => {
+        const mapped = snapshot.docs.map((doc) => {
+          const d = doc.data() || {};
+          const firstImage =
+            Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : undefined;
+          const priceCandidate =
+            d.price ??
+            d.pricing?.discount?.finalPrice ??
+            d.pricing?.basePrice ??
+            0;
+
+          return {
+            id: doc.id,
+            title: d.title || d.name || "Untitled Product",
+            description: d.description || d.metaDescription || "",
+            price: Number(priceCandidate) || 0,
+            currency: d.currency || "USD",
+            image: d.image || d.imageUrl || firstImage || "/images/placeholder.svg",
+            rating: typeof d.rating === "number" ? d.rating : 4.8,
+            reviews: typeof d.reviews === "number" ? d.reviews : 0,
+            seller: d.seller || d.sellerName || "Marketplace Seller",
+            category: d.category || "Product",
+            featured: !!d.featured,
+            hasCustomPage: !!d.hasCustomPage,
+          };
+        });
+
+        // Merge Firestore updates into whatever is already displayed (API results included)
+        setProducts((prev) => {
+          const byId = new Map(prev.map((p) => [p.id, p]));
+          for (const p of mapped) byId.set(p.id, p); // Firestore overrides by id
+          return Array.from(byId.values());
+        });
+      },
+      (err) => {
+        console.error("Firestore subscription error:", err);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   const ProductCard = ({ product }) => (
     <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">

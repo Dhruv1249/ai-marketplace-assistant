@@ -19,7 +19,10 @@ import {
 } from 'lucide-react';
 import HeartButton from '@/components/animated icon/HeartButton';
 import AddToCartButton from '@/components/animated icon/AddToCartButton';
+
+
 import Loading from '@/app/loading';
+
 
 export default function ProductPage() {
   const params = useParams();
@@ -34,67 +37,117 @@ export default function ProductPage() {
   const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`/api/products/${productId}`);
-        const result = await response.json();
+    if (!productId) return;
+    let unsub;
 
-        if (result.success) {
-          setProductData(result);
+    const fetchFileProduct = async () => {
+      try {
+        const resp = await fetch(`/api/products/${productId}`);
+        const result = await resp.json();
+        if (result && result.success && result.standard) {
+          const std = result.standard || {};
+          const pricing = std.pricing || {};
+          const basePrice = typeof pricing.basePrice === 'number' ? pricing.basePrice : 0;
+          const disc = pricing.discount || {};
+          let finalPrice = basePrice;
+          if (disc.enabled) {
+            if (disc.type === 'percentage' && typeof disc.value === 'number') {
+              finalPrice = Math.max(0, +(basePrice * (1 - disc.value / 100)).toFixed(2));
+            } else if (disc.type === 'fixed' && typeof disc.value === 'number') {
+              finalPrice = Math.max(0, +(basePrice - disc.value).toFixed(2));
+            } else if (typeof disc.finalPrice === 'number') {
+              finalPrice = disc.finalPrice;
+            }
+          }
+          // Build image URLs using API for file-based assets
+          const urls = [];
+          if (std.images?.thumbnail) urls.push(`/api/products/${productId}/images/${std.images.thumbnail}`);
+          (std.images?.additional || []).forEach((name) => {
+            urls.push(`/api/products/${productId}/images/${name}`);
+          });
+
+          setProductData({
+            id: String(productId),
+            title: std.title || 'Untitled Product',
+            description: std.description || '',
+            price: basePrice,
+            discount: disc.enabled ? { ...disc, finalPrice } : { enabled: false },
+            imageUrl: urls[0] || '',
+            images: urls.slice(1),
+            features: std.features || [],
+            featureExplanations: std.featureExplanations || {},
+            specifications: std.specifications || {},
+            category: std.category || 'Product',
+            hasCustomPage: !!result.custom,
+          });
+          setError(null);
         } else {
-          setError(result.error || 'Product not found');
+          setProductData(null);
+          setError(result?.error || 'Product not found');
         }
       } catch (err) {
-        console.error('Error fetching product:', err);
+        console.error('File product fetch failed:', err);
+        setProductData(null);
         setError('Failed to load product');
       } finally {
         setLoading(false);
       }
     };
 
-    if (productId) {
-      fetchProduct();
+    setLoading(true);
+    try {
+      const ref = doc(db, 'products', String(productId));
+      unsub = onSnapshot(
+        ref,
+        (snap) => {
+          if (snap.exists()) {
+            setProductData({ id: snap.id, ...snap.data() });
+            setError(null);
+            setLoading(false);
+          } else {
+            // Fallback to file-based product when Firestore doc not found
+            fetchFileProduct();
+          }
+        },
+        (err) => {
+          console.error('Error loading product:', err);
+          // Fallback to file-based on error
+          fetchFileProduct();
+        }
+      );
+    } catch (e) {
+      console.error('Listener setup failed:', e);
+      // Fallback to file-based if Firestore listener can't be established
+      fetchFileProduct();
     }
+
+    return () => {
+      if (unsub) unsub();
+    };
   }, [productId]);
 
   // Helper functions - Dynamic image loading based on available images
   const getProductImages = () => {
-    if (!productData?.standard) return [];
-    
-    const product = productData.standard;
+    if (!productData) return [];
     const images = [];
-    
-    // Add thumbnail as first image if it exists
-    if (product.images?.thumbnail) {
-      images.push({
-        id: 'thumbnail',
-        label: 'Image 1 (Thumbnail)',
-        url: `/api/products/${productId}/images/${product.images.thumbnail}`,
-        hasImage: true
-      });
+    if (productData.imageUrl) {
+      images.push({ id: 'main', label: 'Image 1 (Main)', url: productData.imageUrl, hasImage: true });
     }
-    
-    // Add additional images dynamically based on what's available
-    const additionalImages = product.images?.additional || [];
-    additionalImages.forEach((imageName, index) => {
-      images.push({
-        id: `additional-${index + 1}`,
-        label: `Image ${images.length + 1}`,
-        url: `/api/products/${productId}/images/${imageName}`,
-        hasImage: true
-      });
+    // support both images and additionalImages arrays or comma separated string
+    const gallery = Array.isArray(productData.images)
+      ? productData.images
+      : typeof productData.images === 'string'
+        ? productData.images.split(',').map((s) => s.trim()).filter(Boolean)
+        : Array.isArray(productData.additionalImages)
+          ? productData.additionalImages
+          : [];
+    gallery.forEach((url, idx) => {
+      if (!url) return;
+      images.push({ id: `g-${idx}`, label: `Image ${images.length + 1}`, url, hasImage: true });
     });
-    
-    // If no images at all, add a placeholder
     if (images.length === 0) {
-      images.push({
-        id: 'placeholder',
-        label: 'Product Image',
-        url: '/api/placeholder/600/400',
-        hasImage: false
-      });
+      images.push({ id: 'placeholder', label: 'Product Image', url: '/api/placeholder/600/400', hasImage: false });
     }
-    
     return images;
   };
 
@@ -113,9 +166,9 @@ export default function ProductPage() {
   };
 
   const renderTabContent = () => {
-    if (!productData?.standard) return null;
+    if (!productData) return null;
 
-    const product = productData.standard;
+    const product = productData;
     const formattedProduct = {
       description: product.description,
       features: product.features || [],
@@ -192,7 +245,7 @@ export default function ProductPage() {
   }
 
   // Error state
-  if (error || !productData?.standard) {
+  if (error || !productData) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -209,7 +262,7 @@ export default function ProductPage() {
     );
   }
 
-  const product = productData.standard;
+  const product = productData;
   const productImages = getProductImages();
 
   // Convert the JSON data to the expected format
@@ -217,8 +270,10 @@ export default function ProductPage() {
     id: productId,
     title: product.title,
     description: product.description,
-    price: product.pricing?.discount?.finalPrice || product.pricing?.basePrice || 0,
-    originalPrice: product.pricing?.discount?.enabled ? product.pricing?.basePrice : null,
+    price: (product.discount?.enabled && typeof product.discount.finalPrice === 'number')
+      ? product.discount.finalPrice
+      : (typeof product.price === 'number' ? product.price : 0),
+    originalPrice: product.discount?.enabled && typeof product.price === 'number' ? product.price : null,
     currency: 'USD',
     images: productImages,
     rating: 4.8, // Default rating - implement actual rating system
@@ -228,7 +283,7 @@ export default function ProductPage() {
       rating: 4.9,
       totalSales: 1250,
     },
-    category: 'Product', // Default category - add to product data
+    category: product.category || 'Product',
     inStock: true, // Default - implement inventory system
     stockCount: 15, // Default - implement inventory system
     features: product.features || [],
