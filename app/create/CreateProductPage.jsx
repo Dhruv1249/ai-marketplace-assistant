@@ -311,6 +311,7 @@ const CreateProductPage = () => {
         specifications: generatedContent?.specifications || {},
         seoKeywords: generatedContent?.seoKeywords || [],
         metaDescription: generatedContent?.metaDescription || '',
+        published: true,
         createdAt: serverTimestamp(),
       });
       alert("Product published successfully!");

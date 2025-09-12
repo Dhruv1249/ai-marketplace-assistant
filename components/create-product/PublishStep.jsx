@@ -105,6 +105,7 @@ const PublishStep = ({
               specifications: generatedContent.specifications || {},
               seoKeywords: generatedContent.seoKeywords || [],
               hasCustomPage: false,
+              published: true,
               marketplaceId: productId,
               createdAt: serverTimestamp(),
               updatedAt: serverTimestamp(),
