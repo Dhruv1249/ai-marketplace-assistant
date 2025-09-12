@@ -288,9 +288,10 @@ if (cred.user?.displayName) {
 } else {
   localStorage.removeItem('welcomeName'); // fallback
 }
-// Redirect to homepage
+// Alert then redirect to homepage
+alert('Signed in successfully ✅');
 window.location.href = '/';
-        // optionally: window.location.href = '/';
+// optionally: router.push('/')
       } catch (err) {
         setLoading(false);
         setErrorMsg(err.message);
@@ -320,6 +321,7 @@ window.location.href = '/';
         await signInWithPopup(auth, provider);
         setLoading(false);
         alert("Signed in with Google ✅");
+        window.location.href = '/';
       } catch (err) {
         setLoading(false);
         setErrorMsg(err.message);
@@ -345,6 +347,7 @@ const handleGithub = async () => {
     await signInWithPopup(auth, provider);
     setLoading(false);
     alert("Signed in with GitHub ✅");
+    window.location.href = '/';
   } catch (err) {
     setLoading(false);
     if (err.code === 'auth/account-exists-with-different-credential') {
