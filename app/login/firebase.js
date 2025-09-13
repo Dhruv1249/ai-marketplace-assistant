@@ -1,3 +1,4 @@
+// firebaseConfig.ts
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -11,13 +12,13 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
+// ✅ Initialize Firebase (only once)
 const app = initializeApp(firebaseConfig);
 
-// Export Auth
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const githubProvider = new GithubAuthProvider();
+// ✅ Instances you can import anywhere
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
-// Export Firestore db
-export const db = getFirestore(app);
+export { app, auth, db, googleProvider, githubProvider };
