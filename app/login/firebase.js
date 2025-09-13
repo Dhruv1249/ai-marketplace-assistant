@@ -11,13 +11,48 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase only in browser environment
+let app;
+let auth;
+let db;
+let googleProvider;
+let githubProvider;
 
-// Export Auth
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const githubProvider = new GithubAuthProvider();
+const initializeFirebase = () => {
+  if (typeof window !== 'undefined' && !app) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    googleProvider = new GoogleAuthProvider();
+    githubProvider = new GithubAuthProvider();
+  }
+  return { app, auth, db, googleProvider, githubProvider };
+};
 
-// Export Firestore db
-export const db = getFirestore(app);
+// Getter functions that ensure Firebase is initialized
+export const getFirebaseAuth = () => {
+  if (typeof window === 'undefined') return null;
+  if (!auth) initializeFirebase();
+  return auth;
+};
+
+export const getFirebaseDb = () => {
+  if (typeof window === 'undefined') return null;
+  if (!db) initializeFirebase();
+  return db;
+};
+
+export const getGoogleProvider = () => {
+  if (typeof window === 'undefined') return null;
+  if (!googleProvider) initializeFirebase();
+  return googleProvider;
+};
+
+export const getGithubProvider = () => {
+  if (typeof window === 'undefined') return null;
+  if (!githubProvider) initializeFirebase();
+  return githubProvider;
+};
+
+// Legacy exports for backward compatibility (will initialize on first access)
+export { getFirebaseAuth as auth, getFirebaseDb as db, getGoogleProvider as googleProvider, getGithubProvider as githubProvider };
