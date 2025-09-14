@@ -15,13 +15,17 @@ import {
 } from "firebase/firestore";
 import { Button } from "@/components/ui";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
+import News from "./News";
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
 export default function Dashboard() {
   // ----- state (unchanged) -----
   const [user, setUser] = useState(null);
+  const router = useRouter();
   const [profile, setProfile] = useState(null);
   const dashboardSectionRef = useRef(null);
   const dashboardRef = useRef(null);
@@ -44,6 +48,9 @@ export default function Dashboard() {
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   // Section nav state for enabling all nav links
   const [activeSection, setActiveSection] = useState('overview');
+
+  // Show right-side news panel on the overview (frontpage) by default
+  const showNewsAside = activeSection === 'overview';
 
   // Theme state: 'light' (default) or 'dark'
   const [theme, setTheme] = useState('light');
@@ -378,6 +385,11 @@ export default function Dashboard() {
             onClick={() => setActiveSection('reviews')}
             type="button"
           >Reviews</button>
+          <button
+            className={`block w-full text-left px-4 py-2 rounded-lg transition font-semibold ${activeSection === 'news' ? (theme === 'dark' ? 'bg-gray-800 text-blue-300' : 'bg-gray-100 text-blue-700') : (theme === 'dark' ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100 text-gray-900')}`}
+            onClick={() => setActiveSection('news')}
+            type="button"
+          >Latest News</button>
           {/* Settings nav item */}
           <button
             type="button"
@@ -485,13 +497,12 @@ export default function Dashboard() {
 </div>
       </aside>
 
-      {/* Main content */}
-      <main className={theme === 'dark' ? 'flex-1 bg-black' : 'flex-1 bg-white'}>
+      {/* Main + News content */}
+      <main className={theme === 'dark' ? 'flex-1 bg-black flex flex-col' : 'flex-1 bg-white flex flex-col'}>
         {/* Top bar */}
-        <div className={`sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
+        <div className={`sticky top-0 z-10 flex items-center justify-between md:justify-end px-4 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
           <div className={`md:hidden font-semibold ${theme === 'dark' ? 'text-white' : ''}`}>Dashboard</div>
-          <div className="flex-1 max-w-xl hidden md:block"></div>
-          <div className="flex items-center gap-3">
+                    <div className="ml-auto flex items-center gap-3">
             <span className={`text-sm hidden sm:block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
               {user.email}
             </span>
@@ -508,16 +519,18 @@ export default function Dashboard() {
         </div>
 
         {/* Page container */}
-        <section
-          ref={dashboardSectionRef}
-          className="max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full"
-        >
+        <div className="flex flex-row w-full flex-1">
+          <section
+            ref={dashboardSectionRef}
+            className={`px-20 sm:px-2 py-8 w-full ${showNewsAside ? '' : 'max-w-5xl mx-auto'} ${showNewsAside ? 'lg:pr-6 lg:-ml-2' : ''}`}
+            style={{ flex: showNewsAside ? '3 1 0%' : '1 1 0%' }}
+          >
           {/* Overview Section */}
   {activeSection === 'overview' && (
     <>
-      <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
+      <h2 className={`text-2xl font-bold mb-6 ml-2 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
       {/* Profile card */}
-      <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-6 mb-8`}>
+      <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-10 mb-8`}>
         <div className="flex items-start gap-6">
           <div className="relative flex flex-col items-center">
             <div className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'} w-24 h-24 rounded-full overflow-hidden mb-2`}>
@@ -1246,7 +1259,22 @@ export default function Dashboard() {
               </div>
             </>
           )}
+
+          {/* News Section */}
+          {activeSection === 'news' && (
+            <>
+              <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Latest News</h2>
+              <News fullPage={true} />
+            </>
+          )}
           </section>
+
+          {showNewsAside && (
+            <aside className="hidden lg:block flex-none max-w-xs w-full self-start px-2 pt-8 pb-8">
+              <News />
+            </aside>
+          )}
+        </div>
       </main>
     </div>
   );
