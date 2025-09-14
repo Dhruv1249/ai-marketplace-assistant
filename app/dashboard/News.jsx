@@ -36,7 +36,7 @@ export default function News({ className = '', fullPage = false }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newsItems.map((news, idx) => (
               <article key={idx} className="p-5 border rounded-xl bg-white dark:bg-indigo-100 border-gray-200 dark:border-gray-500 shadow-sm">
-                <div className="text-lg font-semibold text-blue-600 dark:text-blue-300 mb-1">{news.title}</div>
+                <div className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-1">{news.title}</div>
                 <p className="text-gray-700 dark:text-gray-200 text-sm mb-2">{news.description}</p>
                 <time className="text-xs text-gray-400 dark:text-gray-500">{news.date}</time>
               </article>
@@ -49,7 +49,7 @@ export default function News({ className = '', fullPage = false }) {
           <div className="flex flex-col gap-3">
             {newsItems.map((news, idx) => (
               <article key={idx} className="p-3 bg-gray-50 dark:bg-white-100 rounded-lg">
-                <div className="text-sm font-semibold text-blue-600 dark:text-blue-600 mb-1">{news.title}</div>
+                <div className="text-sm font-semibold text-blue-600 dark:text-blue-300 mb-1">{news.title}</div>
                 <p className="text-gray-700 dark:text-gray-200 text-xs mb-1">{news.description}</p>
                 <time className="text-xs text-gray-400 dark:text-gray-500">{news.date}</time>
               </article>

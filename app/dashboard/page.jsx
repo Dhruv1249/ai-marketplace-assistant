@@ -1190,7 +1190,7 @@ export default function Dashboard() {
                         className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
                         aria-label="Product actions"
                       >
-                        <MoreVertical size={18} color="#000000" />
+                        <MoreVertical size={18} color="#ffffff" />
                       </button>
                       {openProductMenuId === prod.id && (
                         <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
@@ -1235,6 +1235,31 @@ export default function Dashboard() {
                       )}
                       {typeof prod.price !== "undefined" && (<div className="font-semibold text-green-400 dark:text-green-400 text-green-600">Price: ₹{prod.price}</div>)}
                       {prod.createdAt && (<div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Created: {prod.createdAt.toDate?.().toLocaleString?.() || String(prod.createdAt)}</div>)}
+                      <Button
+                        size="sm"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold mt-2"
+                        onClick={() => {
+                          setEditingProductId(prod.id);
+                          setProductEditData({
+                            name: prod.name || prod.title || '',
+                            title: prod.title || prod.name || '',
+                            description: prod.description || '',
+                            metaDescription: prod.metaDescription || '',
+                            price: prod.price ?? '',
+                            imageUrl: prod.imageUrl || '',
+                            images: Array.isArray(prod.images) ? prod.images : (prod.images || ''),
+                            category: prod.category || '',
+                            tags: Array.isArray(prod.tags) ? prod.tags : (prod.tags || ''),
+                            benefits: prod.benefits || '',
+                            features: Array.isArray(prod.features) ? prod.features : (prod.features || ''),
+                            featureExplanations: prod.featureExplanations || {},
+                            specifications: prod.specifications ? (typeof prod.specifications === 'string' ? prod.specifications : JSON.stringify(prod.specifications, null, 2)) : '{}',
+                          });
+                          setProductModalOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -1268,6 +1293,313 @@ export default function Dashboard() {
             </>
           )}
           </section>
+
+          {activeSection !== 'overview' && productModalOpen && (
+        <div>
+          <div
+            className="fixed inset-0 bg-black/40 z-50"
+            style={{ animation: 'fadeIn 0.18s' }}
+            onClick={() => setProductModalOpen(false)}
+          />
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-2 py-8" role="dialog" aria-modal="true">
+            <div
+              className={`relative w-full max-w-3xl rounded-2xl shadow-2xl border transition-all ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} max-h-[90vh] overflow-y-auto overscroll-contain`}
+              style={{ animation: 'popModal 0.22s' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setProductModalOpen(false)}
+                className={`absolute top-4 right-4 p-2 rounded-md ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-gray-400' : 'bg-gray-100 hover:bg-gray-200 text-gray-500'} transition`}
+                aria-label="Close edit modal"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <div className="px-7 py-6">
+                <div className={`mb-5 font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Edit Product</div>
+                <form
+               onSubmit={async (e) => {
+  e.preventDefault();
+  setSaveError(null);
+  setSaveLoading(true);
+  try {
+    const prodRef = doc(db, 'products', editingProductId);
+
+    // Normalize incoming form data
+    let features = productEditData.features || [];
+    if (typeof features === 'string') {
+      features = features.split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    let featureExplanationsObj = {};
+    if (productEditData.featureExplanations && typeof productEditData.featureExplanations === 'object') {
+      featureExplanationsObj = productEditData.featureExplanations;
+    }
+    let tags = productEditData.tags;
+    if (typeof tags === 'string') tags = tags.split(',').map((s) => s.trim()).filter(Boolean);
+    let specifications = productEditData.specifications || {};
+    if (typeof specifications === 'string') {
+      try {
+        specifications = JSON.parse(specifications);
+      } catch {
+        specifications = {};
+      }
+    }
+    let images = productEditData.images;
+    if (typeof images === 'string') images = images.split(',').map((s) => s.trim()).filter(Boolean);
+
+    // Payload for product update
+    const updatePayload = {
+      name: productEditData.name ?? '',
+      title: productEditData.title ?? '',
+      description: productEditData.description ?? '',
+      metaDescription: productEditData.metaDescription ?? '',
+      price: productEditData.price !== undefined ? Number(productEditData.price) : 0,
+      imageUrl: productEditData.imageUrl ?? '',
+      images: images ?? [],
+      category: productEditData.category ?? '',
+      tags: tags ?? [],
+      features,
+      featureExplanations: featureExplanationsObj,
+      benefits: productEditData.benefits ?? '',
+      specifications: specifications ?? {},
+      updatedAt: new Date()
+    };
+
+    // Update the product document
+    await updateDoc(prodRef, updatePayload);
+
+    // Mirror the changes to marketplace/{productId} if it exists
+    try {
+      const marketRef = doc(db, 'marketplace', editingProductId);
+      const marketSnap = await getDoc(marketRef);
+      if (marketSnap.exists()) {
+        const mirrorPayload = {
+          ...updatePayload,
+          name: updatePayload.name || updatePayload.title,
+          title: updatePayload.title || updatePayload.name,
+          thumbnail: updatePayload.imageUrl || (Array.isArray(updatePayload.images) ? updatePayload.images[0] : ''),
+        };
+        await setDoc(marketRef, mirrorPayload, { merge: true });
+      }
+    } catch (mirrorErr) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Marketplace mirror update skipped/failed:', mirrorErr);
+      }
+    }
+
+    setProductModalOpen(false);
+    setEditingProductId(null);
+    setProductEditData({});
+    await fetchDashboardData(user);
+  } catch (err) {
+    setSaveError('Failed to update product: ' + (err && err.message ? err.message : JSON.stringify(err)));
+  }
+  setSaveLoading(false);
+}}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-24">
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-1">Product Name/Title</label>
+                      <input
+                        name="name"
+                        value={productEditData.name || productEditData.title || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, name: e.target.value, title: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-1">Description</label>
+                      <textarea
+                        name="description"
+                        value={productEditData.description || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, description: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-1">Meta Description</label>
+                      <textarea
+                        name="metaDescription"
+                        value={productEditData.metaDescription || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, metaDescription: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Price</label>
+                      <input
+                        name="price"
+                        type="number"
+                        value={productEditData.price !== undefined ? productEditData.price : ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, price: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Category</label>
+                      <input
+                        name="category"
+                        value={productEditData.category || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, category: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Main Image URL</label>
+                      <input
+                        name="imageUrl"
+                        value={productEditData.imageUrl || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, imageUrl: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Gallery Images (comma separated URLs)</label>
+                      <input
+                        name="images"
+                        value={Array.isArray(productEditData.images) ? productEditData.images.join(', ') : productEditData.images || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, images: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-400 mb-1">Tags (comma separated)</label>
+                      <input
+                        name="tags"
+                        value={Array.isArray(productEditData.tags) ? productEditData.tags.join(', ') : productEditData.tags || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, tags: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-1">Benefits</label>
+                      <textarea
+                        name="benefits"
+                        value={productEditData.benefits || ''}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, benefits: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-2">Features & Explanations</label>
+                      <div className={`hidden md:grid grid-cols-12 gap-3 text-xs font-medium mb-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <div className="col-span-5">Feature</div>
+                        <div className="col-span-6">Explanation</div>
+                        <div className="col-span-1"></div>
+                      </div>
+                      {(Array.isArray(productEditData.features) ? productEditData.features : typeof productEditData.features === 'string' ? productEditData.features.split(',').map((f) => f.trim()) : []).map((feature, i) => (
+                        <div key={i} className="grid grid-cols-12 gap-3 mb-2">
+                          <input
+                            type="text"
+                            value={feature || ''}
+                            onChange={(e) => {
+                              const fs = [...(Array.isArray(productEditData.features) ? productEditData.features : typeof productEditData.features === 'string' ? productEditData.features.split(',').map((f) => f.trim()) : [])];
+                              const old = fs[i];
+                              fs[i] = e.target.value;
+                              let fe = { ...(productEditData.featureExplanations || {}) };
+                              if (old && fe[old] !== undefined && old !== e.target.value) {
+                                fe[e.target.value] = fe[old];
+                                delete fe[old];
+                              }
+                              setProductEditData((d) => ({ ...d, features: fs, featureExplanations: fe }));
+                            }}
+                            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} col-span-12 md:col-span-5 rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                            placeholder="Feature"
+                          />
+                          <input
+                            type="text"
+                            value={(productEditData.featureExplanations && productEditData.featureExplanations[feature]) || ''}
+                            onChange={(e) => {
+                              setProductEditData((d) => ({
+                                ...d,
+                                featureExplanations: { ...(d.featureExplanations || {}), [feature]: e.target.value },
+                              }));
+                            }}
+                            className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} col-span-11 md:col-span-6 rounded-lg px-3 py-2 outline-none border focus:border-blue-400`}
+                            placeholder="Explanation"
+                          />
+                          <div className="col-span-1 flex justify-end">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              type="button"
+                              onClick={() => {
+                                const fs = [...(Array.isArray(productEditData.features) ? productEditData.features : typeof productEditData.features === 'string' ? productEditData.features.split(',').map((f) => f.trim()) : [])];
+                                const feat = fs[i];
+                                fs.splice(i, 1);
+                                let fe = { ...(productEditData.featureExplanations || {}) };
+                                if (feat) delete fe[feat];
+                                setProductEditData((d) => ({ ...d, features: fs, featureExplanations: fe }));
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        type="button"
+                        className="mt-1"
+                        onClick={() => {
+                          const fs = [...(Array.isArray(productEditData.features) ? productEditData.features : typeof productEditData.features === 'string' ? productEditData.features.split(',').map((f) => f.trim()) : [])];
+                          fs.push('');
+                          setProductEditData((d) => ({ ...d, features: fs }));
+                        }}
+                      >
+                        Add Feature
+                      </Button>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-400 mb-1">Specifications (key-value JSON)</label>
+                      <textarea
+                        name="specifications"
+                        value={typeof productEditData.specifications === 'string' ? productEditData.specifications : JSON.stringify(productEditData.specifications || {}, null, 2)}
+                        onChange={(e) => setProductEditData((d) => ({ ...d, specifications: e.target.value }))}
+                        className={`${theme === 'dark' ? 'bg-gray-900 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'} w-full rounded-lg px-3 py-2 outline-none border focus:border-blue-400 font-mono text-xs`}
+                        placeholder='{"Weight":"1.2kg","Color":"Red"}'
+                      />
+                    </div>
+                  </div>
+
+                  {saveError && (
+                    <div className="text-red-400 text-sm mt-2">{saveError}</div>
+                  )}
+                  <div className="h-2" />
+                  <div className={`${theme === 'dark' ? 'bg-gray-900/95 border-gray-700' : 'bg-white/90 border-gray-200'} sticky bottom-0 -mx-7 px-7 py-3 border-t backdrop-blur flex gap-2 justify-end`}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      type="button"
+                      disabled={saveLoading}
+                      className={theme === 'dark' ? 'border-gray-500 text-gray-200 hover:bg-gray-700' : 'border-gray-300 text-gray-800 hover:bg-gray-100'}
+                      onClick={() => {
+                        setProductModalOpen(false);
+                        setEditingProductId(null);
+                        setProductEditData({});
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button size="sm" type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold" disabled={saveLoading}>
+                      {saveLoading ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <style>{`
+            @keyframes fadeIn { from { opacity:0; } to {opacity:1;} }
+            @keyframes popModal {
+              0% { opacity:0; transform: scale(.96) translateY(32px); }
+              100% { opacity:1; transform: none; }
+            }
+          `}</style>
+        </div>
+      )}
 
           {showNewsAside && (
             <aside className="hidden lg:block flex-none max-w-xs w-full self-start px-2 pt-8 pb-8">
