@@ -1602,7 +1602,8 @@ export default function Dashboard() {
       )}
 
           {showNewsAside && (
-            <aside className="hidden lg:block flex-none max-w-xs w-full self-start px-2 pt-8 pb-8">
+            <aside className="hidden lg:block flex-none max-w-xs w-full self-start px-2 pt-12 pb-8">
+              <h2 className={`text-2xl font-bold mb-4 ml-2 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>What's trending?</h2>
               <News />
             </aside>
           )}
