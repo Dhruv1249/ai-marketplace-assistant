@@ -3204,10 +3204,9 @@ const EnhancedJSONModelRenderer = ({
           }
         };
         
-        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all hover:bg-blue-50`.trim();
-        
+         enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:ring-2 hover:ring-blue-400 hover:ring-opacity-60 transition-all duration-200`.trim();
         if (selectedComponentId === id) {
-          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2 bg-blue-50';
+          enhancedProps.className += ' ring-2 ring-blue-600 ring-opacity-80';   
         }
       }
       
