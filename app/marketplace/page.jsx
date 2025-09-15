@@ -160,6 +160,28 @@ export default function Marketplace() {
   const [fsProducts, setFsProducts] = useState([]);
   const [fileProducts, setFileProducts] = useState([]);
 
+  // Force a hard reload once per visit to the marketplace page
+  useEffect(() => {
+    try {
+      const key = 'marketplaceForceReload';
+      const hasReloaded = sessionStorage.getItem(key) === 'true';
+      if (!hasReloaded) {
+        sessionStorage.setItem(key, 'true');
+        window.location.reload();
+      } else {
+        // Clear the flag so that next time the user navigates back here, it reloads again
+        sessionStorage.removeItem(key);
+      }
+    } catch (e) {
+      // If sessionStorage is unavailable for any reason, fall back to a single reload based on navigation type
+      const entry = performance.getEntriesByType?.('navigation')?.[0];
+      const isReload = entry?.type === 'reload';
+      if (!isReload) {
+        window.location.reload();
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
