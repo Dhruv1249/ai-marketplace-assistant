@@ -726,23 +726,7 @@ export default function UniversalPreviewPage({
         {renderPreviewContent()}
       </div>
 
-      {/* Edit Mode Helper - Only show if showEditingUI is true */}
-      {showEditingUI && isEditing && (
-        <div className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg max-w-sm">
-          <h3 className="font-semibold mb-2">Edit Mode Active (Enhanced)</h3>
-          <ul className="text-sm space-y-1">
-            <li>• Click elements to select and edit them</li>
-            <li>• Changes save immediately for all types</li>
-            <li>• Render key: #{renderKey} (increments on updates)</li>
-            <li>• Enhanced renderer with animations & CSS vars</li>
-          </ul>
-          {hasUnsavedChanges && (
-            <div className="mt-2 text-xs bg-green-500 text-white px-2 py-1 rounded">
-              ✅ Changes saved automatically
-            </div>
-          )}
-        </div>
-      )}
+      {/* Edit Mode Helper - Removed as requested */}
 
       {/* Universal Editors - Only show if showEditingUI is true */}
       {showEditingUI && (

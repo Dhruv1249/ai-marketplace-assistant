@@ -472,10 +472,6 @@ export default function UniversalSourceCodeEditor({
     console.log('Raw JSON length:', rawJSON.length);
     console.log('====================');
     
-    saveDebugJSON(processedJSON, `processed-${type}`);
-    saveDebugJSON(rawJSON, `raw-${type}`);
-    saveDebugJSON(newJSON, `selected-${newMode ? 'processed' : 'raw'}-${type}`);
-    
     setShowProcessedData(newMode);
     setJsonCode(newJSON);
     setHasChanges(false);
