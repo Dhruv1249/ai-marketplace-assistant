@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   description: "AI-powered marketplace assistant for creating product pages",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -3152,6 +3152,45 @@ const EnhancedJSONModelRenderer = ({
     return node;
   }, [processEventHandlers, model, safeGet]);
 
+  // Process markdown links in text
+  const processMarkdownLinks = (text) => {
+    if (typeof text !== 'string') return text;
+    
+    // Convert [text](url) to clickable links
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = linkRegex.exec(text)) !== null) {
+      // Add text before the link
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      
+      // Add the link as a React element
+      parts.push(
+        React.createElement('a', {
+          key: `link-${match.index}`,
+          href: match[2],
+          className: 'text-blue-600 hover:text-blue-800 underline',
+          target: '_blank',
+          rel: 'noopener noreferrer'
+        }, match[1])
+      );
+      
+      lastIndex = match.index + match[0].length;
+    }
+    
+    // Add remaining text after the last link
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    
+    // If no links were found, return original text
+    return parts.length > 1 ? parts : text;
+  };
+
   // Component Rendering
   const renderComponent = useCallback((comp, key = 0) => {
     if (!comp) return null;
@@ -3161,7 +3200,7 @@ const EnhancedJSONModelRenderer = ({
     }
 
     if (typeof comp === 'string') {
-      return comp;
+      return processMarkdownLinks(comp);
     }
 
     if (typeof comp === 'object' && comp.type) {
@@ -3204,10 +3243,9 @@ const EnhancedJSONModelRenderer = ({
           }
         };
         
-        enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:outline hover:outline-2 hover:outline-blue-400 hover:outline-offset-2 transition-all hover:bg-blue-50`.trim();
-        
+         enhancedProps.className = `${enhancedProps.className || ''} cursor-pointer hover:ring-2 hover:ring-blue-400 hover:ring-opacity-60 transition-all duration-200`.trim();
         if (selectedComponentId === id) {
-          enhancedProps.className += ' outline outline-2 outline-blue-500 outline-offset-2 bg-blue-50';
+          enhancedProps.className += ' ring-2 ring-blue-600 ring-opacity-80';   
         }
       }
       

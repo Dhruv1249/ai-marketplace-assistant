@@ -18,7 +18,7 @@ import ReadMoreButton from "../components/animated icon/ReadMoreButton";
 import Explore from '@/components/animated icon/Explore';
 
 gsap.registerPlugin(ScrollTrigger);
-
+export const dynamic = "force-dynamic";
 const AnimatedCartButton = () => {
   const [clicked, setClicked] = useState(false);
   const router = useRouter();
