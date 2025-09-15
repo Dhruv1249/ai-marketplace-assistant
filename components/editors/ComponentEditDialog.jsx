@@ -21,7 +21,10 @@ const ComponentEditDialog = ({
     type: 'text',
     name: '',
     id: '',
-    title: ''
+    title: '',
+    fontSize: '',
+    textColor: '',
+    backgroundColor: ''
   });
   
   const [activeTab, setActiveTab] = useState('content');
@@ -232,38 +235,37 @@ const ComponentEditDialog = ({
     }, 0);
   };
 
-  // Apply text formatting at cursor position
+  // Apply text formatting using CSS classes instead of markdown
   const applyTextFormatting = (formatType) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+    // Just update the CSS classes, don't modify the text
+    let className = formData.className;
     
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = formData.text.substring(start, end);
-    
-    if (!selectedText) return;
-    
-    let formattedText = selectedText;
     switch (formatType) {
       case 'bold':
-        formattedText = `**${selectedText}**`;
+        if (className.includes('font-bold')) {
+          className = className.replace(/\bfont-bold\b/g, '').replace(/\s+/g, ' ').trim();
+        } else {
+          className = `${className} font-bold`.trim();
+        }
         break;
       case 'italic':
-        formattedText = `*${selectedText}*`;
+        if (className.includes('italic')) {
+          className = className.replace(/\bitalic\b/g, '').replace(/\s+/g, ' ').trim();
+        } else {
+          className = `${className} italic`.trim();
+        }
         break;
       case 'underline':
-        formattedText = `<u>${selectedText}</u>`;
+        if (className.includes('underline')) {
+          className = className.replace(/\bunderline\b/g, '').replace(/\s+/g, ' ').trim();
+        } else {
+          className = `${className} underline`.trim();
+        }
         break;
     }
     
-    const newText = formData.text.substring(0, start) + formattedText + formData.text.substring(end);
-    handleInputChange('text', newText);
-    
-    // Set cursor position after formatted text
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
-    }, 0);
+    handleInputChange('className', className);
+    detectTextFormatting(className);
   };
 
   // Generate preview of the component
@@ -280,6 +282,25 @@ const ComponentEditDialog = ({
     processedText = processedText.replace(/\*([^*]+)\*/g, '<em>$1</em>');
     
     return processedText;
+  };
+
+  // Generate inline styles for custom colors and font size
+  const generateInlineStyles = () => {
+    const styles = {};
+    
+    if (formData.fontSize) {
+      styles.fontSize = `${formData.fontSize}px`;
+    }
+    
+    if (formData.textColor) {
+      styles.color = formData.textColor;
+    }
+    
+    if (formData.backgroundColor) {
+      styles.backgroundColor = formData.backgroundColor;
+    }
+    
+    return styles;
   };
 
   // FIXED: Handle save with proper text structure
@@ -488,9 +509,14 @@ const ComponentEditDialog = ({
                       placeholder="Enter your text content here..."
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Use **bold**, *italic*, and [link text](url) for formatting
-                  </p>
+                  <div className="bg-blue-50 p-3 rounded-lg mt-2">
+                    <p className="text-xs text-blue-800 font-medium mb-1">Text Formatting:</p>
+                    <div className="text-xs text-blue-700 space-y-1">
+                      <p>• Select text and click <strong>Bold</strong>, <em>Italic</em>, or <u>Underline</u> buttons</p>
+                      <p>• Or type: **bold text**, *italic text*</p>
+                      <p>• For links: Go to the "Links" tab to create them, then insert here</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Component-specific fields */}
@@ -572,162 +598,122 @@ const ComponentEditDialog = ({
             {activeTab === 'style' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CSS Classes
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Font Size</label>
+                  <input
+                    type="number"
+                    value={formData.fontSize}
+                    onChange={(e) => handleInputChange('fontSize', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="16"
+                    min="8"
+                    max="72"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Text Color</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={formData.textColor || '#000000'}
+                      onChange={(e) => handleInputChange('textColor', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={formData.textColor}
+                      onChange={(e) => handleInputChange('textColor', e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="#000000"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={formData.backgroundColor || '#ffffff'}
+                      onChange={(e) => handleInputChange('backgroundColor', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={formData.backgroundColor}
+                      onChange={(e) => handleInputChange('backgroundColor', e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="#ffffff"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">CSS Classes</label>
                   <textarea
                     value={formData.className}
                     onChange={(e) => handleInputChange('className', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={4}
-                    placeholder="text-lg font-bold text-blue-600 hover:text-blue-800"
+                    rows={3}
+                    placeholder="font-bold text-center p-4 rounded-lg"
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Enter Tailwind CSS classes separated by spaces
-                  </p>
-                </div>
-
-                {/* Quick Style Options */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Quick Styles
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Text Size */}
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Text Size</label>
-                      <select
-                        onChange={(e) => {
-                          const newClassName = formData.className
-                            .replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl)\b/g, '')
-                            .replace(/\s+/g, ' ')
-                            .trim();
-                          handleInputChange('className', `${newClassName} ${e.target.value}`.trim());
-                        }}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                      >
-                        <option value="">Default</option>
-                        <option value="text-xs">Extra Small</option>
-                        <option value="text-sm">Small</option>
-                        <option value="text-base">Base</option>
-                        <option value="text-lg">Large</option>
-                        <option value="text-xl">Extra Large</option>
-                        <option value="text-2xl">2X Large</option>
-                        <option value="text-3xl">3X Large</option>
-                      </select>
-                    </div>
-
-                    {/* Text Color */}
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Text Color</label>
-                      <select
-                        onChange={(e) => {
-                          const newClassName = formData.className
-                            .replace(/\btext-(gray|red|blue|green|yellow|purple|pink|indigo)-(100|200|300|400|500|600|700|800|900)\b/g, '')
-                            .replace(/\s+/g, ' ')
-                            .trim();
-                          handleInputChange('className', `${newClassName} ${e.target.value}`.trim());
-                        }}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                      >
-                        <option value="">Default</option>
-                        <option value="text-gray-600">Gray</option>
-                        <option value="text-blue-600">Blue</option>
-                        <option value="text-green-600">Green</option>
-                        <option value="text-red-600">Red</option>
-                        <option value="text-purple-600">Purple</option>
-                        <option value="text-yellow-600">Yellow</option>
-                      </select>
-                    </div>
-
-                    {/* Font Weight */}
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Font Weight</label>
-                      <select
-                        onChange={(e) => {
-                          const newClassName = formData.className
-                            .replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '')
-                            .replace(/\s+/g, ' ')
-                            .trim();
-                          handleInputChange('className', `${newClassName} ${e.target.value}`.trim());
-                        }}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                      >
-                        <option value="">Default</option>
-                        <option value="font-light">Light</option>
-                        <option value="font-normal">Normal</option>
-                        <option value="font-medium">Medium</option>
-                        <option value="font-semibold">Semibold</option>
-                        <option value="font-bold">Bold</option>
-                      </select>
-                    </div>
-
-                    {/* Background Color */}
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Background</label>
-                      <select
-                        onChange={(e) => {
-                          const newClassName = formData.className
-                            .replace(/\bbg-(gray|red|blue|green|yellow|purple|pink|indigo)-(50|100|200|300|400|500|600|700|800|900)\b/g, '')
-                            .replace(/\s+/g, ' ')
-                            .trim();
-                          handleInputChange('className', `${newClassName} ${e.target.value}`.trim());
-                        }}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                      >
-                        <option value="">None</option>
-                        <option value="bg-gray-100">Light Gray</option>
-                        <option value="bg-blue-100">Light Blue</option>
-                        <option value="bg-green-100">Light Green</option>
-                        <option value="bg-red-100">Light Red</option>
-                        <option value="bg-yellow-100">Light Yellow</option>
-                      </select>
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
 
             {activeTab === 'links' && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-900">Links</h3>
-                  <button
-                    onClick={addLink}
-                    className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Link
-                  </button>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-medium text-gray-900">Links</h3>
+                    <button
+                      onClick={addLink}
+                      className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Link
+                    </button>
+                  </div>
+                  
+                  <div className="bg-green-50 p-3 rounded-lg">
+                    <p className="text-xs text-green-800 font-medium mb-1">How to use links:</p>
+                    <div className="text-xs text-green-700 space-y-1">
+                      <p>1. Click "Add Link" to create a new link</p>
+                      <p>2. Enter the text you want to show (e.g., "Visit our website")</p>
+                      <p>3. Enter the URL where it should go (e.g., "https://example.com")</p>
+                      <p>4. Click the <strong>+</strong> button to insert it into your text</p>
+                      <p>5. Go back to "Content" tab to see it in your text</p>
+                    </div>
+                  </div>
                 </div>
 
                 {links.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <Link className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                    <p>No links added yet</p>
-                    <p className="text-sm">Click "Add Link" to create your first link</p>
+                    <p>No links created yet</p>
+                    <p className="text-sm">Click "Add Link" above to get started</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {links.map((link) => (
-                      <div key={link.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={link.id} className="border border-gray-200 rounded-lg p-4 bg-white">
                         <div className="flex items-start gap-3">
                           <div className="flex-1 space-y-3">
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Link Text
+                                Link Text (what users will see)
                               </label>
                               <input
                                 type="text"
                                 value={link.text}
                                 onChange={(e) => updateLink(link.id, 'text', e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Click here"
+                                placeholder="Click here to learn more"
                               />
                             </div>
                             <div>
                               <label className="block text-sm font-medium text-gray-700 mb-1">
-                                URL
+                                URL (where it goes)
                               </label>
                               <input
                                 type="url"
@@ -741,17 +727,19 @@ const ComponentEditDialog = ({
                           <div className="flex flex-col gap-2">
                             <button
                               onClick={() => insertLinkIntoText(link.text, link.url)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                              title="Insert into text"
+                              className="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-1"
+                              title="Insert this link into your text"
                             >
-                              <Plus className="w-4 h-4" />
+                              <Plus className="w-3 h-3" />
+                              Insert
                             </button>
                             <button
                               onClick={() => removeLink(link.id)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
-                              title="Remove link"
+                              className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center gap-1"
+                              title="Delete this link"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3 h-3" />
+                              Delete
                             </button>
                           </div>
                         </div>
@@ -832,6 +820,7 @@ const ComponentEditDialog = ({
               <div className="bg-white p-4 rounded-lg border border-gray-200">
                 <div 
                   className={formData.className}
+                  style={generateInlineStyles()}
                   dangerouslySetInnerHTML={{ __html: generatePreview() }}
                 />
               </div>
