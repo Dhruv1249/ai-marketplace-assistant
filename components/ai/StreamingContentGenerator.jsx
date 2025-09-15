@@ -1,6 +1,6 @@
-'use client';
+  'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Input } from '../ui';
 import { Wand2, Loader2 } from 'lucide-react';
 import LaunchButton from '../animated icon/LaunchButton';
@@ -31,6 +31,44 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
     category: false,
     targetAudience: false
   });
+
+  const LOTTIE_URL = 'https://lottie.host/5dda8153-8ef1-449f-98ca-40287341e2d0/LhXpZODQiW.json';
+
+  useEffect(() => {
+    // Preconnect and preload to reduce first-paint delay of the Lottie animation
+    const head = document.head;
+
+    const linkDns = document.createElement('link');
+    linkDns.rel = 'dns-prefetch';
+    linkDns.href = 'https://lottie.host';
+
+    const linkPreconnect = document.createElement('link');
+    linkPreconnect.rel = 'preconnect';
+    linkPreconnect.href = 'https://lottie.host';
+    linkPreconnect.crossOrigin = 'anonymous';
+
+    const linkPreload = document.createElement('link');
+    linkPreload.rel = 'preload';
+    linkPreload.as = 'fetch';
+    linkPreload.href = LOTTIE_URL;
+    linkPreload.crossOrigin = 'anonymous';
+    linkPreload.type = 'application/json';
+
+    head.appendChild(linkDns);
+    head.appendChild(linkPreconnect);
+    head.appendChild(linkPreload);
+
+    // Warm the browser cache so the component loads instantly when shown
+    const controller = new AbortController();
+    fetch(LOTTIE_URL, { signal: controller.signal, mode: 'cors', credentials: 'omit', cache: 'force-cache' }).catch(() => {});
+
+    return () => {
+      controller.abort();
+      head.removeChild(linkDns);
+      head.removeChild(linkPreconnect);
+      head.removeChild(linkPreload);
+    };
+  }, []);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -382,7 +420,7 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
           <div className="absolute left-24 bottom-18 h-full max-w-md w-full z-20 pointer-events-none flex items-center justify-center">
             <div className="w-full h-full">
               <DotLottieReact
-                src="https://lottie.host/5dda8153-8ef1-449f-98ca-40287341e2d0/LhXpZODQiW.json"
+                src={LOTTIE_URL}
                 loop
                 autoplay
                 style={{ width: '130%', height: '130%', opacity: 0.85 }}

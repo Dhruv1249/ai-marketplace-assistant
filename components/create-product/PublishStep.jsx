@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
-import { db, auth } from '@/app/login/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db, auth, storage } from '@/app/login/firebase';
+import { addDoc, collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const PublishStep = ({
   generatedContent,
@@ -33,7 +34,34 @@ const PublishStep = ({
 
     try {
       // Generate unique product ID
-      const productId = `product-${Date.now()}`;
+      const productRef = await addDoc(collection(db, 'products'), {
+  ownerId: auth.currentUser?.uid || '',
+  name: generatedContent.title,
+  published: true, // for safety, mark as not published until everything succeeds
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  // Add any other minimal required fields
+});
+const productId = productRef.id;
+
+      // Upload images to Firebase Storage and get public URLs
+      let thumbUrl = '';
+    const additionalUrls = [];
+
+    if (thumbnailImage?.file) {
+      const tRef = storageRef(storage, `products/${productId}/thumbnail-${thumbnailImage.file.name}`);
+      const tSnap = await uploadBytes(tRef, thumbnailImage.file);
+      thumbUrl = await getDownloadURL(tSnap.ref);
+    }
+
+    for (const img of additionalImages || []) {
+      if (img?.file) {
+        const aRef = storageRef(storage, `products/${productId}/additional-${img.file.name}`);
+        const aSnap = await uploadBytes(aRef, img.file);
+        const url = await getDownloadURL(aSnap.ref);
+        additionalUrls.push(url);
+      }
+    }
       
       // Prepare standard product data
       const standardData = {
@@ -51,93 +79,49 @@ const PublishStep = ({
         updatedAt: new Date().toISOString()
       };
 
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('productId', productId);
-      formData.append('standardData', JSON.stringify(standardData));
+      // Save product data directly to Firestore (images are already on Storage)
+      const finalPrice = (
+      pricing?.discount?.enabled && pricing?.discount?.finalPrice != null
+    ) ? pricing.discount.finalPrice : (pricing?.basePrice || 0);
 
-      // Add thumbnail image
-      if (thumbnailImage?.file) {
-        formData.append('thumbnailImage', thumbnailImage.file);
-      }
+    await setDoc(
+      doc(db, 'products', productId),
+      {
+        name: generatedContent.title,
+        title: generatedContent.title,
+        description: generatedContent.description,
+        metaDescription: generatedContent.metaDescription || '',
+        price: finalPrice,
+        discount: pricing?.discount || {},
+        imageUrl: thumbUrl,
+        images: additionalUrls,
+        features: generatedContent.features || [],
+        featureExplanations: featureExplanations || {},
+        specifications: generatedContent.specifications || {},
+        seoKeywords: generatedContent.seoKeywords || [],
+        hasCustomPage: false,
+        published: true,
+        marketplaceId: productId,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-      // Add additional images
-      additionalImages.forEach((image, index) => {
-        if (image?.file) {
-          formData.append(`additionalImage_${index}`, image.file);
-        }
-      });
+    setPublishStatus({
+      type: 'success',
+      message: 'Product published successfully!',
+      productId: productId
+    });
 
-      // Save product data
-      const response = await fetch('/api/products/save', {
-        method: 'POST',
-        body: formData, // Send as FormData instead of JSON
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        // Sync minimal product info to Firestore for dashboard visibility
-        try {
-          const savedImages = result.savedImages || { thumbnail: null, additional: [] };
-          const thumbUrl = savedImages.thumbnail ? `/api/products/${productId}/images/${savedImages.thumbnail}` : '';
-          const additionalUrls = Array.isArray(savedImages.additional)
-            ? savedImages.additional.map((name) => `/api/products/${productId}/images/${name}`)
-            : [];
-          const finalPrice = (pricing?.discount?.enabled && pricing?.discount?.finalPrice != null)
-            ? pricing.discount.finalPrice
-            : (pricing?.basePrice || 0);
-
-          await setDoc(
-            doc(db, 'products', productId),
-            {
-              ownerId: auth.currentUser?.uid || '',
-              name: generatedContent.title,
-              title: generatedContent.title,
-              description: generatedContent.description,
-              metaDescription: generatedContent.metaDescription || '',
-              price: finalPrice,
-              discount: pricing?.discount || {},
-              imageUrl: thumbUrl,
-              images: additionalUrls,
-              features: generatedContent.features || [],
-              featureExplanations: featureExplanations || {},
-              specifications: generatedContent.specifications || {},
-              seoKeywords: generatedContent.seoKeywords || [],
-              hasCustomPage: false,
-              published: true,
-              marketplaceId: productId,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp(),
-            },
-            { merge: true }
-          );
-        } catch (err) {
-          console.error('Failed to sync product to Firestore:', err);
-        }
-
-        setPublishStatus({
-          type: 'success',
-          message: 'Product published successfully!',
-          productId: productId
-        });
-      } else {
-        setPublishStatus({
-          type: 'error',
-          message: result.error || 'Failed to publish product'
-        });
-      }
-    } catch (error) {
-      console.error('Error publishing product:', error);
-      setPublishStatus({
-        type: 'error',
-        message: 'An unexpected error occurred while publishing'
-      });
-    } finally {
-      setIsPublishing(false);
-    }
-  };
-
+  } catch (error) {
+    setPublishStatus({
+      type: 'error',
+      message: 'An unexpected error occurred while publishing'
+    });
+  } finally {
+    setIsPublishing(false);
+  }
+};
   const previewStandardPage = () => {
     // Create standard page preview data
     const standardPreviewData = {
