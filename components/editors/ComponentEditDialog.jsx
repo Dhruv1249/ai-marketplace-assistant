@@ -36,11 +36,11 @@ const ComponentEditDialog = ({
   });
   
   const [links, setLinks] = useState([]);
-  const [showPreview, setShowPreview] = useState(true); // FIXED: Default preview ON
+  const [showPreview, setShowPreview] = useState(true);
   const textareaRef = useRef(null);
   const dialogRef = useRef(null);
 
-  // FIXED: Better text extraction from component children
+  // Extract text from component children
   const extractTextFromChildren = (children) => {
     if (!children) return '';
     
@@ -53,19 +53,15 @@ const ComponentEditDialog = ({
         if (typeof child === 'string') {
           return child;
         } else if (typeof child === 'object' && child !== null) {
-          // Handle object children by converting to string representation
           if (child.toString && typeof child.toString === 'function') {
             const str = child.toString();
-            // Avoid [object Object] by checking if toString returns meaningful content
             if (str !== '[object Object]') {
               return str;
             }
           }
-          // Try to extract text from nested structure
           if (child.children) {
             return extractTextFromChildren(child.children);
           }
-          // Fallback: try to get any text content
           return JSON.stringify(child);
         }
         return String(child);
@@ -73,7 +69,6 @@ const ComponentEditDialog = ({
     }
     
     if (typeof children === 'object' && children !== null) {
-      // Handle single object child
       if (children.toString && typeof children.toString === 'function') {
         const str = children.toString();
         if (str !== '[object Object]') {
@@ -83,7 +78,6 @@ const ComponentEditDialog = ({
       if (children.children) {
         return extractTextFromChildren(children.children);
       }
-      // Last resort: stringify the object
       return JSON.stringify(children);
     }
     
@@ -93,7 +87,6 @@ const ComponentEditDialog = ({
   // Initialize form data when component changes
   useEffect(() => {
     if (component && isOpen) {
-      // FIXED: Better text extraction to avoid [object Object]
       const text = extractTextFromChildren(component.children);
       
       console.log('=== COMPONENT EDIT DIALOG DEBUG ===');
@@ -103,7 +96,7 @@ const ComponentEditDialog = ({
       console.log('====================================');
       
       setFormData({
-        text: text,
+        text: text ? text.replace(/\\([\[\]\(\)])/g, '$1') : '',
         className: component.props?.className || '',
         href: component.props?.href || '',
         alt: component.props?.alt || '',
@@ -112,7 +105,10 @@ const ComponentEditDialog = ({
         type: component.props?.type || component.type || 'text',
         name: component.props?.name || '',
         id: component.id || '',
-        title: component.props?.title || ''
+        title: component.props?.title || '',
+        fontSize: component.props?.style?.fontSize ? parseInt(component.props.style.fontSize) : '',
+        textColor: component.props?.style?.color || '',
+        backgroundColor: component.props?.style?.backgroundColor || ''
       });
 
       // Extract existing links from text
@@ -217,22 +213,14 @@ const ComponentEditDialog = ({
 
   // Insert link into text at cursor position
   const insertLinkIntoText = (linkText, linkUrl) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = formData.text;
     const linkMarkdown = `[${linkText}](${linkUrl})`;
     
-    const newText = text.substring(0, start) + linkMarkdown + text.substring(end);
+    // Just append to the end of the text for now
+    const newText = formData.text + (formData.text ? ' ' : '') + linkMarkdown;
     handleInputChange('text', newText);
     
-    // Set cursor position after inserted link
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + linkMarkdown.length, start + linkMarkdown.length);
-    }, 0);
+    // Switch to content tab to show the inserted link
+    setActiveTab('content');
   };
 
   // Apply text formatting using CSS classes instead of markdown
@@ -303,21 +291,26 @@ const ComponentEditDialog = ({
     return styles;
   };
 
-  // FIXED: Handle save with proper text structure
+  // FIXED: Save with inline styles and unescaped markdown
   const handleSave = () => {
     if (!component) return;
-    
-    // Process text to include links
-    let processedText = formData.text;
-    
-    // Create updated component with proper children structure
+
+    // Build inline styles from Style tab inputs
+    const inlineStyles = generateInlineStyles();
+
+    // Unescape \[ \] \( \) so saved links are clean
+    const processedText = (formData.text || '').replace(/\\([\[\]\(\)])/g, '$1');
+
+    // Create updated component with proper children structure and styles
     const updatedComponent = {
       ...component,
-      // FIXED: Ensure children is always an array of strings, not objects
       children: processedText ? [processedText] : [],
       props: {
         ...component.props,
         className: formData.className,
+        ...(Object.keys(inlineStyles).length > 0
+          ? { style: { ...(component.props?.style || {}), ...inlineStyles } }
+          : {}),
         ...(formData.href && { href: formData.href }),
         ...(formData.alt && { alt: formData.alt }),
         ...(formData.src && { src: formData.src }),
@@ -327,16 +320,17 @@ const ComponentEditDialog = ({
         ...(formData.type !== component.type && { type: formData.type })
       }
     };
-    
+
     if (debug) {
       console.log('=== SAVING COMPONENT ===');
       console.log('Original component:', component);
       console.log('Updated component:', updatedComponent);
       console.log('Text being saved:', processedText);
+      console.log('Inline styles:', inlineStyles);
       console.log('Children structure:', updatedComponent.children);
       console.log('========================');
     }
-    
+
     onSave(updatedComponent);
     onClose();
   };
@@ -357,7 +351,7 @@ const ComponentEditDialog = ({
     });
     setLinks([]);
     setActiveTab('content');
-    setShowPreview(true); // Reset to default ON
+    setShowPreview(true);
     onClose();
   };
 
@@ -813,7 +807,7 @@ const ComponentEditDialog = ({
             )}
           </div>
 
-          {/* FIXED: Preview Panel - Default ON */}
+          {/* Preview Panel */}
           {showPreview && (
             <div className="w-1/2 border-l border-gray-200 p-6 bg-gray-50">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Live Preview</h3>
