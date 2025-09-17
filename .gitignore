@@ -45,3 +45,6 @@ next-env.d.ts
 #Development 
 /development/
 debug/
+#firebase json
+service-account.json
+artisan-marketplace-17771-firebase-adminsdk-fbsvc-3139b629d4.json
