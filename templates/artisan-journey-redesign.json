@@ -51,18 +51,15 @@
         "id": "hero",
         "type": "section",
         "props": {
-          "className": "relative h-screen flex items-center justify-center text-center text-white p-4"
+          "className": "relative h-screen flex items-center justify-center text-center text-black p-4"
         },
         "children": [
-          { "id": "hero-overlay", "type": "div", "props": { "className": "absolute inset-0 bg-black/50 z-10" } },
+          { "id": "hero-overlay", "type": "div", "props": { "className": "absolute inset-0 /50 z-10" } },
           {
-            "id": "hero-bg",
-            "type": "img",
-            "props": {
-              "src": "{{content.images.hero || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}",
-              "alt": "{{content.alt.hero || 'Artisan's hands at work'}}",
-              "className": "absolute inset-0 w-full h-full object-cover"
-            }
+            "id": "hero-gallery",
+            "type": "div",
+            "props": { "className": "w-full" },
+            "children": "HERO_GALLERY"
           },
           {
             "id": "hero-content",
@@ -145,13 +142,10 @@
                 "props": { "className": "md:col-span-5 lg:col-span-4 h-96 relative" },
                 "children": [
                   {
-                    "id": "intro-image",
-                    "type": "img",
-                    "props": {
-                      "src": "{{content.images.intro || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}",
-                      "alt": "{{content.alt.intro || 'Artisan weaving a textile'}}",
-                      "className": "w-full h-full object-cover rounded-lg shadow-2xl absolute top-0 left-0"
-                    }
+                    "id": "lifestyle-gallery",
+                    "type": "div",
+                    "props": { "className": "grid gap-6" },
+                    "children": "LIFESTYLE_GALLERY"
                   }
                 ]
               }
@@ -178,13 +172,10 @@
         "props": { "className": "relative py-24 px-4 md:px-8 overflow-hidden" },
         "children": [
           {
-            "id": "process-bg",
-            "type": "img",
-            "props": {
-              "src": "{{content.images.processTexture || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOMV-TPykbA3XbabP62Ljs6WwDcuD9dugATi7hSFLWxE_VbKiGRRHPHHAIBsXJ4LR_q45F0PePUe3Lgn36t5Wgc50FBEZ3NlBup9SZ9ONUHnSChYWhsSfCXd-ptTNtm7e7Mz5C4pETuOoAJnKWYCfUTgObw9rm_Rfnb8myKTp2pOl0P3zvs-mA3sF9N-0Io1Yz-3uoSr2HaTTScqmxO773KDYxGU4nf5OFamJg8jN9gxTqkciYxzBbG8ZCWWgAzpeUnOJxZjkS3sk'}}",
-              "alt": "{{content.alt.processTexture || 'Workshop texture'}}",
-              "className": "absolute inset-0 w-full h-full object-cover opacity-10"
-            }
+            "id": "process-gallery",
+            "type": "div",
+            "props": { "className": "bg-white rounded-2xl shadow-2xl p-6" },
+            "children": "PROCESS_GALLERY"
           },
           {
             "id": "process-wrap",
@@ -211,13 +202,14 @@
                         ]
                       },
                       {
-                        "id": "pc1-image",
-                        "type": "img",
-                        "props": {
-                          "src": "{{content.images.processCard1 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzSXQWfD74ZLiLh68y-OfmjFWhEWd2nM5vx5Hm7R8QSq97L2gZ-kRq3SFeH45WI1oQPtXLdbGd7VIfB0Lbi4oqx73A30r4JIgojEKr9z2LaxhkOzEJa890O7GAwjT7IvA16S2n8oDpbV1VtW_WFp0QsUv3n2BdTFVepQEr-1ZQUIY0hwwKDDg2zPvWYdFUvz1bj1hv9RaOlRQ6D5vEdDb6ZxIV41Ux1tRJAmpWmoEmpd3e_qiOl6PKtZqF9vcH4B2MyjxxX5B4UFs'}}",
-                          "alt": "{{content.alt.processCard1 || 'Finished ceramic ware'}}",
-                          "className": "w-full h-auto object-cover rounded-lg shadow-xl transform rotate-3"
-                        }
+                      "id": "bg-section",
+                      "type": "div",
+                      "props": {
+                      "className": "absolute inset-0 bg-cover bg-center opacity-10",
+                      "style": {
+                      "backgroundImage": "url('{{content.images.background || 'default-bg.jpg'}}')"
+                      }
+                      }
                       }
                     ]
                   },
@@ -283,13 +275,10 @@
             "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 items-center" },
             "children": [
               {
-                "id": "quote-images",
-                "type": "div",
-                "props": { "className": "md:col-span-3 relative h-[600px]" },
-                "children": [
-                  { "id": "qi1", "type": "img", "props": { "src": "{{content.images.quote1 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}", "alt": "{{content.alt.quote1 || 'Artisan detail 1'}}", "className": "absolute top-0 left-0 w-3/5 h-3/5 object-cover rounded-lg shadow-2xl" } },
-                  { "id": "qi2", "type": "img", "props": { "src": "{{content.images.quote2 || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}", "alt": "{{content.alt.quote2 || 'Artisan detail 2'}}", "className": "absolute bottom-0 right-0 w-1/2 h-1/2 object-cover rounded-lg shadow-2xl z-10 border-8 border-[var(--brand-background)]" } }
-                ]
+              "id": "before-after-gallery",
+              "type": "div",
+              "props": { "className": "w-full" },
+              "children": "BEFORE_AFTER_GALLERY"
               },
               {
                 "id": "quote-content",
