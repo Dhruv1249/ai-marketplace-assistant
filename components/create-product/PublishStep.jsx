@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Button } from '@/components/ui';
+import LaunchingButton from '../animated icon/Launching.jsx';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
 import { db, auth, storage } from '@/app/login/firebase';
@@ -395,23 +396,11 @@ try {
             <div className={`${isPublishing ? 'pointer-events-none opacity-50' : ''}`}>
               <BackButton onClick={isPublishing ? undefined : onBack} />
             </div>
-            <Button 
+            <LaunchingButton
               onClick={handlePublishClick}
               disabled={!isFormValid() || isPublishing}
               className="flex items-center"
-            >
-              {isPublishing ? (
-                <>
-                  <Loader2 className="mr-2 animate-spin" size={16} />
-                  Publishing...
-                </>
-              ) : (
-                <>
-                  <Globe className="mr-2" size={16} />
-                  Publish to Marketplace
-                </>
-              )}
-            </Button>
+            />
           </div>
         </div>
       )}
