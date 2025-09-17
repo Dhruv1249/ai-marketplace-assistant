@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
     "firebase": "^12.1.0",
+    "firebase-admin": "^13.5.0",
     "framer-motion": "^10.16.16",
     "gsap": "^3.13.0",
     "jsonata": "^2.1.0",
