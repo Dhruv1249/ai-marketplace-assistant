@@ -284,7 +284,7 @@ export default function VisualsStep({
             return category ? (
               <div key={fieldKey} className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
-                  {productStoryData.visuals[fieldKey].length}
+                  {(productStoryData.visuals[fieldKey] || []).length}
                 </div>
                 <div className="text-blue-800 text-xs">
                   {category.title.split(' ')[0]} Photos

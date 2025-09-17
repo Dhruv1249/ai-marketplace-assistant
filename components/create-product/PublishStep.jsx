@@ -106,6 +106,18 @@ const productId = productRef.id;
       },
       { merge: true }
     );
+try {
+  await fetch('/api/products/create-standard', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      productId,
+      standardData
+    }),
+  });
+} catch (e) {
+  console.error("Local standard.json creation failed:", e);
+}
 
     setPublishStatus({
       type: 'success',
@@ -157,6 +169,38 @@ const productId = productRef.id;
   };
 
   const handleCreateStoryPage = (productId) => {
+    // Gather all data to persist for story page creation
+    const storyData = {
+      basics: {
+        name: generatedContent?.title || '',
+        category: generatedContent?.category || '',
+        value: generatedContent?.description || '',
+        audience: generatedContent?.audience || '',
+        problem: generatedContent?.problem || '',
+      },
+      visuals: {
+        thumbnail: thumbnailImage?.url ? [thumbnailImage.url] : [],
+        additional: (additionalImages || []).map(img => img.url).filter(Boolean),
+      },
+      features: generatedContent?.features || [],
+      featureExplanations: featureExplanations || {},
+      pricing: pricing || {},
+      photoUrls: [
+        ...(thumbnailImage?.url ? [thumbnailImage.url] : []),
+        ...(additionalImages || []).map(img => img.url).filter(Boolean),
+      ],
+      productId,
+      metaDescription: generatedContent?.metaDescription || '',
+      seoKeywords: generatedContent?.seoKeywords || [],
+    };
+    // Save data in localStorage under product-specific key
+    localStorage.setItem(`productStoryData_${productId}`,
+      JSON.stringify({
+        productStoryData: storyData,
+        templateType: 'our-journey',
+        fromProductCreation: true
+      })
+    );
     // Navigate to product story page in same tab with productId
     window.location.href = `/seller-info/${productId}`;
   };

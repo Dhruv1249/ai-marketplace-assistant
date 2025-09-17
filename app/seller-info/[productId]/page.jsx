@@ -290,69 +290,65 @@ export default function ProductStoryPage() {
   useEffect(() => {
     const loadProductData = async () => {
       if (!productId) return;
-
+      let foundAny = false;
+      setLoading(true);
       try {
-        setLoading(true);
-        
-        // Load standard product data from published JSON file
+        // Try remote API
         const productResponse = await fetch(`/api/products/${productId}`);
-        if (!productResponse.ok) {
-          throw new Error('Product not found');
-        }
-        const productData = await productResponse.json();
-        
-        // Extract the standard product data from the nested structure
-        const product = productData.standard;
-        setProductData(product);
-
-        // Pre-populate basic fields from standard published product data
-        setProductStoryData(prev => ({
-          ...prev,
-          basics: {
-            ...prev.basics,
-            name: product.title || product.name || '',
-            category: product.category || product.type || '',
-            problem: product.description || '',
-            audience: product.targetAudience || '',
-            value: '' // Keep value proposition empty for user to fill
-          }
-        }));
-
-        // Try to load existing custom story data
-        try {
-          const customResponse = await fetch(`/api/products/${productId}/custom`);
-          if (customResponse.ok) {
-            const customData = await customResponse.json();
-            if (customData.content) {
-              setProductStoryData(customData.content);
-              setSelectedTemplate(customData.templateType || 'our-journey');
+        if (productResponse.ok) {
+          const productData = await productResponse.json();
+          const product = productData.standard;
+          setProductData(product);
+          foundAny = true;
+          setProductStoryData(prev => ({
+            ...prev,
+            basics: {
+              ...prev.basics,
+              name: product.title || product.name || '',
+              category: product.category || product.type || '',
+              problem: product.description || '',
+              audience: product.targetAudience || '',
+              value: ''
             }
-          }
-        } catch (error) {
-          console.log('No existing custom story data found');
-        }
+          }));
 
-        // Also check localStorage for any saved draft
-        try {
-          const savedData = localStorage.getItem(`productStoryData_${productId}`);
-          if (savedData) {
-            const parsed = JSON.parse(savedData);
-            if (parsed.productStoryData) {
-              setProductStoryData(parsed.productStoryData);
-              setSelectedTemplate(parsed.templateType || 'our-journey');
+          // Try to load existing custom story data
+          try {
+            const customResponse = await fetch(`/api/products/${productId}/custom`);
+            if (customResponse.ok) {
+              const customData = await customResponse.json();
+              if (customData.content) {
+                setProductStoryData(customData.content);
+                setSelectedTemplate(customData.templateType || 'our-journey');
+              }
             }
+          } catch (error) {
+            // No custom story data, ignore
           }
-        } catch (error) {
-          console.error('Error loading saved draft:', error);
         }
-
-      } catch (error) {
-        console.error('Error loading product:', error);
+      } catch (err) {
+        // Ignore for now, will check localStorage
+      }
+      // Check localStorage for draft
+      try {
+        const savedData = localStorage.getItem(`productStoryData_${productId}`);
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          if (parsed.productStoryData) {
+            setProductStoryData(parsed.productStoryData);
+            setSelectedTemplate(parsed.templateType || 'our-journey');
+            foundAny = true;
+          }
+        }
+      } catch (ex) {
+        // Ignore errors
+      }
+      // If nothing found, redirect
+      if (!foundAny) {
         alert('Product not found. Redirecting to marketplace...');
         router.push('/marketplace');
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     loadProductData();
@@ -404,7 +400,7 @@ export default function ProductStoryPage() {
       ...prev,
       [section]: {
         ...prev[section],
-        [field]: [...prev[section][field], '']
+        [field]: [...(prev[section]?.[field] || []), '']
       }
     }));
   };
@@ -505,7 +501,7 @@ export default function ProductStoryPage() {
         ...prev,
         visuals: {
           ...prev.visuals,
-          [visualType]: [...prev.visuals[visualType], {
+          [visualType]: [...(prev.visuals[visualType] || []), {
             id: Date.now() + Math.random(),
             url: url,
             type: 'uploaded',

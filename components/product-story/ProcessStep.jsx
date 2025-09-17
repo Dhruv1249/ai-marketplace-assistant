@@ -92,8 +92,9 @@ export default function ProcessStep({
     
     if (config.required) {
       // Check if required fields are filled
+      const process = productStoryData.process || {};
       const hasEmptyFields = requiredFields.some(fieldName => {
-        const fieldValue = productStoryData.process[fieldName];
+        const fieldValue = process[fieldName];
         return !fieldValue || !fieldValue.trim();
       });
       
@@ -101,8 +102,9 @@ export default function ProcessStep({
     }
     
     // Check template-specific validation
+    const process = productStoryData.process || {};
     const hasInvalidFields = requiredFields.some(fieldName => {
-      const fieldValue = productStoryData.process[fieldName];
+      const fieldValue = process[fieldName];
       return !validateField(fieldName, fieldValue);
     });
     
@@ -147,16 +149,18 @@ export default function ProcessStep({
 
     const field = fieldConfig[fieldName];
     if (!field) return null;
-
+    // SAFE fallback: make sure process object exists
+    const process = productStoryData.process || {};
+    const fieldValue = typeof process[fieldName] === 'undefined' ? '' : process[fieldName];
     return (
       <div key={fieldName}>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {field.label} {config.required && '*'} ({getCountDisplay(fieldName, productStoryData.process[fieldName])})
+          {field.label} {config.required && '*'} ({getCountDisplay(fieldName, fieldValue)})
         </label>
         <div className="flex items-start gap-2">
           {field.type === 'textarea' ? (
             <textarea
-              value={productStoryData.process[fieldName]}
+              value={fieldValue}
               onChange={(e) => {
                 if (e.target.value.length <= 600) {
                   handleInputChange('process', fieldName, e.target.value);
@@ -170,7 +174,7 @@ export default function ProcessStep({
           ) : (
             <input
               type="text"
-              value={productStoryData.process[fieldName]}
+              value={fieldValue}
               onChange={(e) => {
                 if (e.target.value.length <= 600) {
                   handleInputChange('process', fieldName, e.target.value);
@@ -182,10 +186,10 @@ export default function ProcessStep({
             />
           )}
           <Button
-            onClick={() => generateFieldContent('process', fieldName, productStoryData.process[fieldName])}
+            onClick={() => generateFieldContent('process', fieldName, fieldValue)}
             size="sm"
             className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.process[fieldName].trim()}
+            disabled={isGenerating || !fieldValue.trim()}
           >
             <Sparkles size={14} />
           </Button>

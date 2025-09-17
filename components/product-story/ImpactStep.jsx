@@ -57,13 +57,13 @@ export default function ImpactStep({
     
     // For Our Journey template, check if at least some content is provided
     if (selectedTemplate === 'our-journey') {
-      const { testimonials, cases, awards } = productStoryData.impact;
-      const hasTestimonials = testimonials.some(t => t.trim());
-      const hasCases = cases.some(c => c.trim());
-      const hasAwards = awards.some(a => a.trim());
-      
-      // At least one section should have content
-      return hasTestimonials || hasCases || hasAwards;
+    const { testimonials = [], cases = [], awards = [] } = productStoryData.impact || {};
+    const hasTestimonials = testimonials.some(t => t.trim());
+    const hasCases = cases.some(c => c.trim());
+    const hasAwards = awards.some(a => a.trim());
+    
+    // At least one section should have content
+    return hasTestimonials || hasCases || hasAwards;
     }
     
     return true;
@@ -105,7 +105,8 @@ export default function ImpactStep({
     const field = fieldConfig[fieldName];
     if (!field) return null;
 
-    const currentItems = productStoryData.impact[fieldName] || [];
+    const impact = productStoryData.impact || {};
+    const currentItems = impact[fieldName] || [];
     const maxItems = config.limits[fieldName] || 10;
 
     return (
