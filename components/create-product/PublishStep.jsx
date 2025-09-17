@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Button } from '@/components/ui';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
@@ -476,60 +477,69 @@ try {
 
       {/* Product Story Page Modal */}
       {showStoryPageModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4 relative">
-            <button
-              onClick={() => setShowStoryPageModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <X size={20} />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="text-purple-600" size={32} />
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex bg-transparent rounded-lg max-w-3xl mx-4 p-0">
+            {/* Left: Animation */}
+            <div className="flex items-center justify-center bg-transparent p-5 md:p-6 -ml-8 md:-ml-19">
+              <DotLottieReact
+                src="https://lottie.host/5dda8153-8ef1-449f-98ca-40287341e2d0/LhXpZODQiW.json"
+                loop
+                autoplay
+                style={{ width: 320, height: 320 }}
+              />
+            </div>
+            {/* Right: Modal Content */}
+            <div className="bg-white rounded-lg border-2 border-black shadow-lg p-6 max-w-md w-full relative flex flex-col justify-center ml-16 md:ml-15">
+              <button
+                onClick={() => setShowStoryPageModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BookOpen className="text-purple-600" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Create Product Story Page?
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Would you like to create an enhanced product story page with rich visuals and detailed information? 
+                  This will be saved as a custom page for "{generatedContent?.title}".
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Create Product Story Page?
-              </h3>
-              <p className="text-gray-600 text-sm">
-                Would you like to create an enhanced product story page with rich visuals and detailed information? 
-                This will be saved as a custom page for "{generatedContent?.title}".
-              </p>
-            </div>
-
-            <div className="bg-purple-50 rounded-lg p-4 mb-6">
-              <h4 className="font-medium text-purple-900 mb-2">What you'll get:</h4>
-              <ul className="text-sm text-purple-800 space-y-1">
-                <li>• Rich visual storytelling layouts</li>
-                <li>• Detailed product creation process</li>
-                <li>• Customer testimonials section</li>
-                <li>• Professional template designs</li>
-                <li>• Enhanced SEO and engagement</li>
-              </ul>
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setWantsStoryPage(false);
-                  handlePublish();
-                }}
-                className="flex-1"
-              >
-                Skip for Now
-              </Button>
-              <Button
-                onClick={() => {
-                  setWantsStoryPage(true);
-                  handlePublish();
-                }}
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-              >
-                <BookOpen className="mr-2" size={16} />
-                Yes, Create Story Page
-              </Button>
+              <div className="bg-purple-50 rounded-lg p-4 mb-6">
+                <h4 className="font-medium text-purple-900 mb-2">What you'll get:</h4>
+                <ul className="text-sm text-purple-800 space-y-1">
+                  <li>• Rich visual storytelling layouts</li>
+                  <li>• Detailed product creation process</li>
+                  <li>• Customer testimonials section</li>
+                  <li>• Professional template designs</li>
+                  <li>• Enhanced SEO and engagement</li>
+                </ul>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setWantsStoryPage(false);
+                    handlePublish();
+                  }}
+                  className="flex-1"
+                >
+                  Skip for Now
+                </Button>
+                <Button
+                  onClick={() => {
+                    setWantsStoryPage(true);
+                    handlePublish();
+                  }}
+                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                >
+                  <BookOpen className="mr-2" size={16} />
+                  Yes, Create Story Page
+                </Button>
+              </div>
             </div>
           </div>
         </div>
