@@ -375,16 +375,10 @@
             "props": { "className": "max-w-4xl mx-auto p-8 rounded-lg shadow-xl border-t-4 animate-fadeInUp", "style": { "backgroundColor": "var(--brandPrimary)", "borderTopColor": "var(--brandAccent)", "fontFamily": "var(--fontFamilySerif)" } },
             "children": [
               {
-                "id": "before-after-slider",
-                "type": "BeforeAfterSlider",
-                "props": {
-                  "beforeImage": "{{content.impact.cases[0].beforeImage || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}",
-                  "afterImage": "{{content.impact.cases[0].afterImage || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAn7EZjmEHYGPgUHhTjKcVzr340PvXMH368zR_vM4cqWab_MNE1fDGK6avh9WndTC5COhIWL0V3Uo96XG82mwkCUUqN0pJlFLqn6BPAnTn-6rmTPElc_rJ_nqeS3WBlGfZvwy8bosv-b_coNexlUA7lJmjUCkmzi2iOxf9DYhlAPqV1ApRTBLJhoHk32ODGyGv7wXhVyJdtg9gBC0i9SUyN-To1t-pp6u8nC8mi80VozkUTI2C7JBuffty-CXUPADHP9ohYsgHivf0'}}",
-                  "className": "w-full max-w-4xl mx-auto h-[360px] md:h-[500px] border-4 rounded-lg overflow-hidden shadow-lg",
-                  "style": { "width": "100%", "maxWidth": "1024px", "height": "420px", "borderColor": "var(--brandAccent)" },
-                  "beforeImageKey": "impact.cases[0].beforeImage",
-                  "afterImageKey": "impact.cases[0].afterImage"
-                }
+                "id": "before-after-gallery",
+                "type": "div",
+                "props": { "className": "w-full" },
+                "children": "BEFORE_AFTER_GALLERY"
               }
             ]
           }
@@ -430,15 +424,13 @@
                 },
                 "children": [
                   {
-                    "id": "card-1-img",
-                    "type": "img",
-                    "props": {
-                      "src": "{{content.impact.testimonials[0].image.url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzSXQWfD74ZLiLh68y-OfmjFWhEWd2nM5vx5Hm7R8QSq97L2gZ-kRq3SFeH45WI1oQPtXLdbGd7VIfB0Lbi4oqx73A30r4JIgojEKr9z2LaxhkOzEJa890O7GAwjT7IvA16S2n8oDpbV1VtW_WFp0QsUv3n2BdTFVepQEr-1ZQUIY0hwwKDDg2zPvWYdFUvz1bj1hv9RaOlRQ6D5vEdDb6ZxIV41Ux1tRJAmpWmoEmpd3e_qiOl6PKtZqF9vcH4B2MyjxxX5B4UFs'}}",
-                      "alt": "{{content.impact.testimonials[0].image.alt || \"Artisan's ceramic work\"}}",
-                      "className": "w-full h-56 object-cover object-center",
-                      "srcKey": "impact.testimonials[0].image.url",
-                      "altKey": "impact.testimonials[0].image.alt"
-                    }
+                  "id": "profile-image",
+                  "type": "img",
+                  "props": {
+                  "src": "{{content.visuals.hero[0].url || content.visuals.hero[0] || ''}}",
+                  "alt": "{{content.basics.name || 'Profile Photo'}}",
+                  "className": "w-32 h-32 rounded-lg object-cover"
+                  }
                   },
                   {
                     "id": "card-1-body",
@@ -479,15 +471,13 @@
                 },
                 "children": [
                   {
-                    "id": "card-2-img",
-                    "type": "img",
-                    "props": {
-                      "src": "{{content.impact.testimonials[1].image.url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuC92X5bELfO8C41tVf__dMCgNIIyqvOU9UiSEXdPhnVN-K3SVV3skM7FNbPAvRksy8ZFtGlR0wb81iKN981kypjKqqLp4N3Y2TPOOPPXsb3A11AQYTtl6OjcuY5kQuH8P2t_29HLVcJnumGj8NryyV8AgOjl0NHfslFzqZ9YiiOvBPQ0LpjqoRgnV1DLjQYjfabTLW9E9BNEwO74PnWRdaMN95TAWvRRPWObicEagpwl2nO4gLEvipl1WLwl76q79AtxMhTncnGtTU'}}",
-                      "alt": "{{content.impact.testimonials[1].image.alt || 'Artisan weaver'}}",
-                      "className": "w-full h-56 object-cover object-center",
-                      "srcKey": "impact.testimonials[1].image.url",
-                      "altKey": "impact.testimonials[1].image.alt"
-                    }
+                  "id": "profile-image",
+                  "type": "img",
+                  "props": {
+                  "src": "{{content.visuals.hero[0].url || content.visuals.hero[0] || ''}}",
+                  "alt": "{{content.basics.name || 'Profile Photo'}}",
+                  "className": "w-32 h-32 rounded-lg object-cover"
+                  }
                   },
                   {
                     "id": "card-2-body",
@@ -528,15 +518,13 @@
                 },
                 "children": [
                   {
-                    "id": "card-3-img",
-                    "type": "img",
-                    "props": {
-                      "src": "{{content.impact.testimonials[2].image.url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOMV-TPykbA3XbabP62Ljs6WwDcuD9dugATi7hSFLWxE_VbKiGRRHPHHAIBsXJ4LR_q45F0PePUe3Lgn36t5Wgc50FBEZ3NlBup9SZ9ONUHnSChYWhsSfCXd-ptTNtm7e7Mz5C4pETuOoAJnKWYCfUTgObw9rm_Rfnb8myKTp2pOl0P3zvs-mA3sF9N-0Io1Yz-3uoSr2HaTTScqmxO773KDYxGU4nf5OFamJg8jN9gxTqkciYxzBbG8ZCWWgAzpeUnOJxZjkS3sk'}}",
-                      "alt": "{{content.impact.testimonials[2].image.alt || 'Handmade leather goods'}}",
-                      "className": "w-full h-56 object-cover object-center",
-                      "srcKey": "impact.testimonials[2].image.url",
-                      "altKey": "impact.testimonials[2].image.alt"
-                    }
+                  "id": "profile-image",
+                  "type": "img",
+                  "props": {
+                  "src": "{{content.visuals.hero[0].url || content.visuals.hero[0] || ''}}",
+                  "alt": "{{content.basics.name || 'Profile Photo'}}",
+                  "className": "w-32 h-32 rounded-lg object-cover"
+                  }
                   },
                   {
                     "id": "card-3-body",
