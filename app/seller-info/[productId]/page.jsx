@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette, Globe } from 'lucide-react';
 import { Button } from '@/components/ui';
 import SaveButton from '@/components/animated icon/SaveButton';
+import BackButton from '@/components/animated icon/BackButton';
 import Loading from '@/app/loading';
 
 // Import step components
@@ -847,14 +848,9 @@ export default function ProductStoryPage() {
 
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-8 pt-6 border-t">
-            <Button
-              onClick={() => setStep(step - 1)}
-              variant="outline"
-              disabled={step === 1}
-            >
-              Previous
-            </Button>
-            
+            <div className={step === 1 ? 'opacity-50 pointer-events-none' : ''}>
+              <BackButton onClick={() => setStep(step - 1)} />
+            </div>
             <Button
               onClick={handleNextClick}
             >
