@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import StartCreatingButton from '@/components/animated icon/StartCreating';
+import TryNowButton from '@/components/animated icon/TryNow';
 import { Wand2, Target, Users, Lightbulb, ArrowRight } from 'lucide-react';
 import dynamic from "next/dynamic";
 
@@ -166,10 +167,10 @@ export default function About() {
             </p>
             <div className="about-hero-anim flex justify-center">
               <Link href="/create">
-                <Button size="lg">
+                <TryNowButton>
                   <Wand2 className="mr-2" size={20} />
                   Try It Now
-                </Button>
+                </TryNowButton>
               </Link>
             </div>
           </div>
