@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
 import News from "./News";
 import LogoutButton from '@/components/animated icon/logout.jsx';
+import ComfermationDelet from '@/components/animated icon/ComfermationDelet.jsx';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -50,6 +51,7 @@ export default function Dashboard() {
   const [productModalOpen, setProductModalOpen] = useState(false);
 
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   // Section nav state for enabling all nav links
   const [activeSection, setActiveSection] = useState('overview');
 
@@ -451,32 +453,14 @@ export default function Dashboard() {
     </LogoutButton>
   </div>
   <div
-    onClick={async () => {
-      if (!user) return;
-      const doit = window.confirm('Are you sure you want to remove your account and all associated data? This cannot be undone.');
-      if (!doit) return;
-      try {
-        const userId = user.uid;
-        await import('firebase/firestore').then(async firestore => {
-          await firestore.deleteDoc(firestore.doc(db, "users", userId));
-          const productsSnap = await firestore.getDocs(firestore.query(firestore.collection(db, "products"), firestore.where("ownerId", "==", userId)));
-          await Promise.all(productsSnap.docs.map(d => firestore.deleteDoc(d.ref)));
-          const ordersSnap = await firestore.getDocs(firestore.query(firestore.collection(db, "orders"), firestore.where("buyerId", "==", userId)));
-          await Promise.all(ordersSnap.docs.map(d => firestore.deleteDoc(d.ref)));
-          const reviewsSnap = await firestore.getDocs(firestore.query(firestore.collection(db, "reviews"), firestore.where("artisanId", "==", userId)));
-          await Promise.all(reviewsSnap.docs.map(d => firestore.deleteDoc(d.ref)));
-        });
-        await import('firebase/auth').then(async authApi => {
-          await authApi.deleteUser(auth.currentUser);
-        });
-        window.location.href = '/';
-      } catch (err) {
-        alert('Failed to remove account: ' + (err && err.message ? err.message : JSON.stringify(err)));
-      }
-    }}
     style={{ display: 'flex', justifyContent: 'flex-end' }}
   >
-    <Button variant="outline" size="sm" className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50">
+    <Button
+      variant="outline"
+      size="sm"
+      className="flex items-center gap-2 text-red-600 border-red-300 hover:bg-red-50"
+      onClick={() => setDeleteDialogOpen(true)}
+    >
       <Trash2 size={16} />
       Delete Account
     </Button>
@@ -495,6 +479,7 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+        <ComfermationDelet open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
         
        <div className={`mt-auto px-6 pt-4 text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-400'}`}>
   © {new Date().getFullYear()}
