@@ -18,7 +18,7 @@ const Button = ({ onClick, disabled, className = '', children = 'Publish', ...re
 
 const StyledWrapper = styled.div`
   /* Slightly move the button upward */
-  margin-top: -20px;
+  margin-top: -19px;
   display: inline-block;
 
   button {

@@ -89,7 +89,7 @@
             "type": "div",
             "props": { "className": "absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white" },
             "children": [
-              { "id": "scroll-icon", "type": "span", "props": { "className": "material-icons animate-bounce" }, "children": ["arrow_downward"] }
+              { "id": "scroll-icon", "type": "span", "props": { "className": "material-icons animate-bounce" } }
             ]
           }
         ]
@@ -274,13 +274,7 @@
             "type": "div",
             "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 items-center" },
             "children": [
-              {
-              "id": "before-after-gallery",
-              "type": "div",
-              "props": { "className": "w-full" },
-              "children": "BEFORE_AFTER_GALLERY"
-              },
-              {
+                            {
                 "id": "quote-content",
                 "type": "div",
                 "props": { "className": "md:col-span-2 relative z-20" },
