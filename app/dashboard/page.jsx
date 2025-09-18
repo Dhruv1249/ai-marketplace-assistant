@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
 import News from "./News";
+import LogoutButton from '@/components/animated icon/logout.jsx';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -444,10 +445,10 @@ export default function Dashboard() {
     }}
     style={{ display: 'flex', justifyContent: 'flex-start' }}
   >
-    <Button variant="outline" size="sm" className="flex items-center gap-2">
+    <LogoutButton variant="outline" size="sm" className="flex items-center gap-2">
       <LogOut size={16} />
-      Logout
-    </Button>
+        Logout
+    </LogoutButton>
   </div>
   <div
     onClick={async () => {
