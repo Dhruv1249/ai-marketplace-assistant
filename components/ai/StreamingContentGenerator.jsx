@@ -1,4 +1,4 @@
-  'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Button, Input } from '../ui';
@@ -7,6 +7,7 @@ import LaunchButton from '../animated icon/LaunchButton';
 import BackButton from '../animated icon/BackButton';
 import GenerateButton from '../animated icon/GenerateButton';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
 
 const StreamingContentGenerator = ({ onContentGenerated }) => {
   const [formData, setFormData] = useState({
@@ -460,6 +461,21 @@ const StreamingContentGenerator = ({ onContentGenerated }) => {
                 {hasSelectedOptions ? 'Generate Content' : 'Create Basic Content'}
               </GenerateButton>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Generating Overlay */}
+      {isGenerating && (
+        <div className="fixed inset-0 bg-white bg-opacity-30 flex items-center justify-center z-60">
+          <div className="flex flex-col items-center -mt-15 text-center px-6">
+            <GeneratingLoding />
+            <h3 className="text-lg font-semibold text-gray-900 -mt-18 mb-2">
+              Generating Content
+            </h3>
+            <p className="text-gray-700 text-sm -mt-1">
+              AI is creating your product content. This may take a moment...
+            </p>
           </div>
         </div>
       )}
