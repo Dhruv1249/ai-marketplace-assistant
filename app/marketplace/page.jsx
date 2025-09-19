@@ -449,9 +449,9 @@ export default function Marketplace() {
             <span className="text-gray-400">Product Image</span>
           </div>
         </div>
-        {product.featured && (
+        {product.hasCustomPage && (
           <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">
-            Featured
+            Storyline
           </div>
         )}
         <button
