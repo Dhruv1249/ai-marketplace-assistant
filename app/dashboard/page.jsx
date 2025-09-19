@@ -24,6 +24,7 @@ import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
 import News from "./News";
 import LogoutButton from '@/components/animated icon/logout.jsx';
 import ComfermationDelet from '@/components/animated icon/ComfermationDelet.jsx';
+import EditAvatar from '@/components/animated icon/EditAvatar.jsx';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -531,15 +532,14 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-            <button
-              type="button"
+            <EditAvatar
               onClick={handleAvatarButtonClick}
-              className="mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
               disabled={avatarLoading}
               tabIndex={0}
-            >
-              {avatarLoading ? "Updating..." : "Edit Avatar"}
-            </button>
+              loading={avatarLoading}
+              label="Edit Avatar"
+              className="mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
+            />
             {avatarMenuOpen && (
               <div
                 ref={avatarMenuRef}
@@ -1100,24 +1100,23 @@ export default function Dashboard() {
                         </div>
                       )}
                     </div>
-                    <button
-                      type="button"
+                    <EditAvatar
                       onClick={handleAvatarButtonClick}
-                      className="mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
                       disabled={avatarLoading}
                       tabIndex={0}
-                    >
-                      {avatarLoading ? "Updating..." : "Edit Avatar"}
-                    </button>
+                      loading={avatarLoading}
+                      label="Edit Avatar"
+                      className="mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
+                    />
                     {avatarMenuOpen && (
                       <div
                         ref={avatarMenuRef}
                         className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 z-30 bg-[#ffffff] rounded-lg shadow-xl border border-[#e4e4e4] py-2 flex flex-col items-stretch"
                         tabIndex={-1}
                       >
-                        <button onClick={handleRemoveAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-red-400 hover:bg-[#221818] text-sm font-medium transition disabled:opacity-60" type="button">Remove Profile</button>
-                        <button onClick={handleChangeAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-white-300 hover:bg-[#1e2636] text-sm font-medium transition" type="button">Change Profile</button>
-                        <button onClick={() => setAvatarMenuOpen(false)} className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#ffffff] text-sm font-medium transition" type="button">Cancel</button>
+                        <button onClick={handleRemoveAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-red-400 hover:bg-[#ebe9e9] text-sm font-medium transition disabled:opacity-60" type="button">Remove Profile</button>
+                        <button onClick={handleChangeAvatar} disabled={avatarLoading} className="w-full px-4 py-2 text-left text-white-300 hover:bg-[#ebe9e9] text-sm font-medium transition" type="button">Change Profile</button>
+                        <button onClick={() => setAvatarMenuOpen(false)} className="w-full px-4 py-2 text-left text-gray-300 hover:bg-[#ebe9e9] text-sm font-medium transition" type="button">Cancel</button>
                         <input type="file" accept="image/*" ref={fileInputRef} className="hidden" onChange={handleAvatarChange} disabled={avatarLoading} />
                         {avatarError && (<div className="text-xs text-red-400 mt-2 px-2 text-center">{avatarError}</div>)}
                       </div>
