@@ -230,6 +230,8 @@ export default function Marketplace() {
               reviews: 0,
               seller: 'Sample Seller',
               category: 'Sample',
+
+              
               featured: true,
               hasCustomPage: false
             }

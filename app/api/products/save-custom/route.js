@@ -40,14 +40,30 @@ export async function POST(request) {
       updatedAt: new Date().toISOString(),
       createdAt: customData.createdAt || new Date().toISOString(),
     };
+console.log('Updating Firestore product:', productId, updatedCustomData);
 
+await adminDb.collection('products').doc(productId).update({
+  hasCustomPage: true,
+  customPage: updatedCustomData,
+  updatedAt: new Date().toISOString(),
+});
+
+console.log('Update complete for product:', productId);
     // Write to Firestore
     await adminDb.collection('products').doc(productId).update({
       hasCustomPage: true,
       customPage: updatedCustomData,
       updatedAt: new Date().toISOString(),
     });
+console.log('Updating Firestore product:', productId, updatedCustomData);
 
+await adminDb.collection('products').doc(productId).update({
+  hasCustomPage: true,
+  customPage: updatedCustomData,
+  updatedAt: new Date().toISOString(),
+});
+
+console.log('Update complete for product:', productId);
     return NextResponse.json({
       success: true,
       productId,
@@ -55,11 +71,11 @@ export async function POST(request) {
       savedImages: savedImageUrls
     });
 
-  } catch (err) {
-    console.error('Failed to save custom page:', err);
-    return NextResponse.json({
-      success: false,
-      error: String(err)
-    }, { status: 500 });
-  }
+ } catch (err) {
+  console.error('Failed to save custom page:', err);
+  return NextResponse.json({
+    success: false,
+    error: String(err)
+  }, { status: 500 });
+}
 }

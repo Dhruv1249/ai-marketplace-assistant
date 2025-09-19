@@ -66,6 +66,7 @@ export default function ProductStoryStep({
 
   // Count words in a string
   const countWords = (text) => {
+    if (!text || typeof text !== 'string') return 0;
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
 
@@ -101,14 +102,15 @@ export default function ProductStoryStep({
     
     // Check only the fields required by the template
     const requiredFields = config.fields;
+    const story = productStoryData.story || {};
     const hasEmptyFields = requiredFields.some(fieldName => {
-      const fieldValue = productStoryData.story[fieldName];
+      const fieldValue = story[fieldName];
       return !fieldValue || !fieldValue.trim();
     });
     
     // Check template-specific validation
     const hasInvalidFields = requiredFields.some(fieldName => {
-      const fieldValue = productStoryData.story[fieldName];
+      const fieldValue = story[fieldName];
       return !validateField(fieldName, fieldValue);
     });
     
@@ -147,11 +149,11 @@ export default function ProductStoryStep({
     return (
       <div key={fieldName}>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {field.label} {!field.optional && '*'} ({getCountDisplay(fieldName, productStoryData.story[fieldName])})
+          {field.label} {!field.optional && '*'} ({getCountDisplay(fieldName, productStoryData.story?.[fieldName])})
         </label>
         <div className="flex items-start gap-2">
           <textarea
-            value={productStoryData.story[fieldName]}
+            value={productStoryData.story?.[fieldName] ?? ''}
             onChange={(e) => {
               if (e.target.value.length <= 600) {
                 handleInputChange('story', fieldName, e.target.value);
@@ -166,7 +168,7 @@ export default function ProductStoryStep({
             onClick={() => generateFieldContent('story', fieldName, productStoryData.story[fieldName])}
             size="sm"
             className="bg-purple-600 hover:bg-purple-700 mt-2"
-            disabled={isGenerating || !productStoryData.story[fieldName].trim()}
+            disabled={isGenerating || !(productStoryData.story?.[fieldName]?.trim())}
           >
             <Sparkles size={14} />
           </Button>

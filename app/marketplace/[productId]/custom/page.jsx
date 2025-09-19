@@ -7,6 +7,8 @@ import { Button } from '@/components/ui';
 import { ArrowLeft, FileText } from 'lucide-react';
 import UniversalPreviewPage from '@/components/shared/UniversalPreviewPage';
 import Loading from '@/app/loading';
+import { db } from '@/app/login/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function CustomProductPage() {
   const params = useParams();
@@ -16,86 +18,67 @@ export default function CustomProductPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`/api/products/${productId}`);
-        const result = await response.json();
+useEffect(() => {
+  const fetchProduct = async () => {
+    try {
+      const docRef = doc(db, 'products', productId);
+      const docSnap = await getDoc(docRef);
 
-        if (result.success && result.custom) {
-          // Prepare custom images array
-          const customImages = [];
-          
-          // Add saved custom images if they exist
-          if (result.custom.savedImages && Array.isArray(result.custom.savedImages)) {
-            result.custom.savedImages.forEach((imageName, index) => {
-              customImages.push(`/api/products/${productId}/images/${imageName}`);
-            });
-          }
-          
-          // Also add standard product images as fallback
-          if (result.standard?.images?.thumbnail) {
-            customImages.push(`/api/products/${productId}/images/${result.standard.images.thumbnail}`);
-          }
-          if (result.standard?.images?.additional) {
-            result.standard.images.additional.forEach(imageName => {
-              customImages.push(`/api/products/${productId}/images/${imageName}`);
-            });
-          }
-          
-          // Convert saved images to the format expected by the renderer
-          const heroImages = [];
-          if (result.custom.savedImages && Array.isArray(result.custom.savedImages)) {
-            result.custom.savedImages.forEach((imageName, index) => {
-              heroImages.push({
-                id: Date.now() + index,
-                url: `/api/products/${productId}/images/${imageName}`,
-                type: 'saved',
-                name: imageName
-              });
-            });
-          }
+      if (docSnap.exists() && docSnap.data().customPage) {
+        const data = docSnap.data();
+        const custom = data.customPage;
+        const standard = {
+          title: data.title,
+          description: data.description,
+          images: data.images || {},
+        };
 
-          // Get the content data and update it with properly formatted visuals
-          const contentData = result.custom.content || result.custom.productStoryData || {};
-          const updatedContentData = {
-            ...contentData,
-            visuals: {
-              ...contentData.visuals,
-              hero: heroImages,
-              process: contentData.visuals?.process || [],
-              beforeAfter: contentData.visuals?.beforeAfter || [],
-              lifestyle: contentData.visuals?.lifestyle || [],
-              team: contentData.visuals?.team || []
-            }
-          };
+        const customImages = Array.isArray(custom.savedImages) ? custom.savedImages : [];
+        const heroImages = customImages.map((url, index) => ({
+          id: `custom-img-${index}`,
+          url,
+          type: 'saved',
+          name: `custom-${index + 1}`,
+        }));
 
-          // Store the custom data in localStorage for UniversalPreviewPage
-          const previewData = {
-            productStoryData: updatedContentData,
-            templateType: result.custom.templateType || 'journey',
-            model: result.custom.model,
-            content: updatedContentData,
-            images: customImages
-          };
-          
-          localStorage.setItem('productStoryPreviewData', JSON.stringify(previewData));
-          setProductData(result);
-        } else {
-          setError('Custom page not found for this product');
-        }
-      } catch (err) {
-        console.error('Error fetching product:', err);
-        setError('Failed to load custom product page');
-      } finally {
-        setLoading(false);
+        const contentData = custom.content || custom.productStoryData || {};
+        const updatedContentData = {
+          ...contentData,
+          visuals: {
+            ...contentData.visuals,
+            hero: heroImages,
+            process: contentData.visuals?.process || [],
+            beforeAfter: contentData.visuals?.beforeAfter || [],
+            lifestyle: contentData.visuals?.lifestyle || [],
+            team: contentData.visuals?.team || [],
+          },
+        };
+
+        const previewData = {
+          productStoryData: updatedContentData,
+          templateType: custom.templateType || 'journey',
+          model: custom.model,
+          content: updatedContentData,
+          images: customImages,
+        };
+
+        localStorage.setItem('productStoryPreviewData', JSON.stringify(previewData));
+        setProductData({ custom, standard });
+      } else {
+        setError('Custom page not found for this product');
       }
-    };
-
-    if (productId) {
-      fetchProduct();
+    } catch (err) {
+      console.error('Error fetching product from Firestore:', err);
+      setError('Failed to load custom product page');
+    } finally {
+      setLoading(false);
     }
-  }, [productId]);
+  };
+
+  if (productId && db) {
+    fetchProduct();
+  }
+}, [productId]);
 
   if (loading) {
     return <Loading />;
