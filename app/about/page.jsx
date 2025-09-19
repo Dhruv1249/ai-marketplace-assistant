@@ -21,21 +21,21 @@ const testimonials = [
     quote:
       "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
     name: "Jainam Jyoat",
-    designation: "Dhruvs dad",
+    designation: "CTO",
     src: "/images/Jainam.jpeg",
   },
   {
     quote:
       "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
     name: "Dhruv",
-    designation: "Jainam Son",
+    designation: "CEO",
     src: "/images/Dhruv.jpeg",
   },
   {
     quote:
       "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
     name: "Yukta Shree",
-    designation: "Food Lover",
+    designation: "CTO",
     src: "/images/Yukta.jpeg",
   },
 ];
