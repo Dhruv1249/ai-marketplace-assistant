@@ -473,14 +473,14 @@ export default function Marketplace() {
   }, []);
 
   const ProductCard = ({ product }) => (
-    <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+    <div className="group bg-white rounded-lg shadow-sm border hover:shadow-lg transition-shadow">
       {/* Product Image */}
       <div className="relative">
         <div className="w-full h-48 bg-gray-200 rounded-t-lg overflow-hidden">
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-105"
             onError={(e) => {
               e.target.style.display = 'none';
               e.target.nextSibling.style.display = 'flex';
@@ -564,13 +564,13 @@ export default function Marketplace() {
 
   // List view item layout
   const ProductListItem = ({ product }) => (
-    <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow p-4 flex">
+    <div className="group bg-white rounded-lg shadow-sm border hover:shadow-lg transition-shadow p-4 flex">
       {/* Image */}
       <div className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
         <img
           src={product.image}
           alt={product.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-105"
           onError={(e) => {
             e.target.style.display = 'none';
             e.target.nextSibling.style.display = 'flex';
