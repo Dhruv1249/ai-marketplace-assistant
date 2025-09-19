@@ -3339,21 +3339,32 @@ const EnhancedJSONModelRenderer = ({
             const templateType = model?.metadata?.template || 'professional';
             processedNode.children = generateAchievementsArray(items, templateType);
           } else if (processedNode.children === 'TESTIMONIALS_ARRAY') {
-            // Handle testimonials array - Our Journey template structure
-            const items = safeGet(context.content, 'impact.testimonials', []);
-            console.log('💬 [TESTIMONIALS_ARRAY] Processing testimonials:', items.length);
-            processedNode.children = items.slice(0, 5).map((testimonial, index) => {
-              // Handle both string and object testimonials
-              const isObject = typeof testimonial === 'object' && testimonial !== null;
-              const quote = isObject ? (testimonial.quote || testimonial.text || testimonial.testimonial || '') : testimonial;
-              const author = isObject ? (testimonial.author || `Customer ${index + 1}`) : `Customer ${index + 1}`;
-              const project = isObject ? (testimonial.project || testimonial.impact || '') : '';
-              const photoUrl = isObject ? (testimonial.photo || '') : '';
-              
-              // Get fallback image from hero images
-              const heroImages = safeGet(context.content, 'visuals.hero', []);
-              const fallbackImage = heroImages.length > 0 ? (heroImages[0].url || heroImages[0] || '') : '';
-              const imageUrl = photoUrl || fallbackImage;
+          // Handle testimonials array - Our Journey template structure
+          const items = safeGet(context.content, 'impact.testimonials', []);
+          console.log('💬 [TESTIMONIALS_ARRAY] Processing testimonials:', items.length);
+          processedNode.children = items.slice(0, 5).map((testimonial, index) => {
+          // Handle both string and object testimonials
+          const isObject = typeof testimonial === 'object' && testimonial !== null;
+          const quote = isObject ? (testimonial.quote || testimonial.text || testimonial.testimonial || '') : testimonial;
+          const author = isObject ? (testimonial.author || `Customer ${index + 1}`) : `Customer ${index + 1}`;
+          const project = isObject ? (testimonial.project || testimonial.impact || '') : '';
+          
+          // Handle photo object structure - photo is now an object with url property
+          let photoUrl = '';
+          if (isObject && testimonial.photo) {
+          if (typeof testimonial.photo === 'object' && testimonial.photo.url) {
+          photoUrl = testimonial.photo.url;
+          } else if (typeof testimonial.photo === 'string') {
+          photoUrl = testimonial.photo;
+          }
+          }
+          
+          // Get fallback image from hero images
+          const heroImages = safeGet(context.content, 'visuals.hero', []);
+          const fallbackImage = heroImages.length > 0 ? (heroImages[0].url || heroImages[0] || '') : '';
+          const imageUrl = photoUrl || fallbackImage;
+          
+          console.log(`💬 [TESTIMONIAL ${index}] Photo URL:`, photoUrl, 'Final Image URL:', imageUrl);
               
               return {
                 id: `testimonial-card-${index}`,
