@@ -173,6 +173,14 @@ export default function Marketplace() {
     }
   });
 
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [showFilters, setShowFilters] = useState(false);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState('');
+  const [onlyFeatured, setOnlyFeatured] = useState(false);
+  const [onlyCustomPage, setOnlyCustomPage] = useState(false);
+
   useEffect(() => {
     try {
       localStorage.setItem('marketplaceViewMode', viewMode);
@@ -557,8 +565,32 @@ export default function Marketplace() {
   const normalized = (s) => (s || '').toString().toLowerCase();
   const filteredProducts = products.filter((p) => {
     const q = normalized(searchQuery);
-    if (!q) return true;
-    return [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
+    const matchesQuery = !q || [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
+
+    const matchesCategory = selectedCategory === 'All Categories' || normalized(p.category) === normalized(selectedCategory);
+
+    const price = Number(p.price) || 0;
+    const minP = parseFloat(minPrice);
+    const maxP = parseFloat(maxPrice);
+    const matchesMinPrice = isNaN(minP) ? true : price >= minP;
+    const matchesMaxPrice = isNaN(maxP) ? true : price <= maxP;
+
+    const rating = Number(p.rating) || 0;
+    const minR = parseFloat(minRating);
+    const matchesMinRating = isNaN(minR) ? true : rating >= minR;
+
+    const matchesFeatured = !onlyFeatured || !!p.featured;
+    const matchesCustom = !onlyCustomPage || !!p.hasCustomPage;
+
+    return (
+      matchesQuery &&
+      matchesCategory &&
+      matchesMinPrice &&
+      matchesMaxPrice &&
+      matchesMinRating &&
+      matchesFeatured &&
+      matchesCustom
+    );
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -622,7 +654,11 @@ export default function Marketplace() {
 
             {/* Category Filter */}
             <div className="md:w-48">
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
                 {categories.map((category) => (
                   <option key={category} value={category}>
                     {category}
@@ -642,11 +678,73 @@ export default function Marketplace() {
               </select>
             </div>
 
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => setShowFilters((prev) => !prev)}>
               <Filter className="mr-2" size={16} />
               Filters
             </Button>
           </div>
+          {showFilters && (
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Min Price</label>
+                <input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Max Price</label>
+                <input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  placeholder="1000"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Min Rating</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={minRating}
+                  onChange={(e) => setMinRating(e.target.value)}
+                  placeholder="e.g. 4.0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="flex flex-col justify-end gap-3">
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" checked={onlyFeatured} onChange={(e) => setOnlyFeatured(e.target.checked)} />
+                  <span className="text-sm text-gray-700">Featured only</span>
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" checked={onlyCustomPage} onChange={(e) => setOnlyCustomPage(e.target.checked)} />
+                  <span className="text-sm text-gray-700">Custom page only</span>
+                </label>
+              </div>
+              <div className="md:col-span-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedCategory('All Categories');
+                    setMinPrice('');
+                    setMaxPrice('');
+                    setMinRating('');
+                    setOnlyFeatured(false);
+                    setOnlyCustomPage(false);
+                  }}
+                >
+                  Clear filters
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Results Summary */}
