@@ -3339,21 +3339,91 @@ const EnhancedJSONModelRenderer = ({
             const templateType = model?.metadata?.template || 'professional';
             processedNode.children = generateAchievementsArray(items, templateType);
           } else if (processedNode.children === 'TESTIMONIALS_ARRAY') {
-            // Handle testimonials array
+            // Handle testimonials array - Our Journey template structure
             const items = safeGet(context.content, 'impact.testimonials', []);
             console.log('💬 [TESTIMONIALS_ARRAY] Processing testimonials:', items.length);
-            processedNode.children = items.slice(0, 5).map((testimonial, index) => ({
-              id: `testimonial-${index}`,
-              type: 'div',
-              props: { className: 'testimonial-item p-6 bg-gray-50 rounded-lg shadow hover:shadow-md transition-shadow' },
-              children: [
-                {
-                  type: 'p',
-                  props: { className: 'text-gray-700 italic text-lg leading-relaxed' },
-                  children: [`"${testimonial}"`]
-                }
-              ]
-            }));
+            processedNode.children = items.slice(0, 5).map((testimonial, index) => {
+              // Handle both string and object testimonials
+              const isObject = typeof testimonial === 'object' && testimonial !== null;
+              const quote = isObject ? (testimonial.quote || testimonial.text || testimonial.testimonial || '') : testimonial;
+              const author = isObject ? (testimonial.author || `Customer ${index + 1}`) : `Customer ${index + 1}`;
+              const project = isObject ? (testimonial.project || testimonial.impact || '') : '';
+              const photoUrl = isObject ? (testimonial.photo || '') : '';
+              
+              // Get fallback image from hero images
+              const heroImages = safeGet(context.content, 'visuals.hero', []);
+              const fallbackImage = heroImages.length > 0 ? (heroImages[0].url || heroImages[0] || '') : '';
+              const imageUrl = photoUrl || fallbackImage;
+              
+              return {
+                id: `testimonial-card-${index}`,
+                type: 'div',
+                props: {
+                  className: 'w-full max-w-sm rounded-lg shadow-xl overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 handcrafted-texture animate-fadeInUp',
+                  style: { 
+                    backgroundColor: 'var(--brandPrimary)', 
+                    color: 'var(--brandTextPrimary)', 
+                    fontFamily: 'var(--fontFamilySerif)' 
+                  }
+                },
+                children: [
+                  // Profile image
+                  ...(imageUrl ? [{
+                    id: `testimonial-image-${index}`,
+                    type: 'img',
+                    props: {
+                      src: imageUrl,
+                      alt: author,
+                      className: 'w-32 h-32 rounded-lg object-cover mx-auto mt-6'
+                    }
+                  }] : []),
+                  // Card body
+                  {
+                    id: `testimonial-body-${index}`,
+                    type: 'div',
+                    props: { 
+                      className: 'p-6 text-left border-t-4', 
+                      style: { borderTopColor: 'var(--brandAccent)' } 
+                    },
+                    children: [
+                      // Quote
+                      {
+                        id: `testimonial-quote-${index}`,
+                        type: 'p',
+                        props: { 
+                          className: 'italic mb-4', 
+                          style: { color: 'var(--brandTextSecondary)' } 
+                        },
+                        children: [`"${quote}"`]
+                      },
+                      // Author
+                      {
+                        id: `testimonial-author-${index}`,
+                        type: 'h3',
+                        props: { 
+                          className: 'font-semibold text-lg', 
+                          style: { 
+                            color: 'var(--brandTextPrimary)', 
+                            fontFamily: 'var(--fontFamilyDisplay)' 
+                          } 
+                        },
+                        children: [`- ${author}`]
+                      },
+                      // Project/Impact (if available)
+                      ...(project ? [{
+                        id: `testimonial-project-${index}`,
+                        type: 'p',
+                        props: { 
+                          className: 'opacity-80 mt-1', 
+                          style: { color: 'var(--brandTextPrimary)' } 
+                        },
+                        children: [project]
+                      }] : [])
+                    ]
+                  }
+                ]
+              };
+            });
           } else if (processedNode.children === 'METRICS_ARRAY') {
             // Handle metrics array
             const items = safeGet(context.content, 'impact.metrics', []);
@@ -3397,22 +3467,87 @@ const EnhancedJSONModelRenderer = ({
               ]
             }));
           } else if (processedNode.children === 'AWARDS_ARRAY') {
-            // Handle awards array
+            // Handle awards array - Our Journey template structure
             const items = safeGet(context.content, 'impact.awards', []);
             console.log('🏆 [AWARDS_ARRAY] Processing awards:', items.length);
-            processedNode.children = items.slice(0, 5).map((award, index) => ({
-              id: `award-${index}`,
-              type: 'div',
-              props: { className: 'award-item inline-flex items-center px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium m-2 hover:bg-yellow-200 transition-colors' },
-              children: [
-                {
-                  type: 'span',
-                  props: { className: 'mr-2 text-lg' },
-                  children: ['🏆']
-                },
-                award
-              ]
-            }));
+            processedNode.children = items.slice(0, 5).map((award, index) => {
+              // Handle both string and object awards
+              const isObject = typeof award === 'object' && award !== null;
+              const title = isObject ? (award.title || award.name || award.award || '') : award;
+              const organization = isObject ? (award.organization || award.org || '') : '';
+              const year = isObject ? (award.year || new Date().getFullYear()) : new Date().getFullYear();
+              
+              return {
+                id: `award-${index}`,
+                type: 'div',
+                props: { className: 'flex items-center py-6 animate-fadeInUp' },
+                children: [
+                  // Trophy icon
+                  {
+                    id: `award-icon-wrap-${index}`,
+                    type: 'div',
+                    props: { 
+                      className: 'flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center mr-6', 
+                      style: { backgroundColor: 'var(--brandAccent)', backgroundOpacity: 0.1 } 
+                    },
+                    children: [
+                      {
+                        id: `award-icon-${index}`,
+                        type: 'span',
+                        props: {
+                          className: 'text-2xl',
+                          style: { color: 'var(--brandAccent)' }
+                        },
+                        children: ['🏆']
+                      }
+                    ]
+                  },
+                  // Award text
+                  {
+                    id: `award-text-${index}`,
+                    type: 'div',
+                    props: { className: 'flex-grow' },
+                    children: [
+                      {
+                        id: `award-title-${index}`,
+                        type: 'h3',
+                        props: { 
+                          className: 'text-xl font-bold', 
+                          style: { 
+                            color: 'var(--brandTextPrimary)', 
+                            fontFamily: 'var(--fontFamilyDisplay)' 
+                          } 
+                        },
+                        children: [title || `Award ${index + 1}`]
+                      },
+                      {
+                        id: `award-org-${index}`,
+                        type: 'p',
+                        props: { style: { color: 'var(--brandTextSecondary)' } },
+                        children: [organization || 'Awarding Organization']
+                      }
+                    ]
+                  },
+                  // Year
+                  {
+                    id: `award-year-${index}`,
+                    type: 'div',
+                    props: { className: 'text-right' },
+                    children: [
+                      {
+                        id: `award-year-text-${index}`,
+                        type: 'p',
+                        props: { 
+                          className: 'text-lg font-semibold', 
+                          style: { color: 'var(--brandAccent)' } 
+                        },
+                        children: [String(year)]
+                      }
+                    ]
+                  }
+                ]
+              };
+            });
           } else if (processedNode.children === 'HERO_GALLERY') {
             // Handle hero gallery - CENTERED FOR SINGLE ITEMS
             const items = safeGet(context.content, 'visuals.hero', []);

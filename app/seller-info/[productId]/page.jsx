@@ -572,7 +572,77 @@ export default function ProductStoryPage() {
       console.log('Payload keys:', Object.keys(payload));
       console.log('===============================================');
       
-      localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
+      // Try to save to localStorage with error handling for quota exceeded
+      try {
+        localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
+      } catch (storageError) {
+        if (storageError.name === 'QuotaExceededError') {
+          // Handle quota exceeded by creating a smaller payload without large images
+          console.warn('localStorage quota exceeded, creating compressed payload...');
+          
+          // Create a compressed payload without full image data
+          const compressedPayload = {
+            ...payload,
+            images: [], // Remove large image data
+            content: {
+              ...payload.content,
+              visuals: {
+                ...payload.content.visuals,
+                // Keep only essential image metadata, not the full data URLs
+                hero: payload.content.visuals.hero?.map(img => ({ 
+                  id: img.id, 
+                  name: img.name, 
+                  type: img.type,
+                  url: img.type === 'uploaded' ? 'COMPRESSED_IMAGE' : img.url 
+                })) || [],
+                process: payload.content.visuals.process?.map(img => ({ 
+                  id: img.id, 
+                  name: img.name, 
+                  type: img.type,
+                  url: img.type === 'uploaded' ? 'COMPRESSED_IMAGE' : img.url 
+                })) || [],
+                beforeAfter: payload.content.visuals.beforeAfter?.map(img => ({ 
+                  id: img.id, 
+                  name: img.name, 
+                  type: img.type,
+                  url: img.type === 'uploaded' ? 'COMPRESSED_IMAGE' : img.url 
+                })) || [],
+                lifestyle: payload.content.visuals.lifestyle?.map(img => ({ 
+                  id: img.id, 
+                  name: img.name, 
+                  type: img.type,
+                  url: img.type === 'uploaded' ? 'COMPRESSED_IMAGE' : img.url 
+                })) || [],
+                team: payload.content.visuals.team?.map(img => ({ 
+                  id: img.id, 
+                  name: img.name, 
+                  type: img.type,
+                  url: img.type === 'uploaded' ? 'COMPRESSED_IMAGE' : img.url 
+                })) || []
+              }
+            }
+          };
+          
+          // Update productStoryData to match the compressed visuals
+          compressedPayload.productStoryData = {
+            ...compressedPayload.productStoryData,
+            visuals: compressedPayload.content.visuals
+          };
+          
+          try {
+            localStorage.setItem('productStoryPreviewData', JSON.stringify(compressedPayload));
+            alert('⚠️ Images were compressed for preview due to size limits. The final published version will include full-quality images.');
+          } catch (secondError) {
+            // If still failing, clear localStorage and try again
+            localStorage.clear();
+            localStorage.setItem('productStoryPreviewData', JSON.stringify(compressedPayload));
+            alert('⚠�� Storage was cleared and images compressed for preview. The final published version will include full-quality images.');
+          }
+        } else {
+          throw storageError;
+        }
+      }
+      
       // Open preview in new window
       window.open('/seller-info/preview', '_blank', 'noopener,noreferrer');
     } catch (error) {
@@ -714,6 +784,9 @@ export default function ProductStoryPage() {
             isGenerating={isGenerating}
             updateValidation={updateValidation}
             selectedTemplate={selectedTemplate}
+            handlePhotoUpload={handlePhotoUpload}
+            removePhoto={removePhoto}
+            setProductStoryData={setProductStoryData}
           />
         );
       case 'visuals':

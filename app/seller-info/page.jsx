@@ -506,6 +506,9 @@ export default function ProductStoryPage() {
             isGenerating={isGenerating}
             updateValidation={updateValidation}
             selectedTemplate={selectedTemplate}
+            handlePhotoUpload={handlePhotoUpload}
+            removePhoto={removePhoto}
+            setProductStoryData={setProductStoryData}
           />
         );
       case 6:
