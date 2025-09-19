@@ -164,6 +164,20 @@ export default function Marketplace() {
   const [fsProducts, setFsProducts] = useState([]);
   const [fileProducts, setFileProducts] = useState([]);
   const [selectedSort, setSelectedSort] = useState('featured');
+  const [viewMode, setViewMode] = useState(() => {
+    if (typeof window === 'undefined') return 'grid';
+    try {
+      return localStorage.getItem('marketplaceViewMode') || 'grid';
+    } catch {
+      return 'grid';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('marketplaceViewMode', viewMode);
+    } catch {}
+  }, [viewMode]);
 
   // Force a hard reload once per visit to the marketplace page
   useEffect(() => {
@@ -483,6 +497,63 @@ export default function Marketplace() {
     </div>
   );
 
+  // List view item layout
+  const ProductListItem = ({ product }) => (
+    <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow p-4 flex">
+      {/* Image */}
+      <div className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="w-full h-full bg-gray-200 items-center justify-center hidden">
+          <span className="text-gray-400">Product Image</span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 px-4">
+        <div className="flex items-start justify-between">
+          <h3 className="font-semibold text-gray-900 text-base line-clamp-1">{product.title}</h3>
+        </div>
+        <p className="text-gray-600 text-sm mt-1 line-clamp-2">{product.description}</p>
+        <div className="flex items-center mt-2">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={14}
+                className={`${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-gray-600 ml-2">
+            {product.rating} ({product.reviews})
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">by {product.seller}</p>
+      </div>
+
+      {/* Price + Actions */}
+      <div className="w-48 flex flex-col justify-between items-end">
+        <div className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</div>
+        <div className="flex space-x-2 mt-2">
+          <Link href={product.hasCustomPage ? `/marketplace/${product.id}/custom` : `/marketplace/${product.id}`}>
+            <Button size="sm" variant="outline">View</Button>
+          </Link>
+          <Link href={`/marketplace/${product.id}`}>
+            <BuyButton price={product.price} />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+
   const normalized = (s) => (s || '').toString().toLowerCase();
   const filteredProducts = products.filter((p) => {
     const q = normalized(searchQuery);
@@ -585,7 +656,10 @@ export default function Marketplace() {
           </p>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-gray-600">View:</span>
-            <button className="p-2 text-blue-600 bg-blue-50 rounded">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600'}`}
+            >
               <div className="w-4 h-4 grid grid-cols-2 gap-0.5">
                 <div className="bg-current rounded-sm"></div>
                 <div className="bg-current rounded-sm"></div>
@@ -593,7 +667,10 @@ export default function Marketplace() {
                 <div className="bg-current rounded-sm"></div>
               </div>
             </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 rounded">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded ${viewMode === 'list' ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600'}`}
+            >
               <div className="w-4 h-4 flex flex-col gap-0.5">
                 <div className="h-1 bg-current rounded-sm"></div>
                 <div className="h-1 bg-current rounded-sm"></div>
@@ -603,12 +680,20 @@ export default function Marketplace() {
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {sortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {/* Products List/Grid */}
+        {viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {sortedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4 mb-12">
+            {sortedProducts.map((product) => (
+              <ProductListItem key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
         {/* Load More */}
         <div className="text-center">
