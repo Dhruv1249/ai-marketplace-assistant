@@ -163,6 +163,7 @@ export default function Marketplace() {
 
   const [fsProducts, setFsProducts] = useState([]);
   const [fileProducts, setFileProducts] = useState([]);
+  const [selectedSort, setSelectedSort] = useState('featured');
 
   // Force a hard reload once per visit to the marketplace page
   useEffect(() => {
@@ -489,6 +490,29 @@ export default function Marketplace() {
     return [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
   });
 
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (selectedSort) {
+      case 'featured': {
+        const af = a.featured ? 1 : 0;
+        const bf = b.featured ? 1 : 0;
+        return bf - af;
+      }
+      case 'priceAsc':
+        return (a.price ?? 0) - (b.price ?? 0);
+      case 'priceDesc':
+        return (b.price ?? 0) - (a.price ?? 0);
+      case 'ratingDesc':
+        return (b.rating ?? 0) - (a.rating ?? 0);
+      case 'newest': {
+        const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bt - at;
+      }
+      default:
+        return 0;
+    }
+  });
+
   if (loading) {
     return <Loading />;
   }
@@ -538,12 +562,12 @@ export default function Marketplace() {
 
             {/* Sort */}
             <div className="md:w-48">
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option>Sort by: Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-                <option>Rating: High to Low</option>
-                <option>Newest First</option>
+              <select value={selectedSort} onChange={(e) => setSelectedSort(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="featured">Sort by: Featured</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="ratingDesc">Rating: High to Low</option>
+                <option value="newest">Newest First</option>
               </select>
             </div>
 
@@ -581,7 +605,7 @@ export default function Marketplace() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {filteredProducts.map((product) => (
+          {sortedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
