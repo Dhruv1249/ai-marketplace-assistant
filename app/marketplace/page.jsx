@@ -803,7 +803,17 @@ export default function Marketplace() {
               Filters
             </Button>
           </div>
-          {showFilters && (
+          <div
+            aria-hidden={!showFilters}
+            style={{
+              maxHeight: showFilters ? '800px' : '0px',
+              opacity: showFilters ? 1 : 0,
+              transform: showFilters ? 'translateY(0)' : 'translateY(-8px)',
+              transition: 'max-height 300ms ease, opacity 350ms ease, transform 400ms ease',
+              overflow: 'hidden',
+              pointerEvents: showFilters ? 'auto' : 'none',
+            }}
+          >
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Min Price</label>
@@ -864,7 +874,7 @@ export default function Marketplace() {
                 </Button>
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Results Summary */}
