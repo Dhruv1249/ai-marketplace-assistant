@@ -53,6 +53,7 @@ export default function UniversalPreviewPage({
   const [styleVariables, setStyleVariables] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // ENHANCED DATA LOADING - Works for product stories
   useEffect(() => {
@@ -440,6 +441,12 @@ export default function UniversalPreviewPage({
       return;
     }
 
+    if (isPublishing) {
+      return; // Prevent multiple simultaneous publishes
+    }
+
+    setIsPublishing(true);
+
     try {
       // Get the raw data from localStorage to access productId and other metadata
       const rawData = localStorage.getItem(storageKey);
@@ -478,19 +485,97 @@ export default function UniversalPreviewPage({
       formData.append('productId', productId);
       formData.append('customData', JSON.stringify(customPageData));
 
-      // Add custom page images if they exist
+      // ENHANCED: Use original files from window.productStoryOriginalFiles if available
       let imageIndex = 0;
-      if (data.content.visuals) {
-        Object.values(data.content.visuals).forEach(visualArray => {
-          if (Array.isArray(visualArray)) {
-            visualArray.forEach(visual => {
-              if (visual.file) {
-                formData.append(`customImage_${imageIndex}`, visual.file);
-                imageIndex++;
+      let filesAdded = 0;
+      
+      // First, try to get original files from the parent window
+      const originalFiles = window.productStoryOriginalFiles || [];
+      console.log('🔍 [PUBLISH] Original files available:', originalFiles.length);
+      
+      if (originalFiles.length > 0) {
+        // Use original File objects
+        originalFiles.forEach((fileInfo, index) => {
+          if (fileInfo.file && fileInfo.file instanceof File) {
+            formData.append(`customImage_${imageIndex}`, fileInfo.file);
+            console.log(`✅ [PUBLISH] Added original file ${imageIndex}:`, fileInfo.file.name);
+            imageIndex++;
+            filesAdded++;
+          }
+        });
+      } else {
+        // Fallback: Try to convert blob URLs to files (this will likely fail)
+        console.log('⚠️ [PUBLISH] No original files found, attempting blob URL conversion...');
+        
+        // Helper function to convert blob URL to File
+        const blobUrlToFile = async (blobUrl, fileName) => {
+          try {
+            const response = await fetch(blobUrl);
+            const blob = await response.blob();
+            return new File([blob], fileName, { type: blob.type });
+          } catch (error) {
+            console.error('❌ [PUBLISH] Failed to convert blob URL:', error);
+            return null;
+          }
+        };
+
+        // Try to convert blob URLs from visuals
+        if (data.content.visuals) {
+          const conversionPromises = [];
+          
+          Object.keys(data.content.visuals).forEach(visualType => {
+            const visualArray = data.content.visuals[visualType];
+            if (Array.isArray(visualArray)) {
+              visualArray.forEach((visual, index) => {
+                if (visual.url && visual.url.startsWith('blob:')) {
+                  const fileName = visual.name || `${visualType}_${index}.jpg`;
+                  conversionPromises.push(
+                    blobUrlToFile(visual.url, fileName).then(file => ({
+                      file,
+                      name: fileName,
+                      type: visualType,
+                      index
+                    }))
+                  );
+                }
+              });
+            }
+          });
+
+          // Try to convert testimonial photos
+          if (data.content.impact && data.content.impact.testimonials) {
+            data.content.impact.testimonials.forEach((testimonial, index) => {
+              if (testimonial.photo && testimonial.photo.url && testimonial.photo.url.startsWith('blob:')) {
+                const fileName = testimonial.photo.name || `testimonial_${index}.jpg`;
+                conversionPromises.push(
+                  blobUrlToFile(testimonial.photo.url, fileName).then(file => ({
+                    file,
+                    name: fileName,
+                    type: 'testimonial',
+                    index
+                  }))
+                );
               }
             });
           }
-        });
+
+          if (conversionPromises.length > 0) {
+            console.log(`🔄 [PUBLISH] Attempting to convert ${conversionPromises.length} blob URLs...`);
+            
+            const convertedFiles = await Promise.all(conversionPromises);
+            
+            convertedFiles.forEach((result, index) => {
+              if (result && result.file) {
+                formData.append(`customImage_${imageIndex}`, result.file);
+                console.log(`✅ [PUBLISH] Added converted file ${imageIndex}:`, result.name);
+                imageIndex++;
+                filesAdded++;
+              } else {
+                console.log(`❌ [PUBLISH] Failed to convert file ${index}`);
+              }
+            });
+          }
+        }
       }
 
       console.log('🚀 [PUBLISH] Publishing product story:', {
@@ -498,8 +583,14 @@ export default function UniversalPreviewPage({
         templateType,
         hasContent: !!data.content,
         hasModel: !!data.model,
-        imageCount: imageIndex
+        originalFilesCount: originalFiles.length,
+        filesAddedToFormData: filesAdded,
+        totalFormDataFiles: imageIndex
       });
+
+      if (filesAdded === 0 && originalFiles.length === 0) {
+        console.log('⚠️ [PUBLISH] No images will be uploaded - publishing text content only');
+      }
 
       // Save custom page data
       const response = await fetch('/api/products/save-custom', {
@@ -510,7 +601,7 @@ export default function UniversalPreviewPage({
       const result = await response.json();
       
       if (result.success) {
-        alert('Product story page published successfully!');
+        alert(`Product story page published successfully! ${filesAdded > 0 ? `${filesAdded} images uploaded.` : 'Text content published.'}`);
         // Navigate to the product page
         window.location.href = `/marketplace/${productId}`;
       } else {
@@ -519,8 +610,10 @@ export default function UniversalPreviewPage({
     } catch (error) {
       console.error('❌ [PUBLISH] Error publishing product story:', error);
       alert('An error occurred while publishing the story page. Please try again.');
+    } finally {
+      setIsPublishing(false);
     }
-  }, [data, type, storageKey]);
+  }, [data, type, storageKey, isPublishing]);
 
   const getTemplateName = () => {
     if (!data?.model?.metadata?.template) return 'Template';
@@ -645,10 +738,24 @@ export default function UniversalPreviewPage({
                 {type === 'product-story' && (
                   <button
                     onClick={handlePublishProductStory}
-                    className="flex items-center gap-1 px-4 py-2 bg-purple-600 text-white hover:bg-purple-700 rounded-lg transition-colors text-sm font-medium"
+                    disabled={isPublishing}
+                    className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                      isPublishing 
+                        ? 'bg-purple-400 text-white cursor-not-allowed' 
+                        : 'bg-purple-600 text-white hover:bg-purple-700'
+                    }`}
                   >
-                    <Globe size={14} />
-                    <span>Publish</span>
+                    {isPublishing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Publishing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Globe size={14} />
+                        <span>Publish</span>
+                      </>
+                    )}
                   </button>
                 )}
 
