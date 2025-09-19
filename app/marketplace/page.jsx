@@ -2,10 +2,10 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Filter, Star, Eye, Plus } from 'lucide-react';
+import { Filter, Star, Eye, Plus, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import styled from 'styled-components';
 import GameOne from '@/components/animated icon/GameOn';
 import Loading from '@/app/loading';
@@ -182,6 +182,14 @@ export default function Marketplace() {
   const [onlyCustomPage, setOnlyCustomPage] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
+  // Zoom/pan state for image preview
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [panning, setPanning] = useState(false);
+  const panStart = useRef({ x: 0, y: 0 });
+  const lastOffset = useRef({ x: 0, y: 0 });
+  const touchStartDist = useRef(null);
+
   useEffect(() => {
     try {
       localStorage.setItem('marketplaceViewMode', viewMode);
@@ -196,6 +204,39 @@ export default function Marketplace() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
+  }, [previewImage]);
+
+  // Reset zoom and pan when preview closes
+  useEffect(() => {
+    if (!previewImage) {
+      setZoom(1);
+      setOffset({ x: 0, y: 0 });
+      setPanning(false);
+      touchStartDist.current = null;
+    }
+  }, [previewImage]);
+
+  // Prevent OS/browser pinch-to-zoom while preview is open (e.g., Ctrl+wheel, trackpad gestures)
+  useEffect(() => {
+    if (!previewImage) return;
+    const preventPinchZoom = (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    };
+    const preventGesture = (e) => {
+      e.preventDefault();
+    };
+    document.addEventListener('wheel', preventPinchZoom, { passive: false, capture: true });
+    document.addEventListener('gesturestart', preventGesture, { passive: false });
+    document.addEventListener('gesturechange', preventGesture, { passive: false });
+    document.addEventListener('gestureend', preventGesture, { passive: false });
+    return () => {
+      document.removeEventListener('wheel', preventPinchZoom, { capture: true });
+      document.removeEventListener('gesturestart', preventGesture);
+      document.removeEventListener('gesturechange', preventGesture);
+      document.removeEventListener('gestureend', preventGesture);
+    };
   }, [previewImage]);
 
   // Force a hard reload once per visit to the marketplace page
@@ -632,6 +673,69 @@ export default function Marketplace() {
     }
   });
 
+  // Zoomable preview handlers
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const onWheelPreview = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = -Math.sign(e.deltaY) * 0.2;
+    setZoom((z) => {
+      const nz = clamp(+(z + delta).toFixed(2), 1, 4);
+      if (nz === 1) setOffset({ x: 0, y: 0 });
+      return nz;
+    });
+  };
+  const onMouseDown = (e) => {
+    if (zoom <= 1.01) return;
+    setPanning(true);
+    panStart.current = { x: e.clientX, y: e.clientY };
+    lastOffset.current = offset;
+  };
+  const onMouseMove = (e) => {
+    if (!panning) return;
+    const dx = e.clientX - panStart.current.x;
+    const dy = e.clientY - panStart.current.y;
+    setOffset({ x: lastOffset.current.x + dx, y: lastOffset.current.y + dy });
+  };
+  const onMouseUp = () => {
+    setPanning(false);
+  };
+  const onDoubleClick = () => {
+    setZoom((z) => {
+      const nz = z > 1 ? 1 : 2;
+      if (nz === 1) setOffset({ x: 0, y: 0 });
+      return nz;
+    });
+  };
+  const distance = (t1, t2) => Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+  const onTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      touchStartDist.current = distance(e.touches[0], e.touches[1]);
+    } else if (e.touches.length === 1 && zoom > 1) {
+      setPanning(true);
+      panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      lastOffset.current = offset;
+    }
+  };
+  const onTouchMove = (e) => {
+    if (e.touches.length === 2 && touchStartDist.current) {
+      const newDist = distance(e.touches[0], e.touches[1]);
+      const delta = (newDist - touchStartDist.current) / 200;
+      setZoom((z) => clamp(+(z + delta).toFixed(2), 1, 4));
+      touchStartDist.current = newDist;
+      e.preventDefault();
+    } else if (e.touches.length === 1 && panning) {
+      const dx = e.touches[0].clientX - panStart.current.x;
+      const dy = e.touches[0].clientY - panStart.current.y;
+      setOffset({ x: lastOffset.current.x + dx, y: lastOffset.current.y + dy });
+      e.preventDefault();
+    }
+  };
+  const onTouchEnd = (e) => {
+    if (e.touches.length < 2) touchStartDist.current = null;
+    if (e.touches.length === 0) setPanning(false);
+  };
+
   if (loading) {
     return <Loading />;
   }
@@ -828,15 +932,71 @@ export default function Marketplace() {
             aria-label="Close preview"
             tabIndex={-1}
           >
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
+            <div
+              className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-lg shadow-2xl bg-black/10"
               onClick={(e) => e.stopPropagation()}
-              onError={(e) => {
-                e.currentTarget.src = '/images/placeholder.svg';
-              }}
-            />
+              onWheel={onWheelPreview}
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+              onMouseUp={onMouseUp}
+              onMouseLeave={onMouseUp}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+              onDoubleClick={onDoubleClick}
+              style={{ cursor: panning ? 'grabbing' : zoom > 1 ? 'grab' : 'auto', touchAction: 'none' }}
+            >
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="max-h-[85vh] max-w-[90vw] object-contain select-none"
+                style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: 'center center' }}
+                draggable={false}
+                onError={(e) => {
+                  e.currentTarget.src = '/images/placeholder.svg';
+                }}
+              />
+              <div className="absolute top-2 right-2 flex gap-2 bg-black/60 text-white rounded-md p-2">
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Zoom in"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom((z) => clamp(+(z + 0.25).toFixed(2), 1, 4));
+                  }}
+                >
+                  <ZoomIn size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Zoom out"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom((z) => {
+                      const nz = clamp(+(z - 0.25).toFixed(2), 1, 4);
+                      if (nz === 1) setOffset({ x: 0, y: 0 });
+                      return nz;
+                    });
+                  }}
+                >
+                  <ZoomOut size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Reset zoom"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom(1);
+                    setOffset({ x: 0, y: 0 });
+                  }}
+                >
+                  <RotateCcw size={18} />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
