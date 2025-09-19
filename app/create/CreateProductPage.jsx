@@ -20,7 +20,7 @@ import { db, auth } from '@/app/login/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
+import { useRouter } from 'next/navigation';
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
@@ -50,7 +50,19 @@ const CreateProductPage = () => {
       behavior: 'smooth'
     });
   };
+// const router = useRouter();
+const router = useRouter();
 
+useEffect(() => {
+  // Listen for Firebase Auth state and redirect if NOT logged in
+  const unsubscribe = auth.onAuthStateChanged(user => {
+    if (!user) {
+      alert('🔒 Please sign in to continue. This page is available only for logged-in users.');
+      router.push('/login');
+    }
+  });
+  return () => unsubscribe();
+}, [router]);
   // Effect to scroll to top whenever step changes
   useEffect(() => {
     scrollToTop();
