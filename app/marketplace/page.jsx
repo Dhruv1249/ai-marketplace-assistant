@@ -159,6 +159,7 @@ const StyledWrapper = styled.div`
 export default function Marketplace() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [fsProducts, setFsProducts] = useState([]);
   const [fileProducts, setFileProducts] = useState([]);
@@ -481,6 +482,13 @@ export default function Marketplace() {
     </div>
   );
 
+  const normalized = (s) => (s || '').toString().toLowerCase();
+  const filteredProducts = products.filter((p) => {
+    const q = normalized(searchQuery);
+    if (!q) return true;
+    return [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
+  });
+
   if (loading) {
     return <Loading />;
   }
@@ -514,7 +522,7 @@ export default function Marketplace() {
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
-              <Input />
+              <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search products..." />
             </div>
 
             {/* Category Filter */}
@@ -549,7 +557,7 @@ export default function Marketplace() {
         {/* Results Summary */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">
-            Showing {products.length} products
+            Showing {filteredProducts.length} products
           </p>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-gray-600">View:</span>
@@ -573,7 +581,7 @@ export default function Marketplace() {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
