@@ -508,6 +508,8 @@ export default function Dashboard() {
           </div>
         </div>
 
+        <style>{`textarea[name="specifications"]{min-height:200px; resize: vertical;}`}</style>
+
         {/* Page container */}
         <div className="flex flex-row w-full flex-1">
           <section
@@ -1178,7 +1180,7 @@ export default function Dashboard() {
                         className={`absolute top-2 right-2 p-1.5 rounded-md ${theme === 'dark' ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-200 text-gray-600'}`}
                         aria-label="Product actions"
                       >
-                        <MoreVertical size={18} color="#ffffff" />
+                        <MoreVertical size={18} color="#000000" />
                       </button>
                       {openProductMenuId === prod.id && (
                         <div className={`absolute top-10 right-2 w-36 border rounded-md shadow-lg z-20 ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
