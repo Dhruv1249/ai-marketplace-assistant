@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Button } from '@/components/ui';
 import LaunchingButton from '../animated icon/Launching.jsx';
+import CandleLoader from '../animated icon/GeneratingLoding.jsx';
 import { Check, AlertCircle, Loader2, Globe, FileText, Eye, BookOpen, X } from 'lucide-react';
 import BackButton from '../animated icon/BackButton';
 import { db, auth, storage } from '@/app/login/firebase';
@@ -530,6 +531,18 @@ try {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {isPublishing && (
+        <div className="fixed inset-0 z-[60] bg-white flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 -mt-24 md:-mt-32">
+            <div className="text-center text-[#673c63]">
+              <div className="text-lg font-semibold">Publishing your product...</div>
+              <div className="text-sm opacity-90">Uploading images • Saving details • Generating page</div>
+              <div className="text-xs text-gray-500">Please keep this tab open</div>
+            </div>
+            <CandleLoader />
           </div>
         </div>
       )}
