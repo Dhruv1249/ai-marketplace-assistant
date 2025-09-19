@@ -30,7 +30,44 @@ export default function ProductStoryPage() {
   const router = useRouter();
   const params = useParams();
   const productId = params.productId;
+const [allowStoryEdit, setAllowStoryEdit] = useState(null); // null = loading, false = denied, true = allowed
 
+useEffect(() => {
+  const checkOwnership = async () => {
+    // Dynamic import avoids SSR issues
+    const { auth, db } = await import('@/app/login/firebase');
+    const { doc, getDoc } = await import('firebase/firestore');
+    if (!auth.currentUser) {
+      setAllowStoryEdit(false);
+      router.push('/login');
+      return;
+    }
+    try {
+      const docRef = doc(db, 'products', productId);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        setAllowStoryEdit(false);
+        return;
+      }
+      const data = docSnap.data();
+      if (data.ownerId && data.ownerId === auth.currentUser.uid) {
+        setAllowStoryEdit(true); // allow
+      } else {
+        setAllowStoryEdit(false); // deny
+      }
+    } catch {
+      setAllowStoryEdit(false);
+    }
+  };
+  if (productId) checkOwnership();
+}, [productId, router]);
+
+if (allowStoryEdit === null) {
+  return <div>Loading...</div>;
+}
+if (allowStoryEdit === false) {
+  return <div>You are not authorized to add a story page to this product.</div>;
+}
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('our-journey');
