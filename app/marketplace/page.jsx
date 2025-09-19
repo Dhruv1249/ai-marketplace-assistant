@@ -180,12 +180,23 @@ export default function Marketplace() {
   const [minRating, setMinRating] = useState('');
   const [onlyFeatured, setOnlyFeatured] = useState(false);
   const [onlyCustomPage, setOnlyCustomPage] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     try {
       localStorage.setItem('marketplaceViewMode', viewMode);
     } catch {}
   }, [viewMode]);
+
+  // Close preview on Esc
+  useEffect(() => {
+    if (!previewImage) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setPreviewImage(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [previewImage]);
 
   // Force a hard reload once per visit to the marketplace page
   useEffect(() => {
@@ -443,9 +454,14 @@ export default function Marketplace() {
             Featured
           </div>
         )}
-        <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm">
+        <button
+          type="button"
+          aria-label="Preview image"
+          onClick={() => setPreviewImage(product.image)}
+          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           <Eye size={16} className="text-gray-600" />
-        </div>
+        </button>
       </div>
 
       {/* Product Info */}
@@ -800,6 +816,30 @@ export default function Marketplace() {
           </Button>
         </div>
       </div>
+
+      {/* Image Preview Lightbox */}
+      {previewImage && (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/70" />
+          <div
+            className="absolute inset-0 flex items-center justify-center p-4"
+            onClick={() => setPreviewImage(null)}
+            role="button"
+            aria-label="Close preview"
+            tabIndex={-1}
+          >
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+              onError={(e) => {
+                e.currentTarget.src = '/images/placeholder.svg';
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-indigo-200 to-purple-300 py-16 mt-16">
