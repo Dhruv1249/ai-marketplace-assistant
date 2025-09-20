@@ -2,10 +2,10 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
-import { Filter, Star, Eye, Plus } from 'lucide-react';
+import { Filter, Star, Eye, Plus, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import styled from 'styled-components';
 import GameOne from '@/components/animated icon/GameOn';
 import Loading from '@/app/loading';
@@ -164,6 +164,80 @@ export default function Marketplace() {
   const [fsProducts, setFsProducts] = useState([]);
   const [fileProducts, setFileProducts] = useState([]);
   const [selectedSort, setSelectedSort] = useState('featured');
+  const [viewMode, setViewMode] = useState(() => {
+    if (typeof window === 'undefined') return 'grid';
+    try {
+      return localStorage.getItem('marketplaceViewMode') || 'grid';
+    } catch {
+      return 'grid';
+    }
+  });
+
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [showFilters, setShowFilters] = useState(false);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [minRating, setMinRating] = useState('');
+  const [onlyFeatured, setOnlyFeatured] = useState(false);
+  const [onlyCustomPage, setOnlyCustomPage] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  // Zoom/pan state for image preview
+  const [zoom, setZoom] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [panning, setPanning] = useState(false);
+  const panStart = useRef({ x: 0, y: 0 });
+  const lastOffset = useRef({ x: 0, y: 0 });
+  const touchStartDist = useRef(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('marketplaceViewMode', viewMode);
+    } catch {}
+  }, [viewMode]);
+
+  // Close preview on Esc
+  useEffect(() => {
+    if (!previewImage) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setPreviewImage(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [previewImage]);
+
+  // Reset zoom and pan when preview closes
+  useEffect(() => {
+    if (!previewImage) {
+      setZoom(1);
+      setOffset({ x: 0, y: 0 });
+      setPanning(false);
+      touchStartDist.current = null;
+    }
+  }, [previewImage]);
+
+  // Prevent OS/browser pinch-to-zoom while preview is open (e.g., Ctrl+wheel, trackpad gestures)
+  useEffect(() => {
+    if (!previewImage) return;
+    const preventPinchZoom = (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    };
+    const preventGesture = (e) => {
+      e.preventDefault();
+    };
+    document.addEventListener('wheel', preventPinchZoom, { passive: false, capture: true });
+    document.addEventListener('gesturestart', preventGesture, { passive: false });
+    document.addEventListener('gesturechange', preventGesture, { passive: false });
+    document.addEventListener('gestureend', preventGesture, { passive: false });
+    return () => {
+      document.removeEventListener('wheel', preventPinchZoom, { capture: true });
+      document.removeEventListener('gesturestart', preventGesture);
+      document.removeEventListener('gesturechange', preventGesture);
+      document.removeEventListener('gestureend', preventGesture);
+    };
+  }, [previewImage]);
 
   // Force a hard reload once per visit to the marketplace page
   useEffect(() => {
@@ -399,14 +473,14 @@ export default function Marketplace() {
   }, []);
 
   const ProductCard = ({ product }) => (
-    <div className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+    <div className="group bg-white rounded-lg shadow-sm border hover:shadow-lg transition-shadow">
       {/* Product Image */}
       <div className="relative">
         <div className="w-full h-48 bg-gray-200 rounded-t-lg overflow-hidden">
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-105"
             onError={(e) => {
               e.target.style.display = 'none';
               e.target.nextSibling.style.display = 'flex';
@@ -416,14 +490,19 @@ export default function Marketplace() {
             <span className="text-gray-400">Product Image</span>
           </div>
         </div>
-        {product.featured && (
+        {product.hasCustomPage && (
           <div className="absolute top-2 left-2 bg-gradient-to-r from-indigo-200 to-purple-300 text-gray-800 px-2 py-1 rounded text-xs font-semibold shadow">
-            Featured
+            Storyline
           </div>
         )}
-        <div className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm">
+        <button
+          type="button"
+          aria-label="Preview image"
+          onClick={() => setPreviewImage(product.image)}
+          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           <Eye size={16} className="text-gray-600" />
-        </div>
+        </button>
       </div>
 
       {/* Product Info */}
@@ -483,11 +562,92 @@ export default function Marketplace() {
     </div>
   );
 
+  // List view item layout
+  const ProductListItem = ({ product }) => (
+    <div className="group bg-white rounded-lg shadow-sm border hover:shadow-lg transition-shadow p-4 flex">
+      {/* Image */}
+      <div className="w-32 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-full object-cover transform-gpu transition-transform duration-300 ease-out group-hover:scale-105"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="w-full h-full bg-gray-200 items-center justify-center hidden">
+          <span className="text-gray-400">Product Image</span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 px-4">
+        <div className="flex items-start justify-between">
+          <h3 className="font-semibold text-gray-900 text-base line-clamp-1">{product.title}</h3>
+        </div>
+        <p className="text-gray-600 text-sm mt-1 line-clamp-2">{product.description}</p>
+        <div className="flex items-center mt-2">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={14}
+                className={`${i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-gray-600 ml-2">
+            {product.rating} ({product.reviews})
+          </span>
+        </div>
+        <p className="text-xs text-gray-500 mt-2">by {product.seller}</p>
+      </div>
+
+      {/* Price + Actions */}
+      <div className="w-48 flex flex-col justify-between items-end">
+        <div className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</div>
+        <div className="flex space-x-2 mt-2">
+          <Link href={product.hasCustomPage ? `/marketplace/${product.id}/custom` : `/marketplace/${product.id}`}>
+            <Button size="sm" variant="outline">View</Button>
+          </Link>
+          <Link href={`/marketplace/${product.id}`}>
+            <BuyButton price={product.price} />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+
   const normalized = (s) => (s || '').toString().toLowerCase();
   const filteredProducts = products.filter((p) => {
     const q = normalized(searchQuery);
-    if (!q) return true;
-    return [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
+    const matchesQuery = !q || [p.title, p.description, p.seller, p.category].some((f) => normalized(f).includes(q));
+
+    const matchesCategory = selectedCategory === 'All Categories' || normalized(p.category) === normalized(selectedCategory);
+
+    const price = Number(p.price) || 0;
+    const minP = parseFloat(minPrice);
+    const maxP = parseFloat(maxPrice);
+    const matchesMinPrice = isNaN(minP) ? true : price >= minP;
+    const matchesMaxPrice = isNaN(maxP) ? true : price <= maxP;
+
+    const rating = Number(p.rating) || 0;
+    const minR = parseFloat(minRating);
+    const matchesMinRating = isNaN(minR) ? true : rating >= minR;
+
+    const matchesFeatured = !onlyFeatured || !!p.featured;
+    const matchesCustom = !onlyCustomPage || !!p.hasCustomPage;
+
+    return (
+      matchesQuery &&
+      matchesCategory &&
+      matchesMinPrice &&
+      matchesMaxPrice &&
+      matchesMinRating &&
+      matchesFeatured &&
+      matchesCustom
+    );
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -512,6 +672,69 @@ export default function Marketplace() {
         return 0;
     }
   });
+
+  // Zoomable preview handlers
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const onWheelPreview = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const delta = -Math.sign(e.deltaY) * 0.2;
+    setZoom((z) => {
+      const nz = clamp(+(z + delta).toFixed(2), 1, 4);
+      if (nz === 1) setOffset({ x: 0, y: 0 });
+      return nz;
+    });
+  };
+  const onMouseDown = (e) => {
+    if (zoom <= 1.01) return;
+    setPanning(true);
+    panStart.current = { x: e.clientX, y: e.clientY };
+    lastOffset.current = offset;
+  };
+  const onMouseMove = (e) => {
+    if (!panning) return;
+    const dx = e.clientX - panStart.current.x;
+    const dy = e.clientY - panStart.current.y;
+    setOffset({ x: lastOffset.current.x + dx, y: lastOffset.current.y + dy });
+  };
+  const onMouseUp = () => {
+    setPanning(false);
+  };
+  const onDoubleClick = () => {
+    setZoom((z) => {
+      const nz = z > 1 ? 1 : 2;
+      if (nz === 1) setOffset({ x: 0, y: 0 });
+      return nz;
+    });
+  };
+  const distance = (t1, t2) => Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+  const onTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      touchStartDist.current = distance(e.touches[0], e.touches[1]);
+    } else if (e.touches.length === 1 && zoom > 1) {
+      setPanning(true);
+      panStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      lastOffset.current = offset;
+    }
+  };
+  const onTouchMove = (e) => {
+    if (e.touches.length === 2 && touchStartDist.current) {
+      const newDist = distance(e.touches[0], e.touches[1]);
+      const delta = (newDist - touchStartDist.current) / 200;
+      setZoom((z) => clamp(+(z + delta).toFixed(2), 1, 4));
+      touchStartDist.current = newDist;
+      e.preventDefault();
+    } else if (e.touches.length === 1 && panning) {
+      const dx = e.touches[0].clientX - panStart.current.x;
+      const dy = e.touches[0].clientY - panStart.current.y;
+      setOffset({ x: lastOffset.current.x + dx, y: lastOffset.current.y + dy });
+      e.preventDefault();
+    }
+  };
+  const onTouchEnd = (e) => {
+    if (e.touches.length < 2) touchStartDist.current = null;
+    if (e.touches.length === 0) setPanning(false);
+  };
 
   if (loading) {
     return <Loading />;
@@ -551,7 +774,11 @@ export default function Marketplace() {
 
             {/* Category Filter */}
             <div className="md:w-48">
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
                 {categories.map((category) => (
                   <option key={category} value={category}>
                     {category}
@@ -571,10 +798,82 @@ export default function Marketplace() {
               </select>
             </div>
 
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => setShowFilters((prev) => !prev)}>
               <Filter className="mr-2" size={16} />
               Filters
             </Button>
+          </div>
+          <div
+            aria-hidden={!showFilters}
+            style={{
+              maxHeight: showFilters ? '800px' : '0px',
+              opacity: showFilters ? 1 : 0,
+              transform: showFilters ? 'translateY(0)' : 'translateY(-8px)',
+              transition: 'max-height 300ms ease, opacity 350ms ease, transform 400ms ease',
+              overflow: 'hidden',
+              pointerEvents: showFilters ? 'auto' : 'none',
+            }}
+          >
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Min Price</label>
+                <input
+                  type="number"
+                  value={minPrice}
+                  onChange={(e) => setMinPrice(e.target.value)}
+                  placeholder="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Max Price</label>
+                <input
+                  type="number"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(e.target.value)}
+                  placeholder="1000"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Min Rating</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="0.1"
+                  value={minRating}
+                  onChange={(e) => setMinRating(e.target.value)}
+                  placeholder="e.g. 4.0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div className="flex flex-col justify-end gap-3">
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" checked={onlyFeatured} onChange={(e) => setOnlyFeatured(e.target.checked)} />
+                  <span className="text-sm text-gray-700">Featured only</span>
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input type="checkbox" checked={onlyCustomPage} onChange={(e) => setOnlyCustomPage(e.target.checked)} />
+                  <span className="text-sm text-gray-700">Custom page only</span>
+                </label>
+              </div>
+              <div className="md:col-span-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedCategory('All Categories');
+                    setMinPrice('');
+                    setMaxPrice('');
+                    setMinRating('');
+                    setOnlyFeatured(false);
+                    setOnlyCustomPage(false);
+                  }}
+                >
+                  Clear filters
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -585,7 +884,10 @@ export default function Marketplace() {
           </p>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-gray-600">View:</span>
-            <button className="p-2 text-blue-600 bg-blue-50 rounded">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600'}`}
+            >
               <div className="w-4 h-4 grid grid-cols-2 gap-0.5">
                 <div className="bg-current rounded-sm"></div>
                 <div className="bg-current rounded-sm"></div>
@@ -593,7 +895,10 @@ export default function Marketplace() {
                 <div className="bg-current rounded-sm"></div>
               </div>
             </button>
-            <button className="p-2 text-gray-400 hover:text-gray-600 rounded">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded ${viewMode === 'list' ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600'}`}
+            >
               <div className="w-4 h-4 flex flex-col gap-0.5">
                 <div className="h-1 bg-current rounded-sm"></div>
                 <div className="h-1 bg-current rounded-sm"></div>
@@ -603,12 +908,20 @@ export default function Marketplace() {
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {sortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {/* Products List/Grid */}
+        {viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {sortedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4 mb-12">
+            {sortedProducts.map((product) => (
+              <ProductListItem key={product.id} product={product} />
+            ))}
+          </div>
+        )}
 
         {/* Load More */}
         <div className="text-center">
@@ -617,6 +930,86 @@ export default function Marketplace() {
           </Button>
         </div>
       </div>
+
+      {/* Image Preview Lightbox */}
+      {previewImage && (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/70" />
+          <div
+            className="absolute inset-0 flex items-center justify-center p-4"
+            onClick={() => setPreviewImage(null)}
+            role="button"
+            aria-label="Close preview"
+            tabIndex={-1}
+          >
+            <div
+              className="relative max-h-[85vh] max-w-[90vw] overflow-hidden rounded-lg shadow-2xl bg-black/10"
+              onClick={(e) => e.stopPropagation()}
+              onWheel={onWheelPreview}
+              onMouseDown={onMouseDown}
+              onMouseMove={onMouseMove}
+              onMouseUp={onMouseUp}
+              onMouseLeave={onMouseUp}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+              onDoubleClick={onDoubleClick}
+              style={{ cursor: panning ? 'grabbing' : zoom > 1 ? 'grab' : 'auto', touchAction: 'none' }}
+            >
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="max-h-[85vh] max-w-[90vw] object-contain select-none"
+                style={{ transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`, transformOrigin: 'center center' }}
+                draggable={false}
+                onError={(e) => {
+                  e.currentTarget.src = '/images/placeholder.svg';
+                }}
+              />
+              <div className="absolute top-2 right-2 flex gap-2 bg-black/60 text-white rounded-md p-2">
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Zoom in"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom((z) => clamp(+(z + 0.25).toFixed(2), 1, 4));
+                  }}
+                >
+                  <ZoomIn size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Zoom out"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom((z) => {
+                      const nz = clamp(+(z - 0.25).toFixed(2), 1, 4);
+                      if (nz === 1) setOffset({ x: 0, y: 0 });
+                      return nz;
+                    });
+                  }}
+                >
+                  <ZoomOut size={18} />
+                </button>
+                <button
+                  type="button"
+                  className="p-1 hover:bg-white/10 rounded"
+                  aria-label="Reset zoom"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoom(1);
+                    setOffset({ x: 0, y: 0 });
+                  }}
+                >
+                  <RotateCcw size={18} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-indigo-200 to-purple-300 py-16 mt-16">
