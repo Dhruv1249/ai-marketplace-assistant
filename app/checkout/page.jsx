@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Input } from '@/components/ui';
 import CheckoutCTA from '@/components/animated icon/CheckOut';
+import styled from 'styled-components';
 
 // Local storage helpers
 const CART_KEY = 'cartItems';
@@ -82,6 +83,110 @@ async function fetchProductSummary(productId) {
   }
 }
 
+const ToastNotice = styled.div`
+  position: fixed;
+  top: 2%;
+  right: 2%;
+  z-index: 1000;
+  .notification-container {
+    --content-color: black;
+    --background-color: #f3f3f3;
+    --font-size-content: 0.85em;
+    --icon-size: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: var(--content-color);
+  }
+  .notification-item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    overflow: hidden;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: rgba(111, 111, 111, 0.2) 0px 8px 24px;
+    background-color: var(--background-color);
+    transition: all 250ms ease;
+    --grid-color: rgba(225, 225, 225, 0.7);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+    background-size: 55px 55px;
+  }
+  .notification-content { display: flex; align-items: center; gap: 0.5em; }
+  .notification-icon { display: flex; align-items: center; }
+  .notification-text { font-size: var(--font-size-content); user-select: none; }
+  .notification-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: var(--content-color);
+    width: 100%;
+    transform: translateX(100%);
+    animation: progressBar 5s linear forwards infinite;
+  }
+  .warning {
+    color: #78350f;
+    background-color: #ffe57e;
+    --grid-color: rgba(245, 159, 11, 0.25);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+  }
+  .warning svg { color: #78350f; width: var(--icon-size); height: var(--icon-size); }
+  @keyframes progressBar { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+`;
+
 export default function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -114,6 +219,19 @@ export default function CheckoutPage() {
     form.state.trim() &&
     form.zip.trim() &&
     form.country.trim();
+
+  // Toast notification for disabled checkout click
+  const [showClickAlert, setShowClickAlert] = useState(false);
+  const hideToastRef = useRef(null);
+  const handleDisabledCheckoutClick = () => {
+    if (canCheckout) return;
+    setShowClickAlert(true);
+    if (hideToastRef.current) clearTimeout(hideToastRef.current);
+    hideToastRef.current = setTimeout(() => setShowClickAlert(false), 4000);
+  };
+  useEffect(() => {
+    return () => { if (hideToastRef.current) clearTimeout(hideToastRef.current); };
+  }, []);
   
   // Load cart initially
   useEffect(() => {
@@ -211,14 +329,29 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {!canCheckout && (
-        <div className="bg-yellow-50 border-b border-yellow-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 text-sm text-yellow-800">
-            Fill all required fields to proceed.
-          </div>
-        </div>
+      {showClickAlert && (
+        <ToastNotice role="alert" aria-live="assertive">
+          <ul className="notification-container">
+            <li className="notification-item warning">
+              <div className="notification-content">
+                <div className="notification-icon">
+                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                </div>
+                <div className="notification-text">Fill all required fields to proceed.</div>
+              </div>
+              <div className="notification-icon notification-close" onClick={() => setShowClickAlert(false)} style={{ cursor: 'pointer' }}>
+                <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+              </div>
+              <div className="notification-progress-bar" />
+            </li>
+          </ul>
+        </ToastNotice>
       )}
-            <div className="border-b bg-gray-50">
+                  <div className="border-b bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Checkout</h1>
           <Link href="/marketplace" className="text-sm text-blue-600 hover:underline">Continue Shopping</Link>
@@ -322,7 +455,7 @@ export default function CheckoutPage() {
             <div className="mt-6 space-y-4">
               <div className="flex justify-center">
                 {/* Animated checkout button gated by form completeness */}
-                <div className={!canCheckout ? 'opacity-60 cursor-not-allowed' : ''}>
+                <div className={!canCheckout ? 'opacity-60 cursor-not-allowed' : ''} onClick={handleDisabledCheckoutClick}>
                   <CheckoutCTA canCheckout={!!canCheckout} />
                 </div>
                               </div>
