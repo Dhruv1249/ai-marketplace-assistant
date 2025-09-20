@@ -2,7 +2,8 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
 import { Button } from '@/components/ui';
 import { ArrowLeft, Eye } from 'lucide-react';
 import Link from 'next/link';
@@ -21,6 +22,110 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useRouter } from 'next/navigation';
+
+const ToastNotice = styled.div`
+  position: fixed;
+  top: 72px;
+  right: 2%;
+  z-index: 1000;
+  .notification-container {
+    --content-color: black;
+    --background-color: #f3f3f3;
+    --font-size-content: 0.85em;
+    --icon-size: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: var(--content-color);
+  }
+  .notification-item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    overflow: hidden;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: rgba(111, 111, 111, 0.2) 0px 8px 24px;
+    background-color: var(--background-color);
+    transition: all 250ms ease;
+    --grid-color: rgba(225, 225, 225, 0.7);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+    background-size: 55px 55px;
+  }
+  .notification-content { display: flex; align-items: center; gap: 0.5em; }
+  .notification-icon { display: flex; align-items: center; }
+  .notification-text { font-size: var(--font-size-content); user-select: none; }
+  .notification-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: var(--content-color);
+    width: 100%;
+    transform: translateX(100%);
+    animation: progressBar 5s linear forwards infinite;
+  }
+  .warning {
+    color: #78350f;
+    background-color: #ffe57e;
+    --grid-color: rgba(245, 159, 11, 0.25);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+  }
+  .warning svg { color: #78350f; width: var(--icon-size); height: var(--icon-size); }
+  @keyframes progressBar { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+`;
 
 const CreateProductPage = () => {
   const [generatedContent, setGeneratedContent] = useState(null);
@@ -42,6 +147,8 @@ const CreateProductPage = () => {
   const [showBackWarning, setShowBackWarning] = useState(false);
   const [pendingStep, setPendingStep] = useState(null);
   const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  const [showAuthNotice, setShowAuthNotice] = useState(false);
+    const hideToastRef = useRef(null);
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -57,13 +164,21 @@ useEffect(() => {
   // Listen for Firebase Auth state and redirect if NOT logged in
   const unsubscribe = auth.onAuthStateChanged(user => {
     if (!user) {
-      alert('🔒 Please sign in to continue. This page is available only for logged-in users.');
-      router.push('/login');
+      // Persist a notice for the login page and redirect
+      try {
+        sessionStorage.setItem('authNotice', 'Please sign in to continue. This page is available only for logged-in users.');
+      } catch {}
+      router.push('/login?from=/create');
     }
   });
   return () => unsubscribe();
 }, [router]);
-  // Effect to scroll to top whenever step changes
+
+  useEffect(() => {
+    return () => { if (hideToastRef.current) clearTimeout(hideToastRef.current); };
+  }, []);
+
+    // Effect to scroll to top whenever step changes
   useEffect(() => {
     scrollToTop();
   }, [currentStep]);
@@ -337,6 +452,28 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {showAuthNotice && (
+        <ToastNotice role="alert" aria-live="assertive">
+          <ul className="notification-container">
+            <li className="notification-item warning">
+              <div className="notification-content">
+                <div className="notification-icon">
+                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                </div>
+                <div className="notification-text">Please sign in to continue. This page is available only for logged-in users.</div>
+              </div>
+              <div className="notification-icon notification-close" onClick={() => setShowAuthNotice(false)} style={{ cursor: 'pointer' }}>
+                <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+              </div>
+              <div className="notification-progress-bar" />
+            </li>
+          </ul>
+        </ToastNotice>
+      )}
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

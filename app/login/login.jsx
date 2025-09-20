@@ -1,10 +1,116 @@
   "use client";
   import React, { useRef, useEffect, useState } from 'react';
+  import styled from 'styled-components';
   import Script from 'next/script';
   import { gsap } from 'gsap';
   import LoginInput from "../../components/animated icon/LoginInputs";
   import { motion, useAnimation } from "framer-motion";
   import { usePathname } from "next/navigation";
+
+  // Toast styling for auth notice on login redirect
+  const ToastNotice = styled.div`
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    z-index: 1000;
+    .notification-container {
+      --content-color: black;
+      --background-color: #f3f3f3;
+      --font-size-content: 0.85em;
+      --icon-size: 1em;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      color: var(--content-color);
+    }
+    .notification-item {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1em;
+      overflow: hidden;
+      padding: 10px 15px;
+      border-radius: 6px;
+      box-shadow: rgba(111, 111, 111, 0.2) 0px 8px 24px;
+      background-color: var(--background-color);
+      transition: all 250ms ease;
+      --grid-color: rgba(225, 225, 225, 0.7);
+      background-image: linear-gradient(
+          0deg,
+          transparent 23%,
+          var(--grid-color) 24%,
+          var(--grid-color) 25%,
+          transparent 26%,
+          transparent 73%,
+          var(--grid-color) 74%,
+          var(--grid-color) 75%,
+          transparent 76%,
+          transparent
+        ),
+        linear-gradient(
+          90deg,
+          transparent 23%,
+          var(--grid-color) 24%,
+          var(--grid-color) 25%,
+          transparent 26%,
+          transparent 73%,
+          var(--grid-color) 74%,
+          var(--grid-color) 75%,
+          transparent 76%,
+          transparent
+        );
+      background-size: 55px 55px;
+    }
+    .notification-content { display: flex; align-items: center; gap: 0.5em; }
+    .notification-icon { display: flex; align-items: center; }
+    .notification-text { font-size: var(--font-size-content); user-select: none; }
+    .notification-progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      background: var(--content-color);
+      width: 100%;
+      transform: translateX(100%);
+      animation: progressBar 5s linear forwards infinite;
+    }
+    .warning {
+      color: #78350f;
+      background-color: #ffe57e;
+      --grid-color: rgba(245, 159, 11, 0.25);
+      background-image: linear-gradient(
+          0deg,
+          transparent 23%,
+          var(--grid-color) 24%,
+          var(--grid-color) 25%,
+          transparent 26%,
+          transparent 73%,
+          var(--grid-color) 74%,
+          var(--grid-color) 75%,
+          transparent 76%,
+          transparent
+        ),
+        linear-gradient(
+          90deg,
+          transparent 23%,
+          var(--grid-color) 24%,
+          var(--grid-color) 25%,
+          transparent 26%,
+          transparent 73%,
+          var(--grid-color) 74%,
+          var(--grid-color) 75%,
+          transparent 76%,
+          transparent
+        );
+    }
+    .warning svg { color: #78350f; width: var(--icon-size); height: var(--icon-size); }
+    @keyframes progressBar { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+  `;
   // --- Firebase imports (added) ---
   import { auth } from "./firebase";
   import {
@@ -185,6 +291,11 @@ const [welcomeName, setWelcomeName] = useState("");
 const [isLoggedIn, setIsLoggedIn] = useState(false);
 const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
+// Auth redirect toast state
+const [showAuthNotice, setShowAuthNotice] = useState(false);
+const [loginToastMessage, setLoginToastMessage] = useState("");
+const hideToastRef = useRef(null);
+
 // Firebase handles persistence -- no need for localStorage welcomeName anymore
 useEffect(() => {
   // Listen to changes in auth state (persisted)
@@ -221,6 +332,21 @@ const handleLogout = async () => {
         document.documentElement.style.overflow = previousHtmlOverflow || '';
         document.body.style.overflow = previousBodyOverflow || '';
       };
+    }, []);
+
+    // On arrival, show redirect notice if present
+    useEffect(() => {
+      let msg = null;
+      try { msg = sessionStorage.getItem('authNotice'); } catch {}
+      if (msg) {
+        setLoginToastMessage(msg);
+        setShowAuthNotice(true);
+        // auto-hide and clear flag
+        if (hideToastRef.current) clearTimeout(hideToastRef.current);
+        hideToastRef.current = setTimeout(() => setShowAuthNotice(false), 4000);
+        try { sessionStorage.removeItem('authNotice'); } catch {}
+      }
+      return () => { if (hideToastRef.current) clearTimeout(hideToastRef.current); };
     }, []);
 
     // Button scale on hover/tap
@@ -410,6 +536,28 @@ useEffect(() => {
     return (
       <div className="flex h-screen bg-white font-primarylw relative overflow-hidden">
         <Script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module" strategy="afterInteractive" />
+        {showAuthNotice && (
+          <ToastNotice role="alert" aria-live="assertive">
+            <ul className="notification-container">
+              <li className="notification-item warning">
+                <div className="notification-content">
+                  <div className="notification-icon">
+                    <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                  </div>
+                  <div className="notification-text">{loginToastMessage || 'Please sign in to continue.'}</div>
+                </div>
+                <div className="notification-icon notification-close" onClick={() => { setShowAuthNotice(false); try { sessionStorage.removeItem('authNotice'); } catch {} }} style={{ cursor: 'pointer' }}>
+                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 17.94 6M18 18 6.06 6" />
+                  </svg>
+                </div>
+                <div className="notification-progress-bar" />
+              </li>
+            </ul>
+          </ToastNotice>
+        )}
                 <div className="z-10 flex w-full">
           <div className="hidden md:flex w-1/2 items-center justify-center p-6">
             <dotlottie-wc
