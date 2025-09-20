@@ -3560,9 +3560,13 @@ const EnhancedJSONModelRenderer = ({
               };
             });
           } else if (processedNode.children === 'HERO_GALLERY') {
-            // Handle hero gallery - CENTERED FOR SINGLE ITEMS
-            const items = safeGet(context.content, 'visuals.hero', []);
-            console.log('🖼️ [HERO_GALLERY] Processing hero images:', items.length);
+            // Handle hero gallery - ALWAYS LIMIT TO 1 IMAGE
+            let items = safeGet(context.content, 'visuals.hero', []);
+            
+            if (items.length > 1) {
+              items = items.slice(0, 1);
+            }
+
             if (items.length === 0) {
               processedNode.children = [{
                 type: 'div',
@@ -3572,7 +3576,7 @@ const EnhancedJSONModelRenderer = ({
             } else {
               processedNode.children = [{
                 type: 'div',
-                props: { className: `grid gap-6 justify-items-center ${items.length === 1 ? 'grid-cols-1 max-w-2xl mx-auto' : items.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto' : items.length <= 4 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'}` },
+                props: { className: `grid gap-6 justify-items-center grid-cols-1 max-w-2xl mx-auto` },
                 children: items.map((image, index) => ({
                   id: `hero-image-${index}`,
                   type: 'div',
