@@ -1028,7 +1028,11 @@ useEffect(() => {
       )}
 
       {isPublishing && (
-        <div className="fixed inset-0 z-50 bg-white">
+        <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6">
+          <div className="text-center max-w-md mb-40">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Publishing your product story...</h3>
+            <p className="text-sm text-gray-600">Uploading images and saving your page. Please don’t close this tab. This may take a moment.</p>
+          </div>
           <GeneratingLoding />
         </div>
       )}
