@@ -19,7 +19,7 @@ const Button = ({ canCheckout = true }) => {
 
   useEffect(() => {
     if (started && !comingSoonOpen) {
-      const t = setTimeout(() => setComingSoonOpen(true), 11000); // Fallback in case animationend doesn't fire
+      const t = setTimeout(() => setComingSoonOpen(true), 6000); // Fallback in case animationend doesn't fire
       return () => clearTimeout(t);
     }
   }, [started, comingSoonOpen]);
@@ -346,28 +346,28 @@ const StyledWrapper = styled.div`
   #order-toggle:checked + .order .success {
     --offset: 0;
     --o: 1;
-    transition-delay: 7s;
+    transition-delay: 3.5s;
   }
   #order-toggle:checked + .order .success svg {
-    transition-delay: 7.3s;
+    transition-delay: 3.8s;
   }
   #order-toggle:checked + .order .truck {
-    animation: truck 10s ease forwards;
+    animation: truck 5s ease forwards;
   }
   #order-toggle:checked + .order .truck:before {
-    animation: door1 2.4s ease forwards 0.3s;
+    animation: door1 1.2s ease forwards 0.3s;
   }
   #order-toggle:checked + .order .truck:after {
-    animation: door2 2.4s ease forwards 0.6s;
+    animation: door2 1.2s ease forwards 0.6s;
   }
   #order-toggle:checked + .order .truck .light:before {
     animation:
-      light 10s ease forwards,
+      light 5s ease forwards,
       headlight-pulse 1.5s ease-in-out infinite;
   }
 
   #order-toggle:checked + .order .lines {
-    animation: lines 10s ease forwards;
+    animation: lines 5s ease forwards;
   }
 
   /* Animations */
