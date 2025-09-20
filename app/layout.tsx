@@ -17,6 +17,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Marketplace Assistant",
   description: "AI-powered marketplace assistant for creating product pages",
+  icons: {
+    icon: "/images/Screenshot 2025-09-20 165808.png",
+    shortcut: "/images/Screenshot 2025-09-20 165808.png",
+    apple: "/images/Screenshot 2025-09-20 165808.png",
+  },
+  manifest: "/manifest.json"
 };
 
 export const dynamic = "force-dynamic";

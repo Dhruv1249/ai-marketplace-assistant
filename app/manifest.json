@@ -1,0 +1,16 @@
+{
+  "name": "AI Marketplace Assistant",
+  "short_name": "AI Market",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/images/Screenshot 2025-09-20 165808.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
