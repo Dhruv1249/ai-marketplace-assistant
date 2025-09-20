@@ -1,347 +1,1192 @@
 {
   "metadata": {
-    "name": "Artisan Journey Page Redesign",
-    "description": "Converted from HTML into repository JSON template format with dynamic placeholders and brand variables.",
-    "template": "artisan-journey-redesign",
-    "version": "1.0.0",
-    "features": ["responsive", "animations", "dynamic", "brand-variables"]
+    "name": "Artisan Workshop - Unique Design",
+    "description": "A completely unique artisan template with workshop-inspired layout, grid-based design, and craft-focused aesthetics",
+    "template": "artisan-journey",
+    "version": "2.0.0",
+    "features": ["responsive", "animations", "dynamic", "conditional-rendering", "testimonials", "awards", "galleries", "workshop-grid"]
+  },
+  "colors": {
+    "brand-primary": "#3E2723",
+    "brand-secondary": "#EFEBE9",
+    "brand-accent": "#FF8F00",
+    "brand-text-primary": "#2E2E2E",
+    "brand-text-secondary": "#5D4037",
+    "brand-background": "#FAFAFA",
+    "brand-highlight": "#FFA726",
+    "brand-warm": "#FFCC02",
+    "brand-craft": "#6D4C41",
+    "brand-wood": "#8D6E63"
   },
   "styleVariables": {
-    "brand-primary": "#008080",
-    "brand-secondary": "#FFD700",
-    "brand-accent": "#E67E22",
-    "brand-text-primary": "#2c3e50",
-    "brand-text-secondary": "#34495e",
-    "brand-background": "#fdf6e3",
-    "brand-highlight": "#D35400",
-    "brand-terracotta": "#E74C3C"
+    "brandPrimary": "#3E2723",
+    "brandSecondary": "#EFEBE9",
+    "brandAccent": "#FF8F00",
+    "brandTextPrimary": "#FFFFFF",
+    "brandTextSecondary": "#FFFFFF",
+    "brandBackground": "#FAFAFA",
+    "brandHighlight": "#FFA726",
+    "brandWarm": "#FFCC02",
+    "brandCraft": "#6D4C41",
+    "brandWood": "#8D6E63",
+    "fontFamilySerif": "'Crimson Text', serif",
+    "fontFamilyDisplay": "'Cormorant Garamond', serif",
+    "fontFamilyBody": "'Source Serif Pro', serif",
+    "fontFamilyAccent": "'Libre Baskerville', serif"
   },
   "animations": {
-    "fadeInUp": {
+    "revealUp": {
       "keyframes": {
-        "0%": { "opacity": "0", "transform": "translateY(30px)" },
-        "100%": { "opacity": "1", "transform": "translateY(0)" }
+        "0%": { "opacity": "0", "transform": "translateY(40px) scale(0.95)" },
+        "100%": { "opacity": "1", "transform": "translateY(0) scale(1)" }
       },
-      "duration": "0.8s",
-      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "duration": "1s",
+      "easing": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       "fillMode": "both"
     },
-    "bounceSlow": {
+    "craftSlide": {
       "keyframes": {
-        "0%, 100%": { "transform": "translateY(-10%)", "animationTimingFunction": "cubic-bezier(0.8,0,1,1)" },
-        "50%": { "transform": "translateY(0)", "animationTimingFunction": "cubic-bezier(0,0,0.2,1)" }
+        "0%": { "opacity": "0", "transform": "translateX(-60px) rotate(-2deg)" },
+        "100%": { "opacity": "1", "transform": "translateX(0) rotate(0deg)" }
       },
-      "duration": "2s",
+      "duration": "0.8s",
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "fillMode": "both"
+    },
+    "toolFloat": {
+      "keyframes": {
+        "0%": { "transform": "translateY(0px) rotate(0deg)" },
+        "33%": { "transform": "translateY(-8px) rotate(1deg)" },
+        "66%": { "transform": "translateY(-4px) rotate(-1deg)" },
+        "100%": { "transform": "translateY(0px) rotate(0deg)" }
+      },
+      "duration": "4s",
+      "easing": "ease-in-out",
+      "iterations": "infinite"
+    },
+    "woodGrain": {
+      "keyframes": {
+        "0%": { "backgroundPosition": "0% 0%" },
+        "100%": { "backgroundPosition": "100% 100%" }
+      },
+      "duration": "20s",
+      "easing": "linear",
       "iterations": "infinite"
     }
   },
   "component": {
-    "id": "artisan-journey-redesign",
+    "id": "artisan-workshop-root",
     "type": "div",
     "props": {
       "className": "antialiased",
       "style": {
-        "backgroundColor": "var(--brand-background)",
-        "color": "var(--brand-text-primary)",
-        "fontFamily": "'Lora', serif"
+        "backgroundColor": "#FAFAFA",
+        "color": "#2E2E2E",
+        "fontFamily": "'Source Serif Pro', serif"
       }
     },
     "children": [
       {
-        "id": "hero",
-        "type": "section",
+        "id": "workshop-header",
+        "type": "header",
         "props": {
-          "className": "relative h-screen flex items-center justify-center text-center text-black p-4"
+          "className": "relative text-white py-4 px-6 shadow-lg",
+          "style": {
+            "background": "linear-gradient(to right, #3E2723, #6D4C41)"
+          }
         },
         "children": [
-          { "id": "hero-overlay", "type": "div", "props": { "className": "absolute inset-0 /50 z-10" } },
           {
-            "id": "hero-gallery",
+            "id": "header-content",
             "type": "div",
-            "props": { "className": "w-full" },
-            "children": "HERO_GALLERY"
-          },
-          {
-            "id": "hero-content",
-            "type": "div",
-            "props": { "className": "relative z-20 max-w-4xl mx-auto" },
+            "props": {
+              "className": "max-w-7xl mx-auto flex items-center justify-between"
+            },
             "children": [
               {
-                "id": "hero-title",
-                "type": "h1",
+                "id": "brand-logo",
+                "type": "div",
                 "props": {
-                  "className": "text-6xl md:text-8xl lg:text-9xl font-playfair-black leading-tight"
+                  "className": "flex items-center space-x-3"
                 },
-                "children": ["{{content.basics.name || 'Layered Artistry'}}"],
-                "editable": { "contentEditable": true }
+                "children": [
+                  {
+                    "id": "logo-icon",
+                    "type": "div",
+                    "props": {
+                      "className": "w-10 h-10 rounded-lg flex items-center justify-center animate-toolFloat",
+                      "style": {
+                        "backgroundColor": "#FF8F00"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "hammer-icon",
+                        "type": "span",
+                        "props": {
+                          "className": "text-white text-xl font-bold"
+                        },
+                        "children": ["🔨"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "brand-name",
+                    "type": "h1",
+                    "props": {
+                      "className": "text-2xl font-bold",
+                      "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                    },
+                    "children": ["{{content.basics.name || 'Artisan Workshop'}}"],
+                    "contentKey": "basics.name",
+                    "editable": { "contentEditable": true }
+                  }
+                ]
               },
               {
-                "id": "hero-subtitle",
+                "id": "workshop-tagline",
                 "type": "p",
-                "props": { "className": "mt-4 text-xl md:text-2xl font-light" },
-                "children": ["{{content.basics.value || 'The Immersive Journey of Craft'}}"],
-                "editable": { "contentEditable": true }
+                "props": {
+                  "className": "hidden md:block opacity-90",
+                  "style": { 
+                    "fontFamily": "'Crimson Text', serif",
+                    "color": "#EFEBE9"
+                  }
+                },
+                "children": ["Handcrafted Excellence"]
               }
-            ]
-          },
-          {
-            "id": "hero-scroll",
-            "type": "div",
-            "props": { "className": "absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-white" },
-            "children": [
-              { "id": "scroll-icon", "type": "span", "props": { "className": "material-icons animate-bounce" } }
             ]
           }
         ]
       },
       {
-        "id": "intro-section",
+        "id": "hero-workshop",
         "type": "section",
-        "props": { "className": "relative py-24 px-4 md:px-8" },
+        "props": {
+          "className": "relative py-16 px-6",
+          "style": {
+            "background": "linear-gradient(to bottom right, #EFEBE9, white)"
+          }
+        },
         "children": [
           {
-            "id": "intro-grid",
+            "id": "hero-grid",
             "type": "div",
-            "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center" },
+            "props": {
+              "className": "max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-center"
+            },
             "children": [
               {
-                "id": "intro-left",
+                "id": "hero-text",
                 "type": "div",
-                "props": { "className": "md:col-span-7 lg:col-span-8 relative" },
+                "props": {
+                  "className": "lg:col-span-2 space-y-6 animate-revealUp"
+                },
                 "children": [
                   {
-                    "id": "intro-card",
+                    "id": "hero-subtitle",
+                    "type": "p",
+                    "props": {
+                      "className": "font-semibold text-lg tracking-wide uppercase",
+                      "style": { 
+                        "fontFamily": "'Libre Baskerville', serif",
+                        "color": "#FF8F00"
+                      }
+                    },
+                    "children": ["Artisan Crafted"]
+                  },
+                  {
+                    "id": "hero-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-6xl font-bold leading-tight",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["{{content.basics.value || 'Where Tradition Meets Innovation'}}"],
+                    "contentKey": "basics.value",
+                    "editable": { "contentEditable": true }
+                  },
+                  {
+                    "id": "hero-description",
+                    "type": "p",
+                    "props": {
+                      "className": "text-xl leading-relaxed max-w-2xl",
+                      "style": { 
+                        "fontFamily": "'Crimson Text', serif",
+                        "color": "#5D4037"
+                      }
+                    },
+                    "children": ["{{content.story.origin || 'Every piece tells a story of dedication, skill, and passion. From the first sketch to the final polish, we pour our hearts into creating something truly extraordinary.'}}"],
+                    "contentKey": "story.origin",
+                    "editable": { "contentEditable": true }
+                  },
+                  {
+                    "id": "hero-buttons",
                     "type": "div",
-                    "props": { "className": "bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-lg shadow-lg relative z-10" },
+                    "props": {
+                      "className": "flex flex-col sm:flex-row gap-4"
+                    },
                     "children": [
                       {
-                        "id": "intro-title",
-                        "type": "h2",
-                        "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" },
-                        "children": ["{{content.intro.title || 'The Artisan's Path'}}"]
+                        "id": "btn-explore",
+                        "type": "button",
+                        "props": {
+                          "className": "text-white px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "backgroundColor": "#FF8F00"
+                          }
+                        },
+                        "children": ["Explore Our Work"]
                       },
                       {
-                        "id": "intro-text",
+                        "id": "btn-process",
+                        "type": "button",
+                        "props": {
+                          "className": "border-2 px-8 py-4 rounded-lg font-semibold hover:text-white transform hover:-translate-y-1 transition-all duration-300",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "borderColor": "#3E2723",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["See Our Process"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "hero-visual",
+                "type": "div",
+                "props": {
+                  "className": "lg:col-span-1 animate-craftSlide"
+                },
+                "children": [
+                  {
+                    "id": "hero-gallery",
+                    "type": "div",
+                    "props": {
+                      "className": "relative"
+                    },
+                    "children": "HERO_GALLERY"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "craft-story-section",
+        "type": "section",
+        "props": {
+          "className": "py-20 px-6 bg-white"
+        },
+        "children": [
+          {
+            "id": "story-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-6xl mx-auto"
+            },
+            "children": [
+              {
+                "id": "story-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-16 animate-revealUp"
+                },
+                "children": [
+                  {
+                    "id": "story-badge",
+                    "type": "div",
+                    "props": {
+                      "className": "inline-flex items-center space-x-2 px-6 py-3 rounded-full mb-6",
+                      "style": {
+                        "backgroundColor": "#EFEBE9"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "story-icon",
+                        "type": "span",
+                        "props": {
+                          "className": "text-lg",
+                          "style": {
+                            "color": "#FF8F00"
+                          }
+                        },
+                        "children": ["✨"]
+                      },
+                      {
+                        "id": "story-label",
+                        "type": "span",
+                        "props": {
+                          "className": "font-semibold tracking-wide",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["OUR CRAFT STORY"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "story-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["What Makes Us Unique"]
+                  }
+                ]
+              },
+              {
+                "id": "story-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-2 gap-12 items-start"
+                },
+                "children": [
+                  {
+                    "id": "story-content",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-6 animate-craftSlide"
+                    },
+                    "children": [
+                      {
+                        "id": "story-unique",
+                        "type": "div",
+                        "props": {
+                          "className": "p-8 rounded-xl border-l-4",
+                          "style": {
+                            "backgroundColor": "#EFEBE9",
+                            "borderColor": "#FF8F00"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "unique-title",
+                            "type": "h3",
+                            "props": {
+                              "className": "text-2xl font-bold mb-4",
+                              "style": { 
+                                "fontFamily": "'Cormorant Garamond', serif",
+                                "color": "#3E2723"
+                              }
+                            },
+                            "children": ["Our Unique Approach"]
+                          },
+                          {
+                            "id": "unique-text",
+                            "type": "p",
+                            "props": {
+                              "className": "leading-relaxed",
+                              "style": { 
+                                "fontFamily": "'Crimson Text', serif",
+                                "color": "#5D4037"
+                              }
+                            },
+                            "children": ["{{content.story.unique || 'We blend traditional techniques with modern innovation, creating pieces that honor the past while embracing the future. Each creation is a testament to our commitment to excellence.'}}"],
+                            "contentKey": "story.unique",
+                            "editable": { "contentEditable": true }
+                          }
+                        ]
+                      },
+                      {
+                        "id": "story-vision",
+                        "type": "div",
+                        "props": {
+                          "className": "p-8 rounded-xl text-white",
+                          "style": {
+                            "background": "linear-gradient(to right, #FF8F00, #FFA726)"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "vision-title",
+                            "type": "h3",
+                            "props": {
+                              "className": "text-2xl font-bold mb-4",
+                              "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                            },
+                            "children": ["Our Vision"]
+                          },
+                          {
+                            "id": "vision-text",
+                            "type": "p",
+                            "props": {
+                              "className": "leading-relaxed opacity-95",
+                              "style": { "fontFamily": "'Crimson Text', serif" }
+                            },
+                            "children": ["{{content.story.vision || 'To preserve the art of true craftsmanship while inspiring a new generation of artisans. We believe in creating not just products, but lasting legacies.'}}"],
+                            "contentKey": "story.vision",
+                            "editable": { "contentEditable": true }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "story-stats",
+                    "type": "div",
+                    "props": {
+                      "className": "space-y-8 animate-revealUp"
+                    },
+                    "children": [
+                      {
+                        "id": "experience-highlight",
+                        "type": "div",
+                        "props": {
+                          "className": "text-center p-6 bg-white rounded-xl shadow-lg border-t-4",
+                          "style": {
+                            "borderColor": "#FF8F00"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "experience-icon",
+                            "type": "div",
+                            "props": {
+                              "className": "text-4xl mb-2"
+                            },
+                            "children": ["⭐"]
+                          },
+                          {
+                            "id": "experience-label",
+                            "type": "p",
+                            "props": {
+                              "className": "font-semibold",
+                              "style": { 
+                                "fontFamily": "'Libre Baskerville', serif",
+                                "color": "#5D4037"
+                              }
+                            },
+                            "children": ["Premium Quality"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "craftsmanship-highlight",
+                        "type": "div",
+                        "props": {
+                          "className": "text-center p-6 bg-white rounded-xl shadow-lg border-t-4",
+                          "style": {
+                            "borderColor": "#FFA726"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "craftsmanship-icon",
+                            "type": "div",
+                            "props": {
+                              "className": "text-4xl mb-2"
+                            },
+                            "children": ["🎯"]
+                          },
+                          {
+                            "id": "craftsmanship-label",
+                            "type": "p",
+                            "props": {
+                              "className": "font-semibold",
+                              "style": { 
+                                "fontFamily": "'Libre Baskerville', serif",
+                                "color": "#5D4037"
+                              }
+                            },
+                            "children": ["Precision Crafted"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "sustainability-highlight",
+                        "type": "div",
+                        "props": {
+                          "className": "text-center p-6 bg-white rounded-xl shadow-lg border-t-4",
+                          "style": {
+                            "borderColor": "#FFCC02"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "sustainability-icon",
+                            "type": "div",
+                            "props": {
+                              "className": "text-4xl mb-2"
+                            },
+                            "children": ["🌱"]
+                          },
+                          {
+                            "id": "sustainability-label",
+                            "type": "p",
+                            "props": {
+                              "className": "font-semibold",
+                              "style": { 
+                                "fontFamily": "'Libre Baskerville', serif",
+                                "color": "#5D4037"
+                              }
+                            },
+                            "children": ["Eco-Friendly"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "workshop-process",
+        "type": "section",
+        "props": {
+          "className": "py-20 px-6",
+          "style": {
+            "background": "linear-gradient(to bottom, #EFEBE9, white)"
+          }
+        },
+        "children": [
+          {
+            "id": "process-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto"
+            },
+            "children": [
+              {
+                "id": "process-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-16 animate-revealUp"
+                },
+                "children": [
+                  {
+                    "id": "process-badge",
+                    "type": "div",
+                    "props": {
+                      "className": "inline-flex items-center space-x-2 px-6 py-3 rounded-full mb-6",
+                      "style": {
+                        "backgroundColor": "#FF8F00"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "process-icon",
+                        "type": "span",
+                        "props": {
+                          "className": "text-white text-lg"
+                        },
+                        "children": ["⚒️"]
+                      },
+                      {
+                        "id": "process-label",
+                        "type": "span",
+                        "props": {
+                          "className": "text-white font-semibold tracking-wide",
+                          "style": { "fontFamily": "'Libre Baskerville', serif" }
+                        },
+                        "children": ["WORKSHOP PROCESS"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["From Concept to Creation"]
+                  }
+                ]
+              },
+              {
+                "id": "process-grid",
+                "type": "div",
+                "props": {
+                  "className": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                },
+                "children": [
+                  {
+                    "id": "process-step-1",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-revealUp border-t-4",
+                      "style": {
+                        "borderColor": "#FF8F00"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "step-1-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto animate-toolFloat",
+                          "style": {
+                            "backgroundColor": "#FF8F00"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "step-1-number",
+                            "type": "span",
+                            "props": {
+                              "className": "text-2xl font-bold text-white",
+                              "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                            },
+                            "children": ["1"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "step-1-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold mb-4 text-center",
+                          "style": { 
+                            "fontFamily": "'Cormorant Garamond', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["Inspiration & Design"]
+                      },
+                      {
+                        "id": "step-1-text",
                         "type": "p",
-                        "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] leading-relaxed" },
-                        "children": ["{{content.story.origin || 'This is a story of dedication, a narrative woven with threads of tradition and innovation. From the first flicker of an idea to the final, polished creation, we invite you to explore the depth and soul behind each piece. It's a journey not just of making, but of becoming.'}}"],
+                        "props": {
+                          "className": "text-center leading-relaxed",
+                          "style": { 
+                            "fontFamily": "'Crimson Text', serif",
+                            "color": "#5D4037"
+                          }
+                        },
+                        "children": ["{{content.process.creation || 'Every masterpiece begins with a spark of inspiration. We sketch, plan, and refine our vision until it's perfect.'}}"],
+                        "contentKey": "process.creation",
                         "editable": { "contentEditable": true }
                       }
                     ]
                   },
                   {
-                    "id": "intro-accent",
+                    "id": "process-step-2",
                     "type": "div",
-                    "props": { "className": "absolute -top-12 -left-12 w-64 h-64 bg-[var(--brand-secondary)]/20 rounded-full blur-3xl -z-0" }
+                    "props": {
+                      "className": "bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-revealUp border-t-4",
+                      "style": { 
+                        "animationDelay": "0.2s",
+                        "borderColor": "#FFA726"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "step-2-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto animate-toolFloat",
+                          "style": {
+                            "backgroundColor": "#FFA726"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "step-2-number",
+                            "type": "span",
+                            "props": {
+                              "className": "text-2xl font-bold text-white",
+                              "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                            },
+                            "children": ["2"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "step-2-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold mb-4 text-center",
+                          "style": { 
+                            "fontFamily": "'Cormorant Garamond', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["Material Selection"]
+                      },
+                      {
+                        "id": "step-2-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-center leading-relaxed",
+                          "style": { 
+                            "fontFamily": "'Crimson Text', serif",
+                            "color": "#5D4037"
+                          }
+                        },
+                        "children": ["{{content.process.materials || 'We source only the finest materials, ensuring each piece starts with excellence and sustainability in mind.'}}"],
+                        "contentKey": "process.materials",
+                        "editable": { "contentEditable": true }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-step-3",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-revealUp border-t-4",
+                      "style": { 
+                        "animationDelay": "0.4s",
+                        "borderColor": "#FFCC02"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "step-3-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto animate-toolFloat",
+                          "style": {
+                            "backgroundColor": "#FFCC02"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "step-3-number",
+                            "type": "span",
+                            "props": {
+                              "className": "text-2xl font-bold text-white",
+                              "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                            },
+                            "children": ["3"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "step-3-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold mb-4 text-center",
+                          "style": { 
+                            "fontFamily": "'Cormorant Garamond', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["Quality Crafting"]
+                      },
+                      {
+                        "id": "step-3-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-center leading-relaxed",
+                          "style": { 
+                            "fontFamily": "'Crimson Text', serif",
+                            "color": "#5D4037"
+                          }
+                        },
+                        "children": ["{{content.process.quality || 'Every detail is meticulously crafted by skilled hands, ensuring the highest standards of quality and precision.'}}"],
+                        "contentKey": "process.quality",
+                        "editable": { "contentEditable": true }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "process-step-4",
+                    "type": "div",
+                    "props": {
+                      "className": "bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 animate-revealUp border-t-4",
+                      "style": { 
+                        "animationDelay": "0.6s",
+                        "borderColor": "#6D4C41"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "step-4-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto animate-toolFloat",
+                          "style": {
+                            "backgroundColor": "#6D4C41"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "step-4-number",
+                            "type": "span",
+                            "props": {
+                              "className": "text-2xl font-bold text-white",
+                              "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                            },
+                            "children": ["4"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "step-4-title",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold mb-4 text-center",
+                          "style": { 
+                            "fontFamily": "'Cormorant Garamond', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["Sustainable Finish"]
+                      },
+                      {
+                        "id": "step-4-text",
+                        "type": "p",
+                        "props": {
+                          "className": "text-center leading-relaxed",
+                          "style": { 
+                            "fontFamily": "'Crimson Text', serif",
+                            "color": "#5D4037"
+                          }
+                        },
+                        "children": ["{{content.process.ethics || 'We finish each piece with eco-friendly methods, ensuring our craft respects both artistry and environment.'}}"],
+                        "contentKey": "process.ethics",
+                        "editable": { "contentEditable": true }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "workshop-showcase",
+        "type": "section",
+        "props": {
+          "className": "py-20 px-6 bg-white"
+        },
+        "children": [
+          {
+            "id": "showcase-container",
+            "type": "div",
+            "props": {
+              "className": "max-w-7xl mx-auto"
+            },
+            "children": [
+              {
+                "id": "showcase-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-16 animate-revealUp"
+                },
+                "children": [
+                  {
+                    "id": "showcase-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["Behind the Scenes"]
+                  },
+                  {
+                    "id": "showcase-subtitle",
+                    "type": "p",
+                    "props": {
+                      "className": "text-xl max-w-2xl mx-auto",
+                      "style": { 
+                        "fontFamily": "'Crimson Text', serif",
+                        "color": "#5D4037"
+                      }
+                    },
+                    "children": ["Step into our workshop and witness the magic of creation"]
                   }
                 ]
               },
               {
-                "id": "intro-right",
+                "id": "process-gallery",
                 "type": "div",
-                "props": { "className": "md:col-span-5 lg:col-span-4 h-96 relative" },
-                "children": [
-                  {
-                    "id": "lifestyle-gallery",
-                    "type": "div",
-                    "props": { "className": "grid gap-6" },
-                    "children": "LIFESTYLE_GALLERY"
+                "props": {
+                  "className": "animate-craftSlide p-8 rounded-2xl shadow-xl",
+                  "style": {
+                    "minHeight": "400px",
+                    "backgroundColor": "#EFEBE9"
                   }
-                ]
+                },
+                "children": "PROCESS_GALLERY"
               }
             ]
           }
         ]
       },
       {
-        "id": "divider-process",
-        "type": "div",
-        "props": { "className": "py-12 bg-transparent" },
-        "children": [
-          {
-            "id": "divider-text",
-            "type": "h2",
-            "props": { "className": "text-5xl md:text-7xl font-playfair-black text-center text-[var(--brand-primary)] opacity-20 whitespace-nowrap overflow-hidden" },
-            "children": ["{{content.dividers.process || 'THE PROCESS • THE PROCESS • THE PROCESS'}}"]
-          }
-        ]
-      },
-      {
-        "id": "process-section",
+        "id": "testimonials-section",
         "type": "section",
-        "props": { "className": "relative py-24 px-4 md:px-8 overflow-hidden" },
+        "if": "content.impact.testimonials && content.impact.testimonials.length > 0",
+        "props": {
+          "className": "py-24 px-6 relative text-white",
+          "style": {
+            "backgroundColor": "#EFEBE9",
+            "color": "#FFFFFF"
+          }
+        },
         "children": [
           {
-            "id": "process-gallery",
+            "id": "testimonials-container",
             "type": "div",
-            "props": { "className": "bg-white rounded-2xl shadow-2xl p-6" },
-            "children": "PROCESS_GALLERY"
-          },
-          {
-            "id": "process-wrap",
-            "type": "div",
-            "props": { "className": "max-w-7xl mx-auto relative z-10" },
+            "props": {
+              "className": "max-w-7xl mx-auto"
+            },
             "children": [
               {
-                "id": "process-grid",
+                "id": "testimonials-header",
                 "type": "div",
-                "props": { "className": "grid grid-cols-1 lg:grid-cols-3 gap-16 items-start" },
+                "props": {
+                  "className": "text-center mb-16 animate-revealUp"
+                },
                 "children": [
                   {
-                    "id": "process-card-1",
+                    "id": "testimonials-badge",
                     "type": "div",
-                    "props": { "className": "lg:col-span-1 space-y-8 relative" },
-                    "children": [
-                      {
-                        "id": "pc1",
-                        "type": "div",
-                        "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-l-8 border-[var(--brand-accent)]" },
-                        "children": [
-                          { "id": "pc1-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[0].title || 'The Spark & Sourcing'}}"] },
-                          { "id": "pc1-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.creation || 'Every journey begins with a spark of inspiration... followed by a meticulous search for materials that match our vision and ethics.'}}"] }
-                        ]
-                      },
-                      {
-                      "id": "bg-section",
-                      "type": "div",
-                      "props": {
-                      "className": "absolute inset-0 bg-cover bg-center opacity-10",
+                    "props": {
+                      "className": "inline-flex items-center space-x-2 px-6 py-3 rounded-full mb-6",
                       "style": {
-                      "backgroundImage": "url('{{content.images.background || 'default-bg.jpg'}}')"
+                        "backgroundColor": "#3E2723"
                       }
-                      }
-                      }
-                    ]
-                  },
-                  {
-                    "id": "process-card-2",
-                    "type": "div",
-                    "props": { "className": "lg:col-span-1 space-y-8 relative lg:mt-24" },
+                    },
                     "children": [
                       {
-                        "id": "pc2",
-                        "type": "div",
-                        "props": { "className": "bg-[var(--brand-primary)] text-white p-8 rounded-lg shadow-2xl transform lg:-translate-y-16" },
-                        "children": [
-                          { "id": "pc2-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.process.cards[1].title || 'The Heart of Creation'}}"] },
-                          { "id": "pc2-text", "type": "p", "props": { "className": "mt-4 opacity-90" }, "children": ["{{content.process.materials || 'This is where the magic happens... precision, patience, and passion.'}}"] }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "id": "process-card-3",
-                    "type": "div",
-                    "props": { "className": "lg:col-span-1 space-y-8 lg:mt-48" },
-                    "children": [
-                      {
-                        "id": "pc3",
-                        "type": "div",
-                        "props": { "className": "bg-[var(--brand-background)] p-8 rounded-lg shadow-xl border-r-8 border-[var(--brand-terracotta)]" },
-                        "children": [
-                          { "id": "pc3-title", "type": "h3", "props": { "className": "text-3xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.process.cards[2].title || 'Perfection & Assurance'}}"] },
-                          { "id": "pc3-text", "type": "p", "props": { "className": "mt-4 text-[var(--brand-text-secondary)]" }, "children": ["{{content.process.quality || 'Each creation is meticulously inspected to meet exacting standards.'}}"] }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "divider-craft",
-        "type": "div",
-        "props": { "className": "py-12 bg-transparent" },
-        "children": [
-          {
-            "id": "divider-craft-text",
-            "type": "h2",
-            "props": { "className": "text-5xl md:text-7xl font-playfair-black text-center text-[var(--brand-primary)] opacity-20 whitespace-nowrap overflow-hidden" },
-            "children": ["{{content.dividers.craft || 'CRAFTSMANSHIP • CRAFTSMANSHIP'}}"]
-          }
-        ]
-      },
-      {
-        "id": "quote-section",
-        "type": "section",
-        "props": { "className": "py-24 px-4 md:px-8 bg-white/50" },
-        "children": [
-          {
-            "id": "quote-grid",
-            "type": "div",
-            "props": { "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 items-center" },
-            "children": [
-                            {
-                "id": "quote-content",
-                "type": "div",
-                "props": { "className": "md:col-span-2 relative z-20" },
-                "children": [
-                  {
-                    "id": "quote-card",
-                    "type": "div",
-                    "props": { "className": "bg-[var(--brand-background)] p-8 md:p-12 rounded-lg shadow-xl relative md:-ml-16" },
-                    "children": [
-                      {
-                        "id": "blockquote",
-                        "type": "blockquote",
-                        "props": { "className": "text-2xl md:text-3xl italic text-[var(--brand-highlight)] border-l-4 border-[var(--brand-accent)] pl-6" },
-                        "children": ["{{content.story.unique || 'To create, one must first connect: with the material, with the history, with the soul of the craft.'}}"]
+                        "id": "testimonials-icon",
+                        "type": "span",
+                        "props": {
+                          "className": "text-lg",
+                          "style": {
+                            "color": "#FF8F00"
+                          }
+                        },
+                        "children": ["💬"]
                       },
                       {
-                        "id": "quote-author",
-                        "type": "p",
-                        "props": { "className": "mt-6 text-right font-semibold text-lg text-[var(--brand-primary)]" },
-                        "children": ["{{content.quote.author || '— Our Master Artisan'}}"]
+                        "id": "testimonials-label",
+                        "type": "span",
+                        "props": {
+                          "className": "font-semibold tracking-wide",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "color": "#EFEBE9"
+                          }
+                        },
+                        "children": ["CLIENT STORIES"]
                       }
                     ]
+                  },
+                  {
+                    "id": "testimonials-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["What Our Clients Say"]
                   }
                 ]
+              },
+              {
+                "id": "testimonials-grid",
+                "type": "div",
+                "props": {
+                  "className": "flex flex-wrap justify-center gap-8 animate-revealUp"
+                },
+                "children": "TESTIMONIALS_ARRAY"
               }
             ]
           }
         ]
       },
       {
-        "id": "sustainability-section",
+        "id": "awards-section",
         "type": "section",
-        "props": { "className": "relative py-24 px-4 md:px-8" },
+        "if": "content.impact.awards && content.impact.awards.length > 0",
+        "props": {
+          "className": "py-20 px-6 bg-white"
+        },
         "children": [
-          { "id": "sustain-overlay", "type": "div", "props": { "className": "absolute inset-0 w-full h-full bg-[var(--brand-primary)]/80" } },
-           "id", "sustain-bg", "type" ,"div", "props" ,{ "className": "absolute inset-0 bg-cover bg-center opacity-10", "style": { "backgroundImage": "url('{{content.images.sustainBG || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAOMV-TPykbA3XbabP62Ljs6WwDcuD9dugATi7hSFLWxE_VbKiGRRHPHHAIBsXJ4LR_q45F0PePUe3Lgn36t5Wgc50FBEZ3NlBup9SZ9ONUHnSChYWhsSfCXd-ptTNtm7e7Mz5C4pETuOoAJnKWYCfUTgObw9rm_Rfnb8myKTp2pOl0P3zvs-mA3sF9N-0Io1Yz-3uoSr2HaTTScqmxO773KDYxGU4nf5OFamJg8jN9gxTqkciYxzBbG8ZCWWgAzpeUnOJxZjkS3sk'}}')" } },
           {
-            "id": "sustain-content",
+            "id": "awards-container",
             "type": "div",
-            "props": { "className": "relative max-w-4xl mx-auto text-center text-white z-10" },
+            "props": {
+              "className": "max-w-6xl mx-auto"
+            },
             "children": [
-              { "id": "sustain-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-secondary)]" }, "children": ["{{content.sustain.title || 'A Sustainable Soul'}}"] },
-              { "id": "sustain-text", "type": "p", "props": { "className": "mt-6 text-lg md:text-xl leading-relaxed opacity-90" }, "children": ["{{content.process.ethics || 'Our craft is a tribute to the earth that provides our materials... a beautiful and responsible tomorrow.'}}"] },
-              { "id": "sustain-button", "type": "a", "props": { "href": "#", "className": "mt-8 inline-block font-semibold py-3 px-8 rounded-md bg-[var(--brand-accent)] text-white hover:bg-[var(--brand-highlight)] transition-colors duration-300 shadow-lg" }, "children": ["{{content.sustain.cta || 'Discover Our Impact'}}"] }
+              {
+                "id": "awards-header",
+                "type": "div",
+                "props": {
+                  "className": "text-center mb-16 animate-revealUp"
+                },
+                "children": [
+                  {
+                    "id": "awards-badge",
+                    "type": "div",
+                    "props": {
+                      "className": "inline-flex items-center space-x-2 px-6 py-3 rounded-full mb-6",
+                      "style": {
+                        "backgroundColor": "#3E2723"
+                      }
+                    },
+                    "children": [
+                      {
+                        "id": "awards-icon",
+                        "type": "span",
+                        "props": {
+                          "className": "text-lg",
+                          "style": {
+                            "color": "#FF8F00"
+                          }
+                        },
+                        "children": ["🏆"]
+                      },
+                      {
+                        "id": "awards-label",
+                        "type": "span",
+                        "props": {
+                          "className": "font-semibold tracking-wide",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "color": "#EFEBE9"
+                          }
+                        },
+                        "children": ["RECOGNITION"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "awards-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { 
+                        "fontFamily": "'Cormorant Garamond', serif",
+                        "color": "#3E2723"
+                      }
+                    },
+                    "children": ["Awards & Honors"]
+                  }
+                ]
+              },
+              {
+                "id": "awards-list",
+                "type": "div",
+                "props": {
+                  "className": "space-y-6 animate-revealUp"
+                },
+                "children": "AWARDS_ARRAY"
+              }
             ]
           }
         ]
       },
       {
-        "id": "cta-section",
+        "id": "workshop-cta",
         "type": "section",
-        "props": { "className": "py-24 px-4 md:px-8" },
+        "props": {
+          "className": "py-20 px-6 text-white relative overflow-hidden",
+          "style": {
+            "background": "linear-gradient(to bottom right, #FF8F00, #FFA726)"
+          }
+        },
         "children": [
+          {
+            "id": "cta-background",
+            "type": "div",
+            "props": {
+              "className": "absolute inset-0 opacity-10",
+              "style": {
+                "backgroundImage": "radial-gradient(circle at 20% 80%, #FFCC02 0%, transparent 50%), radial-gradient(circle at 80% 20%, #FFCC02 0%, transparent 50%)",
+                "backgroundSize": "400px 400px"
+              }
+            }
+          },
           {
             "id": "cta-container",
             "type": "div",
-            "props": { "className": "max-w-5xl mx-auto text-center" },
+            "props": {
+              "className": "max-w-4xl mx-auto text-center relative z-10"
+            },
             "children": [
-              { "id": "cta-title", "type": "h2", "props": { "className": "text-4xl md:text-5xl font-bold text-[var(--brand-primary)]" }, "children": ["{{content.cta.title || 'Begin Your Own Journey'}}"] },
-              { "id": "cta-text", "type": "p", "props": { "className": "mt-6 text-lg text-[var(--brand-text-secondary)] max-w-2xl mx-auto" }, "children": ["{{content.story.vision || 'Whether you seek a bespoke piece infused with your own story or wish to find a creation that speaks to you, your journey starts here.'}}"] },
               {
-                "id": "cta-buttons",
+                "id": "cta-content",
                 "type": "div",
-                "props": { "className": "mt-10 flex flex-col sm:flex-row gap-4 justify-center" },
+                "props": {
+                  "className": "animate-revealUp"
+                },
                 "children": [
-                  { "id": "cta-primary", "type": "button", "props": { "className": "bg-[var(--brand-accent)] text-white font-semibold py-3 px-8 rounded-md shadow-md hover:bg-opacity-90 transition-all duration-300" }, "children": ["{{content.cta.primary || 'Commission a Piece'}}"] },
-                  { "id": "cta-secondary", "type": "button", "props": { "className": "bg-transparent border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brand-primary)] hover:text-white transition-all duration-300" }, "children": ["{{content.cta.secondary || 'Explore The Collection'}}"] }
+                  {
+                    "id": "cta-title",
+                    "type": "h2",
+                    "props": {
+                      "className": "text-4xl md:text-5xl font-bold mb-6",
+                      "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                    },
+                    "children": ["Ready to Create Something Amazing?"]
+                  },
+                  {
+                    "id": "cta-description",
+                    "type": "p",
+                    "props": {
+                      "className": "text-xl mb-10 max-w-2xl mx-auto opacity-95",
+                      "style": { "fontFamily": "'Crimson Text', serif" }
+                    },
+                    "children": ["{{content.story.vision || 'Let\\'s bring your vision to life. Whether you have a specific idea or need inspiration, we\\'re here to craft something extraordinary just for you.'}}"],
+                    "contentKey": "story.vision",
+                    "editable": { "contentEditable": true }
+                  },
+                  {
+                    "id": "cta-buttons",
+                    "type": "div",
+                    "props": {
+                      "className": "flex flex-col sm:flex-row gap-6 justify-center"
+                    },
+                    "children": [
+                      {
+                        "id": "cta-commission",
+                        "type": "button",
+                        "props": {
+                          "className": "bg-white px-8 py-4 rounded-lg font-bold shadow-xl hover:scale-105 transform transition-all duration-300",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif",
+                            "color": "#3E2723"
+                          }
+                        },
+                        "children": ["Start Your Commission"]
+                      },
+                      {
+                        "id": "cta-portfolio",
+                        "type": "button",
+                        "props": {
+                          "className": "border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:scale-105 transform transition-all duration-300",
+                          "style": { 
+                            "fontFamily": "'Libre Baskerville', serif"
+                          }
+                        },
+                        "children": ["View Portfolio"]
+                      }
+                    ]
+                  }
                 ]
               }
             ]
@@ -349,17 +1194,134 @@
         ]
       },
       {
-        "id": "footer",
+        "id": "workshop-footer",
         "type": "footer",
-        "props": { "className": "bg-[var(--brand-text-primary)] text-white py-8 px-4 md:px-8" },
+        "props": {
+          "className": "py-12 px-6",
+          "style": {
+            "backgroundColor": "#3E2723",
+            "color": "#EFEBE9"
+          }
+        },
         "children": [
           {
-            "id": "footer-inner",
+            "id": "footer-container",
             "type": "div",
-            "props": { "className": "max-w-7xl mx-auto text-center text-sm opacity-70" },
+            "props": {
+              "className": "max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center"
+            },
             "children": [
-              { "id": "footer-line-1", "type": "p", "children": ["{{content.footer.line1 || '© 2024 Layered Artistry. All Rights Reserved.'}}"] },
-              { "id": "footer-line-2", "type": "p", "props": { "className": "mt-2" }, "children": ["{{content.footer.line2 || 'A celebration of global craft and timeless design.'}}"] }
+              {
+                "id": "footer-brand",
+                "type": "div",
+                "props": {
+                  "className": "text-center md:text-left"
+                },
+                "children": [
+                  {
+                    "id": "footer-logo",
+                    "type": "div",
+                    "props": {
+                      "className": "flex items-center justify-center md:justify-start space-x-3 mb-4"
+                    },
+                    "children": [
+                      {
+                        "id": "footer-icon",
+                        "type": "div",
+                        "props": {
+                          "className": "w-8 h-8 rounded-lg flex items-center justify-center",
+                          "style": {
+                            "backgroundColor": "#FF8F00"
+                          }
+                        },
+                        "children": [
+                          {
+                            "id": "footer-hammer",
+                            "type": "span",
+                            "props": {
+                              "className": "text-white text-lg"
+                            },
+                            "children": ["🔨"]
+                          }
+                        ]
+                      },
+                      {
+                        "id": "footer-name",
+                        "type": "h3",
+                        "props": {
+                          "className": "text-xl font-bold",
+                          "style": { "fontFamily": "'Cormorant Garamond', serif" }
+                        },
+                        "children": ["{{content.basics.name || 'Artisan Workshop'}}"]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "footer-tagline",
+                    "type": "p",
+                    "props": {
+                      "className": "opacity-80",
+                      "style": { "fontFamily": "'Crimson Text', serif" }
+                    },
+                    "children": ["Crafting Excellence Since Day One"]
+                  }
+                ]
+              },
+              {
+                "id": "footer-center",
+                "type": "div",
+                "props": {
+                  "className": "text-center"
+                },
+                "children": [
+                  {
+                    "id": "footer-divider",
+                    "type": "div",
+                    "props": {
+                      "className": "w-24 h-1 mx-auto mb-4",
+                      "style": {
+                        "backgroundColor": "#FF8F00"
+                      }
+                    }
+                  },
+                  {
+                    "id": "footer-motto",
+                    "type": "p",
+                    "props": {
+                      "className": "italic text-lg",
+                      "style": { "fontFamily": "'Crimson Text', serif" }
+                    },
+                    "children": ["\"Where tradition meets innovation\""]
+                  }
+                ]
+              },
+              {
+                "id": "footer-right",
+                "type": "div",
+                "props": {
+                  "className": "text-center md:text-right"
+                },
+                "children": [
+                  {
+                    "id": "footer-copyright",
+                    "type": "p",
+                    "props": {
+                      "className": "text-sm opacity-70 mb-2",
+                      "style": { "fontFamily": "'Crimson Text', serif" }
+                    },
+                    "children": ["© 2024 {{content.basics.name || 'Artisan Workshop'}}"]
+                  },
+                  {
+                    "id": "footer-rights",
+                    "type": "p",
+                    "props": {
+                      "className": "text-sm opacity-70",
+                      "style": { "fontFamily": "'Crimson Text', serif" }
+                    },
+                    "children": ["All rights reserved"]
+                  }
+                ]
+              }
             ]
           }
         ]
