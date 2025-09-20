@@ -114,19 +114,19 @@
             "children": [
               {
                 "id": "cta-discover",
-                "type": "a",
+                "type": "button",
                 "props": {
-                  "href": "#",
-                  "className": "bg-[var(--brandAccent)] text-white font-semibold py-3 px-8 rounded-md shadow-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105"
+                  "className": "bg-[var(--brandAccent)] text-white font-semibold py-3 px-8 rounded-md shadow-lg hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105",
+                  "onClick": "/marketplace/{{content.productId || 'default'}}"
                 },
                 "children": ["Discover Our Process"]
               },
               {
                 "id": "cta-learn",
-                "type": "a",
+                "type": "button",
                 "props": {
-                  "href": "#",
-                  "className": "bg-transparent border-2 border-[var(--brandAccent)] text-[var(--brandAccent)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brandAccent)] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-md"
+                  "className": "bg-transparent border-2 border-[var(--brandAccent)] text-[var(--brandAccent)] font-semibold py-3 px-8 rounded-md hover:bg-[var(--brandAccent)] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-md",
+                  "onClick": "/marketplace/{{content.productId || 'default'}}"
                 },
                 "children": ["Learn More"]
               }

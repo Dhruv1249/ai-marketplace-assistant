@@ -144,6 +144,21 @@ export default function ImpactStep({
       file: file
     };
     
+    // Store original file reference for proper mapping
+    if (typeof window !== 'undefined') {
+      if (!window.productStoryOriginalFiles) {
+        window.productStoryOriginalFiles = [];
+      }
+      window.productStoryOriginalFiles.push({
+        file: file,
+        blobUrl: url,
+        visualType: 'testimonial',
+        name: file.name,
+        context: `impact.testimonials[${testimonialIndex}].photo`,
+        testimonialIndex: testimonialIndex
+      });
+    }
+    
     // Update testimonial with photo data
     setProductStoryData(prev => {
       const impact = prev.impact || {};

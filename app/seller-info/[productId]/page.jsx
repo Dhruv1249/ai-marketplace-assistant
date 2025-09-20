@@ -551,17 +551,33 @@ if (allowStoryEdit === false) {
       const url = URL.createObjectURL(file);
       photoUrlsRef.current.push(url);
       
+      const fileInfo = {
+        id: Date.now() + Math.random(),
+        url: url,
+        type: 'uploaded',
+        name: file.name,
+        file: file
+      };
+      
+      // Store original file reference for proper mapping
+      if (typeof window !== 'undefined') {
+        if (!window.productStoryOriginalFiles) {
+          window.productStoryOriginalFiles = [];
+        }
+        window.productStoryOriginalFiles.push({
+          file: file,
+          blobUrl: url,
+          visualType: visualType,
+          name: file.name,
+          context: `visuals.${visualType}`
+        });
+      }
+      
       setProductStoryData(prev => ({
         ...prev,
         visuals: {
           ...prev.visuals,
-          [visualType]: [...(prev.visuals[visualType] || []), {
-            id: Date.now() + Math.random(),
-            url: url,
-            type: 'uploaded',
-            name: file.name,
-            file: file
-          }]
+          [visualType]: [...(prev.visuals[visualType] || []), fileInfo]
         }
       }));
     });
@@ -734,16 +750,47 @@ if (allowStoryEdit === false) {
       formData.append('productId', productId);
       formData.append('customData', JSON.stringify(customPageData));
 
-      // Add custom page images
+      // Add custom page images with metadata
       let imageIndex = 0;
-      Object.values(productStoryData.visuals).forEach(visualArray => {
-        visualArray.forEach(visual => {
+      Object.keys(productStoryData.visuals).forEach(visualType => {
+        const visualArray = productStoryData.visuals[visualType];
+        visualArray.forEach((visual, visualIndex) => {
           if (visual.file) {
+            const metadata = {
+              blobUrl: visual.url,
+              visualType: visualType,
+              originalIndex: visualIndex,
+              fileName: visual.name || visual.file.name,
+              context: `visuals.${visualType}[${visualIndex}]`
+            };
+            
             formData.append(`customImage_${imageIndex}`, visual.file);
+            formData.append(`customImageMeta_${imageIndex}`, JSON.stringify(metadata));
+            console.log(`✅ [PUBLISH] Added file ${imageIndex}:`, visual.file.name, 'with metadata:', metadata);
             imageIndex++;
           }
         });
       });
+
+      // Add testimonial photos with metadata
+      if (productStoryData.impact && productStoryData.impact.testimonials) {
+        productStoryData.impact.testimonials.forEach((testimonial, testimonialIndex) => {
+          if (testimonial.photo && testimonial.photo.file) {
+            const metadata = {
+              blobUrl: testimonial.photo.url,
+              visualType: 'testimonial',
+              originalIndex: testimonialIndex,
+              fileName: testimonial.photo.name || testimonial.photo.file.name,
+              context: `impact.testimonials[${testimonialIndex}].photo`
+            };
+            
+            formData.append(`customImage_${imageIndex}`, testimonial.photo.file);
+            formData.append(`customImageMeta_${imageIndex}`, JSON.stringify(metadata));
+            console.log(`✅ [PUBLISH] Added testimonial photo ${imageIndex}:`, testimonial.photo.file.name, 'with metadata:', metadata);
+            imageIndex++;
+          }
+        });
+      }
 
       // Save custom page data
       const response = await fetch('/api/products/save-custom', {
