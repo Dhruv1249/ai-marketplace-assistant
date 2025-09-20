@@ -3093,6 +3093,12 @@ const EnhancedJSONModelRenderer = ({
       }
     },
     
+    handleNavigate: (url) => {
+      if (typeof window !== 'undefined') {
+        window.location.href = url;
+      }
+    },
+    
     handleFormSubmit: (e, formId) => {
       e.preventDefault();
       try {
@@ -3147,7 +3153,7 @@ const EnhancedJSONModelRenderer = ({
     }
   }), [state.componentState, state.formData, updateComponentState, updateFormData, setFormErrors, debug]);
 
-  const processEventHandlers = useCallback((props, componentId) => {
+  const processEventHandlers = useCallback((props, componentId, context) => {
     const processedProps = { ...props };
     
     Object.keys(processedProps).forEach(key => {
@@ -3155,7 +3161,13 @@ const EnhancedJSONModelRenderer = ({
         const handlerString = processedProps[key];
         const handlerName = handlerString.replace(/[{}]/g, '').trim();
         
-        if (handlerName === 'handleToggle') {
+        if (handlerString.startsWith('/')) {
+          processedProps[key] = (e) => {
+            e.stopPropagation();
+            const processedUrl = processTemplateString(handlerString, context);
+            eventHandlers.handleNavigate(processedUrl);
+          };
+        } else if (handlerName === 'handleToggle') {
           processedProps[key] = (e) => {
             e.stopPropagation();
             eventHandlers.handleToggle(componentId);
@@ -3317,7 +3329,7 @@ const EnhancedJSONModelRenderer = ({
           }
         }
         
-        processedNode.props = processEventHandlers(processedNode.props, processedNode.id);
+        processedNode.props = processEventHandlers(processedNode.props, processedNode.id, context);
       }
 
       if (processedNode.children) {

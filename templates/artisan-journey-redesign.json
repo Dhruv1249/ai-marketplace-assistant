@@ -238,7 +238,8 @@
                           "style": { 
                             "fontFamily": "'Libre Baskerville', serif",
                             "backgroundColor": "#FF8F00"
-                          }
+                          },
+                          "onClick": "/marketplace/{{content.productId || 'default'}}"
                         },
                         "children": ["Explore Our Work"]
                       },
@@ -251,7 +252,8 @@
                             "fontFamily": "'Libre Baskerville', serif",
                             "borderColor": "#3E2723",
                             "color": "#3E2723"
-                          }
+                          },
+                          "onClick": "/marketplace/{{content.productId || 'default'}}"
                         },
                         "children": ["See Our Process"]
                       }
@@ -1170,7 +1172,8 @@
                           "style": { 
                             "fontFamily": "'Libre Baskerville', serif",
                             "color": "#3E2723"
-                          }
+                          },
+                          "onClick": "/marketplace/{{content.productId || 'default'}}"
                         },
                         "children": ["Start Your Commission"]
                       },
@@ -1181,7 +1184,8 @@
                           "className": "border-2 border-white text-white px-8 py-4 rounded-lg font-bold hover:bg-white hover:scale-105 transform transition-all duration-300",
                           "style": { 
                             "fontFamily": "'Libre Baskerville', serif"
-                          }
+                          },
+                          "onClick": "/marketplace/{{content.productId || 'default'}}"
                         },
                         "children": ["View Portfolio"]
                       }
