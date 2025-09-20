@@ -8,6 +8,7 @@ A comprehensive Next.js application that leverages Google's Gemini AI to create 
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-AI-4285F4?style=for-the-badge&logo=google)
 ![Firebase](https://img.shields.io/badge/Firebase-Authentication-FFCA28?style=for-the-badge&logo=firebase)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-Service_Account-4285F4?style=for-the-badge&logo=google-cloud)
 
 ## ✨ Features
 
@@ -38,6 +39,9 @@ A comprehensive Next.js application that leverages Google's Gemini AI to create 
 - **GitHub OAuth**: Additional authentication provider
 - **User Dashboard**: Personalized welcome messages and user-specific content
 - **Session Management**: Secure session handling with Firebase Auth
+- **Firebase Realtime Database**: Option for real-time updates for user-specific content or notifications.
+- **Firebase Storage**: Secure file uploads and storage for profile pictures, documents, or media.
+- **Service Account Integration**: Use Firebase service accounts for secure server-side access to Firestore, Storage, and other Firebase services.
 
 ### 🛍️ Marketplace Platform
 - **Product Marketplace**: Browse and discover products created by other users
@@ -86,6 +90,7 @@ cp .env.example .env
    - **Gemini API**: Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
    - **Firebase**: Create a project at [Firebase Console](https://console.firebase.google.com/)
    - **GitHub OAuth**: Create an OAuth app at [GitHub Developer Settings](https://github.com/settings/developers)
+   - **Google Cloud Service Account**: Generate a service account key from [Google Cloud Console](https://console.cloud.google.com/).  
 
 3. Update your `.env` file:
 ```env
@@ -104,7 +109,11 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 # OAuth Providers
 NEXT_PUBLIC_GITHUB_CLIENT_ID=your_github_client_id
 NEXT_PUBLIC_GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# Firebase Admin SDK
+GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
 ```
+
 
 ### 4. Run the Development Server
 ```bash
@@ -195,7 +204,9 @@ ai-marketplace-assistant/
 ├── package.json                      # Dependencies and scripts
 ├── tailwind.config.js                # Tailwind CSS configuration
 ├── tsconfig.json                     # TypeScript configuration
+├── service-account.json              # Google Application credentials    
 └── README.md                         # This file
+
 ```
 
 ## 🎮 Usage Guide
@@ -323,7 +334,8 @@ For a "wireless bluetooth headphones" product:
 - **@google/genai 0.3.0**: Google Gemini AI integration
 - **Firebase 12.1.0**: Authentication and backend services
 - **Next-Auth 4.24.5**: Authentication for Next.js
-
+- **Service Account Integration**: Secure server-side access to Firestore, Storage, and Firebase Admin services for backend operations.
+  
 #### Form Handling & Validation
 - **React Hook Form 7.48.2**: Performant forms with easy validation
 - **Zod 3.22.4**: TypeScript-first schema validation
@@ -349,6 +361,8 @@ For a "wireless bluetooth headphones" product:
 | `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID` | Firebase analytics ID | No | 
 | `NEXT_PUBLIC_GITHUB_CLIENT_ID` | GitHub OAuth client ID | No | 
 | `NEXT_PUBLIC_GITHUB_CLIENT_SECRET` | GitHub OAuth client secret | No | 
+| `GOOGLE_APPLICATION_CREDENTIALS` | Path to Firebase Admin SDK service account JSON (server-side only) | Yes (for server ops) |
+
 
 ## 🎨 Component Architecture
 
@@ -446,6 +460,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Lucide](https://lucide.dev/) for clean, consistent icons
 - [Framer Motion](https://www.framer.com/motion/) for smooth animations
 - [GSAP](https://greensock.com/gsap/) for professional animations
+- [Google Cloud](https://cloud.google.com/) for service account credentials and secure authentication  
 
 ## 📞 Support & Community
 
