@@ -62,27 +62,29 @@ export default function ProcessStep({
 
   // Validate field based on template requirements
   const validateField = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
     if (!limits) return true;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return wordCount <= limits.max;
     } else {
-      return value.length <= limits.max;
+      return safeValue.length <= limits.max;
     }
   };
 
   // Get current count display
   const getCountDisplay = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
-    if (!limits) return `${value.length}/800`;
+    if (!limits) return `${safeValue.length}/800`;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return `${wordCount}/${limits.max} words`;
     } else {
-      return `${value.length}/${limits.max}`;
+      return `${safeValue.length}/${limits.max}`;
     }
   };
   // Validation function
