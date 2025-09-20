@@ -99,33 +99,38 @@ const [allowStoryEdit, setAllowStoryEdit] = useState(null); // null = loading, f
     }
   });
 useEffect(() => {
-  const checkOwnership = async () => {
-    // Dynamic import avoids SSR issues
-    const { auth, db } = await import('@/app/login/firebase');
-    const { doc, getDoc } = await import('firebase/firestore');
-    if (!auth.currentUser) {
-      setAllowStoryEdit(false);
-      router.push('/login');
-      return;
-    }
-    try {
-      const docRef = doc(db, 'products', productId);
-      const docSnap = await getDoc(docRef);
-      if (!docSnap.exists()) {
+  let unsub;
+  if (!productId) return;
+  setAllowStoryEdit(null); // loading
+
+  import('@/app/login/firebase').then(({ auth, db }) => {
+    unsub = auth.onAuthStateChanged(async user => {
+      if (!user) {
         setAllowStoryEdit(false);
+        router.push('/login');
         return;
       }
-      const data = docSnap.data();
-      if (data.ownerId && data.ownerId === auth.currentUser.uid) {
-        setAllowStoryEdit(true); // allow
-      } else {
-        setAllowStoryEdit(false); // deny
+      const { doc, getDoc } = await import('firebase/firestore');
+      try {
+        const docRef = doc(db, 'products', productId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+          setAllowStoryEdit(false);
+          return;
+        }
+        const data = docSnap.data();
+        if (data.ownerId && data.ownerId === user.uid) {
+          setAllowStoryEdit(true); // allow
+        } else {
+          setAllowStoryEdit(false); // deny
+        }
+      } catch {
+        setAllowStoryEdit(false);
       }
-    } catch {
-      setAllowStoryEdit(false);
-    }
-  };
-  if (productId) checkOwnership();
+    });
+  });
+
+  return () => unsub && unsub();
 }, [productId, router]);
 // Initialize validation system
   useEffect(() => {
