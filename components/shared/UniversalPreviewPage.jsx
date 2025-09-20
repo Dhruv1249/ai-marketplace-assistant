@@ -485,26 +485,39 @@ export default function UniversalPreviewPage({
       formData.append('productId', productId);
       formData.append('customData', JSON.stringify(customPageData));
 
-      // ENHANCED: Use original files from window.productStoryOriginalFiles if available
+      // ENHANCED: Use original files with proper metadata mapping
       let imageIndex = 0;
       let filesAdded = 0;
+      
+      // Create a comprehensive file mapping with metadata
+      const fileMapping = new Map(); // blobUrl → file info
       
       // First, try to get original files from the parent window
       const originalFiles = window.productStoryOriginalFiles || [];
       console.log('🔍 [PUBLISH] Original files available:', originalFiles.length);
       
       if (originalFiles.length > 0) {
-        // Use original File objects
+        // Use original File objects with metadata
         originalFiles.forEach((fileInfo, index) => {
           if (fileInfo.file && fileInfo.file instanceof File) {
+            const metadata = {
+              blobUrl: fileInfo.blobUrl || fileInfo.url,
+              visualType: fileInfo.visualType || fileInfo.type || 'unknown',
+              originalIndex: index,
+              fileName: fileInfo.name || fileInfo.file.name,
+              context: fileInfo.context || 'original'
+            };
+            
             formData.append(`customImage_${imageIndex}`, fileInfo.file);
-            console.log(`✅ [PUBLISH] Added original file ${imageIndex}:`, fileInfo.file.name);
+            formData.append(`customImageMeta_${imageIndex}`, JSON.stringify(metadata));
+            
+            console.log(`✅ [PUBLISH] Added original file ${imageIndex}:`, fileInfo.file.name, 'with metadata:', metadata);
             imageIndex++;
             filesAdded++;
           }
         });
       } else {
-        // Fallback: Try to convert blob URLs to files (this will likely fail)
+        // Fallback: Try to convert blob URLs to files with proper metadata
         console.log('⚠️ [PUBLISH] No original files found, attempting blob URL conversion...');
         
         // Helper function to convert blob URL to File
@@ -519,62 +532,77 @@ export default function UniversalPreviewPage({
           }
         };
 
-        // Try to convert blob URLs from visuals
+        // Collect all blob URLs with their context
+        const blobUrlsToConvert = [];
+        
+        // Extract from visuals with context
         if (data.content.visuals) {
-          const conversionPromises = [];
-          
           Object.keys(data.content.visuals).forEach(visualType => {
             const visualArray = data.content.visuals[visualType];
             if (Array.isArray(visualArray)) {
               visualArray.forEach((visual, index) => {
                 if (visual.url && visual.url.startsWith('blob:')) {
-                  const fileName = visual.name || `${visualType}_${index}.jpg`;
-                  conversionPromises.push(
-                    blobUrlToFile(visual.url, fileName).then(file => ({
-                      file,
-                      name: fileName,
-                      type: visualType,
-                      index
-                    }))
-                  );
+                  blobUrlsToConvert.push({
+                    blobUrl: visual.url,
+                    fileName: visual.name || `${visualType}_${index}.jpg`,
+                    visualType: visualType,
+                    context: `visuals.${visualType}[${index}]`,
+                    originalIndex: index
+                  });
                 }
               });
             }
           });
+        }
 
-          // Try to convert testimonial photos
-          if (data.content.impact && data.content.impact.testimonials) {
-            data.content.impact.testimonials.forEach((testimonial, index) => {
-              if (testimonial.photo && testimonial.photo.url && testimonial.photo.url.startsWith('blob:')) {
-                const fileName = testimonial.photo.name || `testimonial_${index}.jpg`;
-                conversionPromises.push(
-                  blobUrlToFile(testimonial.photo.url, fileName).then(file => ({
-                    file,
-                    name: fileName,
-                    type: 'testimonial',
-                    index
-                  }))
-                );
-              }
-            });
-          }
+        // Extract from testimonial photos with context
+        if (data.content.impact && data.content.impact.testimonials) {
+          data.content.impact.testimonials.forEach((testimonial, index) => {
+            if (testimonial.photo && testimonial.photo.url && testimonial.photo.url.startsWith('blob:')) {
+              blobUrlsToConvert.push({
+                blobUrl: testimonial.photo.url,
+                fileName: testimonial.photo.name || `testimonial_${index}.jpg`,
+                visualType: 'testimonial',
+                context: `impact.testimonials[${index}].photo`,
+                originalIndex: index
+              });
+            }
+          });
+        }
 
-          if (conversionPromises.length > 0) {
-            console.log(`🔄 [PUBLISH] Attempting to convert ${conversionPromises.length} blob URLs...`);
-            
-            const convertedFiles = await Promise.all(conversionPromises);
-            
-            convertedFiles.forEach((result, index) => {
-              if (result && result.file) {
-                formData.append(`customImage_${imageIndex}`, result.file);
-                console.log(`✅ [PUBLISH] Added converted file ${imageIndex}:`, result.name);
-                imageIndex++;
-                filesAdded++;
-              } else {
-                console.log(`❌ [PUBLISH] Failed to convert file ${index}`);
-              }
-            });
-          }
+        if (blobUrlsToConvert.length > 0) {
+          console.log(`🔄 [PUBLISH] Attempting to convert ${blobUrlsToConvert.length} blob URLs with metadata...`);
+          
+          const conversionPromises = blobUrlsToConvert.map(async (blobInfo) => {
+            const file = await blobUrlToFile(blobInfo.blobUrl, blobInfo.fileName);
+            return {
+              file,
+              ...blobInfo
+            };
+          });
+          
+          const convertedFiles = await Promise.all(conversionPromises);
+          
+          convertedFiles.forEach((result, index) => {
+            if (result && result.file) {
+              const metadata = {
+                blobUrl: result.blobUrl,
+                visualType: result.visualType,
+                originalIndex: result.originalIndex,
+                fileName: result.fileName,
+                context: result.context
+              };
+              
+              formData.append(`customImage_${imageIndex}`, result.file);
+              formData.append(`customImageMeta_${imageIndex}`, JSON.stringify(metadata));
+              
+              console.log(`✅ [PUBLISH] Added converted file ${imageIndex}:`, result.fileName, 'with metadata:', metadata);
+              imageIndex++;
+              filesAdded++;
+            } else {
+              console.log(`❌ [PUBLISH] Failed to convert file ${index}`);
+            }
+          });
         }
       }
 

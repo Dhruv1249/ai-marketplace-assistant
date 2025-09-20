@@ -33,20 +33,15 @@ useEffect(() => {
           images: data.images || {},
         };
 
-        const customImages = Array.isArray(custom.savedImages) ? custom.savedImages : [];
-        const heroImages = customImages.map((url, index) => ({
-          id: `custom-img-${index}`,
-          url,
-          type: 'saved',
-          name: `custom-${index + 1}`,
-        }));
-
         const contentData = custom.content || custom.productStoryData || {};
+        
+        // The content already has the correct Firebase URLs in the proper visual categories
+        // No need to override with savedImages - just use the content as-is
         const updatedContentData = {
           ...contentData,
           visuals: {
-            ...contentData.visuals,
-            hero: heroImages,
+            // Use the existing visuals structure which already has correct Firebase URLs
+            hero: contentData.visuals?.hero || [],
             process: contentData.visuals?.process || [],
             beforeAfter: contentData.visuals?.beforeAfter || [],
             lifestyle: contentData.visuals?.lifestyle || [],
@@ -59,7 +54,7 @@ useEffect(() => {
           templateType: custom.templateType || 'journey',
           model: custom.model,
           content: updatedContentData,
-          images: customImages,
+          images: custom.savedImages || [],
         };
 
         localStorage.setItem('productStoryPreviewData', JSON.stringify(previewData));
