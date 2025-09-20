@@ -31,12 +31,12 @@ export default function VisualsStep({
         fields: ['hero', 'process'], // Hero and process images
         required: false,
         limits: {
-          hero: { min: 0, max: 5 }, // Up to 5 hero images
-          process: { min: 0, max: 4 } // Up to 4 process images
+          hero: { min: 0, max: 6 }, // Up to 6 hero images
+          process: { min: 0, max: 1 } // Up to 1 process image
         },
         descriptions: {
-          hero: 'Main product photos and hero images that showcase your artisan work. (Max 5 images)',
-          process: 'Behind-the-scenes photos showing your craftsmanship and creation process. (Max 4 images)'
+          hero: 'Main product photos and hero images that showcase your artisan work. (Max 6 images)',
+          process: 'Behind-the-scenes photos showing your craftsmanship and creation process. (Max 1 image)'
         }
       };
     }

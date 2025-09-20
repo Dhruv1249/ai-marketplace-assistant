@@ -19,11 +19,11 @@ export default function ProcessStep({
       return {
         fields: ['creation', 'materials', 'time', 'quality', 'ethics'],
         limits: {
-          creation: { max: 30, type: 'words' },
-          materials: { max: 30, type: 'words' },
-          time: { max: 30, type: 'words' },
-          quality: { max: 30, type: 'words' },
-          ethics: { max: 30, type: 'words' }
+          creation: { max: 800, type: 'chars' },
+          materials: { max: 800, type: 'chars' },
+          time: { max: 800, type: 'chars' },
+          quality: { max: 800, type: 'chars' },
+          ethics: { max: 800, type: 'chars' }
         },
         required: true // All fields are required for Our Journey
       };
@@ -31,10 +31,10 @@ export default function ProcessStep({
       return {
         fields: ['creation', 'materials', 'quality', 'ethics'],
         limits: {
-          creation: { max: 30, type: 'words' },
-          materials: { max: 40, type: 'words' },
-          quality: { max: 40, type: 'words' },
-          ethics: { max: 30, type: 'words' }
+          creation: { max: 800, type: 'chars' },
+          materials: { max: 800, type: 'chars' },
+          quality: { max: 800, type: 'chars' },
+          ethics: { max: 800, type: 'chars' }
         },
         required: true // All fields are required for Artisan Journey
       };
@@ -43,11 +43,11 @@ export default function ProcessStep({
     return {
       fields: ['creation', 'materials', 'time', 'quality', 'ethics'],
       limits: {
-        creation: { max: 600, type: 'chars' },
-        materials: { max: 600, type: 'chars' },
-        time: { max: 600, type: 'chars' },
-        quality: { max: 600, type: 'chars' },
-        ethics: { max: 600, type: 'chars' }
+        creation: { max: 800, type: 'chars' },
+        materials: { max: 800, type: 'chars' },
+        time: { max: 800, type: 'chars' },
+        quality: { max: 800, type: 'chars' },
+        ethics: { max: 800, type: 'chars' }
       },
       required: false // Optional for default templates
     };
@@ -76,7 +76,7 @@ export default function ProcessStep({
   // Get current count display
   const getCountDisplay = (fieldName, value) => {
     const limits = config.limits[fieldName];
-    if (!limits) return `${value.length}/600`;
+    if (!limits) return `${value.length}/800`;
 
     if (limits.type === 'words') {
       const wordCount = countWords(value);
@@ -162,11 +162,11 @@ export default function ProcessStep({
             <textarea
               value={fieldValue}
               onChange={(e) => {
-                if (e.target.value.length <= 600) {
+                if (e.target.value.length <= 800) {
                   handleInputChange('process', fieldName, e.target.value);
                 }
               }}
-              maxLength={600}
+              maxLength={800}
               rows={field.rows}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder={field.placeholder}
@@ -176,11 +176,11 @@ export default function ProcessStep({
               type="text"
               value={fieldValue}
               onChange={(e) => {
-                if (e.target.value.length <= 600) {
+                if (e.target.value.length <= 800) {
                   handleInputChange('process', fieldName, e.target.value);
                 }
               }}
-              maxLength={600}
+              maxLength={800}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder={field.placeholder}
             />
