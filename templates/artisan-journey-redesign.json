@@ -1024,7 +1024,11 @@
         "type": "section",
         "if": "content.impact.awards && content.impact.awards.length > 0",
         "props": {
-          "className": "py-20 px-6 bg-white"
+          "className": "py-20 px-6 relative",
+          "style": {
+            "background": "linear-gradient(135deg, #3E2723 0%, #6D4C41 50%, #8D6E63 100%)",
+            "color": "#EFEBE9"
+          }
         },
         "children": [
           {
@@ -1083,7 +1087,7 @@
                       "className": "text-4xl md:text-5xl font-bold mb-6",
                       "style": { 
                         "fontFamily": "'Cormorant Garamond', serif",
-                        "color": "#3E2723"
+                        "color": "#EFEBE9"
                       }
                     },
                     "children": ["Awards & Honors"]
