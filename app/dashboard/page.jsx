@@ -20,7 +20,7 @@ import { Button } from "@/components/ui";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MoreVertical, Trash2, Pencil, LogOut } from 'lucide-react';
+import { MoreVertical, Trash2, Pencil, LogOut, TrendingUp, BarChart3, PieChart } from 'lucide-react';
 import News from "./News";
 import LogoutButton from '@/components/animated icon/logout.jsx';
 import ComfermationDelet from '@/components/animated icon/ComfermationDelet.jsx';
@@ -40,6 +40,13 @@ export default function Dashboard() {
   const [productStats, setProductStats] = useState({ created: 0, bought: 0 });
   const [createdProducts, setCreatedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
+  // Seller analytics state
+  const [salesOrders, setSalesOrders] = useState([]);
+  const [salesStats, setSalesStats] = useState({ units: 0, revenue: 0, avgOrder: 0 });
+  const [aiAnalyticsText, setAiAnalyticsText] = useState('');
+  const [aiAnalyticsLoading, setAiAnalyticsLoading] = useState(false);
+  const [aiAnalyticsError, setAiAnalyticsError] = useState(null);
+  const [revRange, setRevRange] = useState('30D');
   const [aiSuggestions, setAISuggestions] = useState({});
   const [saveError, setSaveError] = useState(null);
   const [saveLoading, setSaveLoading] = useState(false);
@@ -124,6 +131,63 @@ export default function Dashboard() {
       created: createdList.length,
       bought: boughtSnap.size,
     });
+
+    // Load seller-side orders for analytics (robust owner detection)
+    try {
+      const ordersCol = collection(db, 'orders');
+      const orderQueries = [
+        query(ordersCol, where('sellerId', '==', u.uid)),
+        query(ordersCol, where('artisanId', '==', u.uid)),
+        query(ordersCol, where('ownerId', '==', u.uid)),
+        query(ordersCol, where('seller.id', '==', u.uid)),
+      ];
+      const ordResults = await Promise.allSettled(orderQueries.map((q) => getDocs(q)));
+      const ordSeen = new Set();
+      const orders = [];
+      for (const res of ordResults) {
+        if (res.status === 'fulfilled') {
+          for (const d of res.value.docs) {
+            if (!ordSeen.has(d.id)) {
+              ordSeen.add(d.id);
+              orders.push({ id: d.id, ...d.data() });
+            }
+          }
+        }
+      }
+      setSalesOrders(orders);
+
+      // Compute seller analytics
+      const unitsSold = orders.reduce((sum, o) => {
+        if (Array.isArray(o.items)) {
+          return sum + o.items.reduce((s, it) => s + (Number(it.qty ?? it.quantity ?? 1) || 1), 0);
+        }
+        return sum + (Number(o.qty ?? o.quantity ?? 1) || 1);
+      }, 0);
+
+      const revenue = orders.reduce((sum, o) => {
+        if (Array.isArray(o.items)) {
+          return sum + o.items.reduce((s, it) => {
+            const qty = Number(it.qty ?? it.quantity ?? 1) || 1;
+            const amt = Number(it.total ?? it.amount ?? (it.price ?? 0) * qty) || 0;
+            return s + amt;
+          }, 0);
+        }
+        const amt = Number(o.total ?? o.amount);
+        if (!isNaN(amt) && amt > 0) return sum + amt;
+        const price = Number(o.price ?? 0);
+        const qty = Number(o.qty ?? o.quantity ?? 1) || 1;
+        return sum + price * qty;
+      }, 0);
+
+      const avgOrder = orders.length ? revenue / orders.length : 0;
+      setSalesStats({ units: unitsSold, revenue, avgOrder });
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Seller analytics fetch failed/skipped', e?.message || e);
+      }
+      setSalesOrders([]);
+      setSalesStats({ units: 0, revenue: 0, avgOrder: 0 });
+    }
 
     // Load reviews for this artisan/seller
     const reviewSnap = await getDocs(
@@ -309,6 +373,37 @@ export default function Dashboard() {
     setAISuggestions((prev) => ({ ...prev, [reviewId]: resp }));
   };
 
+  // AI insights for analytics
+  const handleGenerateAIInsights = async (payload) => {
+    setAiAnalyticsError(null);
+    setAiAnalyticsLoading(true);
+    try {
+      const prompt = `You are an expert e-commerce growth strategist. Analyze the following seller analytics JSON and return 5-8 specific, high-impact recommendations. Focus on pricing, positioning, bundling, hero media, reviews, upsells/cross-sells, and campaign ideas. Output as concise bullet points (max 2 lines each), strongest actions first.\n\nANALYTICS:\n${JSON.stringify(payload, null, 2)}`;
+      const res = await fetch('/api/ai/generate-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      let text = '';
+      try {
+        const j = await res.json();
+        text = j.content || j.result || j.text || j.data?.content || '';
+      } catch {
+        text = await res.text();
+      }
+      if (!res.ok) throw new Error(text || 'Failed to generate insights');
+      setAiAnalyticsText((text || '').trim());
+    } catch (e) {
+      setAiAnalyticsError(e?.message || 'AI generation failed');
+      const fb = Array.isArray(payload?.suggestions) && payload.suggestions.length
+        ? `• ${payload.suggestions.join('\n• ')}`
+        : 'No AI insights available yet. Add products and collect more data to analyze.';
+      setAiAnalyticsText(fb);
+    } finally {
+      setAiAnalyticsLoading(false);
+    }
+  };
+
   // New: open edit modal for a product
   const openEditProduct = (prod) => {
     setEditingProductId(prod.id);
@@ -397,6 +492,11 @@ export default function Dashboard() {
             onClick={() => setActiveSection('news')}
             type="button"
           >Latest News</button>
+          <button
+            className={`block w-full text-left px-4 py-2 rounded-lg transition font-semibold ${activeSection === 'analytics' ? (theme === 'dark' ? 'bg-gray-800 text-blue-300' : 'bg-gray-100 text-blue-700') : (theme === 'dark' ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100 text-gray-900')}`}
+            onClick={() => setActiveSection('analytics')}
+            type="button"
+          >Analytics</button>
           {/* Settings nav item */}
           <button
             type="button"
@@ -1163,6 +1263,288 @@ export default function Dashboard() {
               </div>
             </>
           )}
+          {/* Analytics Section */}
+          {activeSection === 'analytics' && (
+            (() => {
+              const fmtCurr = (n) => (Number(n) || 0).toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+              const now = Date.now();
+              const day = 86400000;
+              const getTime = (d) => d?.toDate?.().getTime?.() || (typeof d === 'string' ? Date.parse(d) : (d instanceof Date ? d.getTime() : 0)) || 0;
+
+              // Compute revenue series and growth for selected range
+              const hour = 3600000;
+              const revenueOfOrder = (o) => {
+                if (Array.isArray(o.items)) {
+                  return o.items.reduce((ss, it) => {
+                    const qty = Number(it.qty ?? it.quantity ?? 1) || 1;
+                    const amt = Number(it.total ?? it.amount ?? (it.price ?? 0) * qty) || 0;
+                    return ss + amt;
+                  }, 0);
+                }
+                const amt = Number(o.total ?? o.amount);
+                if (!isNaN(amt) && amt > 0) return amt;
+                const price = Number(o.price ?? 0);
+                const qty = Number(o.qty ?? o.quantity ?? 1) || 1;
+                return price * qty;
+              };
+              const periodLabel = revRange === '1D' ? 'last 1 day' : (revRange === '6M' ? 'last 6 months' : (revRange === '1Y' ? 'last 1 year' : 'last 30 days'));
+
+              let series = [];
+              let prevSeries = [];
+
+              if (revRange === '1D') {
+                // last 24 hours by hour
+                const start = now - 24 * hour;
+                for (let i = 0; i < 24; i++) {
+                  const t0 = start + i * hour;
+                  const t1 = t0 + hour;
+                  const sum = salesOrders.reduce((s, o) => {
+                    const t = getTime(o.createdAt || o.paidAt || o.updatedAt);
+                    return (t >= t0 && t < t1) ? s + revenueOfOrder(o) : s;
+                  }, 0);
+                  series.push(sum);
+                }
+                const prevStart = start - 24 * hour;
+                for (let i = 0; i < 24; i++) {
+                  const t0 = prevStart + i * hour;
+                  const t1 = t0 + hour;
+                  const sum = salesOrders.reduce((s, o) => {
+                    const t = getTime(o.createdAt || o.paidAt || o.updatedAt);
+                    return (t >= t0 && t < t1) ? s + revenueOfOrder(o) : s;
+                  }, 0);
+                  prevSeries.push(sum);
+                }
+              } else {
+                // Days for 30D / 6M / 1Y
+                const days = revRange === '6M' ? 180 : (revRange === '1Y' ? 365 : 30);
+                const startOfDay = (t) => { const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+                const today0 = startOfDay(now);
+                for (let i = days - 1; i >= 0; i--) {
+                  const day0 = today0 - i * day;
+                  const day1 = day0 + day;
+                  const sum = salesOrders.reduce((s, o) => {
+                    const t = getTime(o.createdAt || o.paidAt || o.updatedAt);
+                    return (t >= day0 && t < day1) ? s + revenueOfOrder(o) : s;
+                  }, 0);
+                  series.push(sum);
+                }
+                for (let i = days - 1; i >= 0; i--) {
+                  const day0 = today0 - (days + i) * day;
+                  const day1 = day0 + day;
+                  const sum = salesOrders.reduce((s, o) => {
+                    const t = getTime(o.createdAt || o.paidAt || o.updatedAt);
+                    return (t >= day0 && t < day1) ? s + revenueOfOrder(o) : s;
+                  }, 0);
+                  prevSeries.push(sum);
+                }
+              }
+
+              const sumArr = (arr) => arr.reduce((a,b)=>a+b,0);
+              const revCurr = sumArr(series);
+              const revPrev = sumArr(prevSeries);
+              const growth = revPrev > 0 ? ((revCurr - revPrev) / revPrev) * 100 : (revCurr > 0 ? 100 : 0);
+
+              // Top products by revenue
+              const index = new Map(createdProducts.map((p) => [p.id, p]));
+              const grouped = {};
+              for (const o of salesOrders) {
+                if (Array.isArray(o.items)) {
+                  for (const it of o.items) {
+                    const pid = it.productId || it.id || it.sku || o.productId;
+                    const qty = Number(it.qty ?? it.quantity ?? 1) || 1;
+                    const amt = Number(it.total ?? it.amount ?? (it.price ?? 0) * qty) || 0;
+                    const title = index.get(pid)?.name || index.get(pid)?.title || it.title || o.productTitle || String(pid || 'Unknown');
+                    if (!grouped[pid]) grouped[pid] = { qty: 0, revenue: 0, title };
+                    grouped[pid].qty += qty;
+                    grouped[pid].revenue += amt;
+                  }
+                } else {
+                  const pid = o.productId || o.itemId || o.product?.id;
+                  const qty = Number(o.qty ?? o.quantity ?? 1) || 1;
+                  const amt = Number(o.total ?? o.amount ?? (o.price ?? 0) * qty) || 0;
+                  const title = index.get(pid)?.name || index.get(pid)?.title || o.productTitle || String(pid || 'Unknown');
+                  if (!grouped[pid]) grouped[pid] = { qty: 0, revenue: 0, title };
+                  grouped[pid].qty += qty;
+                  grouped[pid].revenue += amt;
+                }
+              }
+              const top = Object.entries(grouped).sort((a, b) => b[1].revenue - a[1].revenue).slice(0, 5);
+              const maxRev = top.reduce((m, [, v]) => Math.max(m, v.revenue), 0) || 1;
+
+              // Build daily revenue series for last 30 days
+              const startOfDay = (t) => { const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+              const today0 = startOfDay(now);
+              const daysRev = Array.from({ length: 30 }, (_, i) => {
+                const day0 = today0 - (29 - i) * day;
+                const day1 = day0 + day;
+                return salesOrders.reduce((s, o) => {
+                  const t = getTime(o.createdAt || o.paidAt || o.updatedAt);
+                  if (t >= day0 && t < day1) {
+                    if (Array.isArray(o.items)) {
+                      return s + o.items.reduce((ss, it) => {
+                        const qty = Number(it.qty ?? it.quantity ?? 1) || 1;
+                        const amt = Number(it.total ?? it.amount ?? (it.price ?? 0) * qty) || 0;
+                        return ss + amt;
+                      }, 0);
+                    }
+                    const amt = Number(o.total ?? o.amount);
+                    if (!isNaN(amt) && amt > 0) return s + amt;
+                    const price = Number(o.price ?? 0);
+                    const qty = Number(o.qty ?? o.quantity ?? 1) || 1;
+                    return s + price * qty;
+                  }
+                  return s;
+                }, 0);
+              });
+              const maxDayRev = Math.max(1, ...daysRev);
+
+              // Suggestions
+              const suggestions = [];
+              if (salesStats.revenue === 0) suggestions.push('No sales yet: publish products, add compelling images, and share your marketplace link.');
+              if (top.length >= 1 && salesOrders.length > 3) suggestions.push('Double down on your top seller: add bundles, highlight reviews, and feature it on your profile.');
+              if (createdProducts.length > 0 && salesOrders.length / Math.max(createdProducts.length, 1) < 0.5) suggestions.push('Consider optimizing product descriptions and pricing to improve conversion.');
+
+              return (
+                <>
+                  <h2 className={`text-2xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Sales Analytics</h2>
+
+                  {/* KPI Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8">
+                    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-sm`}>Units Sold</span>
+                        <BarChart3 className={theme === 'dark' ? 'text-blue-300' : 'text-blue-600'} size={18} />
+                      </div>
+                      <div className="text-3xl font-bold text-blue-500">{salesStats.units}</div>
+                    </div>
+                    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-sm`}>Revenue</span>
+                        <PieChart className={theme === 'dark' ? 'text-purple-300' : 'text-purple-600'} size={18} />
+                      </div>
+                      <div className="text-3xl font-bold text-purple-500">{fmtCurr(salesStats.revenue)}</div>
+                    </div>
+                    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-sm`}>Avg Order Value</span>
+                        <TrendingUp className={theme === 'dark' ? 'text-green-300' : 'text-green-600'} size={18} />
+                      </div>
+                      <div className="text-3xl font-bold text-green-500">{fmtCurr(salesStats.avgOrder)}</div>
+                    </div>
+                  </div>
+
+                  {/* Trend + Top products */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+                    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{`Revenue (${periodLabel})`}</div>
+                        <div className={`text-sm flex items-center gap-2 ${growth >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          <TrendingUp size={16} /> {isFinite(growth) ? growth.toFixed(1) : '0.0'}%
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-wrap mb-2">
+                        {['1D','30D','6M','1Y'].map((rng) => (
+                          <button
+                            key={rng}
+                            type="button"
+                            onClick={() => setRevRange(rng)}
+                            className={`px-2 py-0.5 rounded text-xs border ${revRange===rng ? 'bg-blue-600 text-white border-blue-600' : (theme==='dark' ? 'text-gray-300 border-gray-700' : 'text-gray-700 border-gray-200')} hover:bg-blue-50`}
+                            aria-pressed={revRange===rng}
+                            aria-label={`Show ${rng} revenue`}
+                          >{rng}</button>
+                        ))}
+                      </div>
+                      <div className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} text-2xl font-bold`}>{fmtCurr(revCurr)}</div>
+                      <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-xs mt-1`}>Prev period: {fmtCurr(revPrev)}</div>
+                      {/* Sparkline chart */}
+                      <div className="mt-4">
+                        <svg viewBox="0 0 600 120" width="100%" height="120" preserveAspectRatio="none" role="img" aria-label="Revenue last 30 days sparkline">
+                          {/* baseline */}
+                          <line x1="0" y1="110" x2="600" y2="110" stroke={theme === 'dark' ? '#334155' : '#e5e7eb'} strokeWidth="1" />
+                          {/* area fill */}
+                          <polyline
+                            fill={theme === 'dark' ? 'rgba(59,130,246,0.15)' : 'rgba(59,130,246,0.20)'}
+                            stroke="none"
+                            points={`${[0,110].join(',')} ${series.map((v,i)=>`${(i/(series.length-1||1))*600},${110 - (v/Math.max(1, ...series))*100}`).join(' ')} ${600},110`}
+                          />
+                          {/* line */}
+                          <polyline
+                            fill="none"
+                            stroke={theme === 'dark' ? '#60a5fa' : '#2563eb'}
+                            strokeWidth="2.5"
+                            points={series.map((v,i)=>`${(i/(series.length-1||1))*600},${110 - (v/Math.max(1, ...series))*100}`).join(' ')}
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                      <div className={`font-semibold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Top Products</div>
+                      {top.length === 0 && (
+                        <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-sm`}>No sales data yet.</div>
+                      )}
+                      <div className="space-y-3">
+                        {top.map(([pid, info]) => (
+                          <div key={pid}>
+                            <div className={`flex justify-between text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                              <span className="truncate pr-2">{info.title}</span>
+                              <span className="font-medium">{fmtCurr(info.revenue)}</span>
+                            </div>
+                            <div className={`h-2 mt-1 rounded ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                              <div className="h-2 rounded bg-blue-500" style={{ width: `${Math.max(3, (info.revenue / maxRev) * 100)}%` }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Suggestions */}
+                  <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5`}>
+                    <div className={`font-semibold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Suggestions to improve</div>
+                    {suggestions.length === 0 ? (
+                      <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Keep up the good work! Add more products and encourage reviews to sustain growth.</div>
+                    ) : (
+                      <ul className={`list-disc pl-5 space-y-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                        {suggestions.map((s, i) => (<li key={i}>{s}</li>))}
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* AI Insights */}
+                  <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-5 mt-6`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>AI Insights</div>
+                      <Button
+                        size="sm"
+                        disabled={aiAnalyticsLoading}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                        onClick={() => handleGenerateAIInsights({
+                          kpis: salesStats,
+                          revenueLast30: revLast,
+                          revenuePrev30: revPrev,
+                          growthPercent: Number.isFinite(growth) ? Number(growth.toFixed(2)) : 0,
+                          topProducts: top.map(([pid, info]) => ({ id: pid, title: info.title, revenue: info.revenue, qty: info.qty })),
+                          productsCreated: createdProducts.length,
+                          daysWithRevenue: series.filter(x=>x>0).length,
+                          suggestions,
+                        })}
+                      >
+                        {aiAnalyticsLoading ? 'Generating...' : (aiAnalyticsText ? 'Regenerate' : 'Generate')}
+                      </Button>
+                    </div>
+                    {aiAnalyticsError && (
+                      <div className="text-sm text-red-500 mb-2">{aiAnalyticsError}</div>
+                    )}
+                    <div className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-wrap text-sm`}> 
+                      {aiAnalyticsText || 'Click Generate to get AI-driven recommendations based on your analytics.'}
+                    </div>
+                  </div>
+                </>
+              );
+            })()
+          )}
+
           {/* Products Section */}
           {activeSection === 'products' && (
             <>
