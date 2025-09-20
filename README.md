@@ -109,10 +109,10 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 # OAuth Providers
 NEXT_PUBLIC_GITHUB_CLIENT_ID=your_github_client_id
 NEXT_PUBLIC_GITHUB_CLIENT_SECRET=your_github_client_secret
-```
-#Firebase Admin SDK
-GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
 
+# Firebase Admin SDK
+GOOGLE_APPLICATION_CREDENTIALS=./service-account.json
+```
 
 
 ### 4. Run the Development Server
