@@ -29,14 +29,14 @@ export default function VisualsStep({
     } else if (selectedTemplate === 'artisan-journey') {
       return {
         fields: ['hero', 'process'], // Hero and process images
-        required: false,
+        required: true,
         limits: {
-          hero: { min: 0, max: 6 }, // Up to 6 hero images
-          process: { min: 0, max: 1 } // Up to 1 process image
+          hero: { min: 1, max: 1 }, // Exactly 1 hero image required
+          process: { min: 0, max: 6 } // Up to 8 process images
         },
         descriptions: {
-          hero: 'Main product photos and hero images that showcase your artisan work. (Max 6 images)',
-          process: 'Behind-the-scenes photos showing your craftsmanship and creation process. (Max 1 image)'
+          hero: 'One main hero image to showcase your artisan work. This will be prominently displayed in your story. (Required: 1 image)',
+          process: 'Behind-the-scenes photos showing your workshop process and craftsmanship. These tell the story of how you create your work. (Max 8 images)'
         }
       };
     }
@@ -69,6 +69,12 @@ export default function VisualsStep({
     if (selectedTemplate === 'our-journey') {
       const beforeAfterCount = productStoryData.visuals.beforeAfter?.length || 0;
       return beforeAfterCount === 2; // Must have exactly 2 images
+    }
+    
+    // For Artisan Journey template, check if exactly 1 hero image is uploaded
+    if (selectedTemplate === 'artisan-journey') {
+      const heroCount = productStoryData.visuals.hero?.length || 0;
+      return heroCount === 1; // Must have exactly 1 hero image
     }
     
     return true;
@@ -180,6 +186,17 @@ export default function VisualsStep({
             {currentCount === 2 ? '✅ Perfect! You have exactly 2 images (before & after)' :
              currentCount === 1 ? '⚠️ Upload 1 more image to complete the before & after pair' :
              '❌ Please upload exactly 2 images: one before and one after'}
+          </div>
+        )}
+
+        {/* Status indicator for Artisan Journey hero image */}
+        {fieldKey === 'hero' && selectedTemplate === 'artisan-journey' && (
+          <div className={`mb-4 p-3 rounded-lg text-sm ${
+            currentCount === 1 ? 'bg-green-100 text-green-800' :
+            'bg-red-100 text-red-800'
+          }`}>
+            {currentCount === 1 ? '✅ Perfect! You have uploaded your hero image' :
+             '❌ Please upload exactly 1 hero image to showcase your artisan work'}
           </div>
         )}
         
