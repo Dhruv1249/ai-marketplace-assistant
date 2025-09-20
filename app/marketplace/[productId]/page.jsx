@@ -529,7 +529,7 @@ export default function ProductPage() {
 
                 <div className="flex space-x-4">
                   <div className="flex-1">
-                    <AddToCartButton />
+                    <AddToCartButton productId={productId} quantity={quantity} />
                   </div>
                   <Button variant="outline" size="lg">
                     <HeartButton />

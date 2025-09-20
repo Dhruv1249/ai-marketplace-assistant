@@ -450,7 +450,7 @@ export default function StandardPreviewPage() {
 
                 <div className="flex space-x-4">
                   <div className="flex-1">
-                    <AddToCartButton />
+                    <AddToCartButton productId={productData?.id} quantity={quantity} />
                   </div>
                   <Button variant="outline" size="lg">
                     <HeartButton />
