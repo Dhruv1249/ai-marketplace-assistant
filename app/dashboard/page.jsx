@@ -25,6 +25,7 @@ import News from "./News";
 import LogoutButton from '@/components/animated icon/logout.jsx';
 import ComfermationDelet from '@/components/animated icon/ComfermationDelet.jsx';
 import EditAvatar from '@/components/animated icon/EditAvatar.jsx';
+import CommingSoon from '@/components/animated icon/CommingSoon.jsx';
 async function getAISuggestion(reviewText) {
   return "Thank you for your feedback! We're glad you enjoyed our product.";
 }
@@ -52,6 +53,7 @@ export default function Dashboard() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [avatarError, setAvatarError] = useState(null);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
 
   // === Product Editing State ===
   const [editingProductId, setEditingProductId] = useState(null);
@@ -261,6 +263,21 @@ export default function Dashboard() {
       if (ctx) ctx.revert();
     };
   }, [activeSection]);
+
+  // Disable page scroll when Coming Soon overlay is open
+  useEffect(() => {
+    if (comingSoonOpen && typeof document !== 'undefined') {
+      const prevOverflow = document.body.style.overflow;
+      const prevPaddingRight = document.body.style.paddingRight;
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        document.body.style.paddingRight = prevPaddingRight;
+      };
+    }
+  }, [comingSoonOpen]);
 
   // ----- handlers (unchanged) -----
   const handleEdit = () => {
@@ -589,6 +606,18 @@ export default function Dashboard() {
 
       {/* Main + News content */}
       <main className={theme === 'dark' ? 'flex-1 bg-black flex flex-col' : 'flex-1 bg-white flex flex-col'}>
+        {comingSoonOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setComingSoonOpen(false)}
+          >
+            <div onClick={(e) => e.stopPropagation()} className="transform scale-110 md:scale-135">
+              <CommingSoon />
+            </div>
+          </div>
+        )}
         {/* Top bar */}
         <div className={`sticky top-0 z-10 flex items-center justify-between md:justify-end px-4 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
           <div className={`md:hidden font-semibold ${theme === 'dark' ? 'text-white' : ''}`}>Dashboard</div>
@@ -1540,16 +1569,7 @@ export default function Dashboard() {
                         size="sm"
                         disabled={aiAnalyticsLoading}
                         className="bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={() => handleGenerateAIInsights({
-                          kpis: salesStats,
-                          revenueLast30: revLast,
-                          revenuePrev30: revPrev,
-                          growthPercent: Number.isFinite(growth) ? Number(growth.toFixed(2)) : 0,
-                          topProducts: top.map(([pid, info]) => ({ id: pid, title: info.title, revenue: info.revenue, qty: info.qty })),
-                          productsCreated: createdProducts.length,
-                          daysWithRevenue: series.filter(x=>x>0).length,
-                          suggestions,
-                        })}
+                        onClick={() => { setAiAnalyticsError(null); setComingSoonOpen(true); }}
                       >
                         {aiAnalyticsLoading ? 'Generating...' : (aiAnalyticsText ? 'Regenerate' : 'Generate')}
                       </Button>
