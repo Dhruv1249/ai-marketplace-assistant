@@ -22,8 +22,8 @@
     "brandPrimary": "#3E2723",
     "brandSecondary": "#EFEBE9",
     "brandAccent": "#FF8F00",
-    "brandTextPrimary": "#2E2E2E",
-    "brandTextSecondary": "#5D4037",
+    "brandTextPrimary": "#FFFFFF",
+    "brandTextSecondary": "#FFFFFF",
     "brandBackground": "#FAFAFA",
     "brandHighlight": "#FFA726",
     "brandWarm": "#FFCC02",
@@ -935,9 +935,10 @@
         "type": "section",
         "if": "content.impact.testimonials && content.impact.testimonials.length > 0",
         "props": {
-          "className": "py-24 px-6 relative",
+          "className": "py-24 px-6 relative text-white",
           "style": {
-            "backgroundColor": "#EFEBE9"
+            "backgroundColor": "#EFEBE9",
+            "color": "#FFFFFF"
           }
         },
         "children": [
