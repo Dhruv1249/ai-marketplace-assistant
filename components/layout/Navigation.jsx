@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Home, ShoppingBag, Plus, Info, Mail, User, User2, LogOut, CreditCard } from 'lucide-react';
 import { auth } from '../../app/login/firebase'; // adjust path if needed
@@ -79,9 +80,16 @@ const Navigation = () => {
         <div className="flex justify-between h-16">
           {/* Logo/Brand */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">M</span>
+            <Link href="/" className="flex items-center space-x-2" aria-label="Home">
+              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
+                <Image
+                  src="/images/Screenshot 2025-09-20 165808.png"
+                  alt="Logo"
+                  width={32}
+                  height={32}
+                  className="object-cover w-full h-full"
+                  priority
+                />
               </div>
             </Link>
             {!isLoggedIn && (
