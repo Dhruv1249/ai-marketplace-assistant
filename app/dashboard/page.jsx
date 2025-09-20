@@ -743,6 +743,27 @@ export default function Dashboard() {
                 >
                   Edit
                 </Button>
+                {prod.hasCustomPage ? (
+  <Link href={`/seller-info/${prod.id}?mode=edit`}>
+    <Button
+      size="sm"
+      className="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+      type="button"
+    >
+      Edit Story Page
+    </Button>
+  </Link>
+) : (
+  <Link href={`/seller-info/${prod.id}?mode=create`}>
+    <Button
+      size="sm"
+      className="mt-2 ml-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
+      type="button"
+    >
+      Add Story Page
+    </Button>
+  </Link>
+)}
               </>
             </div>
           ))}
@@ -1250,6 +1271,19 @@ export default function Dashboard() {
                       >
                         Edit
                       </Button>
+                      {prod.hasCustomPage ? (
+                        <Link href={`/seller-info/${prod.id}?mode=edit`}>
+                          <Button size="sm" className="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold" type="button">
+                            Edit Story Page
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link href={`/seller-info/${prod.id}?mode=create`}>
+                          <Button size="sm" className="mt-2 ml-2 bg-green-600 hover:bg-green-700 text-white font-semibold" type="button">
+                            Add Story Page
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -2,13 +2,13 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Eye, Save, Package, Lightbulb, User, Award, Image as ImageIcon, Palette, Globe } from 'lucide-react';
 import { Button } from '@/components/ui';
 import SaveButton from '@/components/animated icon/SaveButton';
 import BackButton from '@/components/animated icon/BackButton';
 import Loading from '@/app/loading';
-
+import { doc, getDoc } from 'firebase/firestore';
 // Import step components
 import ProductBasicsStep from '@/components/product-story/ProductBasicsStep';
 import ProductStoryStep from '@/components/product-story/ProductStoryStep';
@@ -29,52 +29,41 @@ const TEMPLATE_MAP = {
 export default function ProductStoryPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const productId = params.productId;
-const [allowStoryEdit, setAllowStoryEdit] = useState(null); // null = loading, false = denied, true = allowed
-
-useEffect(() => {
-  const checkOwnership = async () => {
-    // Dynamic import avoids SSR issues
-    const { auth, db } = await import('@/app/login/firebase');
-    const { doc, getDoc } = await import('firebase/firestore');
-    if (!auth.currentUser) {
-      setAllowStoryEdit(false);
-      router.push('/login');
-      return;
-    }
-    try {
-      const docRef = doc(db, 'products', productId);
-      const docSnap = await getDoc(docRef);
-      if (!docSnap.exists()) {
-        setAllowStoryEdit(false);
-        return;
-      }
-      const data = docSnap.data();
-      if (data.ownerId && data.ownerId === auth.currentUser.uid) {
-        setAllowStoryEdit(true); // allow
-      } else {
-        setAllowStoryEdit(false); // deny
-      }
-    } catch {
-      setAllowStoryEdit(false);
-    }
-  };
-  if (productId) checkOwnership();
-}, [productId, router]);
-
-if (allowStoryEdit === null) {
-  return <div>Loading...</div>;
-}
-if (allowStoryEdit === false) {
-  return <div>You are not authorized to add a story page to this product.</div>;
-}
+  const modeParam = searchParams?.get('mode'); // 'create' | 'edit' | null
+  const sectionParam = searchParams?.get('section'); // optional: template|basics|story|process|impact|visuals|review
+   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
+  const photoUrlsRef = useRef([]);
+  const heroInputRef = useRef(null);
+  const processInputRef = useRef(null);
+  const lifestyleInputRef = useRef(null);
+  const beforeAfterInputRef = useRef(null);
+  
+  const fileInputRefs = {
+    hero: heroInputRef,
+    process: processInputRef,
+    lifestyle: lifestyleInputRef,
+    beforeAfter: beforeAfterInputRef
+  };
+  
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('our-journey');
   const [productData, setProductData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
-  const [productStoryData, setProductStoryData] = useState({
+
+const [allowStoryEdit, setAllowStoryEdit] = useState(null); // null = loading, false = denied, true = allowed
+ // State for validation instead of using window
+  const [validationState, setValidationState] = useState({
+    step1: true,  // Template selection - always valid once selected
+    step2: false, // Product basics
+    step3: false, // Product story
+    step4: false, // Process step - now required for templates
+    step5: true,  // Impact step is optional
+    step6: true,  // Visuals step is optional
+    step7: true   // Review step is always valid
+  });
+ const [productStoryData, setProductStoryData] = useState({
     basics: {
       name: '',
       category: '',
@@ -109,32 +98,154 @@ if (allowStoryEdit === false) {
       team: []
     }
   });
-
-  const fileInputRefs = {
-    hero: useRef(null),
-    process: useRef(null),
-    lifestyle: useRef(null),
-    beforeAfter: useRef(null)
+useEffect(() => {
+  const checkOwnership = async () => {
+    // Dynamic import avoids SSR issues
+    const { auth, db } = await import('@/app/login/firebase');
+    const { doc, getDoc } = await import('firebase/firestore');
+    if (!auth.currentUser) {
+      setAllowStoryEdit(false);
+      router.push('/login');
+      return;
+    }
+    try {
+      const docRef = doc(db, 'products', productId);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        setAllowStoryEdit(false);
+        return;
+      }
+      const data = docSnap.data();
+      if (data.ownerId && data.ownerId === auth.currentUser.uid) {
+        setAllowStoryEdit(true); // allow
+      } else {
+        setAllowStoryEdit(false); // deny
+      }
+    } catch {
+      setAllowStoryEdit(false);
+    }
   };
-  const photoUrlsRef = useRef([]);
-
-  // State for validation instead of using window
-  const [validationState, setValidationState] = useState({
-    step1: true,  // Template selection - always valid once selected
-    step2: false, // Product basics
-    step3: false, // Product story
-    step4: false, // Process step - now required for templates
-    step5: true,  // Impact step is optional
-    step6: true,  // Visuals step is optional
-    step7: true   // Review step is always valid
-  });
-
-  // Initialize validation system
+  if (productId) checkOwnership();
+}, [productId, router]);
+// Initialize validation system
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.productStoryValidation = validationState;
     }
   }, [validationState]);
+    // Load product data and any existing custom story data
+  useEffect(() => {
+  const loadProductData = async () => {
+    if (!productId) return;
+    let foundAny = false;
+    setLoading(true);
+    try {
+      // Load DIRECTLY from Firestore (skip API route)
+      const { db } = await import('@/app/login/firebase');
+      const { doc, getDoc } = await import('firebase/firestore');
+      const docRef = doc(db, 'products', productId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const product = docSnap.data();
+        setProductData({ ...product, id: productId });
+        foundAny = true;
+        setProductStoryData(prev => ({
+          ...prev,
+          basics: {
+            ...prev.basics,
+            name: product.title || product.name || '',
+            category: product.category || product.type || '',
+            problem: product.description || '',
+            audience: product.targetAudience || '',
+            value: ''
+          }
+        }));
+        const allowPrefill = (modeParam === 'edit') || (modeParam !== 'create' && !!product.customPage);
+        if (allowPrefill && product.customPage) {
+          setProductStoryData(product.customPage.content || product.customPage.productStoryData || productStoryData);
+          setSelectedTemplate(product.customPage.templateType || 'our-journey');
+        }
+      }
+    } catch (err) {
+      // Ignore for now, will check localStorage
+    }
+    // Check localStorage for draft
+    try {
+      const savedData = localStorage.getItem(`productStoryData_${productId}`);
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        if (parsed.productStoryData) {
+          setProductStoryData(parsed.productStoryData);
+          setSelectedTemplate(parsed.templateType || 'our-journey');
+          foundAny = true;
+        }
+      }
+    } catch (ex) {
+      // Ignore errors
+    }
+    // If nothing found, redirect
+    if (!foundAny) {
+      alert('Product not found. Redirecting to marketplace...');
+      router.push('/marketplace');
+    }
+    setLoading(false);
+  };
+
+  loadProductData();
+}, [productId, router, modeParam]);
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoUrlsRef.current.forEach(url => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // Ignore errors during cleanup
+        }
+      });
+    };
+  }, []);
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [step]);
+    const updateValidation = useCallback((stepKey, isValid) => {
+    setValidationState(prev => {
+      // Only update if the value has actually changed
+      if (prev[stepKey] !== isValid) {
+        return {
+          ...prev,
+          [stepKey]: isValid
+        };
+      }
+      return prev;
+    });
+  }, []);
+  
+  // In edit mode (or when an explicit section is provided), jump to that section (declare before any early return)
+  useEffect(() => {
+    const targetKey = sectionParam || (modeParam === 'edit' ? 'review' : null);
+    if (!targetKey) return;
+    const steps = getTemplateSteps();
+    const idx = steps.findIndex((s) => s.key === targetKey);
+    if (idx !== -1) setStep(steps[idx].number);
+  }, [modeParam, sectionParam, selectedTemplate]);
+
+if (allowStoryEdit === null) {
+  return <div>Loading...</div>;
+}
+if (allowStoryEdit === false) {
+  return <div>You are not authorized to add a story page to this product.</div>;
+}
+
+
+
+ 
+  
 
   // Validation function to check if current step is valid
   const isCurrentStepValid = () => {
@@ -146,7 +257,7 @@ if (allowStoryEdit === false) {
       case 'basics':
         return validationState.step2; // Product basics
       case 'story':
-        return validationState.step3; // Product story
+        return validationState.step3; // Product story` 
       case 'process':
         return validationState.step4; // Process
       case 'impact':
@@ -249,7 +360,7 @@ if (allowStoryEdit === false) {
   };
 
   // Get template-specific step configuration
-  const getTemplateSteps = () => {
+  function getTemplateSteps() {
     if (selectedTemplate === 'our-journey') {
       return [
         { number: 1, title: 'Template', icon: Palette, key: 'template' },
@@ -285,6 +396,7 @@ if (allowStoryEdit === false) {
   const templateSteps = getTemplateSteps();
   const maxStep = templateSteps.length;
 
+  
   // Get the actual step key for the current step number
   const getCurrentStepKey = () => {
     return templateSteps[step - 1]?.key || 'template';
@@ -310,108 +422,7 @@ if (allowStoryEdit === false) {
     setStep(step + 1);
   };
 
-  // Function to update validation state - memoized to prevent infinite loops
-  const updateValidation = useCallback((stepKey, isValid) => {
-    setValidationState(prev => {
-      // Only update if the value has actually changed
-      if (prev[stepKey] !== isValid) {
-        return {
-          ...prev,
-          [stepKey]: isValid
-        };
-      }
-      return prev;
-    });
-  }, []);
-
-  // Load product data and any existing custom story data
-  useEffect(() => {
-    const loadProductData = async () => {
-      if (!productId) return;
-      let foundAny = false;
-      setLoading(true);
-      try {
-        // Try remote API
-        const productResponse = await fetch(`/api/products/${productId}`);
-        if (productResponse.ok) {
-          const productData = await productResponse.json();
-          const product = productData.standard;
-          setProductData(product);
-          foundAny = true;
-          setProductStoryData(prev => ({
-            ...prev,
-            basics: {
-              ...prev.basics,
-              name: product.title || product.name || '',
-              category: product.category || product.type || '',
-              problem: product.description || '',
-              audience: product.targetAudience || '',
-              value: ''
-            }
-          }));
-
-          // Try to load existing custom story data
-          try {
-            const customResponse = await fetch(`/api/products/${productId}/custom`);
-            if (customResponse.ok) {
-              const customData = await customResponse.json();
-              if (customData.content) {
-                setProductStoryData(customData.content);
-                setSelectedTemplate(customData.templateType || 'our-journey');
-              }
-            }
-          } catch (error) {
-            // No custom story data, ignore
-          }
-        }
-      } catch (err) {
-        // Ignore for now, will check localStorage
-      }
-      // Check localStorage for draft
-      try {
-        const savedData = localStorage.getItem(`productStoryData_${productId}`);
-        if (savedData) {
-          const parsed = JSON.parse(savedData);
-          if (parsed.productStoryData) {
-            setProductStoryData(parsed.productStoryData);
-            setSelectedTemplate(parsed.templateType || 'our-journey');
-            foundAny = true;
-          }
-        }
-      } catch (ex) {
-        // Ignore errors
-      }
-      // If nothing found, redirect
-      if (!foundAny) {
-        alert('Product not found. Redirecting to marketplace...');
-        router.push('/marketplace');
-      }
-      setLoading(false);
-    };
-
-    loadProductData();
-  }, [productId, router]);
-
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      photoUrlsRef.current.forEach(url => {
-        try {
-          URL.revokeObjectURL(url);
-        } catch (e) {
-          // Ignore errors during cleanup
-        }
-      });
-    };
-  }, []);
-
-  // Scroll to top when step changes
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }, [step]);
+  
 
   const handleInputChange = (section, field, value) => {
     setProductStoryData(prev => ({
@@ -903,7 +914,7 @@ if (allowStoryEdit === false) {
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">Create Product Story</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{modeParam === 'edit' ? 'Edit Product Story' : 'Create Product Story'}</h1>
               <p className="text-sm text-gray-500">{productData?.name}</p>
             </div>
           </div>
@@ -926,7 +937,12 @@ if (allowStoryEdit === false) {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {templateSteps.map((stepItem, index) => (
-              <div key={stepItem.number} className="flex items-center">
+              <div
+                key={stepItem.number}
+                className="flex items-center"
+                onClick={() => { if (modeParam === 'edit') setStep(stepItem.number); }}
+                style={{ cursor: modeParam === 'edit' ? 'pointer' : 'default' }}
+              >
                 <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                   step === stepItem.number
                     ? 'border-blue-600 bg-blue-600 text-white'
