@@ -1,34 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, ShoppingBag, Plus, Info, Mail, User, User2, LogOut } from 'lucide-react';
+import { Home, ShoppingBag, Plus, Info, Mail, User, User2, LogOut, CreditCard } from 'lucide-react';
 import { auth } from '../../app/login/firebase'; // adjust path if needed
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import SiginLoader from '@/components/animated icon/SiginLoding.jsx';
 
 const Navigation = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+  const [authAction, setAuthAction] = useState(null);
+  const prevLoggedInRef = useRef(null);
+  const authTimeoutRef = useRef(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => setIsLoggedIn(!!user));
-    return () => unsub();
+    const unsub = onAuthStateChanged(auth, (user) => {
+      const newLoggedIn = !!user;
+      // On subsequent state flips (not initial mount), show loader
+      if (prevLoggedInRef.current !== null && prevLoggedInRef.current !== newLoggedIn) {
+        setAuthAction(newLoggedIn ? 'login' : 'logout');
+        setIsProcessingAuth(true);
+        if (authTimeoutRef.current) clearTimeout(authTimeoutRef.current);
+        authTimeoutRef.current = setTimeout(() => setIsProcessingAuth(false), 4000);
+      }
+      prevLoggedInRef.current = newLoggedIn;
+      setIsLoggedIn(newLoggedIn);
+    });
+    return () => {
+      unsub();
+      if (authTimeoutRef.current) clearTimeout(authTimeoutRef.current);
+    };
   }, []);
 
   const handleLogout = async () => {
     try {
+      setAuthAction('logout');
+      setIsProcessingAuth(true);
       await signOut(auth);
-      router.push('/login'); // redirect to login page after logout
+      router.push('/'); // redirect to home page after logout
     } catch (e) {
       console.error('Logout failed:', e);
+      setIsProcessingAuth(false);
     }
   };
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
-    { href: '/create', label: 'Create Product', icon: Plus },
+    { href: '/create', label: 'Create Product', icon: Plus, requiresAuth: true },
     { href: '/dashboard', label: 'Dashboard', icon: User2, requiresAuth: true },
+    { href: '/checkout', label: 'Checkout', icon: CreditCard },
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Mail },
     { href: '/login', label: 'Login', icon: User2 },
@@ -42,7 +65,16 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <>
+      {isProcessingAuth && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+          <SiginLoader />
+          <div className="mt-2 text-gray-900 text-base md:text-lg font-medium">
+            {authAction === 'logout' ? 'Logging you out...' : 'Logging you in...'}
+          </div>
+        </div>
+      )}
+      <nav className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo/Brand */}
@@ -51,14 +83,14 @@ const Navigation = () => {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">M</span>
               </div>
-              <span className="text-xl font-semibold text-gray-900">
-                Marketplace Assistant
-              </span>
             </Link>
+            {!isLoggedIn && (
+              <span className="ml-2 text-xl font-semibold text-gray-900 whitespace-nowrap">MarketplaceAssistant</span>
+            )}
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={`hidden md:flex items-center space-x-8 ${!isLoggedIn ? 'flex-1 justify-center' : ''}`}>
             {navItems
               .filter((item) => !item.requiresAuth || isLoggedIn) // 👈 Only show Dashboard if logged in
               .map((item) => {
@@ -99,7 +131,7 @@ const Navigation = () => {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeClass}`}
+                    className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${activeClass}`}
                   >
                     <Icon size={16} />
                     <span>{item.label}</span>
@@ -107,6 +139,13 @@ const Navigation = () => {
                 );
               })}
           </div>
+
+          {/* Right spacer to balance logo when logged out */}
+          {!isLoggedIn && (
+            <div className="hidden md:flex items-center opacity-0 pointer-events-none" aria-hidden="true">
+              <div className="w-8 h-8" />
+            </div>
+          )}
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
@@ -166,7 +205,7 @@ const Navigation = () => {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors whitespace-nowrap ${
                       isActive(item.href)
                         ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -181,6 +220,7 @@ const Navigation = () => {
         </div>
       </div>
     </nav>
+    </>
   );
 };
 
