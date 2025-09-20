@@ -284,16 +284,16 @@ export default function ImpactStep({
                 <textarea
                   value={testimonial.quote || ''}
                   onChange={(e) => {
-                    if (e.target.value.length <= 300) {
+                    if (e.target.value.length <= 800) {
                       updateTestimonialField(index, 'quote', e.target.value);
                     }
                   }}
-                  maxLength={300}
+                  maxLength={800}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="What did the customer say about your product?"
                 />
-                <div className="text-xs text-gray-500 mt-1">{(testimonial.quote || '').length}/300</div>
+                <div className="text-xs text-gray-500 mt-1">{(testimonial.quote || '').length}/800</div>
               </div>
 
               {/* Author */}
@@ -305,15 +305,15 @@ export default function ImpactStep({
                   type="text"
                   value={testimonial.author || ''}
                   onChange={(e) => {
-                    if (e.target.value.length <= 100) {
+                    if (e.target.value.length <= 800) {
                       updateTestimonialField(index, 'author', e.target.value);
                     }
                   }}
-                  maxLength={100}
+                  maxLength={800}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Customer's name"
                 />
-                <div className="text-xs text-gray-500 mt-1">{(testimonial.author || '').length}/100</div>
+                <div className="text-xs text-gray-500 mt-1">{(testimonial.author || '').length}/800</div>
               </div>
 
               {/* Project/Context */}
@@ -325,15 +325,15 @@ export default function ImpactStep({
                   type="text"
                   value={testimonial.project || ''}
                   onChange={(e) => {
-                    if (e.target.value.length <= 100) {
+                    if (e.target.value.length <= 800) {
                       updateTestimonialField(index, 'project', e.target.value);
                     }
                   }}
-                  maxLength={100}
+                  maxLength={800}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Project name or context"
                 />
-                <div className="text-xs text-gray-500 mt-1">{(testimonial.project || '').length}/100</div>
+                <div className="text-xs text-gray-500 mt-1">{(testimonial.project || '').length}/800</div>
               </div>
 
               {/* Customer Photo */}
@@ -443,15 +443,15 @@ export default function ImpactStep({
                   type="text"
                   value={award.title || ''}
                   onChange={(e) => {
-                    if (e.target.value.length <= 200) {
+                    if (e.target.value.length <= 800) {
                       updateAwardField(index, 'title', e.target.value);
                     }
                   }}
-                  maxLength={200}
+                  maxLength={800}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Name of the award or recognition"
                 />
-                <div className="text-xs text-gray-500 mt-1">{(award.title || '').length}/200</div>
+                <div className="text-xs text-gray-500 mt-1">{(award.title || '').length}/800</div>
               </div>
 
               {/* Year */}
@@ -483,15 +483,15 @@ export default function ImpactStep({
                   type="text"
                   value={award.organization || ''}
                   onChange={(e) => {
-                    if (e.target.value.length <= 200) {
+                    if (e.target.value.length <= 800) {
                       updateAwardField(index, 'organization', e.target.value);
                     }
                   }}
-                  maxLength={200}
+                  maxLength={800}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Organization or institution that gave the award"
                 />
-                <div className="text-xs text-gray-500 mt-1">{(award.organization || '').length}/200</div>
+                <div className="text-xs text-gray-500 mt-1">{(award.organization || '').length}/800</div>
               </div>
             </div>
           </div>

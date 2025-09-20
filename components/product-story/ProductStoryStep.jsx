@@ -24,9 +24,9 @@ export default function ProductStoryStep({
       return {
         fields: ['origin', 'unique', 'vision'],
         limits: {
-          origin: { max: 50, type: 'words' },
-          unique: { max: 30, type: 'words' },
-          vision: { max: 50, type: 'words' }
+          origin: { max: 800, type: 'chars' },
+          unique: { max: 800, type: 'chars' },
+          vision: { max: 800, type: 'chars' }
         }
       };
     }
@@ -34,10 +34,10 @@ export default function ProductStoryStep({
     return {
       fields: ['origin', 'solution', 'unique', 'vision'],
       limits: {
-        origin: { max: 600, type: 'chars' },
-        solution: { max: 600, type: 'chars' },
-        unique: { max: 600, type: 'chars' },
-        vision: { max: 600, type: 'chars' }
+        origin: { max: 800, type: 'chars' },
+        solution: { max: 800, type: 'chars' },
+        unique: { max: 800, type: 'chars' },
+        vision: { max: 800, type: 'chars' }
       }
     };
   };
@@ -72,27 +72,29 @@ export default function ProductStoryStep({
 
   // Validate field based on template requirements
   const validateField = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
     if (!limits) return true;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return wordCount <= limits.max;
     } else {
-      return value.length <= limits.max;
+      return safeValue.length <= limits.max;
     }
   };
 
   // Get current count display
   const getCountDisplay = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
-    if (!limits) return `${value.length}/600`;
+    if (!limits) return `${safeValue.length}/800`;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return `${wordCount}/${limits.max} words`;
     } else {
-      return `${value.length}/${limits.max}`;
+      return `${safeValue.length}/${limits.max}`;
     }
   };
   // Validation function to check if all mandatory fields are filled and within limits
@@ -155,11 +157,11 @@ export default function ProductStoryStep({
           <textarea
             value={productStoryData.story?.[fieldName] ?? ''}
             onChange={(e) => {
-              if (e.target.value.length <= 600) {
+              if (e.target.value.length <= 800) {
                 handleInputChange('story', fieldName, e.target.value);
               }
             }}
-            maxLength={600}
+            maxLength={800}
             rows={field.rows}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder={field.placeholder}

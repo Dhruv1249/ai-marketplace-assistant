@@ -19,16 +19,16 @@ export default function ProductBasicsStep({
       return {
         fields: ['name', 'value'],
         limits: {
-          name: { max: 5, type: 'words' },
-          value: { max: 60, type: 'words' }
+          name: { max: 800, type: 'chars' },
+          value: { max: 800, type: 'chars' }
         }
       };
     } else if (selectedTemplate === 'artisan-journey') {
       return {
         fields: ['name', 'value'],
         limits: {
-          name: { max: 5, type: 'words' },
-          value: { max: 20, type: 'words' }
+          name: { max: 800, type: 'chars' },
+          value: { max: 800, type: 'chars' }
         }
       };
     }
@@ -36,11 +36,11 @@ export default function ProductBasicsStep({
     return {
       fields: ['name', 'category', 'problem', 'audience', 'value'],
       limits: {
-        name: { max: 200, type: 'chars' },
-        value: { max: 500, type: 'chars' },
-        category: { max: 100, type: 'chars' },
-        problem: { max: 300, type: 'chars' },
-        audience: { max: 150, type: 'chars' }
+        name: { max: 800, type: 'chars' },
+        value: { max: 800, type: 'chars' },
+        category: { max: 800, type: 'chars' },
+        problem: { max: 800, type: 'chars' },
+        audience: { max: 800, type: 'chars' }
       }
     };
   };
@@ -54,27 +54,29 @@ export default function ProductBasicsStep({
 
   // Validate field based on template requirements
   const validateField = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
     if (!limits) return true;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return wordCount <= limits.max;
     } else {
-      return value.length <= limits.max;
+      return safeValue.length <= limits.max;
     }
   };
 
   // Get current count display
   const getCountDisplay = (fieldName, value) => {
+    const safeValue = value || '';
     const limits = config.limits[fieldName];
-    if (!limits) return `${value.length}/600`;
+    if (!limits) return `${safeValue.length}/800`;
 
     if (limits.type === 'words') {
-      const wordCount = countWords(value);
+      const wordCount = countWords(safeValue);
       return `${wordCount}/${limits.max} words`;
     } else {
-      return `${value.length}/${limits.max}`;
+      return `${safeValue.length}/${limits.max}`;
     }
   };
 
@@ -141,13 +143,13 @@ export default function ProductBasicsStep({
         <div className="flex items-start gap-2">
           {field.type === 'textarea' ? (
             <textarea
-              value={productStoryData.basics[fieldName]}
+              value={productStoryData.basics?.[fieldName] || ''}
               onChange={(e) => {
-                if (e.target.value.length <= 600) {
+                if (e.target.value.length <= 800) {
                   handleInputChange('basics', fieldName, e.target.value);
                 }
               }}
-              maxLength={600}
+              maxLength={800}
               rows={field.rows}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder={field.placeholder}
@@ -155,13 +157,13 @@ export default function ProductBasicsStep({
           ) : (
             <input
               type="text"
-              value={productStoryData.basics[fieldName]}
+              value={productStoryData.basics?.[fieldName] || ''}
               onChange={(e) => {
-                if (e.target.value.length <= 600) {
+                if (e.target.value.length <= 800) {
                   handleInputChange('basics', fieldName, e.target.value);
                 }
               }}
-              maxLength={600}
+              maxLength={800}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder={field.placeholder}
             />
