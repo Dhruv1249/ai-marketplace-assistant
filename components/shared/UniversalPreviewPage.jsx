@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Edit3, Eye, Code, Bot, Settings, Palette, Save, RotateCcw, Globe } from 'lucide-react';
 import EnhancedJSONModelRenderer from '@/components/editors/EnhancedJSONModelRenderer';
 import UniversalSourceCodeEditor from '@/components/shared/UniversalSourceCodeEditor';
 import UniversalAIAssistant from '@/components/shared/UniversalAIAssistant';
+import GeneratingLoding from '@/components/animated icon/GeneratingLoding';
+import styled from 'styled-components';
 
 // Import seller info templates for fallback
 import professionalTemplate from '@/components/seller-info/templates/professional-template.json';
@@ -33,6 +35,110 @@ const PRODUCT_STORY_TEMPLATE_MAP = {
   'modern': modernTemplate,
 };
 
+const ToastNotice = styled.div`
+  position: fixed;
+  top: 2%;
+  right: 2%;
+  z-index: 1000;
+  .notification-container {
+    --content-color: black;
+    --background-color: #f3f3f3;
+    --font-size-content: 0.85em;
+    --icon-size: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    color: var(--content-color);
+  }
+  .notification-item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    overflow: hidden;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: rgba(111, 111, 111, 0.2) 0px 8px 24px;
+    background-color: var(--background-color);
+    transition: all 250ms ease;
+    --grid-color: rgba(225, 225, 225, 0.7);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+    background-size: 55px 55px;
+  }
+  .notification-content { display: flex; align-items: center; gap: 0.5em; }
+  .notification-icon { display: flex; align-items: center; }
+  .notification-text { font-size: var(--font-size-content); user-select: none; }
+  .notification-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: var(--content-color);
+    width: 100%;
+    transform: translateX(100%);
+    animation: progressBar 5s linear forwards infinite;
+  }
+  .warning {
+    color: #78350f;
+    background-color: #ffe57e;
+    --grid-color: rgba(245, 159, 11, 0.25);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+  }
+  .warning svg { color: #78350f; width: var(--icon-size); height: var(--icon-size); }
+  @keyframes progressBar { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+`;
+
 /**
  * UNIFIED PREVIEW PAGE - ENHANCED FOR PRODUCT STORIES
  */
@@ -54,6 +160,9 @@ export default function UniversalPreviewPage({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [showPublishNotice, setShowPublishNotice] = useState(false);
+  const [publishNoticeMsg, setPublishNoticeMsg] = useState('');
+  const hideToastRef = useRef(null);
 
   // ENHANCED DATA LOADING - Works for product stories
   useEffect(() => {
@@ -82,6 +191,10 @@ export default function UniversalPreviewPage({
       console.error(`❌ [UNIFIED] Failed to read or parse ${storageKey}:`, e);
     }
   }, [storageKey, type]);
+
+useEffect(() => {
+  return () => { if (hideToastRef.current) clearTimeout(hideToastRef.current); };
+}, []);
 
   /**
    * ENHANCED NORMALIZE DATA STRUCTURE
@@ -629,9 +742,13 @@ export default function UniversalPreviewPage({
       const result = await response.json();
       
       if (result.success) {
-        alert(`Product story page published successfully! ${filesAdded > 0 ? `${filesAdded} images uploaded.` : 'Text content published.'}`);
-        // Navigate to the product page
-        window.location.href = `/marketplace/${productId}`;
+        const msg = `Product story page published successfully! ${filesAdded > 0 ? `${filesAdded} images uploaded.` : 'Text content published.'}`;
+        setPublishNoticeMsg(msg);
+        setShowPublishNotice(true);
+        if (hideToastRef.current) clearTimeout(hideToastRef.current);
+        hideToastRef.current = setTimeout(() => setShowPublishNotice(false), 4000);
+        // Redirect after a short delay to allow users to see the toast
+        setTimeout(() => { window.location.href = `/marketplace/${productId}`; }, 1200);
       } else {
         alert(`Failed to publish: ${result.error}`);
       }
@@ -737,6 +854,28 @@ export default function UniversalPreviewPage({
 
   return (
     <div className="min-h-screen bg-white">
+      {showPublishNotice && (
+        <ToastNotice role="alert" aria-live="assertive">
+          <ul className="notification-container">
+            <li className="notification-item warning">
+              <div className="notification-content">
+                <div className="notification-icon">
+                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                </div>
+                <div className="notification-text">{publishNoticeMsg}</div>
+              </div>
+              <div className="notification-icon notification-close" onClick={() => setShowPublishNotice(false)} style={{ cursor: 'pointer' }}>
+                <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+              </div>
+              <div className="notification-progress-bar" />
+            </li>
+          </ul>
+        </ToastNotice>
+      )}
       {/* Preview Controls Bar - Positioned below global nav */}
       {showHeader && (
         <div className="bg-gray-50 border-b">
@@ -886,6 +1025,16 @@ export default function UniversalPreviewPage({
             type={type}
           />
         </>
+      )}
+
+      {isPublishing && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6">
+          <div className="text-center max-w-md mb-40">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Publishing your product story...</h3>
+            <p className="text-sm text-gray-600">Uploading images and saving your page. Please don’t close this tab. This may take a moment.</p>
+          </div>
+          <GeneratingLoding />
+        </div>
       )}
     </div>
   );
