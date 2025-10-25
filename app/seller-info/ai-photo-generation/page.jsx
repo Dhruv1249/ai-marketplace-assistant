@@ -2,12 +2,15 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Upload, Sparkles, X, Check, AlertCircle, Loader } from 'lucide-react';
 import { Button } from '@/components/ui';
 
 export default function AIPhotoGenerationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams?.get('productId');
+  
   const [uploadedPhotos, setUploadedPhotos] = useState([]);
   const [userPrompt, setUserPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -100,17 +103,41 @@ export default function AIPhotoGenerationPage() {
       const result = await response.json();
       
       if (result.success && result.templateJSON) {
-        // Directly open preview with the generated template JSON
+        // Save template with proper content structure for preview
+        const pName = productStoryData?.basics?.name || 'Product';
+        const pCategory = productStoryData?.basics?.category || 'General';
+        
         const payload = {
-          productStoryData: result.productStoryData,
-          templateType: 'ai-photo-generated',
           model: result.templateJSON,
-          content: result.productStoryData,
-          images: result.firebaseUrls || []
+          content: {
+            name: pName,
+            category: pCategory,
+            description: userPrompt,
+            basics: {
+              name: pName,
+              category: pCategory,
+              value: userPrompt
+            },
+            story: {},
+            process: {},
+            impact: {
+              testimonials: [],
+              metrics: []
+            }
+          },
+          images: result.firebaseUrls || [],
+          templateType: 'ai-photo-generated',
+          productId: productId
         };
 
         try {
           console.log('📝 Saving preview data to localStorage...');
+          console.log('Payload structure:', {
+            hasModel: !!payload.model,
+            hasContent: !!payload.content,
+            hasImages: !!payload.images,
+            imageCount: payload.images.length
+          });
           localStorage.setItem('productStoryPreviewData', JSON.stringify(payload));
           console.log('✅ Preview data saved, navigating to preview...');
           
