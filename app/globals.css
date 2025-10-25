@@ -17,7 +17,58 @@ body {
   background: #ffffff;
   color: #171717;
   font-family: Arial, Helvetica, sans-serif;
+  padding-top: var(--gt-banner-height, 0px);
 }
+
+/* Reserve safe space for Google banner and keep navbar below it */
+:root { --gt-banner-height: 0px; }
+#site-navbar { position: sticky; top: 0; z-index: 40; }
+
+/* Ensure Google banner stays on top */
+.goog-te-banner-frame { z-index: 9999 !important; }
+
+/* Minimal adjustments to the inline widget to align with navbar height */
+#google_translate_element { display: inline-flex; align-items: center; min-width: 160px; }
+#google_translate_element .goog-te-gadget { font-size: 0; line-height: 0; }
+#google_translate_element .goog-te-gadget .goog-te-combo {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  height: 36px !important;
+  padding: 6px 36px 6px 12px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    linear-gradient(to bottom, transparent, transparent);
+  background-repeat: no-repeat, repeat;
+  background-position: right 10px center, 0 0;
+  background-size: 16px 16px, auto;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+#google_translate_element .goog-te-gadget .goog-te-combo:hover { border-color: #d1d5db !important; }
+#google_translate_element .goog-te-gadget .goog-te-combo:focus {
+  outline: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+#google_translate_element .goog-te-gadget .goog-te-combo option {
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+/* Hide stray triangle/arrow artifacts Google sometimes injects */
+.goog-te-gadget .goog-te-gadget-simple,
+.goog-te-gadget .goog-te-menu-value span[style*='border-left'] { border: 0 !important; }
+.goog-te-gadget img[alt=''],
+.goog-te-gadget span[style*='border-color: rgb(187, 187, 187)'] { display: none !important; }
+
+/* Optional: avoid underline and default link styles inside gadget */
+#google_translate_element a { text-decoration: none; }
 
 /* Ensure input and textarea text is always visible */
 input, textarea, select {

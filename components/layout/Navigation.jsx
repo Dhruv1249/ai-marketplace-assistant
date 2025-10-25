@@ -123,7 +123,7 @@ const Navigation = () => {
           </div>
         </div>
       )}
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-40">
+      <nav className="bg-white shadow-sm border-b sticky top-0 z-40" id="site-navbar">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo/Brand */}
@@ -178,6 +178,11 @@ const Navigation = () => {
                 })}
               </div>
             )}
+
+            {/* Google Translate selector container (always visible) */}
+            <div className="hidden md:flex items-center space-x-3">
+              <div id="google_translate_element" aria-label="Language selector" className="min-w-[120px] h-8 flex items-center" />
+            </div>
 
             {/* Avatar Dropdown - Right side for logged in users */}
             {isLoggedIn && (
@@ -251,6 +256,11 @@ const Navigation = () => {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* Mobile Google Translate selector */}
+          <div className="md:hidden px-2 pt-2">
+            <div id="google_translate_element" aria-label="Language selector mobile" className="w-full h-10 flex items-center justify-end" />
           </div>
 
           {/* Mobile Navigation */}

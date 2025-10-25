@@ -34,6 +34,55 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Translate Element script - loads once, non-blocking */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                if (typeof window !== 'undefined') {
+                  if (!window.__gt_script_loading) {
+                    window.__gt_script_loading = true;
+                    window.googleTranslateElementInit = function() {
+                      try {
+                        if (window.__gt_inited) return;
+                        if (!window.google || !window.google.translate) return;
+                        new window.google.translate.TranslateElement({
+                          pageLanguage: 'en',
+                          includedLanguages: 'en,hi,bn,te,mr,ta,gu,ur,kn,ml,pa,or,as',
+                          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                          autoDisplay: false
+                        }, 'google_translate_element');
+                        window.__gt_inited = true;
+                      } catch (e) { console.error('GT init error', e); }
+                    };
+                    var gt = document.createElement('script');
+                    gt.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                    gt.async = true; gt.defer = true;
+                    document.head.appendChild(gt);
+
+                    // Observe for Google banner and adjust body offset so navbar sits below it
+                    var adjustOffset = function(){
+                      var bannerFrame = document.querySelector('.goog-te-banner-frame');
+                      var banner = bannerFrame && bannerFrame.parentElement ? bannerFrame.parentElement : null;
+                      var h = 0;
+                      try {
+                        if (bannerFrame && bannerFrame.style && bannerFrame.style.display !== 'none') {
+                          h = bannerFrame.offsetHeight || 0;
+                        }
+                      } catch(e) {}
+                      document.documentElement.style.setProperty('--gt-banner-height', h + 'px');
+                    };
+                    var mo = new MutationObserver(adjustOffset);
+                    mo.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+                    window.addEventListener('load', function(){ setTimeout(adjustOffset, 500); });
+                  }
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
