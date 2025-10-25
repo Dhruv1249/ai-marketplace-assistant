@@ -614,22 +614,8 @@ export default function Dashboard() {
           </div>
         )}
         {/* Top bar */}
-        <div className={`sticky top-0 z-20 flex items-center justify-between md:justify-end px-3 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
+        <div className={`sticky top-0 z-20 flex items-center justify-between md:justify-end px-3 sm:px-6 h-14 backdrop-blur ${theme === 'dark' ? 'bg-black/80' : 'bg-white/80'}`}>
           <div className={`md:hidden font-semibold ${theme === 'dark' ? 'text-white' : ''}`}>Dashboard</div>
-                    <div className="ml-auto flex items-center gap-3">
-            <span className={`text-sm hidden sm:block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-              {user.email}
-            </span>
-            <div className={theme === 'dark' ? 'w-8 h-8 rounded-full overflow-hidden bg-gray-700' : 'w-8 h-8 rounded-full overflow-hidden bg-gray-200'}>
-              {photoURL ? (
-                <Image src={photoURL} alt="Profile" width={32} height={32} />
-              ) : (
-                <div className={`w-full h-full flex items-center justify-center text-xs ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
-                  {user.displayName ? user.displayName.charAt(0) : user.email.charAt(0)}
-                </div>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* Mobile section switcher directly under top bar */}
@@ -661,7 +647,7 @@ export default function Dashboard() {
           {/* Overview Section */}
   {activeSection === 'overview' && (
     <>
-      <h2 className={`hidden sm:block text-2xl font-bold mb-6 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
+      <h2 className={`hidden sm:block text-2xl font-bold mb-2 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
       {/* Profile card - hidden on mobile */}
       <div className={`hidden md:block ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-10 mb-8 text-left`}>
         <div className="flex items-start gap-6">
@@ -735,7 +721,6 @@ export default function Dashboard() {
             <div className={theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}>
               {profile?.businessName || profile?.shopName || "No business info yet"}
             </div>
-            <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'} text-sm`}>Email: {user.email}</div>
             {profile?.businessDesc && (
               <div className={`mt-3 text-base font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-600'}`}>
                 {profile.businessDesc}
