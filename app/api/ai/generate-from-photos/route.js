@@ -92,176 +92,220 @@ Firebase Photo URLs: ${firebaseUrls.join(', ')}
 
 Generate a COMPLETE template JSON that follows this structure. The template should be creative, unique, and tailored to the product shown in the photos:
 
+{🚀 ENHANCED JSON MODEL RENDERER CAPABILITIES:
+
+📋 BASIC STRUCTURE:
+Every template must follow this structure:
 {
-  "colors": {
-    "brand-primary": "#HEX_COLOR",
-    "brand-secondary": "#HEX_COLOR",
-    "brand-accent": "#HEX_COLOR",
-    "brand-text-primary": "#HEX_COLOR",
-    "brand-text-secondary": "#HEX_COLOR",
-    "brand-background": "#HEX_COLOR",
-    "brand-highlight": "#HEX_COLOR"
+  "metadata": {
+    "name": "Template Name",
+    "description": "Template description", 
+    "template": "template-type",
+    "version": "1.0",
+    "features": ["feature1", "feature2"]
   },
   "styleVariables": {
-    "brandPrimary": "#HEX_COLOR",
-    "brandSecondary": "#HEX_COLOR",
-    "brandAccent": "#HEX_COLOR",
-    "brandTextPrimary": "#HEX_COLOR",
-    "brandTextSecondary": "#HEX_COLOR",
-    "brandBackground": "#HEX_COLOR",
-    "brandHighlight": "#HEX_COLOR",
-    "fontFamilySerif": "'Font Name', serif",
-    "fontFamilyDisplay": "'Font Name', serif"
-  },
-  "metadata": {
-    "name": "Product Story Name",
-    "description": "Brief description",
-    "template": "ai-generated-story",
-    "version": "1.0",
-    "features": ["animations", "interactive", "gradients", "special-components"]
+    "primaryColor": "#3b82f6",
+    "secondaryColor": "#1e40af",
+    "backgroundColor": "#ffffff",
+    "textColor": "#111827",
+    "accentColor": "#60a5fa",
+    "gradientStart": "#3b82f6",
+    "gradientEnd": "#1d4ed8",
+    "fontFamily": "'Inter', sans-serif",
+    "borderRadius": "8px",
+    "shadowColor": "rgba(0, 0, 0, 0.1)"
   },
   "animations": {
-    "animationName": {
+    "fadeInUp": {
       "keyframes": {
-        "0%": { "property": "value" },
-        "100%": { "property": "value" }
+        "0%": { "opacity": "0", "transform": "translateY(30px)" },
+        "100%": { "opacity": "1", "transform": "translateY(0)" }
       },
       "duration": "0.8s",
-      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
-      "fillMode": "both"
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
     }
   },
-  "component": {
-    "id": "root",
-    "type": "div",
-    "props": {
-      "className": "tailwind classes",
-      "style": { "CSS": "properties" }
-    },
-    "children": [
-      {
-        "id": "unique-id",
-        "type": "section|div|h1|p|img|button|etc",
-        "props": {
-          "className": "tailwind classes",
-          "style": { "CSS": "properties" }
-        },
-        "children": ["text content or nested components"],
-        "contentKey": "path.to.content.field (optional)",
-        "editable": { "contentEditable": true } (optional)
+  "component": { /* component tree */ }
+}
+
+🎨 STYLE VARIABLES & CUSTOM ANIMATIONS:
+- Define CSS custom properties in styleVariables
+- Create custom animations with keyframes, duration, easing
+- Use animations with animate-{animationName} classes
+- Support for complex animations: float, rotate, pulse, twinkle
+
+🧩 COMPONENT TYPES:
+- All HTML elements: div, section, h1-h6, p, span, a, img, button, input, form, etc.
+- Special components: BeforeAfterSlider
+- Properties: id, type, props, children, editable, if, unless, show
+
+🔄 DYNAMIC CONTENT & TEMPLATES:
+Template expressions with double curly braces:
+- Basic: {{content.name}}
+- Fallback: {{content.name || 'Default Name'}}
+- Ternary: {{content.isActive ? 'Active' : 'Inactive'}}
+- String methods: {{content.name.charAt(0).toUpperCase()}}
+- Array access: {{content.photos[0].url}}
+- Complex: {{(content.firstName || content.name) + ' - ' + content.title}}
+
+Content paths available:
+- content.basics.name, content.basics.category, content.basics.value
+- content.story.origin, content.story.solution, content.story.unique
+- content.process.creation, content.process.materials, content.process.time
+- content.impact.metrics, content.impact.testimonials
+- content.contact.email, content.contact.phone
+- images[0], images[1], images[2], images[3]
+- state.componentActive, formData.email
+
+⚡ CONDITIONAL RENDERING:
+- "if": "content.showSection" - shows only if true
+- "unless": "content.hideSection" - shows only if false  
+- "show": "content.isVisible && content.hasData" - complex visibility logic
+
+🎮 INTERACTIVE COMPONENTS:
+Event handlers:
+- "onClick": "{handleClick}"
+- "onSubmit": "{handleFormSubmit}"
+- "onChange": "{handleInputChange}"
+- "onToggle": "{handleToggle}"
+
+State management:
+- Components maintain state through renderer
+- Access with {{state.menuOpen ? 'menu-open' : 'menu-closed'}}
+
+✨ PARTICLES & EFFECTS:
+Create particle systems with positioned divs:
+{
+  "id": "hero-particles",
+  "type": "div", 
+  "props": {
+    "className": "absolute inset-0 opacity-30"
+  },
+  "children": [
+    {
+      "id": "particle-1",
+      "type": "div",
+      "props": {
+        "className": "absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse"
       }
-    ]
+    }
+  ]
+}
+
+Built-in animation classes:
+- animate-float, animate-pulse-slow, animate-bounce-slow
+- hover-lift, hover-scale
+- fade-in-up, slide-in-left, scale-in
+
+🖼️ GALLERY COMPONENTS:
+Special gallery tokens that auto-generate image galleries:
+- "children": "HERO_GALLERY" - Hero image gallery
+- "children": "PROCESS_GALLERY" - Process step gallery  
+- "children": "BEFORE_AFTER_GALLERY" - Before/after sliders
+- "children": "LIFESTYLE_GALLERY" - Lifestyle images
+- "children": "SPECIALTIES_ARRAY" - Specialty items
+- "children": "ACHIEVEMENTS_ARRAY" - Achievement items
+- "children": "TESTIMONIALS_ARRAY" - Testimonial cards
+- "children": "METRICS_ARRAY" - Metric cards
+
+📝 FORM HANDLING:
+The renderer automatically handles:
+- Email validation, required field validation
+- Error display, form state management
+- Real-time form data binding
+
+Example form:
+{
+  "id": "contact-form",
+  "type": "form",
+  "props": {
+    "className": "space-y-4",
+    "onSubmit": "{handleFormSubmit}"
+  },
+  "children": [
+    {
+      "id": "name-input",
+      "type": "input",
+      "props": {
+        "type": "text",
+        "name": "name", 
+        "placeholder": "Your Name",
+        "className": "w-full px-4 py-2 border rounded-lg",
+        "onChange": "{handleInputChange}"
+      }
+    }
+  ]
+}
+
+🎯 BEST PRACTICES:
+1. Use semantic HTML elements
+2. Apply responsive design: text-sm md:text-base lg:text-lg
+3. Include accessibility: alt attributes, proper labels
+4. Use consistent naming conventions
+5. Group related components logically
+
+🎨 ADVANCED STYLING:
+- Full Tailwind CSS support
+- Gradients: bg-gradient-to-r from-blue-500 to-purple-600
+- Shadows: shadow-lg, shadow-xl, shadow-blue-500/50
+- Backdrop effects: backdrop-blur-sm
+- Responsive: grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+- Hover effects: hover:scale-105, hover:rotate-1
+- Transitions: transition-all duration-300
+
+🚀 CREATIVE THEMES:
+
+Sci-fi Theme:
+- Colors: {"primaryColor": "#06b6d4", "backgroundColor": "#0f172a", "accentColor": "#64ffda"}
+- Effects: Neon glows, dark backgrounds, particles
+- Animations: Glow, pulse, twinkle effects
+- Classes: backdrop-blur, shadow-cyan-500/50
+
+Elegant Theme:  
+- Colors: {"primaryColor": "#d97706", "backgroundColor": "#fefbf3", "accentColor": "#f59e0b"}
+- Effects: Gold accents, serif fonts, subtle shadows
+- Animations: Smooth transitions, gentle hover
+- Classes: shadow-amber-500/30, font-serif
+
+Modern Minimal:
+- Colors: {"primaryColor": "#3b82f6", "backgroundColor": "#ffffff", "accentColor": "#6b7280"}  
+- Effects: Clean lines, subtle shadows, whitespace
+- Animations: Scale effects, smooth transitions
+- Classes: shadow-lg, rounded-xl, space-y-8
+
+🔧 TECHNICAL REQUIREMENTS:
+1. Always include unique "id" for each component
+2. Use proper HTML structure (no div in tbody)
+3. Use Tailwind classes in className props
+4. Use hex values in styleVariables
+5. Include animations with animate-* classes
+6. Add transition classes for smooth effects
+7. Use conditional rendering with "if" property
+8. Make interactive elements with event handlers
+
+RESPONSE FORMAT:
+{
+  "hasChanges": true/false,
+  "explanation": "Detailed explanation of changes and features used",
+  "styleVariables": {
+    "primaryColor": "#8b5cf6",
+    "backgroundColor": "#111827", 
+    "fontFamily": "'Inter', sans-serif"
+  },
+  "metadata": {
+    "name": "Creative Theme Name",
+    "description": "Theme description with features"
+  },
+  "component": {
+    // Rich interactive template using multiple renderer features
+    // Include particles, animations, galleries, forms, conditionals
+    // Use actual user content and images from the provided data
+    // Create engaging, responsive, accessible designs
   }
 }
 
-REQUIREMENTS:
-1. Create a UNIQUE, CREATIVE template design based on the product photos
-2. Use appropriate color scheme based on product aesthetics
-3. Include multiple sections: hero, story, features/process, gallery, testimonials/impact, CTA
-4. Use animations (fadeInUp, slideInLeft, slideInRight, etc.)
-5. Include gradient backgrounds and advanced CSS
-6. Make sections responsive with grid/flex layouts
-7. Use Tailwind CSS classes for styling
-8. Include contentKey and editable properties for user-editable fields
-9. Use the Firebase URLs provided for gallery images
-10. Create compelling copy that matches the product
-11. Return ONLY valid JSON, no markdown or explanations
-12. Make it production-ready and visually stunning
-
-IMPORTANT NOTES:
-- Use var(--brandPrimary), var(--brandAccent), etc. for colors
-- Use var(--fontFamilySerif), var(--fontFamilyDisplay) for fonts
-- Create custom animations that fit the product
-- Make the design responsive and modern
-- Include hover effects and transitions
-- Use proper semantic HTML structure
-- Make it editable with contentKey properties`;
-
-    // Step 3: Call Gemini API to generate entire template
-    console.log('🤖 Calling Gemini API to generate complete template...');
-    const model = 'gemini-2.0-flash';
-    
-    const contents = [
-      {
-        role: 'user',
-        parts: [
-          ...photoDataList,
-          {
-            text: templatePrompt
-          }
-        ]
-      }
-    ];
-
-    const response = await ai.models.generateContent({
-      model,
-      contents,
-    });
-
-    let generatedText = response.text || '';
-    
-    // Step 4: Clean and parse JSON
-    let cleanedText = generatedText
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .replace(/^[^{]*/, '')
-      .replace(/[^}]*$/, '')
-      .trim();
-
-    if (!cleanedText.startsWith('{')) {
-      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        cleanedText = jsonMatch[0];
-      }
-    }
-
-    let templateJSON;
-    try {
-      templateJSON = JSON.parse(cleanedText);
-    } catch (parseError) {
-      console.error('Failed to parse Gemini template response:', parseError);
-      console.error('Raw response:', generatedText);
-      return NextResponse.json(
-        { error: 'Failed to parse AI-generated template. Please try again.' },
-        { status: 500 }
-      );
-    }
-
-    // Validate template structure
-    if (!templateJSON.component || !templateJSON.metadata || !templateJSON.colors) {
-      console.error('Template missing required fields:', Object.keys(templateJSON));
-      return NextResponse.json(
-        { error: 'AI-generated template missing required fields' },
-        { status: 500 }
-      );
-    }
-
-    console.log('✅ Complete template generated successfully');
-    console.log('Template structure:', {
-      hasComponent: !!templateJSON.component,
-      hasMetadata: !!templateJSON.metadata,
-      hasColors: !!templateJSON.colors,
-      hasAnimations: !!templateJSON.animations,
-      hasStyleVariables: !!templateJSON.styleVariables
-    });
-
-    // Step 5: Generate content data - let AI go wild with whatever it wants
-    const contentPrompt = `Based on these product photos and description, generate ANY content data that would be useful for this product page. Be creative and generate whatever you think would make this page amazing.
-
-Product: ${productName}
-Category: ${productCategory}
-Description: ${userPrompt}
-Firebase URLs: ${firebaseUrls.join(', ')}
-
-Generate a JSON object with whatever content you think is best. You can include:
-- Product information
-- Stories and narratives
-- Features and benefits
-- Testimonials and reviews
-- Statistics and metrics
-- Call-to-actions
-- Sections and layouts
-- Anything else that would enhance this product page
+Be CREATIVE and leverage the full power of the Enhanced JSON Model Renderer!
 
 Be creative, be bold, make it compelling. Return ONLY valid JSON.`;
 
