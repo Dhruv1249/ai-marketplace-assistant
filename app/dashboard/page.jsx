@@ -472,7 +472,7 @@ export default function Dashboard() {
   return (
     <div
       ref={dashboardRef}
-      className={`min-h-screen w-full flex ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
+      className={`min-h-screen w-full flex overflow-x-hidden ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-gray-900'}`}
       style={theme === 'dark'
         ? { minHeight: '100vh', backgroundColor: '#111', color: '#fff' }
         : { minHeight: '100vh', backgroundColor: '#fff', color: '#1a202c' }
@@ -504,11 +504,6 @@ export default function Dashboard() {
             onClick={() => setActiveSection('reviews')}
             type="button"
           >Reviews</button>
-          <button
-            className={`block w-full text-left px-4 py-2 rounded-lg transition font-semibold ${activeSection === 'news' ? (theme === 'dark' ? 'bg-gray-800 text-blue-300' : 'bg-gray-100 text-blue-700') : (theme === 'dark' ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100 text-gray-900')}`}
-            onClick={() => setActiveSection('news')}
-            type="button"
-          >Latest News</button>
           <button
             className={`block w-full text-left px-4 py-2 rounded-lg transition font-semibold ${activeSection === 'analytics' ? (theme === 'dark' ? 'bg-gray-800 text-blue-300' : 'bg-gray-100 text-blue-700') : (theme === 'dark' ? 'hover:bg-gray-800 text-white' : 'hover:bg-gray-100 text-gray-900')}`}
             onClick={() => setActiveSection('analytics')}
@@ -605,7 +600,7 @@ export default function Dashboard() {
       </aside>
 
       {/* Main + News content */}
-      <main className={theme === 'dark' ? 'flex-1 bg-black flex flex-col' : 'flex-1 bg-white flex flex-col'}>
+      <main className={theme === 'dark' ? 'flex-1 bg-black flex flex-col overflow-x-hidden' : 'flex-1 bg-white flex flex-col overflow-x-hidden'}>
         {comingSoonOpen && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
@@ -619,7 +614,7 @@ export default function Dashboard() {
           </div>
         )}
         {/* Top bar */}
-        <div className={`sticky top-0 z-10 flex items-center justify-between md:justify-end px-4 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
+        <div className={`sticky top-0 z-20 flex items-center justify-between md:justify-end px-3 sm:px-6 h-14 backdrop-blur border-b ${theme === 'dark' ? 'bg-black/80 border-gray-800' : 'bg-white/80 border-gray-200'}`}>
           <div className={`md:hidden font-semibold ${theme === 'dark' ? 'text-white' : ''}`}>Dashboard</div>
                     <div className="ml-auto flex items-center gap-3">
             <span className={`text-sm hidden sm:block ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -637,21 +632,38 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Mobile section switcher directly under top bar */}
+        <div className={`md:hidden border-b ${theme === 'dark' ? 'bg-black/90 border-gray-800' : 'bg-white/90 border-gray-200'} backdrop-blur`}>
+          <div className="overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-2 px-3 py-2">
+              {['overview','profile','products','reviews','analytics'].map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setActiveSection(s)}
+                  className={`px-3 py-1 rounded-full text-xs border whitespace-nowrap ${activeSection===s ? 'bg-blue-600 text-white border-blue-600' : (theme==='dark' ? 'text-gray-200 border-gray-700' : 'text-gray-800 border-gray-200')}`}
+                  aria-pressed={activeSection===s}
+                >{s.charAt(0).toUpperCase()+s.slice(1)}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <style>{`textarea[name="specifications"]{min-height:200px; resize: vertical;}`}</style>
 
         {/* Page container */}
         <div className="flex flex-row w-full flex-1">
-          <section
+                    <section
             ref={dashboardSectionRef}
-            className={`px-20 sm:px-2 py-8 w-full ${showNewsAside ? '' : 'max-w-5xl mx-auto'} ${showNewsAside ? 'lg:pr-6 lg:-ml-2' : ''}`}
+            className={`px-3 sm:px-4 py-6 w-full ${showNewsAside ? 'lg:pr-6' : ''}`}
             style={{ flex: showNewsAside ? '3 1 0%' : '1 1 0%' }}
           >
           {/* Overview Section */}
   {activeSection === 'overview' && (
     <>
-      <h2 className={`text-2xl font-bold mb-6 ml-2 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
-      {/* Profile card */}
-      <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-10 mb-8`}>
+      <h2 className={`hidden sm:block text-2xl font-bold mb-6 sm:ml-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Dashboard</h2>
+      {/* Profile card - hidden on mobile */}
+      <div className={`hidden md:block ${theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border rounded-2xl p-10 mb-8 text-left`}>
         <div className="flex items-start gap-6">
           <div className="relative flex flex-col items-center">
             <div className={`${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'} w-24 h-24 rounded-full overflow-hidden mb-2`}>
@@ -669,7 +681,7 @@ export default function Dashboard() {
               tabIndex={0}
               loading={avatarLoading}
               label="Edit Avatar"
-              className="mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
+              className="hidden md:inline-flex mt-2 px-4 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-semibold rounded-full shadow transition-all focus:outline-none disabled:opacity-60"
             />
             {avatarMenuOpen && (
               <div
@@ -733,7 +745,7 @@ export default function Dashboard() {
         </div>
         {/* Edit Profile */}
         {!editing && (
-          <div className="mt-6">
+          <div className="hidden md:block mt-6">
             <Button variant="outline" className={`${theme === 'dark' ? 'border-gray-500 text-gray-200 hover:bg-gray-700' : 'border-gray-300 text-gray-800 hover:bg-gray-100'}`} onClick={handleEdit}>
               Edit Profile/Shop Info
             </Button>
@@ -774,13 +786,13 @@ export default function Dashboard() {
       </div>
       {/* Products Created */}
       <div className="mb-8">
-        <div className={`font-semibold mb-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Created Products</div>
+        <div className={`font-semibold mb-3 text-left ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Your Created Products</div>
         {createdProducts.length === 0 && (
           <div className="text-gray-400 italic">No products found.</div>
         )}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {createdProducts.map((prod) => (
-            <div key={prod.id} className={`relative rounded-xl border transition shadow-sm flex flex-col gap-2 p-4 ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
+            <div key={prod.id} className={`relative rounded-xl border transition shadow-sm flex flex-col gap-2 p-3 sm:p-4 overflow-hidden ${theme === 'dark' ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
               <button
                 type="button"
                 onClick={() => setOpenProductMenuId((prev) => prev === prod.id ? null : prod.id)}
@@ -847,52 +859,54 @@ export default function Dashboard() {
                     Created: {prod.createdAt.toDate?.().toLocaleString?.() || String(prod.createdAt)}
                   </div>
                 )}
-                <Button
-                  size="sm"
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold mt-2"
-                  onClick={() => {
-                    setEditingProductId(prod.id);
-                    setProductEditData({
-                      name: prod.name || prod.title || '',
-                      title: prod.title || prod.name || '',
-                      description: prod.description || '',
-                      metaDescription: prod.metaDescription || '',
-                      price: prod.price ?? '',
-                      imageUrl: prod.imageUrl || '',
-                      images: Array.isArray(prod.images) ? prod.images : (prod.images || ''),
-                      category: prod.category || '',
-                      tags: Array.isArray(prod.tags) ? prod.tags : (prod.tags || ''),
-                      benefits: prod.benefits || '',
-                      features: Array.isArray(prod.features) ? prod.features : (prod.features || ''),
-                      featureExplanations: prod.featureExplanations || {},
-                      specifications: prod.specifications ? (typeof prod.specifications === 'string' ? prod.specifications : JSON.stringify(prod.specifications, null, 2)) : '{}',
-                    });
-                    setProductModalOpen(true);
-                  }}
-                >
-                  Edit
-                </Button>
-                {prod.hasCustomPage ? (
-  <Link href={`/seller-info/${prod.id}?mode=edit`}>
-    <Button
-      size="sm"
-      className="mt-2 ml-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-      type="button"
-    >
-      Edit Story Page
-    </Button>
-  </Link>
-) : (
-  <Link href={`/seller-info/${prod.id}?mode=create`}>
-    <Button
-      size="sm"
-      className="mt-2 ml-2 bg-green-600 hover:bg-green-700 text-white font-semibold"
-      type="button"
-    >
-      Add Story Page
-    </Button>
-  </Link>
-)}
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    size="sm"
+                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold"
+                    onClick={() => {
+                      setEditingProductId(prod.id);
+                      setProductEditData({
+                        name: prod.name || prod.title || '',
+                        title: prod.title || prod.name || '',
+                        description: prod.description || '',
+                        metaDescription: prod.metaDescription || '',
+                        price: prod.price ?? '',
+                        imageUrl: prod.imageUrl || '',
+                        images: Array.isArray(prod.images) ? prod.images : (prod.images || ''),
+                        category: prod.category || '',
+                        tags: Array.isArray(prod.tags) ? prod.tags : (prod.tags || ''),
+                        benefits: prod.benefits || '',
+                        features: Array.isArray(prod.features) ? prod.features : (prod.features || ''),
+                        featureExplanations: prod.featureExplanations || {},
+                        specifications: prod.specifications ? (typeof prod.specifications === 'string' ? prod.specifications : JSON.stringify(prod.specifications, null, 2)) : '{}',
+                      });
+                      setProductModalOpen(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  {prod.hasCustomPage ? (
+    <Link href={`/seller-info/${prod.id}?mode=edit`} className="flex-1">
+      <Button
+        size="sm"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+        type="button"
+      >
+        Edit Story Page
+      </Button>
+    </Link>
+  ) : (
+    <Link href={`/seller-info/${prod.id}?mode=create`} className="flex-1">
+      <Button
+        size="sm"
+        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold"
+        type="button"
+      >
+        Add Story Page
+      </Button>
+    </Link>
+  )}
+                </div>
               </>
             </div>
           ))}
@@ -1625,7 +1639,7 @@ export default function Dashboard() {
                         </div>
                       )}
                       {prod.imageUrl && (<img src={prod.imageUrl} alt={prod.name || "Product image"} className="w-full h-40 object-cover rounded-lg mb-1" />)}
-                      <div className={`font-semibold text-base truncate ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{prod.name || prod.title || "(Unnamed Product)"}</div>
+                      <div className={`font-semibold text-base break-words overflow-hidden line-clamp-2 pr-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{prod.name || prod.title || "(Unnamed Product)"}</div>
                       {prod.description && (
                         <div className={theme === 'dark' ? 'text-gray-300 text-sm' : 'text-gray-700 text-sm'}>
                           {(

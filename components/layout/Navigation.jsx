@@ -13,6 +13,7 @@ const Navigation = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
   const [authAction, setAuthAction] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const prevLoggedInRef = useRef(null);
   const authTimeoutRef = useRef(null);
 
@@ -47,6 +48,8 @@ const Navigation = () => {
     }
   };
 
+  const closeMobile = () => setMobileOpen(false);
+
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
@@ -75,12 +78,12 @@ const Navigation = () => {
           </div>
         </div>
       )}
-      <nav className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+      <nav className="bg-white shadow-sm border-b sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-14 sm:h-16">
           {/* Logo/Brand */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2" aria-label="Home">
+          <div className="flex items-center min-w-0">
+            <Link href="/" className="flex items-center space-x-2" aria-label="Home" onClick={closeMobile}>
               <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center">
                 <Image
                   src="/images/Screenshot 2025-09-20 165808.png"
@@ -91,10 +94,8 @@ const Navigation = () => {
                   priority
                 />
               </div>
+              <span className="hidden xs:inline ml-1.5 text-base sm:text-xl font-semibold text-gray-900 truncate">MarketplaceAssistant</span>
             </Link>
-            {!isLoggedIn && (
-              <span className="ml-2 text-xl font-semibold text-gray-900 whitespace-nowrap">MarketplaceAssistant</span>
-            )}
           </div>
 
           {/* Navigation Links */}
@@ -157,26 +158,27 @@ const Navigation = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <button className="text-gray-600 hover:text-gray-900 p-2">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+            <button
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+              className="text-gray-700 hover:text-gray-900 p-2 rounded-md active:scale-95 transition"
+              onClick={() => setMobileOpen((o) => !o)}
+            >
+              {mobileOpen ? (
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden">
+        <div className={`md:hidden overflow-hidden transition-[max-height] duration-300 ${mobileOpen ? 'max-h-[480px]' : 'max-h-0'}`}>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems
               .filter((item) => !item.requiresAuth || isLoggedIn)
@@ -189,19 +191,20 @@ const Navigation = () => {
                       {!isLoggedIn && (
                         <Link
                           href={item.href}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          onClick={closeMobile}
+                          className="flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium transition-colors text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                         >
-                          <Icon size={16} />
+                          <Icon size={18} />
                           <span>{item.label}</span>
                         </Link>
                       )}
                       {isLoggedIn && (
                         <button
                           type="button"
-                          onClick={handleLogout}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          onClick={() => { handleLogout(); closeMobile(); }}
+                          className="w-full text-left flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium transition-colors text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                         >
-                          <LogOut size={16} />
+                          <LogOut size={18} />
                           <span>Logout</span>
                         </button>
                       )}
@@ -213,13 +216,14 @@ const Navigation = () => {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors whitespace-nowrap ${
+                    onClick={closeMobile}
+                    className={`flex items-center space-x-2 px-3 py-3 rounded-md text-base font-medium transition-colors whitespace-nowrap ${
                       isActive(item.href)
                         ? 'text-blue-600 bg-blue-50'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
-                    <Icon size={16} />
+                    <Icon size={18} />
                     <span>{item.label}</span>
                   </Link>
                 );

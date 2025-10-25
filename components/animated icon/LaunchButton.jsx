@@ -26,8 +26,8 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     border: 1px solid var(--bg);
     border-radius: 4px;
-    padding: 0.3em 1.1em;
-    font-size: 0.85rem;
+    padding: 0.2em 0.8em;
+    font-size: 0.7rem;
     font-weight: 500;
     background: var(--bg);
     display: inline-flex;
@@ -35,6 +35,13 @@ const StyledWrapper = styled.div`
     justify-content: center;
     gap: 0.3rem;
     transition: 0.2s;
+  }
+
+  @media (min-width: 768px) {
+    .button {
+      padding: 0.3em 1.1em;
+      font-size: 0.85rem;
+    }
   }
 
   .button:hover:not(:disabled) {

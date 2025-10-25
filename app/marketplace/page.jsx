@@ -181,6 +181,8 @@ export default function Marketplace() {
   const [onlyFeatured, setOnlyFeatured] = useState(false);
   const [onlyCustomPage, setOnlyCustomPage] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
 
   // Zoom/pan state for image preview
   const [zoom, setZoom] = useState(1);
@@ -476,7 +478,7 @@ export default function Marketplace() {
     <div className="group bg-white rounded-lg shadow-sm border hover:shadow-lg transition-shadow">
       {/* Product Image */}
       <div className="relative">
-        <div className="w-full h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+        <div className="w-full h-32 sm:h-48 bg-gray-200 rounded-t-lg overflow-hidden">
           <img
             src={product.image}
             alt={product.title}
@@ -744,23 +746,7 @@ export default function Marketplace() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Marketplace
-              </h1>
-              <p className="text-gray-600">
-                Discover amazing products created with AI assistance
-              </p>
-            </div>
-                <GameOne>
-                  Create Product
-                </GameOne>
-              
-            
-          </div>
-        </div>
+
       </div>
 
       {/* Filters and Search */}
@@ -768,27 +754,23 @@ export default function Marketplace() {
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
-            <div className="flex-1">
-              <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search products..." />
-            </div>
-
-            {/* Category Filter */}
-            <div className="md:w-48">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            <div className="flex-1 flex gap-2">
+              <div className="flex-1">
+                <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search products..." />
+              </div>
+              {/* Filter Icon Button - Mobile Only */}
+              <Button 
+                variant="outline" 
+                onClick={() => setShowFilters((prev) => !prev)}
+                className="md:hidden p-2"
               >
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+                <Filter size={20} />
+              </Button>
             </div>
 
-            {/* Sort */}
-            <div className="md:w-48">
+            
+            {/* Sort - Desktop Only */}
+            <div className="hidden md:block md:w-48">
               <select value={selectedSort} onChange={(e) => setSelectedSort(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="featured">Sort by: Featured</option>
                 <option value="priceAsc">Price: Low to High</option>
@@ -798,9 +780,14 @@ export default function Marketplace() {
               </select>
             </div>
 
-            <Button variant="outline" onClick={() => setShowFilters((prev) => !prev)}>
+            {/* Filters Button - Desktop Only */}
+            <Button 
+              variant="outline" 
+              onClick={() => setShowFilters((prev) => !prev)}
+              className="hidden md:block"
+            >
               <Filter className="mr-2" size={16} />
-              Filters
+              
             </Button>
           </div>
           <div
@@ -908,27 +895,64 @@ export default function Marketplace() {
           </div>
         </div>
 
-        {/* Products List/Grid */}
-        {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-            {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4 mb-12">
-            {sortedProducts.map((product) => (
-              <ProductListItem key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        {/* Calculate pagination */}
+        {(() => {
+          const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+          const startIndex = (currentPage - 1) * productsPerPage;
+          const endIndex = startIndex + productsPerPage;
+          const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
 
-        {/* Load More */}
-        <div className="text-center">
-          <Button variant="outline" size="lg">
-            Load More Products
-          </Button>
-        </div>
+          return (
+            <>
+              {/* Products List/Grid */}
+              {viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4 mb-12">
+                  {paginatedProducts.map((product) => (
+                    <ProductListItem key={product.id} product={product} />
+                  ))}
+                </div>
+              )}
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mb-12">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </Button>
+                  
+                  {[...Array(totalPages)].map((_, i) => (
+                    <Button
+                      key={i + 1}
+                      variant={currentPage === i + 1 ? 'default' : 'outline'}
+                      onClick={() => setCurrentPage(i + 1)}
+                      size="sm"
+                    >
+                      {i + 1}
+                    </Button>
+                  ))}
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Image Preview Lightbox */}

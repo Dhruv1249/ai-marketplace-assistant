@@ -499,8 +499,8 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Progress Steps */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Progress Steps - Hidden on Mobile */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-8">
           <div className="flex items-center justify-between">
             {steps.map((step, index) => (
@@ -528,6 +528,12 @@ useEffect(() => {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Form Content - Visible on All Screens */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mb-8">
         </div>
 
         {/* Content */}

@@ -38,21 +38,21 @@ const AnimatedCartButton = () => {
     <>
       <button
         onClick={cartClick}
-        className="relative flex items-center px-6 py-3 w-60 h-14 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group outline-none border-0 cursor-pointer active:scale-90"
-        style={{ fontSize: '1.125rem', fontWeight: 'bold' }}
+        className="relative flex items-center px-5 sm:px-6 py-3 w-full sm:w-60 h-12 sm:h-14 overflow-hidden font-medium transition-all bg-indigo-500 rounded-md group outline-none border-0 cursor-pointer active:scale-90"
+        style={{ fontSize: '1.0625rem', fontWeight: 'bold' }}
       >
         <span
-          className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4"
+          className="absolute top-0 right-0 inline-block w-3 h-3 sm:w-4 sm:h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-3 sm:group-hover:-mr-4 group-hover:-mt-3 sm:group-hover:-mt-4"
         >
           <span
-            className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
+            className="absolute top-0 right-0 w-4 h-4 sm:w-5 sm:h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
           ></span>
         </span>
         <span
-          className="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-4 group-hover:-mb-4"
+          className="absolute bottom-0 rotate-180 left-0 inline-block w-3 h-3 sm:w-4 sm:h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-3 sm:group-hover:-ml-4 group-hover:-mb-3 sm:group-hover:-mb-4"
         >
           <span
-            className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
+            className="absolute top-0 right-0 w-4 h-4 sm:w-5 sm:h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white"
           ></span>
         </span>
         <span
@@ -376,29 +376,30 @@ export default function Home() {
             {/* Hero Section */}
       <div ref={heroRef} className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
-          <div className="hero-orb hero-orb-1 absolute -top-10 -left-10 w-64 h-64 rounded-full bg-gradient-to-br from-blue-200 to-indigo-200 blur-3xl opacity-60"></div>
-          <div className="hero-orb hero-orb-2 absolute -bottom-10 -right-10 w-72 h-72 rounded-full bg-gradient-to-br from-indigo-200 to-purple-200 blur-3xl opacity-60"></div>
+          <div className="hero-orb hero-orb-1 absolute -top-10 -left-10 w-64 h-64 rounded-full bg-gradient-to-br from-blue-200 to-indigo-200 blur-xl sm:blur-3xl opacity-30 sm:opacity-60"></div>
+          <div className="hero-orb hero-orb-2 absolute -bottom-10 -right-10 w-72 h-72 rounded-full bg-gradient-to-br from-indigo-200 to-purple-200 blur-xl sm:blur-3xl opacity-30 sm:opacity-60"></div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 md:py-24">
           <div className="text-center">
-            <h1 className="hero-anim hero-title text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="hero-anim hero-title text-3xl leading-[1.15] sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 relative z-10">
               <TypingText as="span" className="block" align="center" delay={0} duration={1.2}>AI-Powered</TypingText>
               <TypingText as="span" className="block text-blue-600" align="center" delay={0.15} duration={1.2}>Marketplace</TypingText>
               <TypingText as="span" className="block" align="center" delay={0.3} duration={1.2}>Assistant</TypingText>
             </h1>
-            <p className="hero-anim text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Create stunning product pages in minutes with our AI assistant. 
-              Generate content, optimize for SEO, and publish to your marketplace 
+            <p className="hero-anim text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl sm:max-w-3xl mx-auto px-1">
+              Create stunning product pages in minutes with our AI assistant.
+              Generate content, optimize for SEO, and publish to your marketplace
               with just a few clicks.
             </p>
             
-            <div className="hero-anim flex flex-col sm:flex-row gap-4 justify-center">
-              <AnimatedCartButton />
-              <Link href="/marketplace">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  {/* Replace ShoppingBag with Box */}
+            <div className="hero-anim flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center items-stretch sm:items-center w-full sm:w-auto">
+              <div className="w-full sm:w-auto">
+                <AnimatedCartButton />
+              </div>
+              <Link href="/marketplace" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px]">
                   <span className="mr-2 flex items-center">
-                    <Box width={24} height={24} stroke="#6366f1" />
+                    <Box width={22} height={22} stroke="#6366f1" />
                   </span>
                   Browse Marketplace
                 </Button>
@@ -409,15 +410,15 @@ export default function Home() {
       </div>
 
       {/* Stats Section */}
-      <div ref={statsRef} className="from-blue-100 to-purple-400 py-16">
+      <div ref={statsRef} className="from-blue-100 to-purple-400 py-10 sm:py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="stat-anim text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1.5 sm:mb-2">
                   <span className="stat-value" data-value={stat.value}>{stat.value}</span>
                 </div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-600">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -425,30 +426,30 @@ export default function Home() {
       </div>
 
       {/* Features Section */}
-      <div ref={featuresRef} className="py-24 bg-gray-50" style={{ perspective: '1000px' }}>
+      <div ref={featuresRef} className="py-14 sm:py-20 bg-gray-50" style={{ perspective: '1000px' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               Everything you need to succeed
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Our AI-powered platform provides all the tools you need to create, 
+            <p className="text-base sm:text-xl text-gray-600 max-w-xl sm:max-w-2xl mx-auto px-1">
+              Our AI-powered platform provides all the tools you need to create,
               optimize, and sell your products online.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <div key={index} className="feature-card bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow transform-gpu will-change-transform">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <Icon className="text-blue-600" size={24} />
+                <div key={index} className="feature-card bg-white rounded-xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow transform-gpu will-change-transform">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                    <Icon className="text-blue-600" size={22} />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1.5 sm:mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     {feature.description}
                   </p>
                 </div>
@@ -459,38 +460,40 @@ export default function Home() {
       </div>
 
       {/* CTA Section */}
-      <div ref={ctaRef} className="from-blue-100 to-purple-400 py-16">
+      <div ref={ctaRef} className="from-blue-100 to-purple-400 py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="cta-anim text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="cta-anim text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
             Ready to transform your product listings?
           </h2>
-          <p className="cta-anim text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of sellers who are already using AI to create 
+          <p className="cta-anim text-base sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl sm:max-w-2xl mx-auto px-1">
+            Join thousands of sellers who are already using AI to create
             better product pages and increase their sales.
           </p>
-          <div className="cta-anim flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/marketplace">
-              <Explore>
-                
-              </Explore>
+          <div className="cta-anim flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-center items-stretch sm:items-center">
+            <Link href="/marketplace" className="w-full sm:w-auto">
+              <div className="w-full sm:w-auto min-h-[52px] sm:min-h-0 flex items-center justify-center text-base sm:text-lg">
+                <Explore />
+              </div>
             </Link>
-            <Link href="/about">
-              <ReadMoreButton />
+            <Link href="/about" className="w-full sm:w-auto">
+              <div className="w-full sm:w-auto min-h-[52px] sm:min-h-0 flex items-center justify-center text-base sm:text-lg">
+                <ReadMoreButton />
+              </div>
             </Link>
           </div>
         </div>
       </div>
 
       {/* Testimonials Section */}
-      <div ref={testimonialsRef} className="py-24 bg-white">
+      <div ref={testimonialsRef} className="py-14 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               What our users say
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
             {[
               {
                 name: 'Sarah Johnson',
@@ -511,16 +514,16 @@ export default function Home() {
                 rating: 5,
               },
             ].map((testimonial, index) => (
-              <div key={index} className="testimonial-card bg-gray-50 rounded-lg p-6">
-                <div className="flex items-center mb-4">
+              <div key={index} className="testimonial-card bg-gray-50 rounded-xl p-5 sm:p-6">
+                <div className="flex items-center mb-2.5 sm:mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="text-yellow-400 fill-current" size={16} />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-4">"{testimonial.content}"</p>
+                <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">"{testimonial.content}"</p>
                 <div>
                   <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                  <div className="text-sm text-gray-500">{testimonial.role}</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{testimonial.role}</div>
                 </div>
               </div>
             ))}
