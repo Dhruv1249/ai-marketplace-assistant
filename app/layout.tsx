@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Marketplace Assistant",
-  description: "AI-powered marketplace assistant for creating product pages",
+  title: "UrbanSwap",
+  description: "AI-powered marketplace for creating and selling products",
   icons: {
     icon: "/images/Screenshot 2025-09-20 165808.png",
     shortcut: "/images/Screenshot 2025-09-20 165808.png",

@@ -382,9 +382,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 md:py-24">
           <div className="text-center">
             <h1 className="hero-anim hero-title text-3xl leading-[1.15] sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 relative z-10">
-              <TypingText as="span" className="block" align="center" delay={0} duration={1.2}>AI-Powered</TypingText>
-              <TypingText as="span" className="block text-blue-600" align="center" delay={0.15} duration={1.2}>Marketplace</TypingText>
-              <TypingText as="span" className="block" align="center" delay={0.3} duration={1.2}>Assistant</TypingText>
+              <TypingText as="span" className="block" align="center" delay={0} duration={1.2}>Urban</TypingText>
+              <TypingText as="span" className="block text-blue-600" align="center" delay={0.15} duration={1.2}>Swap</TypingText>
             </h1>
             <p className="hero-anim text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl sm:max-w-3xl mx-auto px-1">
               Create stunning product pages in minutes with our AI assistant.

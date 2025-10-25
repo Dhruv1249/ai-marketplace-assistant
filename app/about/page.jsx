@@ -185,7 +185,7 @@ export default function About() {
               <h2 className="section-heading text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  Founded in 2024, AI Marketplace Assistant was born from a simple observation: 
+                  Founded in 2024, UrbanSwap was born from a simple observation: 
                   creating compelling product listings was one of the biggest barriers for 
                   new sellers entering the e-commerce space.
                 </p>

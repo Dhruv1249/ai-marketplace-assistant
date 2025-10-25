@@ -136,7 +136,7 @@ export default function Contact() {
               Get in Touch
             </h1>
             <p className="contact-anim text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Have questions about our AI marketplace assistant? We're here to help! 
+              Have questions about UrbanSwap? We're here to help! 
               Reach out to our team for support, feedback, or partnership opportunities.
             </p>
           </div>

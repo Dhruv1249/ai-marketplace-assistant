@@ -73,8 +73,13 @@ const Navigation = () => {
       {isProcessingAuth && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
           <SiginLoader />
-          <div className="mt-2 text-gray-900 text-base md:text-lg font-medium">
-            {authAction === 'logout' ? 'Logging you out...' : 'Logging you in...'}
+          <div className="mt-4 text-center">
+            <div className="text-gray-900 text-xl md:text-2xl font-bold mb-2">
+              UrbanSwap
+            </div>
+            <div className="text-gray-900 text-base md:text-lg font-medium">
+              {authAction === 'logout' ? 'Logging you out...' : 'Logging you in...'}
+            </div>
           </div>
         </div>
       )}
@@ -94,7 +99,7 @@ const Navigation = () => {
                   priority
                 />
               </div>
-              <span className="hidden xs:inline ml-1.5 text-base sm:text-xl font-semibold text-gray-900 truncate">MarketplaceAssistant</span>
+              <span className="-ml-2 text-sm sm:text-base md:text-lg font-bold text-gray-900">UrbanSwap</span>
             </Link>
           </div>
 
