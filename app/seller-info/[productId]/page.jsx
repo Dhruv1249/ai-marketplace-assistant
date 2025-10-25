@@ -366,7 +366,13 @@ if (allowStoryEdit === false) {
 
   // Get template-specific step configuration
   function getTemplateSteps() {
-    if (selectedTemplate === 'our-journey') {
+    if (selectedTemplate === 'ai-photo-generated') {
+      return [
+        { number: 1, title: 'Template', icon: Palette, key: 'template' },
+        { number: 2, title: 'AI Generation', icon: Lightbulb, key: 'ai-generation' },
+        { number: 3, title: 'Review', icon: Globe, key: 'review' }
+      ];
+    } else if (selectedTemplate === 'our-journey') {
       return [
         { number: 1, title: 'Template', icon: Palette, key: 'template' },
         { number: 2, title: 'Basics', icon: Package, key: 'basics' },
@@ -900,6 +906,12 @@ if (allowStoryEdit === false) {
             updateValidation={updateValidation}
           />
         );
+      case 'ai-generation':
+        // Redirect to AI photo generation page
+        if (typeof window !== 'undefined') {
+          window.location.href = `/seller-info/ai-photo-generation?productId=${productId}`;
+        }
+        return null;
       case 'review':
         return (
           <div className="space-y-6">

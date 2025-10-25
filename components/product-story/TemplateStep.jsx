@@ -44,6 +44,17 @@ export default function TemplateStep({
         'story.vision': 'max 250 chars',
         'process fields': 'max 200 chars each'
       }
+    },
+    {
+      id: 'ai-photo-generated',
+      name: 'AI Photo Generated',
+      description: 'Upload 1-4 photos and let AI generate your complete product story. Edit and publish directly.',
+      color: 'from-indigo-600 to-purple-600',
+      features: ['Photo upload', 'AI-powered generation', 'Auto JSON creation', 'Quick editing', 'Direct publish'],
+      requirements: {
+        'photos': '1-4 product photos',
+        'ai-generation': 'Automatic story creation'
+      }
     }
   ];
 

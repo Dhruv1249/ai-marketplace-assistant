@@ -15,6 +15,7 @@ import ProcessStep from '@/components/product-story/ProcessStep';
 import ImpactStep from '@/components/product-story/ImpactStep';
 import VisualsStep from '@/components/product-story/VisualsStep';
 import TemplateStep from '@/components/product-story/TemplateStep';
+import AIPhotoStep from '@/components/product-story/AIPhotoStep';
 
 // Import templates
 import ourJourneyTemplate from '@/templates/our-journey1.json';
@@ -487,6 +488,13 @@ export default function ProductStoryPage() {
   const renderStepContent = () => {
     switch (step) {
       case 1:
+        if (selectedTemplate === 'ai-photo-generated') {
+          // Redirect to AI photo generation page
+          if (typeof window !== 'undefined') {
+            window.location.href = '/seller-info/ai-photo-generation';
+          }
+          return null;
+        }
         return (
           <div className="space-y-6">
             <div className="text-center">
@@ -699,7 +707,13 @@ export default function ProductStoryPage() {
             </Button>
             
             <Button
-              onClick={() => step === 7 ? handlePreview() : setStep(step + 1)}
+              onClick={() => {
+                if (step === 7) {
+                  handlePreview();
+                } else {
+                  setStep(step + 1);
+                }
+              }}
               disabled={step === 7 ? false : !isCurrentStepValid()}
             >
               {step === 7 ? (
