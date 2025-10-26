@@ -14,6 +14,7 @@
 
 /* Fixed body styling to ensure consistent text visibility */
 body {
+  --gt-banner-height: 0px;
   background: #ffffff;
   color: #171717;
   font-family: Arial, Helvetica, sans-serif;
@@ -21,7 +22,6 @@ body {
 }
 
 /* Reserve safe space for Google banner and keep navbar below it */
-:root { --gt-banner-height: 0px; }
 #site-navbar { position: sticky; top: 0; z-index: 40; }
 
 /* Ensure Google banner stays on top */
