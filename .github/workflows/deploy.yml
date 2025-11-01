@@ -47,7 +47,7 @@ jobs:
 
       - name: Push image to Artifact Registry
         run: |
-          docker push asia-south2-docker.pkg.dev/ai-markeplace-assis/ai-marketplace/ai-marketplace-assistant:${{ github.sha }}
+          docker push asia-south2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ai-marketplace/ai-marketplace-assistant:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         run: |
