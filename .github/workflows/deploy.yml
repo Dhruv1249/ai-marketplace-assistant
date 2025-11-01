@@ -26,6 +26,11 @@ jobs:
 
       - name: Configure Docker auth for Artifact Registry
         run: gcloud auth configure-docker asia-south2-docker.pkg.dev
+      - name: Debug secrets
+        run: |
+            echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}"
+            echo "NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}"
+
 
       - name: Build Docker image
         run: |
