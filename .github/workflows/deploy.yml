@@ -58,7 +58,7 @@ jobs:
         run: |
           gcloud run deploy $SERVICE_NAME \
             --image $IMAGE \
-            --region $REGION \
+            --region asia-south1 \
             --platform managed \
             --allow-unauthenticated \
             --project $PROJECT_ID \
