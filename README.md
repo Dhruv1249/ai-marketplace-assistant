@@ -1,4 +1,4 @@
-# 🤖 AI Marketplace Assistant
+# UrbanSwap - An AI Powered Marketplace 
 
 A comprehensive Next.js application that leverages Google's Gemini AI to create professional e-commerce product pages with AI-generated content, real-time streaming, Firebase authentication, and a complete marketplace platform.
 
